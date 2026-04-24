@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<title>LECAR VOZ</title>
+
+<style>
+body{
+    margin:0;
+    font-family:Arial;
+    background:#eef2f7;
+}
+
+/* 🔵 TOPBAR PADRÃO */
+.topbar{
+    width:100%;
+    height:60px;
+    background:linear-gradient(90deg,#1e3a8a,#2563eb,#3b82f6);
+    display:flex;
+    align-items:center;
+    padding:0 20px;
+    box-shadow:0 4px 12px rgba(0,0,0,0.15);
+}
+
+/* 🔥 LOGO COM SOMBRA FORTE */
+.topbar img{
+    height:40px;
+    filter: drop-shadow(0px 6px 12px rgba(0,0,0,0.8));
+}
+
+/* CONTAINER */
+.container{
+    max-width:700px;
+    margin:80px auto;
+    background:white;
+    padding:20px;
+    border-radius:12px;
+    box-shadow:0 4px 12px rgba(0,0,0,0.1);
+}
+
+/* CAIXAS */
+.box{
+    background:#f1f5f9;
+    padding:10px;
+    margin:8px 0;
+    border-radius:8px;
+}
+
+/* BOTÕES */
+button{
+    padding:10px;
+    margin:5px 3px;
+    border:none;
+    border-radius:10px;
+    background:#2563eb;
+    color:white;
+    cursor:pointer;
+}
+
+button:hover{
+    opacity:0.9;
+}
+
+label{
+    margin-right:10px;
+}
+
+#status{
+    margin-top:10px;
+    font-weight:bold;
+}
+</style>
+
+</head>
+
+<body>
+
+<!-- 🔵 TOPBAR -->
+<div class="topbar">
+    <img src="https://i.postimg.cc/50N706MF/logo.png" alt="LECAR">
+</div>
+
+<div class="container">
+
+<div class="box">🚗 CARRO: <span id="carro">-</span></div>
+<div class="box">🔢 PLACA: <span id="placa">-</span></div>
+<div class="box">📝 DESCRIÇÃO: <span id="descricao">-</span></div>
+
+<h4>ORIGEM</h4>
+<label><input type="checkbox" id="atm"> ATM</label>
+<label><input type="checkbox" id="bolsao"> BOLSÃO</label>
+
+<br><br>
+
+<button onclick="ouvir('carro')">🎤 CARRO</button>
+<button onclick="ouvir('placa')">🎤 PLACA</button>
+<button onclick="ouvir('descricao')">🎤 DESCRIÇÃO</button>
+
+<br><br>
+
+<button onclick="salvar()">✔ SALVAR NO LECAR</button>
+
+<p id="status">AGUARDANDO COMANDO...</p>
+
+</div>
+
+<script>
+
+let dados = {
+    carro:"",
+    placa:"",
+    descricao:""
+};
+
+const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+
+let rec = null;
+let campoAtual = "";
+
+function initVoice(){
+
+    if(!SpeechRecognition){
+        alert("SEM SUPORTE DE VOZ");
+        return;
+    }
+
+    if(rec) return;
+
+    rec = new SpeechRecognition();
+    rec.lang = "pt-BR";
+    rec.continuous = false;
+    rec.interimResults = false;
+
+    rec.onresult = (e)=>{
+
+        let texto = "";
+
+        for(let i = e.resultIndex; i < e.results.length; i++){
+            texto += e.results[i][0].transcript;
+        }
+
+        texto = texto.trim().toUpperCase();
+
+        processar(texto);
+    };
+
+    rec.onerror = ()=>{
+        document.getElementById("status").innerText = "⚠️ ERRO DE VOZ";
+    };
+}
+
+function ouvir(campo){
+
+    initVoice();
+
+    campoAtual = campo;
+
+    document.getElementById("status").innerText =
+    "🎤 OUVINDO: " + campo.toUpperCase();
+
+    try {
+        rec.start();
+    } catch(e){
+        rec.stop();
+        setTimeout(()=>rec.start(),300);
+    }
+}
+
+function processar(texto){
+
+    if(campoAtual === "carro"){
+        dados.carro = texto;
+        document.getElementById("carro").innerText = texto;
+    }
+
+    if(campoAtual === "placa"){
+        dados.placa = texto.replace(/\s/g, "");
+        document.getElementById("placa").innerText = dados.placa;
+    }
+
+    if(campoAtual === "descricao"){
+        dados.descricao = texto;
+        document.getElementById("descricao").innerText = texto;
+    }
+
+    document.getElementById("status").innerText =
+    "✔ CAPTURADO: " + campoAtual.toUpperCase();
+}
+
+function salvar(){
+
+    let origem = "-";
+
+    if(document.getElementById("atm").checked) origem = "ATM";
+    if(document.getElementById("bolsao").checked) origem = "BOLSÃO";
+
+    let novo = {
+        veiculo: dados.carro || "NAO INFORMADO",
+        placa: (dados.placa || "SEMPLACA").replace(/\s/g,""),
+        descricao: dados.descricao || "SEM DESCRICAO",
+        origem: origem,
+        status: "AGUARDANDO ORÇAMENTO",
+        data: new Date().toLocaleString(),
+        pecas: []
+    };
+
+    let lista = JSON.parse(localStorage.getItem("veiculos")) || [];
+
+    lista.unshift(novo);
+
+    localStorage.setItem("veiculos", JSON.stringify(lista));
+
+    document.getElementById("status").innerText = "💾 SALVO NO LECAR";
+
+    dados = {carro:"", placa:"", descricao:""};
+
+    document.getElementById("carro").innerText = "-";
+    document.getElementById("placa").innerText = "-";
+    document.getElementById("descricao").innerText = "-";
+
+    document.getElementById("atm").checked = false;
+    document.getElementById("bolsao").checked = false;
+}
+
+</script>
+
+</body>
+</html>
