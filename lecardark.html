@@ -1,0 +1,1429 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LECAR — GESTÃO DE VEÍCULOS</title>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;600;700;800&family=DM+Mono:wght@400;500&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #0a0c10;
+  --surface: #111318;
+  --surface2: #171b23;
+  --border: #1f2531;
+  --border2: #2a3040;
+  --text: #e8edf5;
+  --text2: #8893a8;
+  --text3: #5a6475;
+  --accent: #2f80ed;
+  --accent2: #1a5cbf;
+  --red: #e53e3e;
+  --yellow: #d4a017;
+  --green: #27ae60;
+  --blue: #2f80ed;
+  --font-display: 'Barlow Condensed', sans-serif;
+  --font-mono: 'DM Mono', monospace;
+  --font-body: 'Inter', sans-serif;
+}
+
+*, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+
+body {
+  font-family: var(--font-body);
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* ─── NOISE TEXTURE ─── */
+body::before {
+  content:'';
+  position:fixed;
+  inset:0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+  pointer-events:none;
+  z-index:0;
+  opacity:0.6;
+}
+
+/* ─── TOPBAR ─── */
+.topbar {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  height: 60px;
+  background: rgba(10, 12, 16, 0.92);
+  backdrop-filter: blur(16px);
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 28px;
+  z-index: 200;
+}
+
+.topbar-left {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.logo-wrap {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.logo-img {
+  height: 32px;
+  width: auto;
+  filter: brightness(1.1);
+}
+
+.topbar-divider {
+  width: 1px;
+  height: 22px;
+  background: var(--border2);
+}
+
+.topbar-label {
+  font-family: var(--font-display);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.18em;
+  color: var(--text3);
+  text-transform: uppercase;
+}
+
+.search-wrap {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.search-icon {
+  position: absolute;
+  left: 12px;
+  color: var(--text3);
+  font-size: 13px;
+  pointer-events: none;
+}
+
+.topbar input[type="text"] {
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  color: var(--text);
+  font-family: var(--font-mono);
+  font-size: 12px;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  padding: 8px 14px 8px 34px;
+  border-radius: 8px;
+  width: 240px;
+  outline: none;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.topbar input[type="text"]:focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px rgba(47,128,237,0.12);
+}
+
+.topbar input[type="text"]::placeholder { color: var(--text3); text-transform: uppercase; }
+
+/* ─── MAIN ─── */
+.main {
+  flex: 1;
+  padding: 80px 28px 90px;
+  max-width: 1100px;
+  margin: 0 auto;
+  width: 100%;
+  position: relative;
+  z-index: 1;
+}
+
+/* ─── FORM CARD ─── */
+.card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 28px;
+  margin-bottom: 24px;
+}
+
+.card-header {
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
+  margin-bottom: 22px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid var(--border);
+}
+
+.card-title {
+  font-family: var(--font-display);
+  font-size: 22px;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text);
+}
+
+.card-sub {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--text3);
+  letter-spacing: 0.1em;
+}
+
+/* ─── FORM GRID ─── */
+.form-grid {
+  display: grid;
+  grid-template-columns: 2fr 1fr 3fr 1fr;
+  gap: 10px;
+  margin-bottom: 14px;
+}
+
+.form-field {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.form-field label {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--text3);
+}
+
+.form-field input,
+.form-field select {
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  color: var(--text);
+  font-family: var(--font-mono);
+  font-size: 12px;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  padding: 9px 12px;
+  border-radius: 8px;
+  outline: none;
+  transition: border-color 0.2s, box-shadow 0.2s;
+  width: 100%;
+  -webkit-appearance: none;
+  appearance: none;
+}
+
+.form-field select {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%235a6475' stroke-width='2'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 10px center;
+  padding-right: 28px;
+}
+
+.form-field input:focus,
+.form-field select:focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px rgba(47,128,237,0.1);
+}
+
+.form-field input::placeholder { color: var(--text3); }
+
+/* ─── ORIGIN TOGGLE ─── */
+.origin-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 18px;
+}
+
+.origin-label {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--text3);
+  margin-right: 4px;
+}
+
+.toggle-btn {
+  font-family: var(--font-display);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  color: var(--text2);
+  padding: 7px 16px;
+  border-radius: 7px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.toggle-btn.active {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: white;
+}
+
+.toggle-btn:hover:not(.active) {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+/* ─── BOTTOM CONTROLS ─── */
+.form-actions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.btn-primary {
+  font-family: var(--font-display);
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  background: var(--accent);
+  border: none;
+  color: white;
+  padding: 10px 24px;
+  border-radius: 9px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.btn-primary:hover {
+  background: var(--accent2);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 16px rgba(47,128,237,0.3);
+}
+
+.form-filters {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+.form-filters select {
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  color: var(--text2);
+  font-family: var(--font-mono);
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  padding: 8px 28px 8px 12px;
+  border-radius: 8px;
+  outline: none;
+  cursor: pointer;
+  -webkit-appearance: none;
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%235a6475' stroke-width='2'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 10px center;
+  transition: border-color 0.2s;
+}
+
+.form-filters select:hover { border-color: var(--border2); }
+
+/* ─── TABLE ─── */
+.table-wrap {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  overflow: hidden;
+}
+
+.table-header-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 20px;
+  border-bottom: 1px solid var(--border);
+}
+
+.table-title {
+  font-family: var(--font-display);
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--text2);
+}
+
+.count-badge {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  background: var(--surface2);
+  border: 1px solid var(--border2);
+  color: var(--text3);
+  padding: 3px 10px;
+  border-radius: 20px;
+}
+
+.table-container { overflow-x: auto; }
+
+table { width: 100%; border-collapse: collapse; }
+
+thead tr {
+  background: var(--surface2);
+  border-bottom: 1px solid var(--border2);
+}
+
+th {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--text3);
+  padding: 11px 14px;
+  text-align: left;
+  white-space: nowrap;
+}
+
+th:last-child { text-align: center; }
+
+tbody tr {
+  border-bottom: 1px solid var(--border);
+  transition: background 0.15s;
+}
+
+tbody tr:last-child { border-bottom: none; }
+
+tbody tr:hover { background: rgba(47,128,237,0.04); }
+
+td {
+  font-size: 13px;
+  padding: 11px 14px;
+  color: var(--text2);
+  vertical-align: middle;
+}
+
+td.td-veiculo {
+  font-family: var(--font-display);
+  font-size: 15px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  color: var(--text);
+  cursor: pointer;
+}
+
+td.td-veiculo:hover { color: var(--accent); }
+
+td.td-placa {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  color: var(--text3);
+}
+
+td.td-desc {
+  font-size: 12px;
+  cursor: pointer;
+  max-width: 200px;
+}
+td.td-desc:hover { color: var(--text); }
+
+td.td-data {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--text3);
+  white-space: nowrap;
+}
+
+/* ─── STATUS BADGES ─── */
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-family: var(--font-display);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  padding: 4px 10px;
+  border-radius: 5px;
+  cursor: pointer;
+  border: 1px solid transparent;
+  transition: all 0.2s;
+  white-space: nowrap;
+}
+
+.badge::before {
+  content: '';
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.badge-orcamento {
+  background: rgba(229,62,62,0.1);
+  border-color: rgba(229,62,62,0.25);
+  color: #fc8181;
+}
+.badge-orcamento::before { background: #e53e3e; box-shadow: 0 0 4px #e53e3e; animation: pulse 1.5s infinite; }
+
+.badge-fornecedor {
+  background: rgba(47,128,237,0.1);
+  border-color: rgba(47,128,237,0.25);
+  color: #63b3ed;
+}
+.badge-fornecedor::before { background: #2f80ed; }
+
+.badge-pecas {
+  background: rgba(212,160,23,0.1);
+  border-color: rgba(212,160,23,0.25);
+  color: #f6c90e;
+}
+.badge-pecas::before { background: #d4a017; }
+
+.badge-finalizado {
+  background: rgba(39,174,96,0.1);
+  border-color: rgba(39,174,96,0.25);
+  color: #68d391;
+}
+.badge-finalizado::before { background: #27ae60; }
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.4; }
+}
+
+.badge:hover { opacity: 0.85; transform: translateY(-1px); }
+
+/* ─── ACTION BUTTONS ─── */
+td.td-actions {
+  text-align: center;
+  white-space: nowrap;
+}
+
+.action-btn {
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  color: var(--text2);
+  padding: 6px 9px;
+  border-radius: 7px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: all 0.2s;
+  margin: 0 2px;
+}
+
+.action-btn:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+  background: rgba(47,128,237,0.08);
+}
+
+.action-btn.danger:hover {
+  border-color: var(--red);
+  color: var(--red);
+  background: rgba(229,62,62,0.08);
+}
+
+/* ─── ORIGEM CHIP ─── */
+.origem-chip {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  background: var(--surface2);
+  border: 1px solid var(--border2);
+  color: var(--text3);
+  padding: 3px 8px;
+  border-radius: 4px;
+}
+
+/* ─── EMPTY STATE ─── */
+.empty-row td {
+  text-align: center;
+  padding: 48px;
+  color: var(--text3);
+  font-family: var(--font-mono);
+  font-size: 12px;
+  letter-spacing: 0.08em;
+}
+
+/* ─── MODALS ─── */
+.modal-bg {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.65);
+  backdrop-filter: blur(4px);
+  z-index: 500;
+  justify-content: center;
+  align-items: center;
+}
+
+.modal-bg.open { display: flex; }
+
+.modal {
+  background: var(--surface);
+  border: 1px solid var(--border2);
+  border-radius: 16px;
+  padding: 28px;
+  width: 420px;
+  max-width: 90vw;
+  box-shadow: 0 24px 60px rgba(0,0,0,0.5);
+  animation: modalIn 0.2s ease;
+}
+
+@keyframes modalIn {
+  from { transform: translateY(16px) scale(0.97); opacity: 0; }
+  to { transform: none; opacity: 1; }
+}
+
+.modal-title {
+  font-family: var(--font-display);
+  font-size: 18px;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  margin-bottom: 18px;
+  padding-bottom: 14px;
+  border-bottom: 1px solid var(--border);
+}
+
+.modal-row {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 14px;
+}
+
+.modal-row input,
+.modal-row select {
+  flex: 1;
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  color: var(--text);
+  font-family: var(--font-mono);
+  font-size: 12px;
+  text-transform: uppercase;
+  padding: 9px 12px;
+  border-radius: 8px;
+  outline: none;
+  -webkit-appearance: none;
+  appearance: none;
+}
+
+.modal-row input:focus,
+.modal-row select:focus { border-color: var(--accent); }
+
+.btn-add {
+  font-family: var(--font-display);
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  background: var(--accent);
+  border: none;
+  color: white;
+  padding: 9px 16px;
+  border-radius: 8px;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all 0.2s;
+}
+.btn-add:hover { background: var(--accent2); }
+
+.pecas-list {
+  list-style: none;
+  max-height: 190px;
+  overflow-y: auto;
+  margin-bottom: 16px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--surface2);
+}
+
+.pecas-list:empty { display: none; }
+
+.pecas-list li {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 9px 12px;
+  border-bottom: 1px solid var(--border);
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--text2);
+}
+
+.pecas-list li:last-child { border-bottom: none; }
+
+.peca-del {
+  background: rgba(229,62,62,0.15);
+  border: 1px solid rgba(229,62,62,0.25);
+  color: #fc8181;
+  padding: 3px 8px;
+  border-radius: 5px;
+  font-size: 11px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.peca-del:hover { background: var(--red); color: white; }
+
+.modal-footer {
+  display: flex;
+  gap: 8px;
+  justify-content: flex-end;
+  flex-wrap: wrap;
+  padding-top: 14px;
+  border-top: 1px solid var(--border);
+}
+
+.btn-secondary {
+  font-family: var(--font-display);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  background: var(--surface2);
+  border: 1px solid var(--border2);
+  color: var(--text2);
+  padding: 8px 16px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.btn-secondary:hover { border-color: var(--text2); color: var(--text); }
+
+.btn-whatsapp {
+  font-family: var(--font-display);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  background: rgba(39,174,96,0.15);
+  border: 1px solid rgba(39,174,96,0.3);
+  color: #68d391;
+  padding: 8px 16px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.btn-whatsapp:hover { background: var(--green); color: white; }
+
+/* ─── BOTTOMBAR ─── */
+.bottombar {
+  position: fixed;
+  bottom: 0; left: 0; right: 0;
+  height: 56px;
+  background: rgba(10,12,16,0.94);
+  backdrop-filter: blur(16px);
+  border-top: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 0 20px;
+  z-index: 200;
+}
+
+.lembrete-input {
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  color: var(--text);
+  font-family: var(--font-mono);
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  padding: 7px 12px;
+  border-radius: 7px;
+  outline: none;
+  width: 190px;
+  flex-shrink: 0;
+  transition: border-color 0.2s;
+}
+.lembrete-input:focus { border-color: var(--accent); }
+.lembrete-input::placeholder { color: var(--text3); }
+
+.btn-add-lembrete {
+  background: var(--surface2);
+  border: 1px solid var(--border2);
+  color: var(--text2);
+  font-size: 16px;
+  width: 32px;
+  height: 32px;
+  border-radius: 7px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  transition: all 0.2s;
+}
+.btn-add-lembrete:hover { border-color: var(--accent); color: var(--accent); }
+
+.lembretes-bar {
+  display: flex;
+  gap: 6px;
+  overflow-x: auto;
+  flex: 1;
+  scrollbar-width: none;
+}
+.lembretes-bar::-webkit-scrollbar { display: none; }
+
+.lembrete-chip {
+  flex-shrink: 0;
+  font-family: var(--font-mono);
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  background: var(--surface2);
+  border: 1px solid var(--border2);
+  color: var(--text3);
+  padding: 5px 12px;
+  border-radius: 20px;
+  cursor: pointer;
+  max-width: 140px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  transition: all 0.2s;
+}
+.lembrete-chip:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+.lembrete-chip.ativo {
+  background: rgba(47,128,237,0.12);
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+.btn-relatorio {
+  font-family: var(--font-display);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  background: var(--surface2);
+  border: 1px solid var(--border2);
+  color: var(--text2);
+  padding: 7px 14px;
+  border-radius: 7px;
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: all 0.2s;
+  white-space: nowrap;
+}
+.btn-relatorio:hover { border-color: var(--accent); color: var(--accent); }
+
+/* ─── POPUP ─── */
+.popup {
+  position: fixed;
+  background: var(--surface);
+  border: 1px solid var(--border2);
+  color: var(--text);
+  padding: 16px 18px;
+  border-radius: 12px;
+  box-shadow: 0 16px 40px rgba(0,0,0,0.5);
+  min-width: 220px;
+  max-width: 300px;
+  z-index: 1000;
+  animation: popupIn 0.2s ease;
+}
+
+@keyframes popupIn {
+  from { transform: translateY(10px); opacity: 0; }
+  to { transform: none; opacity: 1; }
+}
+
+.popup-title {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--text3);
+  margin-bottom: 8px;
+}
+
+.popup-body {
+  font-size: 13px;
+  color: var(--text2);
+  line-height: 1.5;
+  margin-bottom: 12px;
+  word-break: break-word;
+}
+
+.popup-stat {
+  font-family: var(--font-display);
+  font-size: 28px;
+  font-weight: 800;
+  color: var(--text);
+  margin-bottom: 2px;
+}
+
+.popup-stat-label {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  color: var(--text3);
+  text-transform: uppercase;
+  margin-bottom: 12px;
+}
+
+.popup-divider {
+  height: 1px;
+  background: var(--border);
+  margin: 12px 0;
+}
+
+.popup-actions {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.popup-actions button {
+  font-family: var(--font-display);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  padding: 6px 12px;
+  border-radius: 7px;
+  cursor: pointer;
+  transition: all 0.2s;
+  border: 1px solid var(--border2);
+  background: var(--surface2);
+  color: var(--text2);
+}
+
+.popup-actions button:hover { border-color: var(--text2); color: var(--text); }
+.popup-actions .btn-del { border-color: rgba(229,62,62,0.3); color: #fc8181; background: rgba(229,62,62,0.08); }
+.popup-actions .btn-del:hover { background: var(--red); color: white; border-color: var(--red); }
+.popup-actions .btn-wa { border-color: rgba(39,174,96,0.3); color: #68d391; background: rgba(39,174,96,0.08); }
+.popup-actions .btn-wa:hover { background: var(--green); color: white; border-color: var(--green); }
+
+/* ─── SCROLLBAR ─── */
+::-webkit-scrollbar { width: 5px; height: 5px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 10px; }
+::-webkit-scrollbar-thumb:hover { background: var(--text3); }
+
+/* ─── RESPONSIVE ─── */
+@media (max-width: 768px) {
+  .form-grid { grid-template-columns: 1fr 1fr; }
+  .topbar input[type="text"] { width: 160px; }
+}
+</style>
+</head>
+<body>
+
+<!-- TOPBAR -->
+<header class="topbar">
+  <div class="topbar-left">
+    <div class="logo-wrap">
+      <img src="https://i.postimg.cc/50N706MF/logo.png" alt="LECAR" class="logo-img">
+    </div>
+    <div class="topbar-divider"></div>
+    <span class="topbar-label">Gestão de Veículos</span>
+  </div>
+  <div class="search-wrap">
+    <span class="search-icon">⌕</span>
+    <input type="text" id="buscaSidebar" placeholder="Buscar veículo ou placa" onkeyup="filtrar()">
+  </div>
+</header>
+
+<!-- MAIN -->
+<main class="main">
+
+  <!-- FORM -->
+  <div class="card">
+    <div class="card-header">
+      <span class="card-title">Cadastro</span>
+      <span class="card-sub" id="formMode">— novo registro</span>
+    </div>
+
+    <input type="hidden" id="index">
+
+    <div class="form-grid">
+      <div class="form-field">
+        <label>Veículo</label>
+        <input type="text" id="veiculo" placeholder="Ex: HONDA CIVIC">
+      </div>
+      <div class="form-field">
+        <label>Placa</label>
+        <input type="text" id="placa" placeholder="ABC-1234">
+      </div>
+      <div class="form-field">
+        <label>Descrição do Problema</label>
+        <input type="text" id="descricao" placeholder="Descreva o serviço">
+      </div>
+      <div class="form-field">
+        <label>Status</label>
+        <select id="status">
+          <option>AGUARDANDO ORÇAMENTO</option>
+          <option>FORNECEDOR</option>
+          <option>AGUARDANDO PEÇAS</option>
+          <option>VEÍCULO FINALIZADO</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="origin-row">
+      <span class="origin-label">Origem:</span>
+      <button class="toggle-btn" id="btnAtm" onclick="selecionarTipo('atm')">ATM</button>
+      <button class="toggle-btn" id="btnBolsao" onclick="selecionarTipo('bolsao')">Bolsão</button>
+    </div>
+
+    <div class="form-actions">
+      <button class="btn-primary" onclick="salvar()">
+        <span id="btnSalvarText">＋ Salvar Veículo</span>
+      </button>
+      <div class="form-filters">
+        <select id="ordenar" onchange="atualizarTabela()">
+          <option value="prioridade">Por prioridade</option>
+          <option value="recente">Mais recente</option>
+        </select>
+        <select id="filtroFinalizados" onchange="atualizarTabela()">
+          <option value="ocultar">Ocultar finalizados</option>
+          <option value="mostrar" selected>Mostrar finalizados</option>
+        </select>
+      </div>
+    </div>
+  </div>
+
+  <!-- TABLE -->
+  <div class="table-wrap">
+    <div class="table-header-bar">
+      <span class="table-title">Registros</span>
+      <span class="count-badge" id="countBadge">0 veículos</span>
+    </div>
+    <div class="table-container">
+      <table>
+        <thead>
+          <tr>
+            <th>Veículo</th>
+            <th>Placa</th>
+            <th>Descrição</th>
+            <th>Origem</th>
+            <th>Data</th>
+            <th>Status</th>
+            <th>Ações</th>
+          </tr>
+        </thead>
+        <tbody id="lista"></tbody>
+      </table>
+    </div>
+  </div>
+
+</main>
+
+<!-- MODAL PEÇAS -->
+<div class="modal-bg" id="modalPecas">
+  <div class="modal">
+    <div class="modal-title">📦 Peças do Veículo</div>
+    <div class="modal-row">
+      <input type="text" id="novaPeca" placeholder="Nome da peça" onkeypress="if(event.key==='Enter')adicionarPeca()">
+      <button class="btn-add" onclick="adicionarPeca()">Adicionar</button>
+    </div>
+    <ul class="pecas-list" id="listaPecas"></ul>
+    <div class="modal-footer">
+      <button class="btn-secondary" onclick="fecharModal()">Fechar</button>
+      <button class="btn-whatsapp" onclick="compartilharPecas()">📲 WhatsApp</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL STATUS -->
+<div class="modal-bg" id="modalStatus">
+  <div class="modal">
+    <div class="modal-title">🔄 Alterar Status</div>
+    <div class="modal-row">
+      <select id="statusSelect">
+        <option>AGUARDANDO ORÇAMENTO</option>
+        <option>FORNECEDOR</option>
+        <option>AGUARDANDO PEÇAS</option>
+        <option>VEÍCULO FINALIZADO</option>
+      </select>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-secondary" onclick="fecharModalStatus()">Cancelar</button>
+      <button class="btn-primary" onclick="salvarStatus()">Salvar Status</button>
+    </div>
+  </div>
+</div>
+
+<!-- BOTTOMBAR -->
+<div class="bottombar">
+  <input type="text" class="lembrete-input" id="inputLembrete" placeholder="Novo lembrete..." onkeypress="if(event.key==='Enter')adicionarLembrete()">
+  <button class="btn-add-lembrete" onclick="adicionarLembrete()">＋</button>
+  <div class="lembretes-bar" id="barraLembretes"></div>
+  <button class="btn-relatorio" id="btnRelatorio" onclick="abrirRelatorio()">📊 Relatório</button>
+</div>
+
+<script>
+// ─── STATE ───
+let dados = JSON.parse(localStorage.getItem("veiculos")) || [];
+let lembretes = JSON.parse(localStorage.getItem("lembretes")) || [];
+let indicePecasAtual = null;
+let indiceStatusAtual = null;
+let tipoOrigem = null;
+let popupAtivo = null;
+let indicePopupAtivo = null;
+
+// ─── DOM ───
+const veiculoEl = document.getElementById("veiculo");
+const placaEl = document.getElementById("placa");
+const descricaoEl = document.getElementById("descricao");
+const statusEl = document.getElementById("status");
+const indexEl = document.getElementById("index");
+const listaHTML = document.getElementById("lista");
+const buscaSidebar = document.getElementById("buscaSidebar");
+const filtroFinalizados = document.getElementById("filtroFinalizados");
+const modal = document.getElementById("modalPecas");
+const novaPecaEl = document.getElementById("novaPeca");
+const listaPecasEl = document.getElementById("listaPecas");
+const modalStatus = document.getElementById("modalStatus");
+const statusSelect = document.getElementById("statusSelect");
+
+// ─── ORIGIN TOGGLE ───
+function selecionarTipo(tipo) {
+  if (tipoOrigem === tipo) {
+    tipoOrigem = null;
+    document.getElementById("btnAtm").classList.remove("active");
+    document.getElementById("btnBolsao").classList.remove("active");
+  } else {
+    tipoOrigem = tipo;
+    document.getElementById("btnAtm").classList.toggle("active", tipo === "atm");
+    document.getElementById("btnBolsao").classList.toggle("active", tipo === "bolsao");
+  }
+}
+
+// ─── SAVE ───
+function salvar() {
+  const origem = tipoOrigem === "atm" ? "ATM" : tipoOrigem === "bolsao" ? "BOLSÃO" : "-";
+  const obj = {
+    veiculo: veiculoEl.value.toUpperCase().trim(),
+    placa: placaEl.value.toUpperCase().trim(),
+    descricao: descricaoEl.value.toUpperCase().trim(),
+    origem,
+    data: new Date().toLocaleString("pt-BR"),
+    status: statusEl.value.toUpperCase(),
+    pecas: []
+  };
+  if (!obj.veiculo || !obj.placa) { alert("Preencha veículo e placa!"); return; }
+  if (indexEl.value === "") {
+    dados.unshift(obj);
+  } else {
+    obj.pecas = dados[indexEl.value].pecas || [];
+    dados[indexEl.value] = obj;
+  }
+  localStorage.setItem("veiculos", JSON.stringify(dados));
+  limpar();
+  atualizarTabela();
+}
+
+// ─── TABLE ───
+function atualizarTabela(lista = dados) {
+  const tipoOrdenacao = document.getElementById("ordenar").value;
+  const mostrarFinalizados = filtroFinalizados.value === "mostrar";
+  let listaOrdenada = lista.map((v, i) => ({ ...v, iOriginal: i }));
+
+  if (tipoOrdenacao === "prioridade") {
+    const pr = { "AGUARDANDO ORÇAMENTO": 1, "FORNECEDOR": 2, "AGUARDANDO PEÇAS": 3, "VEÍCULO FINALIZADO": 4 };
+    listaOrdenada.sort((a, b) => pr[a.status] - pr[b.status]);
+  }
+
+  if (!mostrarFinalizados) listaOrdenada = listaOrdenada.filter(v => v.status !== "VEÍCULO FINALIZADO");
+
+  document.getElementById("countBadge").textContent = `${listaOrdenada.length} veículo${listaOrdenada.length !== 1 ? "s" : ""}`;
+  listaHTML.innerHTML = "";
+
+  if (listaOrdenada.length === 0) {
+    listaHTML.innerHTML = `<tr class="empty-row"><td colspan="7">Nenhum registro encontrado</td></tr>`;
+    return;
+  }
+
+  listaOrdenada.forEach(v => {
+    const badgeClass = statusBadgeClass(v.status);
+    const origemHtml = v.origem !== "-"
+      ? `<span class="origem-chip">${v.origem}</span>`
+      : `<span style="color:var(--text3);font-size:12px">—</span>`;
+
+    const tr = document.createElement("tr");
+    tr.innerHTML = `
+      <td class="td-veiculo" onclick="editar(${v.iOriginal})">${v.veiculo}</td>
+      <td class="td-placa">${v.placa}</td>
+      <td class="td-desc" onclick="abrirModal(${v.iOriginal})" title="${v.descricao}">${v.descricao || "—"}</td>
+      <td>${origemHtml}</td>
+      <td class="td-data">${v.data}</td>
+      <td><span class="badge ${badgeClass}" onclick="abrirModalStatus(${v.iOriginal})">${v.status}</span></td>
+      <td class="td-actions">
+        <button class="action-btn danger" title="Excluir" onclick="excluir(${v.iOriginal},event)">🗑</button>
+        <button class="action-btn" title="WhatsApp" onclick="compartilharWhatsApp(${v.iOriginal})">📲</button>
+      </td>`;
+    listaHTML.appendChild(tr);
+  });
+}
+
+function statusBadgeClass(status) {
+  if (status === "AGUARDANDO ORÇAMENTO") return "badge-orcamento";
+  if (status === "FORNECEDOR") return "badge-fornecedor";
+  if (status === "AGUARDANDO PEÇAS") return "badge-pecas";
+  if (status === "VEÍCULO FINALIZADO") return "badge-finalizado";
+  return "";
+}
+
+// ─── SEARCH ───
+function filtrar() {
+  const busca = buscaSidebar.value.toUpperCase();
+  atualizarTabela(dados.filter(v => v.veiculo.includes(busca) || v.placa.includes(busca)));
+}
+
+// ─── EDIT ───
+function editar(i) {
+  const v = dados[i];
+  veiculoEl.value = v.veiculo;
+  placaEl.value = v.placa;
+  descricaoEl.value = v.descricao;
+  statusEl.value = v.status;
+  tipoOrigem = v.origem === "ATM" ? "atm" : v.origem === "BOLSÃO" ? "bolsao" : null;
+  document.getElementById("btnAtm").classList.toggle("active", v.origem === "ATM");
+  document.getElementById("btnBolsao").classList.toggle("active", v.origem === "BOLSÃO");
+  indexEl.value = i;
+  document.getElementById("formMode").textContent = `— editando: ${v.veiculo}`;
+  document.getElementById("btnSalvarText").textContent = "✓ Atualizar Veículo";
+  window.scrollTo({ top: 0, behavior: "smooth" });
+}
+
+// ─── DELETE ───
+function excluir(i, event) {
+  event.stopPropagation();
+  if (confirm("Excluir este veículo?")) {
+    dados.splice(i, 1);
+    localStorage.setItem("veiculos", JSON.stringify(dados));
+    atualizarTabela();
+  }
+}
+
+// ─── MODAL PEÇAS ───
+function abrirModal(i) {
+  indicePecasAtual = i;
+  novaPecaEl.value = "";
+  listaPecasEl.innerHTML = "";
+  (dados[i].pecas || []).forEach((p, j) => {
+    const li = document.createElement("li");
+    li.innerHTML = `<span>${p}</span><button class="peca-del" onclick="removerPeca(${j})">✕</button>`;
+    listaPecasEl.appendChild(li);
+  });
+  modal.classList.add("open");
+  novaPecaEl.focus();
+}
+
+function adicionarPeca() {
+  const valor = novaPecaEl.value.trim();
+  if (!valor || indicePecasAtual === null) return;
+  if (!dados[indicePecasAtual].pecas) dados[indicePecasAtual].pecas = [];
+  dados[indicePecasAtual].pecas.push(valor.toUpperCase());
+  localStorage.setItem("veiculos", JSON.stringify(dados));
+  abrirModal(indicePecasAtual);
+  novaPecaEl.value = "";
+}
+
+function removerPeca(i) {
+  dados[indicePecasAtual].pecas.splice(i, 1);
+  localStorage.setItem("veiculos", JSON.stringify(dados));
+  abrirModal(indicePecasAtual);
+}
+
+function fecharModal() {
+  modal.classList.remove("open");
+  indicePecasAtual = null;
+}
+
+function compartilharPecas() {
+  if (indicePecasAtual === null) return;
+  const v = dados[indicePecasAtual];
+  const texto = `VEÍCULO: ${v.veiculo}\nPLACA: ${v.placa}\nPEÇAS: ${v.pecas.join(", ")}`;
+  window.open(`https://wa.me/?text=${encodeURIComponent(texto)}`, "_blank");
+}
+
+// ─── MODAL STATUS ───
+function abrirModalStatus(i) {
+  indiceStatusAtual = i;
+  statusSelect.value = dados[i].status;
+  modalStatus.classList.add("open");
+}
+
+function salvarStatus() {
+  if (indiceStatusAtual === null) return;
+  const novoStatus = statusSelect.value.toUpperCase();
+  dados[indiceStatusAtual].status = novoStatus;
+  if (novoStatus === "VEÍCULO FINALIZADO") {
+    dados[indiceStatusAtual].data = new Date().toLocaleString("pt-BR");
+    const v = dados[indiceStatusAtual];
+    const texto = `VEÍCULO: ${v.veiculo}\nPLACA: ${v.placa}\nDESCRIÇÃO: ${v.descricao}\nPEÇAS: ${(v.pecas||[]).join(", ")}\nORIGEM: ${v.origem}\nDATA: ${v.data}\nSTATUS: ${v.status}`;
+    window.open(`https://wa.me/?text=${encodeURIComponent(texto)}`, "_blank");
+  }
+  localStorage.setItem("veiculos", JSON.stringify(dados));
+  atualizarTabela();
+  fecharModalStatus();
+}
+
+function fecharModalStatus() {
+  modalStatus.classList.remove("open");
+  indiceStatusAtual = null;
+}
+
+// ─── WHATSAPP ───
+function compartilharWhatsApp(i) {
+  const v = dados[i];
+  const texto = `VEÍCULO: ${v.veiculo}\nPLACA: ${v.placa}\nDESCRIÇÃO: ${v.descricao}\nPEÇAS: ${(v.pecas||[]).join(", ")}\nORIGEM: ${v.origem}\nDATA: ${v.data}\nSTATUS: ${v.status}`;
+  window.open(`https://wa.me/?text=${encodeURIComponent(texto)}`, "_blank");
+}
+
+// ─── CLEAR ───
+function limpar() {
+  veiculoEl.value = ""; placaEl.value = ""; descricaoEl.value = "";
+  statusEl.value = "AGUARDANDO ORÇAMENTO";
+  tipoOrigem = null;
+  document.getElementById("btnAtm").classList.remove("active");
+  document.getElementById("btnBolsao").classList.remove("active");
+  indexEl.value = "";
+  document.getElementById("formMode").textContent = "— novo registro";
+  document.getElementById("btnSalvarText").textContent = "＋ Salvar Veículo";
+}
+
+// ─── LEMBRETES ───
+function renderizarLembretes() {
+  const barra = document.getElementById("barraLembretes");
+  barra.innerHTML = "";
+  lembretes.forEach((texto, index) => {
+    const chip = document.createElement("div");
+    chip.className = "lembrete-chip";
+    chip.textContent = texto;
+    chip.title = texto;
+    chip.onclick = (e) => toggleLembrete(texto, index, chip, e);
+    barra.appendChild(chip);
+  });
+}
+
+function adicionarLembrete() {
+  const input = document.getElementById("inputLembrete");
+  const valor = input.value.trim();
+  if (!valor) return;
+  lembretes.push(valor);
+  localStorage.setItem("lembretes", JSON.stringify(lembretes));
+  input.value = "";
+  renderizarLembretes();
+}
+
+function toggleLembrete(texto, index, elemento, e) {
+  e.stopPropagation();
+  if (popupAtivo && indicePopupAtivo === index) { fecharPopup(); return; }
+  fecharPopup();
+  abrirLembretePopup(texto, index, elemento);
+}
+
+function abrirLembretePopup(texto, index, elemento) {
+  const rect = elemento.getBoundingClientRect();
+  const popup = document.createElement("div");
+  popup.className = "popup";
+  popup.innerHTML = `
+    <div class="popup-title">Lembrete</div>
+    <div class="popup-body">${texto}</div>
+    <div class="popup-actions">
+      <button class="btn-del" onclick="removerLembrete(${index})">✕ Remover</button>
+      <button onclick="fecharPopup()">Fechar</button>
+    </div>`;
+  popup.style.left = Math.min(rect.left, window.innerWidth - 260) + "px";
+  popup.style.bottom = (window.innerHeight - rect.top + 10) + "px";
+  document.body.appendChild(popup);
+  popupAtivo = popup;
+  indicePopupAtivo = index;
+  elemento.classList.add("ativo");
+}
+
+function fecharPopup() {
+  if (popupAtivo) { popupAtivo.remove(); popupAtivo = null; indicePopupAtivo = null; }
+  document.querySelectorAll(".lembrete-chip").forEach(el => el.classList.remove("ativo"));
+}
+
+function removerLembrete(index) {
+  lembretes.splice(index, 1);
+  localStorage.setItem("lembretes", JSON.stringify(lembretes));
+  fecharPopup();
+  renderizarLembretes();
+}
+
+// ─── RELATÓRIO ───
+function abrirRelatorio() {
+  fecharPopup();
+  const hoje = new Date().toLocaleDateString("pt-BR");
+  let totalHoje = 0, finalizadosHoje = 0;
+  dados.forEach(v => {
+    if (!v.data) return;
+    const dataV = v.data.split(",")[0];
+    if (dataV === hoje) {
+      totalHoje++;
+      if (v.status === "VEÍCULO FINALIZADO") finalizadosHoje++;
+    }
+  });
+
+  const rect = document.getElementById("btnRelatorio").getBoundingClientRect();
+  const popup = document.createElement("div");
+  popup.className = "popup";
+  const texto = `RELATÓRIO LECAR — ${hoje}\n\nEntradas hoje: ${totalHoje}\nFinalizados hoje: ${finalizadosHoje}`;
+  popup.innerHTML = `
+    <div class="popup-title">Relatório Diário — ${hoje}</div>
+    <div class="popup-stat">${totalHoje}</div>
+    <div class="popup-stat-label">Entradas hoje</div>
+    <div class="popup-divider"></div>
+    <div class="popup-stat" style="color:var(--green)">${finalizadosHoje}</div>
+    <div class="popup-stat-label">Finalizados hoje</div>
+    <div class="popup-actions" style="margin-top:14px">
+      <button onclick="fecharPopup()">Fechar</button>
+      <button class="btn-wa" onclick="window.open('https://wa.me/?text=${encodeURIComponent(texto)}','_blank')">📲 Enviar</button>
+    </div>`;
+  popup.style.right = "20px";
+  popup.style.bottom = (window.innerHeight - rect.top + 10) + "px";
+  document.body.appendChild(popup);
+  popupAtivo = popup;
+  indicePopupAtivo = -99;
+}
+
+// ─── CLOSE MODALS ON BG CLICK ───
+document.getElementById("modalPecas").addEventListener("click", e => { if (e.target === modal) fecharModal(); });
+document.getElementById("modalStatus").addEventListener("click", e => { if (e.target === modalStatus) fecharModalStatus(); });
+document.addEventListener("click", e => {
+  if (!e.target.closest(".lembrete-chip") && !e.target.closest(".btn-relatorio") && !e.target.closest(".popup")) fecharPopup();
+});
+
+// ─── INIT ───
+atualizarTabela();
+renderizarLembretes();
+// essa função muda a url lá em cima sem dar refresh
+function navegar(rota) {
+    // muda o link (ex: lehub.top/#lecar-dark)
+    window.history.pushState({}, rota, #${rota});
+    
+    // aqui você chama a função que troca o conteúdo da tela
+    trocarConteudo(rota);
+}
+
+// e aqui você garante que o botão voltar do navegador funcione
+window.onpopstate = () => {
+    const rota = window.location.hash.replace('#', '') || 'home';
+    trocarConteudo(rota);
+};
+</script>
+</body>
+</html>
