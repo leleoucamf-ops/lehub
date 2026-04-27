@@ -1,7 +1,5 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
-<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8701233973089093"
-     crossorigin="anonymous"></script>
 <head>
 <meta charset="UTF-8">
 <title>LECAR - GESTÃO DE VEÍCULOS</title> 
@@ -185,9 +183,9 @@ tbody tr:hover { background:rgba(37,99,235,0.1); transform:scale(1.01); }
 <body>
 <div class="bottombar">
   <input type="text" id="inputLembrete" placeholder="Novo lembrete">
-  <button onclick="adicionar()">+</button>
+  <button onclick="navegar('adicionar_lembrete'); adicionar()">+</button>
   <div class="lembretes-bar" id="barraLembretes"></div>
-  <button id="btnRelatorio" onclick="abrirRelatorio()" style="margin-right:30px;">📊 Relatório Diário</button>
+  <button id="btnRelatorio" onclick="navegar('relatorio_diario'); abrirRelatorio()" style="margin-right:30px;">📊 Relatório Diário</button>
 </div>
 
 <div class="topbar">
@@ -212,18 +210,18 @@ tbody tr:hover { background:rgba(37,99,235,0.1); transform:scale(1.01); }
 </select>
 
 <div class="checkbox-group">
-  <label><input type="checkbox" id="atm" onclick="selecionarTipo('atm')"> ATM</label>
-  <label><input type="checkbox" id="bolsao" onclick="selecionarTipo('bolsao')"> BOLSÃO</label>
+  <label><input type="checkbox" id="atm" onclick="navegar('selecionar_atm'); selecionarTipo('atm')"> ATM</label>
+  <label><input type="checkbox" id="bolsao" onclick="navegar('selecionar_bolsao'); selecionarTipo('bolsao')"> BOLSÃO</label>
 </div>
 
 <div class="controls">
-  <button onclick="salvar()">SALVAR</button>
+  <button onclick="navegar('salvar_veiculo'); salvar()">SALVAR</button>
   <div style="display:flex; gap:10px; align-items:center;">
-    <select id="ordenar" onchange="atualizarTabela()">
+    <select id="ordenar" onchange="navegar('ordenar_tabela'); atualizarTabela()">
       <option value="prioridade" selected>Prioridade</option>
       <option value="recente">Mais recente</option>
     </select>
-    <select id="filtroFinalizados" onchange="atualizarTabela()">
+    <select id="filtroFinalizados" onchange="navegar('filtro_finalizados'); atualizarTabela()">
       <option value="ocultar">Ocultar finalizados</option>
       <option value="mostrar" selected>Mostrar finalizados</option>
     </select>
@@ -255,11 +253,11 @@ tbody tr:hover { background:rgba(37,99,235,0.1); transform:scale(1.01); }
   <div class="modal">
     <h3>Peças do Veículo</h3>
     <input type="text" id="novaPeca" placeholder="Nova peça">
-    <button onclick="adicionarPeca()">Adicionar</button>
+    <button onclick="navegar('adicionar_peca'); adicionarPeca()">Adicionar</button>
     <ul id="listaPecas"></ul>
-    <button onclick="compartilharPecas()">📲 Compartilhar WhatsApp</button>
+    <button onclick="navegar('compartilhar_pecas'); compartilharPecas()">📲 Compartilhar WhatsApp</button>
     <br><br>
-    <button onclick="fecharModal()">Fechar</button>
+    <button onclick="navegar('fechar_modal_pecas'); fecharModal()">Fechar</button>
   </div>
 </div>
 
@@ -273,12 +271,25 @@ tbody tr:hover { background:rgba(37,99,235,0.1); transform:scale(1.01); }
       <option>AGUARDANDO PEÇAS</option>
       <option>VEÍCULO FINALIZADO</option>
     </select>
-    <button onclick="salvarStatus()">SALVAR</button>
-    <button onclick="fecharModalStatus()">FECHAR</button>
+    <button onclick="navegar('salvar_status'); salvarStatus()">SALVAR</button>
+    <button onclick="navegar('fechar_modal_status'); fecharModalStatus()">FECHAR</button>
   </div>
 </div>
 
 <script>
+// ========== FUNÇÃO DE NAVEGAÇÃO SPA ==========
+function navegar(rota) {
+  window.history.pushState({ rota: rota }, '', '#' + rota);
+}
+
+// ========== EVENTO DE NAVEGAÇÃO DE VOLTA ==========
+window.onpopstate = function(event) {
+  if (event.state && event.state.rota) {
+    console.log('Navegação de volta para:', event.state.rota);
+  }
+};
+
+// ========== CÓDIGO ORIGINAL ==========
 const veiculo=document.getElementById("veiculo");
 const placa=document.getElementById("placa");
 const descricao=document.getElementById("descricao");
@@ -338,15 +349,15 @@ function atualizarTabela(lista=dados){
         else if(v.status==="AGUARDANDO PEÇAS") corClass="status-pecas";
         else if(v.status==="VEÍCULO FINALIZADO") corClass="status-finalizado";
         listaHTML.innerHTML+=`<tr>
-<td class="tr-clickable" onclick="editar(${v.iOriginal})">${v.veiculo}</td>
+<td class="tr-clickable" onclick="navegar('editar_veiculo_${v.iOriginal}'); editar(${v.iOriginal})">${v.veiculo}</td>
 <td>${v.placa}</td>
-<td class="tr-clickable" onclick="abrirModal(${v.iOriginal})">${v.descricao}</td>
+<td class="tr-clickable" onclick="navegar('abrir_modal_pecas_${v.iOriginal}'); abrirModal(${v.iOriginal})">${v.descricao}</td>
 <td>${v.origem}</td>
 <td>${v.data}</td>
-<td class="tr-clickable ${corClass}" onclick="abrirModalStatus(${v.iOriginal})">${v.status}</td>
+<td class="tr-clickable ${corClass}" onclick="navegar('abrir_modal_status_${v.iOriginal}'); abrirModalStatus(${v.iOriginal})">${v.status}</td>
 <td>
-<button class="icon-btn" onclick="excluir(${v.iOriginal}, event)">🗑️</button>
-<button class="icon-btn" onclick="compartilharWhatsApp(${v.iOriginal})">📲</button>
+<button class="icon-btn" onclick="navegar('excluir_veiculo_${v.iOriginal}'); excluir(${v.iOriginal}, event)">🗑️</button>
+<button class="icon-btn" onclick="navegar('compartilhar_whatsapp_${v.iOriginal}'); compartilharWhatsApp(${v.iOriginal})">📲</button>
 </td></tr>`;
     });
 }
@@ -371,7 +382,7 @@ function abrirModal(i){
     (dados[i].pecas||[]).forEach((p,j)=>{
         let li=document.createElement("li"); li.textContent=p;
         let btn=document.createElement("button"); btn.textContent="X";
-        btn.onclick=()=>removerPeca(j);
+        btn.onclick=()=>{ navegar('remover_peca_' + j); removerPeca(j); };
         li.appendChild(btn); listaPecas.appendChild(li);
     });
     modal.style.display="flex"; novaPeca.focus();
@@ -454,7 +465,7 @@ function renderizar() {
     item.className = "lembrete-item";
     item.textContent = texto;
     item.title = texto;
-    item.onclick = () => togglePopup(texto, index, item);
+    item.onclick = () => { navegar('toggle_popup_' + index); togglePopup(texto, index, item); };
     barra.appendChild(item);
   });
 }
@@ -486,7 +497,7 @@ function abrirPopup(texto, index, elemento) {
   popup.style.bottom = (window.innerHeight - rect.top + 10) + "px";
   popup.innerHTML = `<strong>Lembrete</strong>
     <p>${texto}</p>
-    <button onclick="remover(${index})">Remover</button>`;
+    <button onclick="navegar('remover_lembrete_${index}'); remover(${index})">Remover</button>`;
   document.body.appendChild(popup);
   popupAtivo = popup;
   indiceAtivo = index;
@@ -512,7 +523,7 @@ document.addEventListener("click", (e) => {
 });
 
 document.getElementById("inputLembrete").addEventListener("keypress", function(e){
-  if(e.key === "Enter") adicionar();
+  if(e.key === "Enter") { navegar('adicionar_lembrete_enter'); adicionar(); }
 });
 
 renderizar();
@@ -554,8 +565,8 @@ function abrirRelatorio() {
     <p>🚗 Entraram hoje: ${totalHoje}</p>
     <p>✅ Finalizados hoje: ${finalizadosHoje}</p>
     
-    <button onclick="this.parentElement.remove()">Fechar</button>
-    <button onclick="window.open('https://wa.me/?text=${encodeURIComponent(textoRelatorio)}','_blank')">
+    <button onclick="navegar('fechar_relatorio'); this.parentElement.remove()">Fechar</button>
+    <button onclick="navegar('compartilhar_relatorio'); window.open('https://wa.me/?text=${encodeURIComponent(textoRelatorio)}','_blank')">
       📲 Compartilhar WhatsApp
     </button>
   `;
