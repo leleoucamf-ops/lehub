@@ -582,7 +582,31 @@ const db = firebase.firestore();
         }
       }
 /* ========= SINCRONIZAR COM FIREBASE ========= */
-async function sincronizarFirebase() {
+function sincronizarFirebase() {
+
+  db.collection("veiculos").onSnapshot((snapshot) => {
+
+    dados = [];
+
+    snapshot.forEach(doc => {
+      let v = doc.data();
+
+      // 🔠 GARANTE MAIÚSCULAS
+      Object.keys(v).forEach(k => {
+        if (typeof v[k] === "string") {
+          v[k] = v[k].toUpperCase();
+        }
+      });
+
+      dados.push(v);
+    });
+
+    localStorage.setItem("veiculos", JSON.stringify(dados));
+    atualizarTabela();
+
+  });
+
+}
   const snapshot = await db.collection("veiculos").get();
 
   dados = [];
@@ -707,17 +731,17 @@ async function salvar() {
 
   let origem = atm.checked ? "ATM" : bolsao.checked ? "BOLSÃO" : "-";
 
-  let obj = {
-    veiculo: veiculo.value.toUpperCase(),
-    placa: placa.value.toUpperCase(),
-    descricao: descricao.value.toUpperCase(),
-    origem,
-    dataEntrada: new Date().toLocaleString(),
-    status: status.value.toUpperCase(),
-    pecas: [],
-    mecanico_responsavel: usuarioLogado,
-    ultima_modificacao: new Date().toLocaleString()
-  };
+let obj = {
+  veiculo: veiculo.value.toUpperCase(),
+  placa: placa.value.toUpperCase(),
+  descricao: descricao.value.toUpperCase(),
+  origem,
+  dataEntrada: new Date().toLocaleString(),
+  status: status.value.toUpperCase(),
+  pecas: [],
+  mecanico_responsavel: localStorage.getItem("sessao_lecar"),
+  ultima_modificacao: new Date().toLocaleString()
+};
 
   if (!obj.veiculo || !obj.placa) {
     alert("PREENCHA OS CAMPOS!");
@@ -800,7 +824,7 @@ async function salvar() {
 <td>${v.veiculo}</td>
 <td>${v.placa}</td>
 <td>${v.origem}</td>
-<td>${v.mecanico || "N/A"}</td>
+<td>${v.mecanico_responsavel || "N/A"}</td>
 <td class="status-finalizado">${v.status}</td>
 </tr>`;
         });
@@ -1244,9 +1268,9 @@ async function salvarFirebase(obj) {
         popup.style.bottom = window.innerHeight - rect.top + 15 + "px";
       }
 /* ========= INICIALIZAÇÃO ========= */
-window.onload = async () => {
+window.onload = () => {
   verificarSessao();
-  await sincronizarFirebase();
+  sincronizarFirebase();
 };
       // ========== INICIALIZAÇÃO ==========
 
