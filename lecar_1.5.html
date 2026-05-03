@@ -721,23 +721,26 @@ let obj = {
   origem,
   dataEntrada: new Date().toLocaleString(),
   status: status.value.toUpperCase(),
-  pecas: [],
+  pecas: dados[index.value]?.pecas || [],
   mecanico_responsavel: localStorage.getItem("sessao_lecar"),
   ultima_modificacao: new Date().toLocaleString()
 };
 
-  if (!obj.veiculo || !obj.placa) {
-    alert("PREENCHA OS CAMPOS!");
-    return;
-  }
+if (!obj.veiculo || !obj.placa) {
+  alert("PREENCHA OS CAMPOS!");
+  return;
+}
 
-  if (index.value === "") {
-    dados.unshift(obj);
-  } else {
-    obj.pecas = dados[index.value].pecas || [];
-    obj.dataEntrada = dados[index.value].dataEntrada;
-    dados[index.value] = obj;
-  }
+if (index.value === "") {
+  dados.unshift(obj);
+} else {
+  obj = {
+    ...dados[index.value],
+    ...obj
+  };
+
+  dados[index.value] = obj;
+}
 
   // 🔥 SALVA NO FIREBASE
   await salvarFirebase(obj);
@@ -1159,22 +1162,15 @@ let obj = {
 async function salvarFirebase(obj) {
   obj.ultima_modificacao = new Date().toLocaleString();
 
-  await db.collection("veiculos").doc(obj.placa).set(obj);
+  if (obj.id) {
+    // 🔁 ATUALIZA
+    await db.collection("veiculos").doc(obj.id).set(obj);
+  } else {
+    // 🆕 NOVO
+    const docRef = await db.collection("veiculos").add(obj);
+    obj.id = docRef.id;
+  }
 }
-      function abrirPopup(texto, index, elemento) {
-        const rect = elemento.getBoundingClientRect();
-        const popup = document.createElement("div");
-        popup.className = "popup";
-        popup.style.left = rect.left + "px";
-        popup.style.bottom = window.innerHeight - rect.top + 10 + "px";
-        popup.innerHTML = `<strong>Lembrete</strong>
-    <p>${texto}</p>
-    <button onclick="navegar('remover_lembrete_${index}'); remover(${index})">Remover</button>`;
-        document.body.appendChild(popup);
-        popupAtivo = popup;
-        indiceAtivo = index;
-        elemento.classList.add("ativo");
-      }
 
       function fecharPopups() {
         if (popupAtivo) popupAtivo.remove();
