@@ -1,8 +1,8 @@
+html
+
 <!doctype html>
 <html lang="pt-BR">
   <head>
-    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>LECAR - GESTÃO DE VEÍCULOS</title>
@@ -129,7 +129,7 @@
         display: none;
       }
 
-      /* TOPO COM GRADIENTE ANIMADO */
+      /* 🔥 TOPO COM GRADIENTE ANIMADO */
       .topbar {
         width:100%;
         background: linear-gradient(90deg, #1e3a8a, #2563eb, #3b82f6);
@@ -352,7 +352,7 @@
 
       /* ========== NOVOS ESTILOS PARA PAINEL ADM ========== */
       .admin-cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; margin-bottom: 30px; }
-      .admin-card { background: linear-gradient(135deg, #2342ce46 0%, #0026ffa9 100%); color: white; padding: 20px; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.15); }
+      .admin-card { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 20px; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.15); }
       .admin-card h3 { font-size: 1rem; margin-bottom: 10px; opacity: 0.9; }
       .admin-card .value { font-size: 2.5rem; font-weight: bold; margin: 10px 0; }
       .admin-card .label { font-size: 0.85rem; opacity: 0.8; }
@@ -383,7 +383,7 @@
       </div>
 
       <div class="powered">
-        powered by lehub.top - 2026 - versão 2.0
+        powered by leleoucamf - 2026 - versão 2.0
       </div>
     </div>
 
@@ -396,19 +396,19 @@
     <!-- ========== SISTEMA PRINCIPAL ========== -->
     <div id="sistemaPrincipal" class="sistema-principal">
 
-<div class="bottombar">
-  <input type="text" id="buscaSidebar" placeholder="🔍 BUSCAR" onkeyup="filtrarBusca()" />
-
-  <div id="barraLembretes" class="lembretes-bar"></div>
-
-  <button id="btnRelatorio" onclick="navegar('relatorio_diario'); abrirRelatorio()" style="margin-left:auto;">
-    📊 Relatório Diário
-  </button>
-</div>
+    <div class="bottombar">
+      <input type="text" id="inputLembrete" placeholder="Novo lembrete" />
+      <button onclick="navegar('adicionar_lembrete'); adicionar()">+</button>
+      <div class="lembretes-bar" id="barraLembretes"></div>
+      <button id="btnRelatorio" onclick="navegar('relatorio_diario'); abrirRelatorio()" style="margin-right: 30px">
+        📊 Relatório Diário
+      </button>
+    </div>
 
     <div class="topbar">
       <img src="https://i.postimg.cc/50N706MF/logo.png" alt="LECAR" class="logo-img" />
       <div style="display: flex; align-items: center; gap: 15px;">
+        <input type="text" id="buscaSidebar" placeholder="🔍 BUSCAR" onkeyup="filtrarBusca()" />
         <span id="nomeUsuario" style="font-weight: bold; font-size: 0.95rem;"></span>
         <button class="btn-sair" onclick="logout()">Sair</button>
       </div>
@@ -547,18 +547,6 @@
     </div>
 
     <script>
-      /* ========= CONFIG FIREBASE ========= */
-const firebaseConfig = {
-  apiKey: "AIzaSyDjMGX595VvyAj6Nk-I4Pj4VGlipJNovPw",
-  authDomain: "lehub-lecar.firebaseapp.com",
-  projectId: "lehub-lecar",
-  storageBucket: "lehub-lecar.firebasestorage.app",
-  messagingSenderId: "338216307290",
-  appId: "1:338216307290:web:bb31d3710098866094e663"
-};
-
-firebase.initializeApp(firebaseConfig);
-const db = firebase.firestore();
       // ========== SISTEMA DE AUTENTICAÇÃO ==========
       const usuariosPermitidos = ["LEANDRO", "JUNINHO", "ABRAÃO", "PEDRO", "MAICON", "VIKA"];
       const senhaCorreta = "oficina2026";
@@ -583,32 +571,6 @@ const db = firebase.firestore();
           document.getElementById("nomeUsuario").textContent = `Olá, ${usuarioLogado}`;
         }
       }
-/* ========= SINCRONIZAR COM FIREBASE ========= */
-function sincronizarFirebase() {
-
-  db.collection("veiculos").onSnapshot((snapshot) => {
-
-    dados = [];
-
-    snapshot.forEach(doc => {
-      let v = doc.data();
-
-      // 🔠 GARANTE MAIÚSCULAS
-      Object.keys(v).forEach(k => {
-        if (typeof v[k] === "string") {
-          v[k] = v[k].toUpperCase();
-        }
-      });
-
-      dados.push(v);
-    });
-
-    localStorage.setItem("veiculos", JSON.stringify(dados));
-    atualizarTabela();
-
-  });
-
-}
 
       function realizarLogin(event) {
         event.preventDefault();
@@ -709,48 +671,31 @@ function sincronizarFirebase() {
         else atm.checked = false;
       }
 
-async function salvar() {
-  let usuarioLogado = localStorage.getItem("sessao_lecar");
-
-  let origem = atm.checked ? "ATM" : bolsao.checked ? "BOLSÃO" : "-";
-
-let obj = {
-  veiculo: veiculo.value.toUpperCase(),
-  placa: placa.value.toUpperCase(),
-  descricao: descricao.value.toUpperCase(),
-  origem,
-  dataEntrada: new Date().toLocaleString(),
-  status: status.value.toUpperCase(),
-  pecas: dados[index.value]?.pecas || [],
-  mecanico_responsavel: localStorage.getItem("sessao_lecar"),
-  ultima_modificacao: new Date().toLocaleString()
-};
-
-if (!obj.veiculo || !obj.placa) {
-  alert("PREENCHA OS CAMPOS!");
-  return;
-}
-
-if (index.value === "") {
-  dados.unshift(obj);
-} else {
-  obj = {
-    ...dados[index.value],
-    ...obj
-  };
-
-  dados[index.value] = obj;
-}
-
-  // 🔥 SALVA NO FIREBASE
-  await salvarFirebase(obj);
-
-  // 💾 Continua salvando local (performance)
-  localStorage.setItem("veiculos", JSON.stringify(dados));
-
-  limpar();
-  atualizarTabela();
-}
+      function salvar() {
+        let origem = atm.checked ? "ATM" : bolsao.checked ? "BOLSÃO" : "-";
+        let obj = {
+          veiculo: veiculo.value.toUpperCase(),
+          placa: placa.value.toUpperCase(),
+          descricao: descricao.value.toUpperCase(),
+          origem,
+          dataEntrada: new Date().toLocaleString(),
+          status: status.value.toUpperCase(),
+          pecas: []
+        };
+        if (!obj.veiculo || !obj.placa) {
+          alert("PREENCHA OS CAMPOS!");
+          return;
+        }
+        if (index.value === "") dados.unshift(obj);
+        else {
+          obj.pecas = dados[index.value].pecas || [];
+          obj.dataEntrada = dados[index.value].dataEntrada;
+          dados[index.value] = obj;
+        }
+        localStorage.setItem("veiculos", JSON.stringify(dados));
+        limpar();
+        atualizarTabela();
+      }
 
       function toggleMostrarTodos() {
         mostrarTodosFinalizados = !mostrarTodosFinalizados;
@@ -810,7 +755,7 @@ if (index.value === "") {
 <td>${v.veiculo}</td>
 <td>${v.placa}</td>
 <td>${v.origem}</td>
-<td>${v.mecanico_responsavel || "N/A"}</td>
+<td>${v.mecanico || "N/A"}</td>
 <td class="status-finalizado">${v.status}</td>
 </tr>`;
         });
@@ -1045,7 +990,7 @@ if (index.value === "") {
         const painelDiv = document.getElementById("painelAdminConteudo");
 
         if (usuarioLogado !== "LEANDRO" && usuarioLogado !== "VIKA") {
-          painelDiv.innerHTML = '<div class="acesso-negado">🔒 Ops, algo deu errado.</div>';
+          painelDiv.innerHTML = '<div class="acesso-negado">🔒 Acesso apenas para administrador do sistema</div>';
           return;
         }
 
@@ -1158,19 +1103,21 @@ if (index.value === "") {
         fecharPopups();
         abrirPopup(texto, index, elemento);
       }
-/* ========= SALVAR NO FIREBASE ========= */
-async function salvarFirebase(obj) {
-  obj.ultima_modificacao = new Date().toLocaleString();
 
-  if (obj.id) {
-    // 🔁 ATUALIZA
-    await db.collection("veiculos").doc(obj.id).set(obj);
-  } else {
-    // 🆕 NOVO
-    const docRef = await db.collection("veiculos").add(obj);
-    obj.id = docRef.id;
-  }
-}
+      function abrirPopup(texto, index, elemento) {
+        const rect = elemento.getBoundingClientRect();
+        const popup = document.createElement("div");
+        popup.className = "popup";
+        popup.style.left = rect.left + "px";
+        popup.style.bottom = window.innerHeight - rect.top + 10 + "px";
+        popup.innerHTML = `<strong>Lembrete</strong>
+    <p>${texto}</p>
+    <button onclick="navegar('remover_lembrete_${index}'); remover(${index})">Remover</button>`;
+        document.body.appendChild(popup);
+        popupAtivo = popup;
+        indiceAtivo = index;
+        elemento.classList.add("ativo");
+      }
 
       function fecharPopups() {
         if (popupAtivo) popupAtivo.remove();
@@ -1190,7 +1137,7 @@ async function salvarFirebase(obj) {
         if (!e.target.classList.contains("lembrete-item") && e.target.id !== "btnRelatorio") fecharPopups();
       });
 
-     document.getElementById("inputLembrete").addEventListener("keypress", function (e) {
+      document.getElementById("inputLembrete").addEventListener("keypress", function (e) {
         if (e.key === "Enter") {
           navegar("adicionar_lembrete_enter");
           adicionar();
@@ -1246,13 +1193,9 @@ async function salvarFirebase(obj) {
         popup.style.left = rect.left + rect.width / 2 - 120 + "px";
         popup.style.bottom = window.innerHeight - rect.top + 15 + "px";
       }
-/* ========= INICIALIZAÇÃO ========= */
-window.onload = () => {
-  verificarSessao();
-  sincronizarFirebase();
-};
-      // ========== INICIALIZAÇÃO ==========
 
+      // ========== INICIALIZAÇÃO ==========
+      verificarSessao();
     </script>
   </body>
 </html>
