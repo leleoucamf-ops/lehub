@@ -1,0 +1,1459 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LECAR - PAINEL ADMINISTRADOR</title>
+    
+    <!-- Firebase -->
+    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+    
+    <!-- Excel Export -->
+    <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #1e3a8a;
+            --primary-light: #2563eb;
+            --accent: #3b82f6;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+            --info: #3b82f6;
+            --bg: #eef2f7;
+            --card: #ffffff;
+            --text: #1e293b;
+            --text-muted: #64748b;
+            --border: #e2e8f0;
+        }
+/* SCROLLBAR SIDEBAR AZUL */
+.sidebar::-webkit-scrollbar {
+    width: 10px;
+}
+
+.sidebar::-webkit-scrollbar-track {
+    background: rgba(255,255,255,0.08);
+    border-radius: 10px;
+}
+
+.sidebar::-webkit-scrollbar-thumb {
+    background: linear-gradient(180deg, var(--primary-light), var(--accent));
+    border-radius: 10px;
+    border: 2px solid rgba(255,255,255,0.1);
+}
+
+.sidebar::-webkit-scrollbar-thumb:hover {
+    background: linear-gradient(180deg, var(--accent), #60a5fa);
+}
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+        }
+
+        /* Layout */
+        .layout {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            width: 300px;
+            background: linear-gradient(180deg, var(--primary), var(--primary-light));
+            color: white;
+            padding: 24px;
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
+            position: fixed;
+            height: 100vh;
+            overflow-y: auto;
+            transition: transform 0.3s ease;
+            z-index: 100;
+            box-shadow: 4px 0 12px rgba(0,0,0,0.1);
+        }
+
+        .sidebar-header {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 12px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid rgba(255,255,255,0.2);
+        }
+
+        .logo-sidebar {
+            width: 100%;
+            max-width: 290px;
+            height: auto;
+            margin-bottom: 10px;
+        }
+
+        .sidebar-header h1 {
+            font-size: 18px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            text-align: center;
+        }
+
+        .sidebar-header .user-info {
+            font-size: 13px;
+            background: rgba(255,255,255,0.15);
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-weight: 500;
+        }
+
+        .filter-section {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .filter-section h3 {
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+            color: rgba(255,255,255,0.8);
+            margin-bottom: 6px;
+            font-weight: 600;
+        }
+
+        .filter-section select,
+        .filter-section input {
+            width: 100%;
+            padding: 10px 12px;
+            border: 1px solid rgba(255,255,255,0.3);
+            border-radius: 8px;
+            background: rgba(255,255,255,0.1);
+            color: white;
+            font-size: 13px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .filter-section select:focus,
+        .filter-section input:focus {
+            outline: none;
+            border-color: white;
+            background: rgba(255,255,255,0.15);
+        }
+
+        .filter-section select option {
+            background: var(--primary);
+            color: white;
+        }
+
+        .filter-section input[type="date"]::-webkit-calendar-picker-indicator {
+            filter: invert(1);
+            cursor: pointer;
+        }
+
+        .filter-buttons {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .filter-btn {
+            flex: 1;
+            min-width: 80px;
+            padding: 10px 8px;
+            border: 1px solid rgba(255,255,255,0.3);
+            border-radius: 8px;
+            background: transparent;
+            color: white;
+            font-size: 11px;
+            text-transform: uppercase;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .filter-btn:hover {
+            background: rgba(255,255,255,0.1);
+        }
+
+        .filter-btn.active {
+            background: white;
+            color: var(--primary);
+            border-color: white;
+        }
+
+        .btn-limpar {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid rgba(255,255,255,0.3);
+            border-radius: 8px;
+            background: transparent;
+            color: white;
+            font-size: 13px;
+            text-transform: uppercase;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            margin-top: auto;
+        }
+
+        .btn-limpar:hover {
+            background: rgba(255,255,255,0.15);
+        }
+
+        .btn-export {
+            width: 100%;
+            padding: 14px;
+            border: none;
+            border-radius: 8px;
+            background: var(--success);
+            color: white;
+            font-size: 13px;
+            text-transform: uppercase;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            letter-spacing: 0.5px;
+        }
+
+        .btn-export:hover {
+            background: #059669;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(16,185,129,0.3);
+        }
+
+        .btn-logout {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid rgba(239,68,68,0.5);
+            border-radius: 8px;
+            background: rgba(239,68,68,0.1);
+            color: #fecaca;
+            font-size: 13px;
+            text-transform: uppercase;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-logout:hover {
+            background: var(--danger);
+            color: white;
+            border-color: var(--danger);
+        }
+
+        /* Main Content */
+        .main {
+            flex: 1;
+            margin-left: 300px;
+            padding: 30px;
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
+        }
+
+        /* Header */
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 16px;
+            background: white;
+            padding: 24px;
+            border-radius: 16px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        }
+
+        .header h2 {
+            font-size: 26px;
+            font-weight: 700;
+            color: var(--primary);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .header-info {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            color: var(--text-muted);
+            font-size: 13px;
+            text-transform: uppercase;
+            font-weight: 600;
+        }
+
+        .filtros-ativos {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 12px;
+        }
+
+        .filtro-tag {
+            background: var(--accent);
+            color: white;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 11px;
+            text-transform: uppercase;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            letter-spacing: 0.3px;
+        }
+
+        .filtro-tag button {
+            background: rgba(255,255,255,0.3);
+            border: none;
+            color: white;
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: bold;
+            transition: all 0.2s;
+        }
+
+        .filtro-tag button:hover {
+            background: rgba(255,255,255,0.5);
+        }
+
+        /* Stats Cards */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 20px;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 24px;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            transition: all 0.2s;
+            border-left: 4px solid var(--accent);
+        }
+
+        .stat-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 6px 16px rgba(0,0,0,0.12);
+        }
+
+        .stat-label {
+            color: var(--text-muted);
+            font-size: 11px;
+            text-transform: uppercase;
+            font-weight: 700;
+            letter-spacing: 1px;
+            margin-bottom: 8px;
+        }
+
+        .stat-value {
+            color: var(--primary);
+            font-size: 32px;
+            font-weight: 700;
+        }
+
+        /* Sections */
+        .secao {
+            background: white;
+            border-radius: 16px;
+            padding: 24px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            transition: all 0.2s;
+        }
+
+        .secao:hover {
+            box-shadow: 0 4px 16px rgba(0,0,0,0.12);
+        }
+
+        .secao-titulo {
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--primary);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 20px;
+            padding-bottom: 12px;
+            border-bottom: 3px solid var(--accent);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .secao-icone {
+            width: 32px;
+            height: 32px;
+            background: linear-gradient(135deg, var(--primary-light), var(--accent));
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+        }
+
+        /* Table */
+        .table-container {
+            overflow-x: auto;
+            margin-top: 16px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+        }
+
+        th {
+            background: linear-gradient(135deg, var(--primary), var(--primary-light));
+            color: white;
+            padding: 14px 12px;
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            border: none;
+            text-align: center;
+        }
+
+        th:first-child {
+            border-radius: 8px 0 0 0;
+        }
+
+        th:last-child {
+            border-radius: 0 8px 0 0;
+        }
+
+        td {
+            padding: 14px 10px;
+            text-align: center;
+            border-bottom: 1px solid var(--border);
+            font-size: 13px;
+            color: var(--text);
+            font-weight: 500;
+        }
+
+        tr {
+            transition: all 0.2s;
+        }
+
+        tbody tr:hover {
+            background: #f0f9ff !important;
+            cursor: pointer;
+            transform: scale(1.01);
+        }
+
+        tbody tr:nth-child(even) {
+            background: #f9fafb;
+        }
+
+        tbody tr:last-child td {
+            border-bottom: none;
+        }
+
+        /* Badge */
+        .badge {
+            color: white;
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 10px;
+            font-weight: 700;
+            text-transform: uppercase;
+            display: inline-block;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.15);
+            letter-spacing: 0.5px;
+        }
+
+        /* Ranking */
+        .ranking-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin-top: 16px;
+        }
+
+        .ranking-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 18px 20px;
+            background: #f9fafb;
+            border-radius: 12px;
+            transition: all 0.2s;
+            border-left: 4px solid transparent;
+        }
+
+        .ranking-item:hover {
+            background: #f0f9ff;
+            border-left-color: var(--accent);
+            transform: translateX(5px);
+        }
+
+        .ranking-position {
+            width: 44px;
+            height: 44px;
+            background: linear-gradient(135deg, var(--primary-light), var(--accent));
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 700;
+            font-size: 18px;
+            box-shadow: 0 2px 6px rgba(59,130,246,0.3);
+        }
+
+        .ranking-position.gold {
+            background: linear-gradient(135deg, #fbbf24, #f59e0b);
+        }
+
+        .ranking-position.silver {
+            background: linear-gradient(135deg, #94a3b8, #64748b);
+        }
+
+        .ranking-position.bronze {
+            background: linear-gradient(135deg, #d97706, #b45309);
+        }
+
+        .ranking-info {
+            flex: 1;
+            margin-left: 20px;
+        }
+
+        .ranking-info h4 {
+            font-weight: 700;
+            color: var(--primary);
+            font-size: 15px;
+            text-transform: uppercase;
+            margin-bottom: 4px;
+            letter-spacing: 0.5px;
+        }
+
+        .ranking-info p {
+            color: var(--text-muted);
+            font-size: 12px;
+            text-transform: uppercase;
+            font-weight: 600;
+        }
+
+        .ranking-stats {
+            text-align: right;
+        }
+
+        .ranking-stats .total {
+            background: linear-gradient(135deg, var(--primary), var(--primary-light));
+            color: white;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-weight: 700;
+            font-size: 16px;
+        }
+
+        .ranking-stats .label {
+            color: var(--text-muted);
+            font-size: 10px;
+            text-transform: uppercase;
+            margin-top: 4px;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+        }
+
+        /* Modal */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.6);
+            justify-content: center;
+            align-items: center;
+            z-index: 200;
+        }
+
+        .modal-overlay.active {
+            display: flex;
+        }
+
+        .modal {
+            background: white;
+            padding: 32px;
+            border-radius: 16px;
+            width: 90%;
+            max-width: 500px;
+            box-shadow: 0 12px 40px rgba(0,0,0,0.3);
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        .modal h3 {
+            color: var(--primary);
+            margin-bottom: 20px;
+            font-size: 20px;
+            text-transform: uppercase;
+            font-weight: 700;
+            letter-spacing: 1px;
+        }
+
+        .modal-info-item {
+            display: grid;
+            grid-template-columns: 120px 1fr;
+            gap: 12px;
+            padding: 12px 0;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .modal-info-item:last-child {
+            border-bottom: none;
+        }
+
+        .modal-info-item.full {
+            grid-template-columns: 1fr;
+        }
+
+        .modal-info-item label {
+            font-weight: 700;
+            color: var(--text-muted);
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+        }
+
+        .modal-info-item span {
+            color: var(--text);
+            font-weight: 500;
+            font-size: 14px;
+        }
+
+        .modal button {
+            background: linear-gradient(135deg, var(--primary-light), var(--accent));
+            color: white;
+            border: none;
+            padding: 14px 28px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 700;
+            text-transform: uppercase;
+            margin-top: 24px;
+            width: 100%;
+            transition: all 0.2s;
+            font-size: 13px;
+            letter-spacing: 0.5px;
+        }
+
+        .modal button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(59,130,246,0.3);
+        }
+
+        /* Empty State */
+        .empty-state {
+            text-align: center;
+            padding: 40px;
+            color: var(--text-muted);
+            font-style: italic;
+            text-transform: uppercase;
+            font-size: 12px;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+        }
+
+        /* Log Diário - Barra Inferior */
+        .log-diario {
+            position: fixed;
+            bottom: 0;
+            left: 300px;
+            right: 0;
+            background: linear-gradient(90deg, var(--primary), var(--primary-light));
+            color: white;
+            padding: 12px 24px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            box-shadow: 0 -2px 8px rgba(0,0,0,0.1);
+            z-index: 50;
+        }
+
+        .log-diario .log-info {
+            font-size: 12px;
+            text-transform: uppercase;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+        }
+
+        .log-diario .log-stats {
+            display: flex;
+            gap: 20px;
+            font-size: 11px;
+            text-transform: uppercase;
+            font-weight: 600;
+        }
+
+        /* Responsivo */
+        @media (max-width: 1024px) {
+            .sidebar {
+                transform: translateX(-100%);
+            }
+
+            .sidebar.active {
+                transform: translateX(0);
+            }
+
+            .main {
+                margin-left: 0;
+            }
+
+            .log-diario {
+                left: 0;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="layout">
+    <!-- SIDEBAR -->
+    <div class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <img src="https://i.postimg.cc/50N706MF/logo.png" alt="LECAR" class="logo-sidebar">
+            <div class="user-info" id="userInfo">Carregando...</div>
+        </div>
+
+        <!-- FILTROS -->
+        <div class="filter-section">
+            <h3>MECÂNICO</h3>
+            <select id="filtroMecanico">
+                <option value="">TODOS OS MECÂNICOS</option>
+            </select>
+        </div>
+
+        <div class="filter-section">
+            <h3>DATA ESPECÍFICA</h3>
+            <input type="date" id="filtroData">
+        </div>
+
+        <div class="filter-section">
+            <h3>ORIGEM</h3>
+            <div class="filter-buttons">
+                <button class="filter-btn active" data-origem="">TODOS</button>
+                <button class="filter-btn" data-origem="BOLSÃO">BOLSÃO</button>
+                <button class="filter-btn" data-origem="ATM">ATM</button>
+            </div>
+        </div>
+
+        <div class="filter-section">
+            <h3>PERÍODO</h3>
+            <div class="filter-buttons">
+                <button class="filter-btn" data-periodo="diario">HOJE</button>
+                <button class="filter-btn" data-periodo="semanal">SEMANA</button>
+            </div>
+        </div>
+
+        <button class="btn-export" onclick="exportarExcel()">
+            📊 EXPORTAR EXCEL
+        </button>
+
+        <button class="btn-limpar" onclick="limparFiltros()">
+            🔄 LIMPAR FILTROS
+        </button>
+
+        <button class="btn-logout" onclick="logout()">
+            🚪 SAIR DO SISTEMA
+        </button>
+    </div>
+
+    <!-- MAIN CONTENT -->
+    <div class="main">
+        <!-- HEADER -->
+        <div class="header">
+            <div>
+                <h2>PAINEL ADMINISTRATIVO - TEMPO REAL</h2>
+                <div class="filtros-ativos" id="filtrosAtivos"></div>
+            </div>
+            <div class="header-info">
+                <span>🔄 ATUALIZAÇÃO AUTOMÁTICA</span>
+                <span id="ultimaAtualizacao">--:--:--</span>
+            </div>
+        </div>
+
+        <!-- ESTATÍSTICAS -->
+        <div class="stats-grid" id="statsGrid"></div>
+
+        <!-- TABELA BOLSÃO -->
+        <div class="secao">
+            <div class="secao-titulo">
+                <div class="secao-icone">🚗</div>
+                VEÍCULOS BOLSÃO
+            </div>
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>VEÍCULO</th>
+                            <th>PLACA</th>
+                            <th>DESCRIÇÃO</th>
+                            <th>MECÂNICO</th>
+                            <th>DATA</th>
+                            <th>STATUS</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tabelaBolsao"></tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- TABELA ATM -->
+        <div class="secao">
+            <div class="secao-titulo">
+                <div class="secao-icone">🔧</div>
+                VEÍCULOS ATM
+            </div>
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>VEÍCULO</th>
+                            <th>PLACA</th>
+                            <th>DESCRIÇÃO</th>
+                            <th>MECÂNICO</th>
+                            <th>DATA</th>
+                            <th>STATUS</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tabelaATM"></tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- RANKING MECÂNICOS -->
+        <div class="secao">
+            <div class="secao-titulo">
+                <div class="secao-icone">🏆</div>
+                RANKING DE PRODUTIVIDADE
+            </div>
+            <div class="ranking-list" id="rankingList"></div>
+        </div>
+
+        <!-- Espaço para a barra de log -->
+        <div style="height: 60px;"></div>
+    </div>
+</div>
+
+<!-- MODAL -->
+<div class="modal-overlay" id="modalOverlay" onclick="fecharModal()">
+    <div class="modal" onclick="event.stopPropagation()">
+        <h3 id="modalTitle">DETALHES DO VEÍCULO</h3>
+        <div id="modalBody"></div>
+        <button onclick="fecharModal()">FECHAR</button>
+    </div>
+</div>
+
+<!-- LOG DIÁRIO -->
+<div class="log-diario">
+    <div class="log-info">
+        📅 <span id="dataAtual"></span>
+    </div>
+    <div class="log-stats" id="logStats"></div>
+</div>
+
+<script>
+/* ========== PROTEÇÃO E AUTENTICAÇÃO ========== */
+const userId = localStorage.getItem("userId");
+const tipo = localStorage.getItem("tipo");
+
+if (!userId || tipo !== "admin") {
+    window.location.href = "login.html";
+}
+
+/* ========== FIREBASE CONFIG ========== */
+const firebaseConfig = {
+    apiKey: "SUA_API_KEY",
+    authDomain: "lehub-lecar.firebaseapp.com",
+    projectId: "lehub-lecar",
+    storageBucket: "lehub-lecar.firebasestorage.app",
+    messagingSenderId: "338216307290",
+    appId: "1:338216307290:web:bb31d3710098866094e663"
+};
+
+firebase.initializeApp(firebaseConfig);
+const db = firebase.firestore();
+
+/* ========== VARIÁVEIS GLOBAIS ========== */
+let todosVeiculos = [];
+let veiculosFiltrados = [];
+let listaMecanicos = [];
+
+const filtros = {
+    mecanico: '',
+    data: '',
+    origem: '',
+    periodo: ''
+};
+
+/* ========== INICIALIZAÇÃO ========== */
+window.addEventListener("load", function() {
+    const userInfo = document.getElementById("userInfo");
+    if (userInfo) {
+        userInfo.textContent = "👤 " + (localStorage.getItem("userId") || "USUÁRIO").toUpperCase();
+    }
+    
+    atualizarDataAtual();
+    setInterval(atualizarUltimaAtualizacao, 1000);
+});
+
+function atualizarDataAtual() {
+    const dataEl = document.getElementById("dataAtual");
+    const agora = new Date();
+    const opcoes = { 
+        weekday: 'long', 
+        year: 'numeric', 
+        month: 'long', 
+        day: 'numeric' 
+    };
+    dataEl.textContent = agora.toLocaleDateString('pt-BR', opcoes).toUpperCase();
+}
+
+function atualizarUltimaAtualizacao() {
+    const el = document.getElementById("ultimaAtualizacao");
+    const agora = new Date();
+    el.textContent = agora.toLocaleTimeString('pt-BR');
+}
+
+/* ========== FIREBASE TEMPO REAL ========== */
+db.collection("veiculos").onSnapshot((snapshot) => {
+    todosVeiculos = [];
+    listaMecanicos = new Set();
+
+    snapshot.forEach((doc) => {
+        const v = doc.data();
+
+        // 🔥 AQUI ENTRA SUA CORREÇÃO
+        v.data = v.ultima_modificacao || v.data || "";
+
+        v.id = doc.id;
+        todosVeiculos.push(v);
+        
+        if (v.mecanico_responsavel) {
+            listaMecanicos.add(v.mecanico_responsavel);
+        }
+    });
+
+    atualizarFiltroMecanicos();
+    aplicarFiltros();
+    atualizarLogDiario();
+});
+
+/* ========== FILTROS ========== */
+function atualizarFiltroMecanicos() {
+    const select = document.getElementById("filtroMecanico");
+    const valorAtual = select.value;
+    
+    select.innerHTML = '<option value="">TODOS OS MECÂNICOS</option>';
+    
+    Array.from(listaMecanicos).sort().forEach(mec => {
+        const option = document.createElement('option');
+        option.value = mec;
+        option.textContent = mec.toUpperCase();
+        select.appendChild(option);
+    });
+    
+    select.value = valorAtual;
+}
+
+document.getElementById("filtroMecanico").addEventListener("change", function() {
+    filtros.mecanico = this.value;
+    aplicarFiltros();
+});
+
+document.getElementById("filtroData").addEventListener("change", function() {
+    filtros.data = this.value;
+    aplicarFiltros();
+});
+
+document.querySelectorAll('[data-origem]').forEach(btn => {
+    btn.addEventListener('click', function() {
+        document.querySelectorAll('[data-origem]').forEach(b => b.classList.remove('active'));
+        this.classList.add('active');
+        filtros.origem = this.dataset.origem;
+        aplicarFiltros();
+    });
+});
+
+document.querySelectorAll('[data-periodo]').forEach(btn => {
+    btn.addEventListener('click', function() {
+        const wasActive = this.classList.contains('active');
+        document.querySelectorAll('[data-periodo]').forEach(b => b.classList.remove('active'));
+        
+        if (!wasActive) {
+            this.classList.add('active');
+            filtros.periodo = this.dataset.periodo;
+        } else {
+            filtros.periodo = '';
+        }
+        aplicarFiltros();
+    });
+});
+
+function aplicarFiltros() {
+    veiculosFiltrados = [...todosVeiculos];
+
+    // Filtro por mecânico
+    if (filtros.mecanico) {
+        veiculosFiltrados = veiculosFiltrados.filter(v => 
+            v.mecanico_responsavel === filtros.mecanico
+        );
+    }
+
+    // Filtro por data específica
+    if (filtros.data) {
+        veiculosFiltrados = veiculosFiltrados.filter(v => {
+            if (!v.data) return false;
+            const dataVeiculo = v.data.split('/').reverse().join('-');
+            const dataFiltro = filtros.data;
+            return dataVeiculo === dataFiltro;
+        });
+    }
+
+    // Filtro por origem
+    if (filtros.origem) {
+        veiculosFiltrados = veiculosFiltrados.filter(v => 
+            v.origem && v.origem.toUpperCase().includes(filtros.origem)
+        );
+    }
+
+    // Filtro por período
+    if (filtros.periodo) {
+        const hoje = new Date();
+        hoje.setHours(0, 0, 0, 0);
+
+        veiculosFiltrados = veiculosFiltrados.filter(v => {
+            if (!v.data) return false;
+            
+            const partes = v.data.split('/');
+            const dataVeiculo = new Date(partes[2], partes[1] - 1, partes[0]);
+            dataVeiculo.setHours(0, 0, 0, 0);
+
+            if (filtros.periodo === 'diario') {
+                return dataVeiculo.getTime() === hoje.getTime();
+            } else if (filtros.periodo === 'semanal') {
+                const seteDiasAtras = new Date(hoje);
+                seteDiasAtras.setDate(seteDiasAtras.getDate() - 7);
+                return dataVeiculo >= seteDiasAtras && dataVeiculo <= hoje;
+            }
+            return true;
+        });
+    }
+
+    renderizarTudo();
+    atualizarFiltrosAtivos();
+}
+
+function limparFiltros() {
+    filtros.mecanico = '';
+    filtros.data = '';
+    filtros.origem = '';
+    filtros.periodo = '';
+
+    document.getElementById('filtroMecanico').value = '';
+    document.getElementById('filtroData').value = '';
+    
+    document.querySelectorAll('[data-origem]').forEach(b => b.classList.remove('active'));
+    document.querySelector('[data-origem=""]').classList.add('active');
+    
+    document.querySelectorAll('[data-periodo]').forEach(b => b.classList.remove('active'));
+
+    aplicarFiltros();
+}
+
+function atualizarFiltrosAtivos() {
+    const container = document.getElementById('filtrosAtivos');
+    const tags = [];
+
+    if (filtros.mecanico) {
+        tags.push(`<span class="filtro-tag">MECÂNICO: ${filtros.mecanico.toUpperCase()} <button onclick="removerFiltro('mecanico')">&times;</button></span>`);
+    }
+    if (filtros.data) {
+        const dataObj = new Date(filtros.data + 'T00:00:00');
+        tags.push(`<span class="filtro-tag">DATA: ${dataObj.toLocaleDateString('pt-BR')} <button onclick="removerFiltro('data')">&times;</button></span>`);
+    }
+    if (filtros.origem) {
+        tags.push(`<span class="filtro-tag">ORIGEM: ${filtros.origem} <button onclick="removerFiltro('origem')">&times;</button></span>`);
+    }
+    if (filtros.periodo) {
+        const label = filtros.periodo === 'diario' ? 'HOJE' : 'ÚLTIMA SEMANA';
+        tags.push(`<span class="filtro-tag">PERÍODO: ${label} <button onclick="removerFiltro('periodo')">&times;</button></span>`);
+    }
+
+    container.innerHTML = tags.join('');
+}
+
+function removerFiltro(tipo) {
+    if (tipo === 'mecanico') {
+        filtros.mecanico = '';
+        document.getElementById('filtroMecanico').value = '';
+    } else if (tipo === 'data') {
+        filtros.data = '';
+        document.getElementById('filtroData').value = '';
+    } else if (tipo === 'origem') {
+        filtros.origem = '';
+        document.querySelectorAll('[data-origem]').forEach(b => b.classList.remove('active'));
+        document.querySelector('[data-origem=""]').classList.add('active');
+    } else if (tipo === 'periodo') {
+        filtros.periodo = '';
+        document.querySelectorAll('[data-periodo]').forEach(b => b.classList.remove('active'));
+    }
+    aplicarFiltros();
+}
+
+/* ========== RENDERIZAÇÃO ========== */
+function renderizarTudo() {
+    renderizarStats();
+    renderizarTabelas();
+    renderizarRanking();
+}
+
+function renderizarStats() {
+    const total = veiculosFiltrados.length;
+    const bolsao = veiculosFiltrados.filter(v => 
+        v.origem && v.origem.toUpperCase().includes("BOLSÃO")
+    ).length;
+    const atm = veiculosFiltrados.filter(v => 
+        v.origem && v.origem.toUpperCase().includes("ATM")
+    ).length;
+    const finalizados = veiculosFiltrados.filter(v => 
+        v.status === "VEÍCULO FINALIZADO"
+    ).length;
+
+    document.getElementById('statsGrid').innerHTML = `
+        <div class="stat-card">
+            <div class="stat-label">TOTAL DE VEÍCULOS</div>
+            <div class="stat-value">${total}</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-label">BOLSÃO</div>
+            <div class="stat-value">${bolsao}</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-label">ATM</div>
+            <div class="stat-value">${atm}</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-label">FINALIZADOS</div>
+            <div class="stat-value">${finalizados}</div>
+        </div>
+    `;
+}
+
+function renderizarTabelas() {
+    const veiculosBolsao = veiculosFiltrados.filter(v => 
+        v.origem && v.origem.toUpperCase().includes("BOLSÃO")
+    );
+    const veiculosATM = veiculosFiltrados.filter(v => 
+        v.origem && v.origem.toUpperCase().includes("ATM")
+    );
+
+    renderizarTabela(veiculosBolsao, document.getElementById('tabelaBolsao'));
+    renderizarTabela(veiculosATM, document.getElementById('tabelaATM'));
+}
+
+function renderizarTabela(veiculos, elemento) {
+    if (veiculos.length === 0) {
+        elemento.innerHTML = "<tr><td colspan='6' class='empty-state'>NENHUM VEÍCULO ENCONTRADO</td></tr>";
+        return;
+    }
+
+    elemento.innerHTML = veiculos.map(v => {
+        let cor = "#64748b";
+        
+        if (v.status === "AGUARDANDO ORÇAMENTO") cor = "#ef4444";
+        if (v.status === "AGUARDANDO PEÇAS") cor = "#f59e0b";
+        if (v.status === "FORNECEDOR") cor = "#3b82f6";
+        if (v.status === "VEÍCULO FINALIZADO") cor = "#10b981";
+
+        return `
+            <tr onclick='abrirModal(${JSON.stringify(v).replace(/'/g, "&apos;")})'>
+                <td><strong>${(v.veiculo || "-").toUpperCase()}</strong></td>
+                <td>${(v.placa || "-").toUpperCase()}</td>
+                <td>${(v.descricao || "-").toUpperCase()}</td>
+                <td>${(v.mecanico_responsavel || "-").toUpperCase()}</td>
+                <td>${v.data || "-"}</td>
+                <td><span class="badge" style="background:${cor}">${(v.status || "-").toUpperCase()}</span></td>
+            </tr>
+        `;
+    }).join('');
+}
+
+function renderizarRanking() {
+    const mecanicoCount = {};
+
+    veiculosFiltrados.forEach(v => {
+        if (v.mecanico_responsavel) {
+            if (!mecanicoCount[v.mecanico_responsavel]) {
+                mecanicoCount[v.mecanico_responsavel] = {
+                    total: 0,
+                    finalizados: 0,
+                    emAndamento: 0,
+                    aguardando: 0
+                };
+            }
+            mecanicoCount[v.mecanico_responsavel].total++;
+            
+            if (v.status === "VEÍCULO FINALIZADO") {
+                mecanicoCount[v.mecanico_responsavel].finalizados++;
+            } else if (v.status === "AGUARDANDO ORÇAMENTO") {
+                mecanicoCount[v.mecanico_responsavel].aguardando++;
+            } else {
+                mecanicoCount[v.mecanico_responsavel].emAndamento++;
+            }
+        }
+    });
+
+    const ranking = Object.entries(mecanicoCount)
+        .sort((a, b) => b[1].total - a[1].total);
+
+    const rankingEl = document.getElementById('rankingList');
+
+    if (ranking.length === 0) {
+        rankingEl.innerHTML = "<div class='empty-state'>NENHUM MECÂNICO REGISTRADO</div>";
+        return;
+    }
+
+    rankingEl.innerHTML = ranking.map(([nome, dados], index) => {
+        let posClass = 'normal';
+        if (index === 0) posClass = 'gold';
+        else if (index === 1) posClass = 'silver';
+        else if (index === 2) posClass = 'bronze';
+
+        return `
+            <div class="ranking-item">
+                <div class="ranking-position ${posClass}">${index + 1}º</div>
+                <div class="ranking-info">
+                    <h4>${nome.toUpperCase()}</h4>
+                    <p>${dados.finalizados} FINALIZADOS • ${dados.emAndamento} EM ANDAMENTO • ${dados.aguardando} AGUARDANDO</p>
+                </div>
+                <div class="ranking-stats">
+                    <div class="total">${dados.total}</div>
+                    <div class="label">VEÍCULOS</div>
+                </div>
+            </div>
+        `;
+    }).join('');
+}
+
+/* ========== LOG DIÁRIO ========== */
+function atualizarLogDiario() {
+    const hoje = new Date();
+    hoje.setHours(0, 0, 0, 0);
+
+    const veiculosHoje = todosVeiculos.filter(v => {
+        if (!v.data) return false;
+        const partes = v.data.split('/');
+        const dataVeiculo = new Date(partes[2], partes[1] - 1, partes[0]);
+        dataVeiculo.setHours(0, 0, 0, 0);
+        return dataVeiculo.getTime() === hoje.getTime();
+    });
+
+    const finalizadosHoje = veiculosHoje.filter(v => 
+        v.status === "VEÍCULO FINALIZADO"
+    ).length;
+
+    const logStats = document.getElementById('logStats');
+    logStats.innerHTML = `
+        <span>📋 TOTAL DO DIA: ${veiculosHoje.length}</span>
+        <span>✅ FINALIZADOS HOJE: ${finalizadosHoje}</span>
+        <span>🔧 EM ANDAMENTO: ${veiculosHoje.length - finalizadosHoje}</span>
+    `;
+}
+
+/* ========== MODAL ========== */
+function abrirModal(veiculo) {
+    document.getElementById('modalTitle').textContent = 
+        `${(veiculo.placa || '').toUpperCase()} - ${(veiculo.veiculo || '').toUpperCase()}`;
+    
+    document.getElementById('modalBody').innerHTML = `
+        <div class="modal-info-item">
+            <label>VEÍCULO</label>
+            <span>${(veiculo.veiculo || '-').toUpperCase()}</span>
+        </div>
+        <div class="modal-info-item">
+            <label>PLACA</label>
+            <span>${(veiculo.placa || '-').toUpperCase()}</span>
+        </div>
+        <div class="modal-info-item">
+            <label>MECÂNICO</label>
+            <span>${(veiculo.mecanico_responsavel || '-').toUpperCase()}</span>
+        </div>
+        <div class="modal-info-item">
+            <label>STATUS</label>
+            <span class="badge" style="background:${getCorStatus(veiculo.status)}">${(veiculo.status || '-').toUpperCase()}</span>
+        </div>
+        <div class="modal-info-item">
+            <label>ORIGEM</label>
+            <span>${(veiculo.origem || '-').toUpperCase()}</span>
+        </div>
+        <div class="modal-info-item">
+            <label>DATA</label>
+            <span>${veiculo.data || '-'}</span>
+        </div>
+        <div class="modal-info-item full">
+            <label>DESCRIÇÃO</label>
+            <span>${(veiculo.descricao || '-').toUpperCase()}</span>
+        </div>
+    `;
+    
+    document.getElementById('modalOverlay').classList.add('active');
+}
+
+function fecharModal() {
+    document.getElementById('modalOverlay').classList.remove('active');
+}
+
+function getCorStatus(status) {
+    if (status === "AGUARDANDO ORÇAMENTO") return "#ef4444";
+    if (status === "AGUARDANDO PEÇAS") return "#f59e0b";
+    if (status === "FORNECEDOR") return "#3b82f6";
+    if (status === "VEÍCULO FINALIZADO") return "#10b981";
+    return "#64748b";
+}
+
+// Fechar modal com ESC
+document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') {
+        fecharModal();
+    }
+});
+
+/* ========== EXPORTAR EXCEL ========== */
+function exportarExcel() {
+    const wb = XLSX.utils.book_new();
+
+    // ABA 1: VEÍCULOS
+    const veiculosData = veiculosFiltrados.map(v => ({
+        'VEÍCULO': (v.veiculo || '').toUpperCase(),
+        'PLACA': (v.placa || '').toUpperCase(),
+        'DESCRIÇÃO': (v.descricao || '').toUpperCase(),
+        'MECÂNICO': (v.mecanico_responsavel || '').toUpperCase(),
+        'STATUS': (v.status || '').toUpperCase(),
+        'ORIGEM': (v.origem || '').toUpperCase(),
+        'DATA': v.data || ''
+    }));
+    const wsVeiculos = XLSX.utils.json_to_sheet(veiculosData);
+    XLSX.utils.book_append_sheet(wb, wsVeiculos, 'VEICULOS');
+
+    // ABA 2: RANKING MECÂNICOS
+    const mecanicoCount = {};
+    veiculosFiltrados.forEach(v => {
+        if (v.mecanico_responsavel) {
+            if (!mecanicoCount[v.mecanico_responsavel]) {
+                mecanicoCount[v.mecanico_responsavel] = {
+                    total: 0,
+                    finalizados: 0,
+                    emAndamento: 0,
+                    aguardando: 0
+                };
+            }
+            mecanicoCount[v.mecanico_responsavel].total++;
+            
+            if (v.status === "VEÍCULO FINALIZADO") {
+                mecanicoCount[v.mecanico_responsavel].finalizados++;
+            } else if (v.status === "AGUARDANDO ORÇAMENTO") {
+                mecanicoCount[v.mecanico_responsavel].aguardando++;
+            } else {
+                mecanicoCount[v.mecanico_responsavel].emAndamento++;
+            }
+        }
+    });
+
+    const rankingData = Object.entries(mecanicoCount)
+        .sort((a, b) => b[1].total - a[1].total)
+        .map(([nome, dados], index) => ({
+            'POSIÇÃO': index + 1,
+            'MECÂNICO': nome.toUpperCase(),
+            'TOTAL': dados.total,
+            'FINALIZADOS': dados.finalizados,
+            'EM ANDAMENTO': dados.emAndamento,
+            'AGUARDANDO': dados.aguardando
+        }));
+    const wsRanking = XLSX.utils.json_to_sheet(rankingData);
+    XLSX.utils.book_append_sheet(wb, wsRanking, 'RANKING MECANICOS');
+
+    // ABA 3: RESUMO POR STATUS
+    const statusList = ['AGUARDANDO ORÇAMENTO', 'AGUARDANDO PEÇAS', 'FORNECEDOR', 'VEÍCULO FINALIZADO'];
+    const statusData = statusList.map(s => ({
+        'STATUS': s,
+        'QUANTIDADE': veiculosFiltrados.filter(v => v.status === s).length,
+        'PERCENTUAL': ((veiculosFiltrados.filter(v => v.status === s).length / veiculosFiltrados.length) * 100 || 0).toFixed(1) + '%'
+    }));
+    const wsStatus = XLSX.utils.json_to_sheet(statusData);
+    XLSX.utils.book_append_sheet(wb, wsStatus, 'RESUMO STATUS');
+
+    // ABA 4: RESUMO POR ORIGEM
+    const origemData = [
+        {
+            'ORIGEM': 'BOLSÃO',
+            'QUANTIDADE': veiculosFiltrados.filter(v => v.origem && v.origem.toUpperCase().includes('BOLSÃO')).length,
+            'PERCENTUAL': ((veiculosFiltrados.filter(v => v.origem && v.origem.toUpperCase().includes('BOLSÃO')).length / veiculosFiltrados.length) * 100 || 0).toFixed(1) + '%'
+        },
+        {
+            'ORIGEM': 'ATM',
+            'QUANTIDADE': veiculosFiltrados.filter(v => v.origem && v.origem.toUpperCase().includes('ATM')).length,
+            'PERCENTUAL': ((veiculosFiltrados.filter(v => v.origem && v.origem.toUpperCase().includes('ATM')).length / veiculosFiltrados.length) * 100 || 0).toFixed(1) + '%'
+        }
+    ];
+    const wsOrigem = XLSX.utils.json_to_sheet(origemData);
+    XLSX.utils.book_append_sheet(wb, wsOrigem, 'RESUMO ORIGEM');
+
+    // ABA 5: INFORMAÇÕES DO RELATÓRIO
+    const filtrosAplicados = [];
+    if (filtros.mecanico) filtrosAplicados.push('MECÂNICO: ' + filtros.mecanico.toUpperCase());
+    if (filtros.data) {
+        const dataObj = new Date(filtros.data + 'T00:00:00');
+        filtrosAplicados.push('DATA: ' + dataObj.toLocaleDateString('pt-BR'));
+    }
+    if (filtros.origem) filtrosAplicados.push('ORIGEM: ' + filtros.origem);
+    if (filtros.periodo) {
+        const label = filtros.periodo === 'diario' ? 'HOJE' : 'ÚLTIMA SEMANA';
+        filtrosAplicados.push('PERÍODO: ' + label);
+    }
+
+    const infoData = [
+        { 'CAMPO': 'DATA DE GERAÇÃO', 'VALOR': new Date().toLocaleString('pt-BR') },
+        { 'CAMPO': 'TOTAL DE REGISTROS', 'VALOR': veiculosFiltrados.length },
+        { 'CAMPO': 'FILTROS APLICADOS', 'VALOR': filtrosAplicados.length > 0 ? filtrosAplicados.join(', ') : 'NENHUM' }
+    ];
+    const wsInfo = XLSX.utils.json_to_sheet(infoData);
+    XLSX.utils.book_append_sheet(wb, wsInfo, 'INFORMACOES');
+
+    // DOWNLOAD
+    const dataHora = new Date().toISOString().slice(0, 10);
+    XLSX.writeFile(wb, `RELATORIO_LECAR_${dataHora}.xlsx`);
+}
+
+/* ========== LOGOUT ========== */
+function logout() {
+    if (confirm('TEM CERTEZA QUE DESEJA SAIR DO SISTEMA?')) {
+        localStorage.clear();
+        window.location.href = "login.html";
+    }
+}
+</script>
+
+</body>
+</html>

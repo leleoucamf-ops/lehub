@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Login - LECAR</title>
+
+<style>
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+body {
+    height: 100vh;
+    background: linear-gradient(135deg, #0d47a1, #2196f3);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+/* LOGO GRANDE */
+.logo {
+    width: 380px;
+    max-width: 95%;
+    margin-bottom: 35px;
+    filter: drop-shadow(0 10px 30px rgba(0,0,0,0.6));
+    animation: aparecer 0.8s ease;
+}
+
+@keyframes aparecer {
+    from {
+        opacity: 0;
+        transform: translateY(-20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* CARD */
+.login-container {
+    background: rgba(255, 255, 255, 0.08);
+    backdrop-filter: blur(12px);
+    padding: 35px;
+    border-radius: 20px;
+    width: 320px;
+    text-align: center;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+}
+
+/* TITULO */
+.login-container h2 {
+    color: #fff;
+    margin-bottom: 20px;
+    font-weight: 500;
+}
+
+/* INPUTS */
+.input-group {
+    margin-bottom: 15px;
+}
+
+.input-group input {
+    width: 100%;
+    padding: 12px;
+    border-radius: 10px;
+    border: none;
+    outline: none;
+    background: rgba(255,255,255,0.15);
+    color: #fff;
+    font-size: 14px;
+}
+
+.input-group input::placeholder {
+    color: #ddd;
+}
+
+/* BOTÃO */
+button {
+    width: 100%;
+    padding: 12px;
+    border: none;
+    border-radius: 10px;
+    background: linear-gradient(90deg, #00c6ff, #0072ff);
+    color: #fff;
+    font-size: 16px;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+button:hover {
+    transform: scale(1.05);
+}
+
+/* ERRO */
+.error {
+    color: #ff6b6b;
+    font-size: 13px;
+    margin-top: 10px;
+    display: none;
+}
+
+/* POWERED BY */
+.powered {
+    margin-top: 20px;
+    font-size: 11px;
+    color: rgba(255,255,255,0.6);
+    text-align: center;
+    letter-spacing: 0.5px;
+    user-select: none;
+}
+</style>
+</head>
+
+<body>
+
+<!-- LOGO FORA DO CARD -->
+<img src="https://i.postimg.cc/50N706MF/logo.png" alt="LECAR" class="logo">
+
+<div class="login-container">
+    <h2>Entrar</h2>
+
+    <form onsubmit="login(event)">
+        <div class="input-group">
+            <input type="text" id="usuario" placeholder="Usuário" required>
+        </div>
+
+        <div class="input-group">
+            <input type="password" id="senha" placeholder="Senha" required>
+        </div>
+
+        <button type="submit">Acessar</button>
+
+        <div class="error" id="erro">Usuário ou senha inválidos</div>
+    </form>
+</div>
+
+<div class="powered">
+    powered by leleoucamf - 2026 - versão 1.1
+</div>
+
+<script>
+function login(event) {
+    event.preventDefault();
+
+    const usuario = document.getElementById("usuario").value.toUpperCase();
+    const senha = document.getElementById("senha").value;
+    const erro = document.getElementById("erro");
+
+    const usuariosValidos = ["VIKA", "LEANDRO"];
+    const senhaCorreta = "OFICINA2026";
+
+    if (usuariosValidos.includes(usuario) && senha === senhaCorreta) {
+
+        localStorage.setItem("userId", usuario);
+        localStorage.setItem("tipo", "admin");
+
+        window.location.href = "painel_admin.html";
+    } else {
+        erro.style.display = "block";
+    }
+}
+document.addEventListener("DOMContentLoaded", function () {
+    const inputs = document.querySelectorAll("input");
+
+    inputs.forEach(input => {
+        input.addEventListener("input", function () {
+            this.value = this.value.toUpperCase();
+        });
+    });
+});
+</script>
+
+</body>
+</html>
