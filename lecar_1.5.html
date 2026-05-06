@@ -510,7 +510,7 @@ const db = firebase.firestore();
         let logs = JSON.parse(localStorage.getItem("logs_acesso")) || [];
         logs.push({
           usuario: usuario,
-         data: firebase.firestore.FieldValue.serverTimestamp()
+         data: new Date().toLocaleDateString('pt-BR')
         });
         localStorage.setItem("logs_acesso", JSON.stringify(logs));
       }
