@@ -2,7 +2,7 @@
 <html lang="pt-BR">
   <head>
     <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>LECAR - GESTÃO DE VEÍCULOS</title>
@@ -127,6 +127,9 @@
       /* ========== SISTEMA PRINCIPAL ========== */
       .sistema-principal {
         display: none;
+        flex-direction: column;
+        min-height: 100vh;
+        width: 100%;
       }
 
       /* TOPO COM GRADIENTE ANIMADO */
@@ -155,94 +158,6 @@
         100% { background-position: 0% 50%; }
       }
 
-      .bottombar {
-        position: fixed;
-        bottom: 0;
-        width: 100%;
-        display: flex;
-        align-items: center;
-        padding: 10px 20px;
-        gap: 10px;
-        background: linear-gradient(90deg, #1e3a8a, #2563eb, #3b82f6);
-        color: white;
-        box-shadow: 0 -4px 10px rgba(0,0,0,0.2);
-      }
-      .bottombar input {
-        padding: 6px 10px;
-        border-radius: 10px;
-        border: none;
-        outline: none;
-        flex: 0 0 200px;
-      }
-      .bottombar button {
-        padding: 6px 12px;
-        border-radius: 10px;
-        border: none;
-        background: #1e3a8a;
-        color: white;
-        cursor: pointer;
-        flex-shrink: 0;
-      }
-      .lembretes-bar {
-        display: flex;
-        gap: 6px;
-        overflow-x: auto;
-        flex: 1 1 auto;
-        padding-right: 15px;
-      }
-      .lembrete-item {
-        max-width: 130px;
-        min-width: 90px;
-        overflow: hidden;
-        text-overflow: ellipsis;
-        white-space: nowrap;
-        background: rgba(255,255,255,0.15);
-        backdrop-filter: blur(6px);
-        padding: 6px 12px;
-        border-radius: 10px;
-        cursor: pointer;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 0.85rem;
-        transition: all 0.25s ease;
-      }
-      .lembrete-item:hover {
-        background: rgba(255,255,255,0.35);
-        transform: translateY(-2px) scale(1.03);
-      }
-      .lembrete-item.ativo {
-        background: rgba(255,255,255,0.5);
-        box-shadow: 0 0 10px rgba(255,255,255,0.4);
-      }
-      .popup {
-        position: fixed;
-        background: white;
-        color: #1e293b;
-        padding: 16px;
-        border-radius: 12px;
-        box-shadow: 0 10px 30px rgba(0,0,0,0.25);
-        min-width: 220px;
-        max-width: 300px;
-        animation: subir 0.25s ease;
-        word-wrap: break-word;
-        white-space: normal;
-        z-index: 1000;
-      }
-      @keyframes subir {
-        from { transform: translateY(20px); opacity: 0; }
-        to { transform: translateY(0); opacity: 1; }
-      }
-      .popup strong { display: block; margin-bottom: 8px; }
-      .popup button {
-        margin-top: 12px;
-        background: #ef4444;
-        border: none;
-        color: white;
-        padding: 6px 10px;
-        border-radius: 8px;
-        cursor: pointer;
-      }
       /* Logotipo PNG */
       .logo-img {
         height: 45px;
@@ -252,8 +167,22 @@
         filter: drop-shadow(0 4px 10px rgba(0,0,0,0.8));
       }
 
-      /* Input de busca */
-      .topbar input { padding:8px 14px; border-radius:10px; border:none; width:250px; text-transform:uppercase; font-weight:bold; outline:none; }
+      /* Input de busca no topbar */
+      .topbar-search {
+        padding: 8px 14px;
+        border-radius: 10px;
+        border: none;
+        width: 250px;
+        text-transform: uppercase;
+        font-weight: bold;
+        outline: none;
+        background: rgba(255,255,255,0.9);
+        color: #1e293b;
+      }
+
+      .topbar-search::placeholder {
+        color: #64748b;
+      }
 
       /* Botão Sair */
       .btn-sair {
@@ -275,8 +204,26 @@
         transform: scale(1.05);
       }
 
-      .main { flex:1; padding:25px; padding-top:100px; padding-bottom:80px; display:flex; justify-content:center; }
-      .card { background:white; padding:30px; border-radius:16px; box-shadow:0 8px 20px rgba(0,0,0,0.1); width:100%; max-width:1000px; }
+      .main { 
+        flex:1; 
+        padding:25px; 
+        padding-top:100px; 
+        padding-bottom:40px; 
+        display:flex; 
+        justify-content:center;
+        width: 100%;
+      }
+
+      .card { 
+        background:white; 
+        padding:30px; 
+        border-radius:16px; 
+        box-shadow:0 8px 20px rgba(0,0,0,0.1); 
+        width:100%; 
+        max-width:1000px;
+        margin: 0 auto;
+      }
+
       .card h2 { margin-bottom:20px; font-size:1.6rem; }
 
       input, select { padding:10px; margin:5px 0; border-radius:8px; border:1px solid #cbd5e1; text-transform:uppercase; width:100%; outline:none; transition:0.2s; }
@@ -383,7 +330,7 @@
       </div>
 
       <div class="powered">
-        powered by lehub.top - 2026 - versão 2.0
+        powered by lehub.top - 2026 - versão 2.1
       </div>
     </div>
 
@@ -396,18 +343,9 @@
     <!-- ========== SISTEMA PRINCIPAL ========== -->
     <div id="sistemaPrincipal" class="sistema-principal">
 
-<div class="bottombar">
-  <input type="text" id="buscaSidebar" placeholder="🔍 BUSCAR" onkeyup="filtrarBusca()" />
-
-  <div id="barraLembretes" class="lembretes-bar"></div>
-
-  <button id="btnRelatorio" onclick="navegar('relatorio_diario'); abrirRelatorio()" style="margin-left:auto;">
-    📊 Relatório Diário
-  </button>
-</div>
-
     <div class="topbar">
       <img src="https://i.postimg.cc/50N706MF/logo.png" alt="LECAR" class="logo-img" />
+      <input type="text" id="buscaSidebar" class="topbar-search" placeholder="🔍 BUSCAR" onkeyup="filtrarBusca()" />
       <div style="display: flex; align-items: center; gap: 15px;">
         <span id="nomeUsuario" style="font-weight: bold; font-size: 0.95rem;"></span>
         <button class="btn-sair" onclick="logout()">Sair</button>
@@ -420,7 +358,7 @@
 
         <input type="hidden" id="index" />
         <input type="text" id="veiculo" placeholder="VEÍCULO" />
-        <input type="text" id="placa" placeholder="PLACA" />
+        <input type="text" id="placa" placeholder="PLACA" oninput="this.value = this.value.replace(/[^a-zA-Z0-9]/g, '')" />
         <input type="text" id="descricao" placeholder="DESCRIÇÃO" />
 
         <select id="status">
@@ -444,7 +382,6 @@
           <div class="tabs">
             <button class="tab active" onclick="navegar('aba_servicos'); trocarAba('servicos')">Lista de Serviços</button>
             <button class="tab" onclick="navegar('aba_finalizados'); trocarAba('finalizados')">Veículos Finalizados</button>
-            <button class="tab" onclick="navegar('aba_admin'); trocarAba('admin')">Painel ADM</button>
           </div>
 
           <!-- Aba Lista de Serviços -->
@@ -487,23 +424,25 @@
               </table>
             </div>
           </div>
-
-          <!-- Aba Painel ADM -->
-          <div id="abaAdmin" class="tab-content">
-            <div id="painelAdminConteudo"></div>
-          </div>
         </div>
       </div>
     </div>
 
-    <!-- Modal Detalhes Finalizado -->
+    </div>
+
+    <!-- ========== MODAIS (TODOS NO MESMO NÍVEL, FORA DO SISTEMA PRINCIPAL) ========== -->
+
+    <!-- Modal Finalizado -->
     <div class="modal-bg" id="modalFinalizado">
       <div class="modal">
         <h3>Detalhes do Veículo</h3>
         <p id="infoFinalizado"></p>
         <ul id="listaPecasFinalizado"></ul>
-        <br />
-        <button onclick="navegar('fechar_modal_finalizado'); fecharModalFinalizado()">Fechar</button>
+        <br>
+        <button onclick="fecharModalFinalizado()">Fechar</button>
+        <button onclick="reabrirParaServico()" style="background:#f59e0b; margin-top:10px;">
+          ↩ VOLTAR PARA LISTA DE SERVIÇOS
+        </button>
       </div>
     </div>
 
@@ -520,6 +459,7 @@
       </div>
     </div>
 
+    <!-- Modal Busca -->
     <div class="modal-bg" id="modalBusca">
       <div class="modal">
         <h3>Resultado da Busca</h3>
@@ -544,8 +484,6 @@
       </div>
     </div>
 
-    </div>
-
     <script>
       /* ========= CONFIG FIREBASE ========= */
 const firebaseConfig = {
@@ -559,8 +497,9 @@ const firebaseConfig = {
 
 firebase.initializeApp(firebaseConfig);
 const db = firebase.firestore();
+
       // ========== SISTEMA DE AUTENTICAÇÃO ==========
-      const usuariosPermitidos = ["LEANDRO", "JUNINHO", "ABRAÃO", "PEDRO", "MAICON", "VIKA"];
+      const usuariosPermitidos = ["LEANDRO", "JUNINHO", "ABRAÃO", "PEDRO", "MAICON", "DOUGLAS"];
       const senhaCorreta = "oficina2026";
       let mostrarTodosFinalizados = false;
 
@@ -573,40 +512,81 @@ const db = firebase.firestore();
         localStorage.setItem("logs_acesso", JSON.stringify(logs));
       }
 
-      function verificarSessao() {
-        const usuarioLogado = localStorage.getItem("sessao_lecar");
-        if (usuarioLogado) {
-          document.getElementById("loginPage").style.display = "none";
-          document.getElementById("sistemaPrincipal").style.display = "flex";
-          document.getElementById("sistemaPrincipal").style.flexDirection = "column";
-          document.getElementById("sistemaPrincipal").style.minHeight = "100vh";
-          document.getElementById("nomeUsuario").textContent = `Olá, ${usuarioLogado}`;
-        }
-      }
-/* ========= SINCRONIZAR COM FIREBASE ========= */
+async function reabrirParaServico() {
+  const v = dados[indiceFinalizadoAtual];
+
+  if (!v || !v.id) return;
+
+  const payload = {
+    status: "AGUARDANDO ORÇAMENTO",
+    ultima_modificacao: new Date().toLocaleString()
+  };
+
+  try {
+    await db.collection("veiculos").doc(v.id).update(payload);
+
+    const indexLocal = dados.findIndex(x => x.id === v.id);
+
+    if (indexLocal !== -1) {
+      dados[indexLocal] = {
+        ...dados[indexLocal],
+        ...payload
+      };
+    }
+
+    atualizarTabela();
+    fecharModalFinalizado();
+
+  } catch (err) {
+    console.error(err);
+    alert("Erro ao reabrir serviço");
+  }
+}
+
+function verificarSessao() {
+  const usuarioLogado = localStorage.getItem("sessao_lecar");
+
+  if (!usuarioLogado) {
+    document.getElementById("loginPage").style.display = "flex";
+    document.getElementById("sistemaPrincipal").style.display = "none";
+    return;
+  }
+
+  document.getElementById("loginPage").style.display = "none";
+  document.getElementById("sistemaPrincipal").style.display = "flex";
+
+  document.getElementById("nomeUsuario").textContent = `Olá, ${usuarioLogado}`;
+
+  sincronizarFirebase();
+
+  trocarAba("servicos");
+}
+
 function sincronizarFirebase() {
+  const usuario = localStorage.getItem("sessao_lecar");
 
-  db.collection("veiculos").onSnapshot((snapshot) => {
+  if (!usuario) return;
 
-    dados = [];
+  let query = db.collection("veiculos");
 
-    snapshot.forEach(doc => {
-      let v = doc.data();
+  // 🔥 sempre filtra pelo usuário logado
+  query = query.where("mecanico_responsavel", "==", usuario);
 
-      // 🔠 GARANTE MAIÚSCULAS
-      Object.keys(v).forEach(k => {
-        if (typeof v[k] === "string") {
-          v[k] = v[k].toUpperCase();
-        }
+  query.onSnapshot(
+    (snapshot) => {
+      const temp = [];
+
+      snapshot.forEach((doc) => {
+        temp.push({ id: doc.id, ...doc.data() });
       });
 
-      dados.push(v);
-    });
-
-    localStorage.setItem("veiculos", JSON.stringify(dados));
-    atualizarTabela();
-
-  });
+      dados = temp;
+      atualizarTabela();
+    },
+    (error) => {
+      console.error("Erro Firebase:", error);
+    }
+  );
 
 }
 
@@ -623,17 +603,16 @@ function sincronizarFirebase() {
           localStorage.setItem("sessao_lecar", usuario);
           registrarAcesso(usuario);
 
-          setTimeout(() => {
-            document.getElementById("loginPage").style.display = "none";
-            document.getElementById("sistemaPrincipal").style.display = "flex";
-            document.getElementById("sistemaPrincipal").style.flexDirection = "column";
-            document.getElementById("sistemaPrincipal").style.minHeight = "100vh";
-            overlay.style.display = 'none';
-            document.getElementById("nomeUsuario").textContent = `Olá, ${usuario}`;
-            
-            renderizar();
-            atualizarTabela();
-          }, 2000);
+setTimeout(() => {
+  document.getElementById("loginPage").style.display = "none";
+  document.getElementById("sistemaPrincipal").style.display = "flex";
+  overlay.style.display = 'none';
+
+  document.getElementById("nomeUsuario").textContent = `Olá, ${usuario}`;
+
+  sincronizarFirebase();
+
+}, 2000);
         } else {
           erro.style.display = "block";
         }
@@ -676,10 +655,11 @@ function sincronizarFirebase() {
       const modalStatus = document.getElementById("modalStatus");
       const statusSelect = document.getElementById("statusSelect");
 
-      let dados = JSON.parse(localStorage.getItem("veiculos")) || [];
+      let dados = [];
       let indicePecasAtual = null;
-      let indiceStatusAtual = null;
+      let idStatusAtual = null;
       let abaAtiva = "servicos";
+      let indiceFinalizadoAtual = null;
 
       // ========== FUNÇÕES DO SISTEMA DE ABAS ==========
       function trocarAba(aba) {
@@ -709,47 +689,78 @@ function sincronizarFirebase() {
         else atm.checked = false;
       }
 
+// 🔥 FUNÇÃO SALVAR CORRIGIDA - SEMPRE SALVA NO FIREBASE E ENVIA WHATSAPP SE FINALIZADO
 async function salvar() {
   let usuarioLogado = localStorage.getItem("sessao_lecar");
 
   let origem = atm.checked ? "ATM" : bolsao.checked ? "BOLSÃO" : "-";
+  let statusAtual = status.value.toUpperCase();
 
-let obj = {
-  veiculo: veiculo.value.toUpperCase(),
-  placa: placa.value.toUpperCase(),
-  descricao: descricao.value.toUpperCase(),
-  origem,
-  dataEntrada: new Date().toLocaleString(),
-  status: status.value.toUpperCase(),
-  pecas: dados[index.value]?.pecas || [],
-  mecanico_responsavel: localStorage.getItem("sessao_lecar"),
-  ultima_modificacao: new Date().toLocaleString()
-};
-
-if (!obj.veiculo || !obj.placa) {
-  alert("PREENCHA OS CAMPOS!");
-  return;
-}
-
-if (index.value === "") {
-  dados.unshift(obj);
-} else {
-  obj = {
-    ...dados[index.value],
-    ...obj
+  let obj = {
+    veiculo: veiculo.value.toUpperCase(),
+    placa: placa.value.toUpperCase(),
+    descricao: descricao.value.toUpperCase(),
+    origem,
+    dataEntrada: new Date().toLocaleString(),
+    status: statusAtual,
+    pecas: index.value !== "" ? dados[index.value]?.pecas || [] : [],
+    mecanico_responsavel: usuarioLogado,
+    ultima_modificacao: new Date().toLocaleString()
   };
 
-  dados[index.value] = obj;
-}
+  // Se status for VEÍCULO FINALIZADO, adiciona data de finalização
+  if (statusAtual === "VEÍCULO FINALIZADO") {
+    obj.dataFinalizacao = new Date().toLocaleString();
+    obj.mecanico = usuarioLogado;
+  }
 
-  // 🔥 SALVA NO FIREBASE
-  await salvarFirebase(obj);
+  if (!obj.veiculo || !obj.placa) {
+    alert("PREENCHA OS CAMPOS!");
+    return;
+  }
 
-  // 💾 Continua salvando local (performance)
-  localStorage.setItem("veiculos", JSON.stringify(dados));
+  try {
+    let docId = null;
 
-  limpar();
-  atualizarTabela();
+    if (index.value === "") {
+      // Novo veículo
+      const docRef = await db.collection("veiculos").add(obj);
+      docId = docRef.id;
+      console.log("[v0] Veículo criado com ID:", docId);
+    } else {
+      // Atualizar veículo existente
+      docId = dados[index.value].id;
+      await db.collection("veiculos").doc(docId).update(obj);
+      console.log("[v0] Veículo atualizado:", docId);
+    }
+
+    // 🔥 WHATSAPP AO FINALIZAR via botão SALVAR - usando confirm + location para evitar bloqueio de popup
+    if (statusAtual === "VEÍCULO FINALIZADO") {
+      const texto =
+`VEÍCULO FINALIZADO!
+
+VEÍCULO: ${obj.veiculo}
+PLACA: ${obj.placa}
+DESCRIÇÃO: ${obj.descricao}
+ORIGEM: ${obj.origem}
+DATA ENTRADA: ${obj.dataEntrada}
+MECÂNICO: ${usuarioLogado}
+STATUS: ${statusAtual}`;
+
+      const url = `https://wa.me/?text=${encodeURIComponent(texto)}`;
+
+      if (confirm("Deseja enviar os dados do veículo finalizado via WhatsApp?")) {
+        window.location.href = url;
+      }
+    }
+
+    limpar();
+    // onSnapshot vai atualizar a tabela automaticamente
+
+  } catch (err) {
+    console.error("[v0] Erro ao salvar veículo:", err);
+    alert("Erro ao salvar veículo no Firebase. Verifique sua conexão.");
+  }
 }
 
       function toggleMostrarTodos() {
@@ -791,15 +802,37 @@ if (index.value === "") {
           else if (v.status === "AGUARDANDO PEÇAS") corClass = "status-pecas";
 
           listaServicosHTML.innerHTML += `<tr>
-<td class="tr-clickable" onclick="navegar('editar_veiculo_${v.iOriginal}'); editar(${v.iOriginal})">${v.veiculo}</td>
+<td class="tr-clickable"
+    onclick="navegar('editar_veiculo_${v.iOriginal}'); editar(${v.iOriginal})">
+  ${v.veiculo}
+</td>
+
 <td>${v.placa}</td>
-<td class="tr-clickable" onclick="navegar('abrir_modal_pecas_${v.iOriginal}'); abrirModal(${v.iOriginal})">${v.descricao}</td>
+
+<td class="tr-clickable"
+    onclick="navegar('pecas_${v.iOriginal}'); abrirModal(${v.iOriginal})">
+  ${v.descricao}
+</td>
+
 <td>${v.origem}</td>
+
 <td>${v.dataEntrada || "-"}</td>
-<td class="tr-clickable ${corClass}" onclick="navegar('abrir_modal_status_${v.iOriginal}'); abrirModalStatus(${v.iOriginal})">${v.status}</td>
+
+<td class="tr-clickable ${corClass}"
+    onclick="abrirModalStatus('${v.id}')">
+  ${v.status}
+</td>
+
 <td>
-<button class="icon-btn" onclick="navegar('excluir_veiculo_${v.iOriginal}'); excluir(${v.iOriginal}, event)">🗑️</button>
-<button class="icon-btn" onclick="navegar('compartilhar_whatsapp_${v.iOriginal}'); compartilharWhatsApp(${v.iOriginal})">📲</button>
+  <button class="icon-btn"
+    onclick="navegar('excluir_veiculo_${v.iOriginal}'); excluir(${v.iOriginal}, event)">
+    🗑️
+  </button>
+
+  <button class="icon-btn"
+    onclick="navegar('compartilhar_whatsapp_${v.iOriginal}'); compartilharWhatsApp(${v.iOriginal})">
+    📲
+  </button>
 </td></tr>`;
         });
 
@@ -811,7 +844,12 @@ if (index.value === "") {
 <td>${v.placa}</td>
 <td>${v.origem}</td>
 <td>${v.mecanico_responsavel || "N/A"}</td>
-<td class="status-finalizado">${v.status}</td>
+<td 
+  class="status-finalizado tr-clickable"
+  onclick="event.stopPropagation(); navegar('abrir_modal_status_finalizado_${v.iOriginal}'); abrirModalStatusFinalizados(${v.iOriginal})"
+>
+  ${v.status}
+</td>
 </tr>`;
         });
       }
@@ -873,9 +911,8 @@ if (index.value === "") {
         const modal = document.getElementById("modalFinalizado");
         const info = document.getElementById("infoFinalizado");
         const lista = document.getElementById("listaPecasFinalizado");
-
+        indiceFinalizadoAtual = i;
         const v = dados[i];
-
         info.innerHTML = `
   <strong>VEÍCULO:</strong> ${v.veiculo}<br>
   <strong>PLACA:</strong> ${v.placa}<br>
@@ -914,12 +951,20 @@ if (index.value === "") {
         index.value = i;
       }
 
-      function excluir(i, event) {
+      async function excluir(i, event) {
         event.stopPropagation();
         if (confirm("EXCLUIR VEÍCULO?")) {
-          dados.splice(i, 1);
-          localStorage.setItem("veiculos", JSON.stringify(dados));
-          atualizarTabela();
+          const v = dados[i];
+          if (v && v.id) {
+            try {
+              await db.collection("veiculos").doc(v.id).delete();
+              console.log("[v0] Veículo excluído:", v.id);
+              // O onSnapshot vai atualizar a lista automaticamente
+            } catch (err) {
+              console.error("[v0] Erro ao excluir:", err);
+              alert("Erro ao excluir veículo");
+            }
+          }
         }
       }
 
@@ -948,7 +993,6 @@ if (index.value === "") {
         if (!valor || indicePecasAtual === null) return;
         if (!dados[indicePecasAtual].pecas) dados[indicePecasAtual].pecas = [];
         dados[indicePecasAtual].pecas.push(valor.toUpperCase());
-        localStorage.setItem("veiculos", JSON.stringify(dados));
         abrirModal(indicePecasAtual);
         novaPeca.value = "";
       }
@@ -956,25 +1000,40 @@ if (index.value === "") {
       function removerPeca(i) {
         if (indicePecasAtual === null) return;
         dados[indicePecasAtual].pecas.splice(i, 1);
-        localStorage.setItem("veiculos", JSON.stringify(dados));
         abrirModal(indicePecasAtual);
       }
 
-      function fecharModal() {
+      async function fecharModal() {
         if (indicePecasAtual !== null) {
           const v = dados[indicePecasAtual];
 
-          if (v.pecas && v.pecas.length > 0 && v.status !== "VEÍCULO FINALIZADO") {
-            navegar("confirmar_alteracao_status");
+          if (v && v.id) {
+            let novoStatus = v.status;
+            
+            if (v.pecas && v.pecas.length > 0 && v.status !== "VEÍCULO FINALIZADO") {
+              navegar("confirmar_alteracao_status");
 
-            const confirmar = confirm("Deseja alterar status para AGUARDANDO PEÇAS?");
+              const confirmar = confirm("Deseja alterar status para AGUARDANDO PEÇAS?");
 
-            if (confirmar) {
-              v.status = "AGUARDANDO PEÇAS";
+              if (confirmar) {
+                novoStatus = "AGUARDANDO PEÇAS";
+              }
+            }
+
+            // Salva as peças e o status no Firebase
+            try {
+              await db.collection("veiculos").doc(v.id).update({
+                pecas: v.pecas || [],
+                status: novoStatus,
+                ultima_modificacao: new Date().toLocaleString()
+              });
+              console.log("[v0] Peças salvas no Firebase:", v.id);
+            } catch (err) {
+              console.error("[v0] Erro ao salvar peças:", err);
+              alert("Erro ao salvar peças");
             }
           }
 
-          localStorage.setItem("veiculos", JSON.stringify(dados));
           atualizarTabela();
         }
 
@@ -985,49 +1044,117 @@ if (index.value === "") {
       function compartilharPecas() {
         if (indicePecasAtual === null) return;
         const v = dados[indicePecasAtual];
-        const texto = `VEÍCULO: ${v.veiculo}\nPLACA: ${v.placa}\nPEÇAS: ${v.pecas.join(", ")}`;
+        if (!v) {
+          alert("Veículo não encontrado");
+          return;
+        }
+        const pecasTexto = v.pecas && v.pecas.length > 0 ? v.pecas.join(", ") : "Nenhuma peça cadastrada";
+        const texto = `VEÍCULO: ${v.veiculo}\nPLACA: ${v.placa}\nPEÇAS: ${pecasTexto}`;
         const url = `https://wa.me/?text=${encodeURIComponent(texto)}`;
         window.open(url, "_blank");
       }
 
-      function abrirModalStatus(i) {
-        indiceStatusAtual = i;
-        statusSelect.value = dados[i].status;
-        modalStatus.style.display = "flex";
-      }
+function abrirModalStatus(id) {
+  const v = dados.find(item => String(item.id) === String(id));
 
-      function salvarStatus() {
-        if (indiceStatusAtual === null) return;
-        const novoStatus = statusSelect.value.toUpperCase();
-        dados[indiceStatusAtual].status = novoStatus;
-        
-        if (novoStatus === "VEÍCULO FINALIZADO") {
-          const usuarioLogado = localStorage.getItem("sessao_lecar");
-          dados[indiceStatusAtual].mecanico = usuarioLogado;
-          dados[indiceStatusAtual].dataFinalizacao = new Date().toLocaleString();
-          
-          const v = dados[indiceStatusAtual];
-          const texto = `VEÍCULO: ${v.veiculo}\nPLACA: ${v.placa}\nDESCRIÇÃO: ${v.descricao}\nPEÇAS: ${v.pecas.join(", ")}\nORIGEM: ${v.origem}\nMECÂNICO: ${v.mecanico}\nDATA: ${v.dataFinalizacao}\nSTATUS: ${v.status}`;
-          const url = `https://wa.me/?text=${encodeURIComponent(texto)}`;
-          window.open(url, "_blank");
-        }
-        
-        localStorage.setItem("veiculos", JSON.stringify(dados));
-        atualizarTabela();
-        fecharModalStatus();
-      }
+  if (!v) {
+    console.error("[v0] Veículo não encontrado:", id);
+    return;
+  }
 
-      function fecharModalStatus() {
-        modalStatus.style.display = "none";
-        indiceStatusAtual = null;
+  idStatusAtual = v.id;
+
+  statusSelect.value = v.status || "";
+  modalStatus.style.display = "flex";
+}
+
+// 🔥 FUNÇÃO SALVAR STATUS CORRIGIDA - SEMPRE SALVA NO FIREBASE
+async function salvarStatus() {
+  if (!idStatusAtual) return;
+
+  const novoStatus = statusSelect.value.toUpperCase();
+
+  const payload = {
+    status: novoStatus,
+    ultima_modificacao: new Date().toLocaleString()
+  };
+
+  if (novoStatus === "VEÍCULO FINALIZADO") {
+    payload.mecanico = localStorage.getItem("sessao_lecar");
+    payload.dataFinalizacao = new Date().toLocaleString();
+  }
+
+  try {
+    await db.collection("veiculos").doc(idStatusAtual).update(payload);
+
+    const indexLocal = dados.findIndex(v => v.id === idStatusAtual);
+    if (indexLocal !== -1) {
+      dados[indexLocal] = {
+        ...dados[indexLocal],
+        ...payload
+      };
+    }
+
+    // 🔥 WHATSAPP (ANTES DE FECHAR MODAL)
+    if (novoStatus === "VEÍCULO FINALIZADO") {
+      const v = dados.find(x => x.id === idStatusAtual);
+
+      if (v) {
+        const pecasTexto = v.pecas && v.pecas.length > 0 ? v.pecas.join(", ") : "Nenhuma";
+
+        const texto =
+`VEÍCULO FINALIZADO!
+
+VEÍCULO: ${v.veiculo}
+PLACA: ${v.placa}
+DESCRIÇÃO: ${v.descricao}
+PEÇAS: ${pecasTexto}
+ORIGEM: ${v.origem}
+MECÂNICO: ${localStorage.getItem("sessao_lecar")}
+DATA: ${new Date().toLocaleString()}
+STATUS: ${novoStatus}`;
+
+        const url = `https://wa.me/?text=${encodeURIComponent(texto)}`;
+
+        // 👇 ESSENCIAL PRA NÃO BLOQUEAR
+        window.open(url, "_blank");
       }
+    }
+
+    atualizarTabela();
+    fecharModalStatus();
+
+  } catch (err) {
+    console.error(err);
+    alert("Erro ao atualizar status");
+  }
+}
+
+function fecharModalStatus() {
+  modalStatus.style.display = "none";
+  idStatusAtual = null;
+}
 
       function compartilharWhatsApp(i) {
         const v = dados[i];
-        const texto = `VEÍCULO: ${v.veiculo}\nPLACA: ${v.placa}\nDESCRIÇÃO: ${v.descricao}\nPEÇAS: ${v.pecas.join(", ")}\nORIGEM: ${v.origem}\nDATA: ${v.dataEntrada}\nSTATUS: ${v.status}`;
+        if (!v) {
+          alert("Veículo não encontrado");
+          return;
+        }
+        const pecasTexto = v.pecas && v.pecas.length > 0 ? v.pecas.join(", ") : "Nenhuma";
+        const texto = `VEÍCULO: ${v.veiculo}\nPLACA: ${v.placa}\nDESCRIÇÃO: ${v.descricao}\nPEÇAS: ${pecasTexto}\nORIGEM: ${v.origem}\nDATA: ${v.dataEntrada}\nSTATUS: ${v.status}`;
         const url = `https://wa.me/?text=${encodeURIComponent(texto)}`;
         window.open(url, "_blank");
       }
+
+function abrirModalStatusFinalizados(i) {
+  const v = dados[i];
+  if (!v) return;
+
+  idStatusAtual = v.id;
+  statusSelect.value = v.status;  
+  modalStatus.style.display = "flex";
+}
 
       function limpar() {
         veiculo.value = "";
@@ -1039,220 +1166,9 @@ if (index.value === "") {
         index.value = "";
       }
 
-      // ========== PAINEL ADM ==========
-      function renderizarPainelAdmin() {
-        const usuarioLogado = localStorage.getItem("sessao_lecar");
-        const painelDiv = document.getElementById("painelAdminConteudo");
-
-        if (usuarioLogado !== "LEANDRO" && usuarioLogado !== "VIKA") {
-          painelDiv.innerHTML = '<div class="acesso-negado">🔒 Ops, algo deu errado.</div>';
-          return;
-        }
-
-        // Calcular estatísticas
-        const finalizados = dados.filter(v => v.status === "VEÍCULO FINALIZADO");
-        const emAndamento = dados.filter(v => v.status !== "VEÍCULO FINALIZADO");
-
-        // Estatísticas por usuário
-        const estatisticasPorUsuario = {};
-        usuariosPermitidos.forEach(user => {
-          estatisticasPorUsuario[user] = finalizados.filter(v => v.mecanico === user).length;
-        });
-
-        // Ranking
-        const ranking = Object.entries(estatisticasPorUsuario)
-          .sort((a, b) => b[1] - a[1])
-          .filter(([user, count]) => count > 0);
-
-        // Tempo médio
-        let tempoTotal = 0;
-        let contadorTempo = 0;
-        finalizados.forEach(v => {
-          if (v.dataEntrada && v.dataFinalizacao) {
-            const entrada = new Date(v.dataEntrada);
-            const finalizacao = new Date(v.dataFinalizacao);
-            const diff = finalizacao - entrada;
-            tempoTotal += diff;
-            contadorTempo++;
-          }
-        });
-        const tempoMedio = contadorTempo > 0 ? Math.floor(tempoTotal / contadorTempo / (1000 * 60 * 60 * 24)) : 0;
-
-        // Cards
-        let html = '<div class="admin-cards">';
-        html += `<div class="admin-card"><h3>Total Finalizados</h3><div class="value">${finalizados.length}</div><div class="label">veículos</div></div>`;
-        html += `<div class="admin-card"><h3>Em Andamento</h3><div class="value">${emAndamento.length}</div><div class="label">veículos</div></div>`;
-        html += `<div class="admin-card"><h3>Tempo Médio</h3><div class="value">${tempoMedio}</div><div class="label">dias</div></div>`;
-        html += '</div>';
-
-        // Ranking
-        html += '<h3 style="margin-top: 20px;">🏆 Ranking de Produtividade</h3>';
-        html += '<div class="table-container"><table><thead><tr><th>Posição</th><th>Mecânico</th><th>Finalizados</th></tr></thead><tbody>';
-        ranking.forEach(([user, count], index) => {
-          html += `<tr><td>${index + 1}º</td><td>${user}</td><td>${count}</td></tr>`;
-        });
-        html += '</tbody></table></div>';
-
-        // Serviços Ativos
-        html += '<h3 style="margin-top: 30px;">📋 Serviços Ativos</h3>';
-        emAndamento.forEach(v => {
-          html += `<div class="servico-item">
-            <strong>${v.veiculo} - ${v.placa}</strong>
-            <small>${v.descricao} | Status: ${v.status} | Origem: ${v.origem}</small>
-          </div>`;
-        });
-
-        // Log de Acessos
-        const logs = JSON.parse(localStorage.getItem("logs_acesso")) || [];
-        html += '<h3 style="margin-top: 30px;">📊 Log de Acessos (Últimos 10)</h3>';
-        html += '<div class="table-container"><table><thead><tr><th>Usuário</th><th>Data/Hora</th></tr></thead><tbody>';
-        logs.slice(-10).reverse().forEach(log => {
-          html += `<tr><td>${log.usuario}</td><td>${log.data}</td></tr>`;
-        });
-        html += '</tbody></table></div>';
-
-        painelDiv.innerHTML = html;
-      }
-
-      // ========== SISTEMA DE LEMBRETES ==========
-      let lembretes = JSON.parse(localStorage.getItem("lembretes")) || [];
-      const barra = document.getElementById("barraLembretes");
-      const btnRelatorio = document.getElementById("btnRelatorio");
-      let popupAtivo = null;
-      let indiceAtivo = null;
-
-      function salvarStorage() {
-        localStorage.setItem("lembretes", JSON.stringify(lembretes));
-      }
-
-      function renderizar() {
-        barra.innerHTML = "";
-        lembretes.forEach((texto, index) => {
-          const item = document.createElement("div");
-          item.className = "lembrete-item";
-          item.textContent = texto;
-          item.title = texto;
-          item.onclick = () => {
-            navegar("toggle_popup_" + index);
-            togglePopup(texto, index, item);
-          };
-          barra.appendChild(item);
-        });
-      }
-
-      function adicionar() {
-        const input = document.getElementById("inputLembrete");
-        const valor = input.value.trim();
-        if (!valor) return;
-        lembretes.push(valor);
-        salvarStorage();
-        input.value = "";
-        renderizar();
-      }
-
-      function togglePopup(texto, index, elemento) {
-        if (popupAtivo && indiceAtivo === index) {
-          fecharPopups();
-          return;
-        }
-        fecharPopups();
-        abrirPopup(texto, index, elemento);
-      }
-/* ========= SALVAR NO FIREBASE ========= */
-async function salvarFirebase(obj) {
-  obj.ultima_modificacao = new Date().toLocaleString();
-
-  if (obj.id) {
-    // 🔁 ATUALIZA
-    await db.collection("veiculos").doc(obj.id).set(obj);
-  } else {
-    // 🆕 NOVO
-    const docRef = await db.collection("veiculos").add(obj);
-    obj.id = docRef.id;
-  }
-}
-
-      function fecharPopups() {
-        if (popupAtivo) popupAtivo.remove();
-        popupAtivo = null;
-        indiceAtivo = null;
-        document.querySelectorAll(".lembrete-item").forEach((el) => el.classList.remove("ativo"));
-      }
-
-      function remover(index) {
-        lembretes.splice(index, 1);
-        salvarStorage();
-        fecharPopups();
-        renderizar();
-      }
-
-      document.addEventListener("click", (e) => {
-        if (!e.target.classList.contains("lembrete-item") && e.target.id !== "btnRelatorio") fecharPopups();
-      });
-
-     document.getElementById("inputLembrete").addEventListener("keypress", function (e) {
-        if (e.key === "Enter") {
-          navegar("adicionar_lembrete_enter");
-          adicionar();
-        }
-      });
-
-      function abrirRelatorio() {
-        fecharPopups();
-
-        const rect = btnRelatorio.getBoundingClientRect();
-        const popup = document.createElement("div");
-        popup.className = "popup";
-
-        const hoje = new Date().toLocaleDateString();
-
-        let concluidosHoje = 0;
-        let diagnosticosHoje = 0;
-
-        dados.forEach((v) => {
-          if (!v.dataEntrada) return;
-          const dataFormatada = v.dataEntrada.split(",")[0];
-
-          if (dataFormatada === hoje) {
-            if (v.status === "VEÍCULO FINALIZADO") {
-              concluidosHoje++;
-            }
-            if (v.status === "AGUARDANDO PEÇAS") {
-              diagnosticosHoje++;
-            }
-          }
-        });
-
-        const textoRelatorio = `RELATÓRIO DIÁRIO
-🔧 Serviços concluídos no dia: ${concluidosHoje}
-🛠️ Diagnósticos realizados no dia: ${diagnosticosHoje}`;
-
-        popup.innerHTML = `
-    <strong>Relatório Diário</strong>
-    <p>🔧 Serviços concluídos no dia: ${concluidosHoje}</p>
-    <p>🛠️ Diagnósticos realizados no dia: ${diagnosticosHoje}</p>
-    
-    <button onclick="navegar('fechar_relatorio'); this.parentElement.remove()">Fechar</button>
-    <button onclick="navegar('compartilhar_relatorio'); window.open('https://wa.me/?text=${encodeURIComponent(textoRelatorio)}','_blank')">
-      📲 Compartilhar WhatsApp
-    </button>
-  `;
-
-        document.body.appendChild(popup);
-        popupAtivo = popup;
-        indiceAtivo = -1;
-
-        popup.style.position = "fixed";
-        popup.style.left = rect.left + rect.width / 2 - 120 + "px";
-        popup.style.bottom = window.innerHeight - rect.top + 15 + "px";
-      }
-/* ========= INICIALIZAÇÃO ========= */
-window.onload = () => {
-  verificarSessao();
-  sincronizarFirebase();
-};
-      // ========== INICIALIZAÇÃO ==========
-
+      window.onload = () => {
+        verificarSessao();
+      };
     </script>
   </body>
 </html>
