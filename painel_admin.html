@@ -141,7 +141,9 @@
             cursor: pointer;
             transition: all 0.2s;
         }
-
+#buscaPlaca {
+    text-transform: uppercase;
+}
         .filter-section select:focus,
         .filter-section input:focus {
             outline: none;
@@ -333,21 +335,38 @@
             background: rgba(255,255,255,0.5);
         }
 
+.filter-section select,
+.filter-section input {
+    width: 100%;
+    padding: 10px 12px;
+    border: 1px solid rgba(255,255,255,0.3);
+    border-radius: 8px;
+    background: rgba(255,255,255,0.1);
+    color: white;
+    font-size: 13px;
+}
         /* Stats Cards */
-        .stats-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-            gap: 20px;
-        }
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 12px;
+}
 
         .stat-card {
-            background: white;
-            padding: 24px;
-            border-radius: 12px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
-            transition: all 0.2s;
-            border-left: 4px solid var(--accent);
-        }
+    background: white;
+    padding: 10px 16px;
+    border-radius: 10px;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.06);
+    transition: all 0.2s;
+    border-left: 4px solid var(--accent);
+
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+
+    min-height: unset;
+    height: 70px;
+}
 
         .stat-card:hover {
             transform: translateY(-4px);
@@ -355,19 +374,14 @@
         }
 
         .stat-label {
-            color: var(--text-muted);
-            font-size: 11px;
-            text-transform: uppercase;
-            font-weight: 700;
-            letter-spacing: 1px;
-            margin-bottom: 8px;
-        }
+    font-size: 10px;
+    margin-bottom: 4px;
+}
 
-        .stat-value {
-            color: var(--primary);
-            font-size: 32px;
-            font-weight: 700;
-        }
+.stat-value {
+    font-size: 22px;
+    line-height: 1;
+}
 
         /* Sections */
         .secao {
@@ -590,7 +604,18 @@
         .modal-overlay.active {
             display: flex;
         }
+.secao-finalizados {
+    background: #f0fdf4;
+    border: 1px solid #bbf7d0;
+}
+.secao-finalizados .secao-titulo {
+    color: #166534;
+    border-bottom: 3px solid #22c55e;
+}
 
+.secao-finalizados .secao-icone {
+    background: linear-gradient(135deg, #22c55e, #16a34a);
+}
         .modal {
             background: white;
             padding: 32px;
@@ -723,6 +748,29 @@
                 left: 0;
             }
         }
+        .secao-titulo {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.btn-toggle {
+    width: 32px;
+    height: 32px;
+    border: none;
+    border-radius: 8px;
+    background: #e2e8f0;
+    color: #1e293b;
+    font-size: 20px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.btn-toggle:hover {
+    background: #cbd5e1;
+    transform: scale(1.05);
+}
     </style>
 </head>
 
@@ -735,7 +783,10 @@
             <img src="https://i.postimg.cc/50N706MF/logo.png" alt="LECAR" class="logo-sidebar">
             <div class="user-info" id="userInfo">Carregando...</div>
         </div>
-
+<div class="filter-section">
+    <h3>BUSCAR PLACA</h3>
+    <input type="text" id="buscaPlaca" placeholder="DIGITE A PLACA">
+</div>
         <!-- FILTROS -->
         <div class="filter-section">
             <h3>MECÂNICO</h3>
@@ -784,7 +835,7 @@
         <!-- HEADER -->
         <div class="header">
             <div>
-                <h2>PAINEL ADMINISTRATIVO - VERSÃO BETA 1.1</h2>
+                <h2>PAINEL ADMINISTRATIVO</h2>
                 <div class="filtros-ativos" id="filtrosAtivos"></div>
             </div>
             <div class="header-info">
@@ -793,15 +844,52 @@
             </div>
         </div>
 
-        <!-- ESTATÍSTICAS -->
-        <div class="stats-grid" id="statsGrid"></div>
+<!-- TABELA FINALIZADOS -->
+<div class="secao secao-finalizados">
+<div class="secao-titulo">
+    
+    <div style="display:flex;align-items:center;gap:10px;">
+        <div class="secao-icone">✅</div>
+        FINALIZADOS POR ÚLTIMO
+    </div>
 
+    <button class="btn-toggle" onclick="toggleTabela(this)">
+        −
+    </button>
+
+</div>
+
+    <div class="table-container">
+        <table>
+            <thead>
+                <tr>
+                    <th>VEÍCULO</th>
+                    <th>PLACA</th>
+                    <th>DESCRIÇÃO</th>
+                    <th>MECÂNICO</th>
+                    <th>DATA</th>
+                    <th>ORIGEM</th>
+                </tr>
+            </thead>
+
+            <tbody id="tabelaFinalizados"></tbody>
+        </table>
+    </div>
+</div>
         <!-- TABELA BOLSÃO -->
         <div class="secao">
-            <div class="secao-titulo">
-                <div class="secao-icone">🚗</div>
-                VEÍCULOS BOLSÃO
-            </div>
+<div class="secao-titulo">
+
+    <div style="display:flex;align-items:center;gap:10px;">
+        <div class="secao-icone">🚗</div>
+        VEÍCULOS BOLSÃO
+    </div>
+
+    <button class="btn-toggle" onclick="toggleTabela(this)">
+        −
+    </button>
+
+</div>
             <div class="table-container">
                 <table>
                     <thead>
@@ -821,10 +909,18 @@
 
         <!-- TABELA ATM -->
         <div class="secao">
-            <div class="secao-titulo">
-                <div class="secao-icone">🔧</div>
-                VEÍCULOS ATM
-            </div>
+<div class="secao-titulo">
+
+    <div style="display:flex;align-items:center;gap:10px;">
+        <div class="secao-icone">🔧</div>
+        VEÍCULOS ATM
+    </div>
+
+    <button class="btn-toggle" onclick="toggleTabela(this)">
+        −
+    </button>
+
+</div>
             <div class="table-container">
                 <table>
                     <thead>
@@ -844,13 +940,22 @@
 
         <!-- RANKING MECÂNICOS -->
         <div class="secao">
-            <div class="secao-titulo">
-                <div class="secao-icone">🏆</div>
-                RANKING DE PRODUTIVIDADE
-            </div>
+<div class="secao-titulo">
+
+    <div style="display:flex;align-items:center;gap:10px;">
+        <div class="secao-icone">🏆</div>
+        RANKING DE PRODUTIVIDADE
+    </div>
+
+    <button class="btn-toggle" onclick="toggleTabela(this)">
+        −
+    </button>
+
+</div>
             <div class="ranking-list" id="rankingList"></div>
         </div>
-
+        <!-- ESTATÍSTICAS -->
+        <div class="stats-grid" id="statsGrid"></div>
         <!-- Espaço para a barra de log -->
         <div style="height: 60px;"></div>
     </div>
@@ -899,7 +1004,33 @@ const db = firebase.firestore();
 let todosVeiculos = [];
 let veiculosFiltrados = [];
 let listaMecanicos = [];
+function converterData(data) {
 
+    if (!data) return null;
+
+    // Remove hora se existir
+    // Exemplo:
+    // 06/05/2026, 11:28:52
+    const apenasData = data.split(",")[0].trim();
+
+    const partes = apenasData.split("/");
+
+    if (partes.length !== 3) return null;
+
+    const dia = parseInt(partes[0], 10);
+    const mes = parseInt(partes[1], 10) - 1;
+    const ano = parseInt(partes[2], 10);
+
+    return new Date(ano, mes, dia);
+}
+
+function formatarDataBR(data) {
+    const d = converterData(data);
+
+    if (!d) return "-";
+
+    return d.toLocaleDateString("pt-BR");
+}
 const filtros = {
     mecanico: '',
     data: '',
@@ -941,19 +1072,23 @@ db.collection("veiculos").onSnapshot((snapshot) => {
     todosVeiculos = [];
     listaMecanicos = new Set();
 
-    snapshot.forEach((doc) => {
-        const v = doc.data();
+snapshot.forEach((doc) => {
+    const v = doc.data();
 
-        // 🔥 AQUI ENTRA SUA CORREÇÃO
-        v.data = v.ultima_modificacao || v.data || "";
+    // Guarda a data original do Firebase
+v.data = v.ultima_modificacao || "";
 
-        v.id = doc.id;
-        todosVeiculos.push(v);
-        
-        if (v.mecanico_responsavel) {
-            listaMecanicos.add(v.mecanico_responsavel);
-        }
-    });
+    // Cria uma data formatada somente para exibição
+    v.data = formatarDataBR(v.data);
+
+    v.id = doc.id;
+
+    todosVeiculos.push(v);
+
+    if (v.mecanico_responsavel) {
+        listaMecanicos.add(v.mecanico_responsavel);
+    }
+});
 
     atualizarFiltroMecanicos();
     aplicarFiltros();
@@ -981,7 +1116,23 @@ document.getElementById("filtroMecanico").addEventListener("change", function() 
     filtros.mecanico = this.value;
     aplicarFiltros();
 });
+document.getElementById("buscaPlaca").addEventListener("keydown", function(e) {
+    if (e.key === "Enter") {
+        const valor = this.value.trim().toUpperCase();
 
+        if (!valor) return;
+
+        const veiculo = todosVeiculos.find(v =>
+            (v.placa || "").toUpperCase().includes(valor)
+        );
+
+        if (veiculo) {
+            abrirModal(veiculo);
+        } else {
+            alert("PLACA NÃO ENCONTRADA");
+        }
+    }
+});
 document.getElementById("filtroData").addEventListener("change", function() {
     filtros.data = this.value;
     aplicarFiltros();
@@ -1021,15 +1172,24 @@ function aplicarFiltros() {
         );
     }
 
-    // Filtro por data específica
-    if (filtros.data) {
-        veiculosFiltrados = veiculosFiltrados.filter(v => {
-            if (!v.data) return false;
-            const dataVeiculo = v.data.split('/').reverse().join('-');
-            const dataFiltro = filtros.data;
-            return dataVeiculo === dataFiltro;
-        });
-    }
+// Filtro por data específica
+if (filtros.data) {
+
+    veiculosFiltrados = veiculosFiltrados.filter(v => {
+
+        const dataVeiculo = converterData(v.data);
+
+        if (!dataVeiculo) return false;
+
+        const ano = dataVeiculo.getFullYear();
+        const mes = String(dataVeiculo.getMonth() + 1).padStart(2, '0');
+        const dia = String(dataVeiculo.getDate()).padStart(2, '0');
+
+        const dataFormatada = `${ano}-${mes}-${dia}`;
+
+        return dataFormatada === filtros.data;
+    });
+}
 
     // Filtro por origem
     if (filtros.origem) {
@@ -1046,9 +1206,11 @@ function aplicarFiltros() {
         veiculosFiltrados = veiculosFiltrados.filter(v => {
             if (!v.data) return false;
             
-            const partes = v.data.split('/');
-            const dataVeiculo = new Date(partes[2], partes[1] - 1, partes[0]);
-            dataVeiculo.setHours(0, 0, 0, 0);
+const dataVeiculo = formatarDataFiltro(v.data);
+
+if (!dataVeiculo) return false;
+
+dataVeiculo.setHours(0, 0, 0, 0);
 
             if (filtros.periodo === 'diario') {
                 return dataVeiculo.getTime() === hoje.getTime();
@@ -1064,7 +1226,27 @@ function aplicarFiltros() {
     renderizarTudo();
     atualizarFiltrosAtivos();
 }
+function formatarDataFiltro(data) {
+    if (!data) return null;
 
+    // Timestamp Firebase
+    if (typeof data === "object" && data.seconds) {
+        return new Date(data.seconds * 1000);
+    }
+
+    // Formato ISO: 2026-05-06
+    if (typeof data === "string" && data.includes("-")) {
+        return new Date(data);
+    }
+
+    // Formato BR: 06/05/2026
+    if (typeof data === "string" && data.includes("/")) {
+        const partes = data.split("/");
+        return new Date(partes[2], partes[1] - 1, partes[0]);
+    }
+
+    return null;
+}
 function limparFiltros() {
     filtros.mecanico = '';
     filtros.data = '';
@@ -1162,15 +1344,49 @@ function renderizarStats() {
 }
 
 function renderizarTabelas() {
+
+    const hoje = new Date();
+    hoje.setHours(0, 0, 0, 0);
+
+    // FINALIZADOS DO DIA
+    const finalizadosHoje = veiculosFiltrados.filter(v => {
+
+        if (v.status !== "VEÍCULO FINALIZADO") return false;
+
+        const dataVeiculo = formatarDataFiltro(v.data);
+
+        if (!dataVeiculo) return false;
+
+        dataVeiculo.setHours(0, 0, 0, 0);
+
+        return dataVeiculo.getTime() === hoje.getTime();
+    });
+
+    // BOLSÃO
     const veiculosBolsao = veiculosFiltrados.filter(v => 
         v.origem && v.origem.toUpperCase().includes("BOLSÃO")
     );
+
+    // ATM
     const veiculosATM = veiculosFiltrados.filter(v => 
         v.origem && v.origem.toUpperCase().includes("ATM")
     );
 
-    renderizarTabela(veiculosBolsao, document.getElementById('tabelaBolsao'));
-    renderizarTabela(veiculosATM, document.getElementById('tabelaATM'));
+    // RENDERIZA
+    renderizarTabelaFinalizados(
+        finalizadosHoje,
+        document.getElementById('tabelaFinalizados')
+    );
+
+    renderizarTabela(
+        veiculosBolsao,
+        document.getElementById('tabelaBolsao')
+    );
+
+    renderizarTabela(
+        veiculosATM,
+        document.getElementById('tabelaATM')
+    );
 }
 
 function renderizarTabela(veiculos, elemento) {
@@ -1199,7 +1415,28 @@ function renderizarTabela(veiculos, elemento) {
         `;
     }).join('');
 }
+function renderizarTabelaFinalizados(veiculos, elemento) {
 
+    if (veiculos.length === 0) {
+        elemento.innerHTML =
+            "<tr><td colspan='6' class='empty-state'>NENHUM VEÍCULO FINALIZADO</td></tr>";
+        return;
+    }
+
+    elemento.innerHTML = veiculos.map(v => {
+
+        return `
+            <tr onclick='abrirModal(${JSON.stringify(v).replace(/'/g, "&apos;")})'>
+                <td><strong>${(v.veiculo || "-").toUpperCase()}</strong></td>
+                <td>${(v.placa || "-").toUpperCase()}</td>
+                <td>${(v.descricao || "-").toUpperCase()}</td>
+                <td>${(v.mecanico_responsavel || "-").toUpperCase()}</td>
+                <td>${v.data || "-"}</td>
+                <td>${(v.origem || "-").toUpperCase()}</td>
+            </tr>
+        `;
+    }).join('');
+}
 function renderizarRanking() {
     const mecanicoCount = {};
 
@@ -1264,8 +1501,9 @@ function atualizarLogDiario() {
 
     const veiculosHoje = todosVeiculos.filter(v => {
         if (!v.data) return false;
-        const partes = v.data.split('/');
-        const dataVeiculo = new Date(partes[2], partes[1] - 1, partes[0]);
+const dataVeiculo = formatarDataFiltro(v.data);
+
+if (!dataVeiculo) return false;
         dataVeiculo.setHours(0, 0, 0, 0);
         return dataVeiculo.getTime() === hoje.getTime();
     });
@@ -1445,7 +1683,46 @@ function exportarExcel() {
     const dataHora = new Date().toISOString().slice(0, 10);
     XLSX.writeFile(wb, `RELATORIO_LECAR_${dataHora}.xlsx`);
 }
+function toggleTabela(botao) {
 
+    const secao = botao.closest('.secao');
+
+    const conteudo =
+        secao.querySelector('.table-container') ||
+        secao.querySelector('.ranking-list');
+
+    if (!conteudo) return;
+
+    if (conteudo.style.display === 'none') {
+
+        conteudo.style.display = 'block';
+        botao.textContent = '−';
+
+    } else {
+
+        conteudo.style.display = 'none';
+        botao.textContent = '+';
+    }
+}
+
+/* INICIAR TABELAS MINIMIZADAS */
+window.addEventListener('load', () => {
+
+    document.querySelectorAll('.secao').forEach(secao => {
+
+        const conteudo =
+            secao.querySelector('.table-container') ||
+            secao.querySelector('.ranking-list');
+
+        const botao = secao.querySelector('.btn-toggle');
+
+        if (conteudo && botao) {
+            conteudo.style.display = 'none';
+            botao.textContent = '+';
+        }
+    });
+
+});
 /* ========== LOGOUT ========== */
 function logout() {
     if (confirm('TEM CERTEZA QUE DESEJA SAIR DO SISTEMA?')) {
