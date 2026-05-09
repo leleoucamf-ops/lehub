@@ -310,6 +310,210 @@
       .servico-item { background: #f9fafb; padding: 15px; border-radius: 8px; margin-bottom: 10px; border-left: 4px solid #2563eb; }
       .servico-item strong { display: block; margin-bottom: 5px; color: #1e293b; }
       .servico-item small { color: #64748b; }
+
+      /* ========== RESPONSIVIDADE MOBILE ========== */
+      @media (max-width: 768px) {
+        /* Topbar em mobile */
+        .topbar {
+          padding: 10px 15px;
+          flex-wrap: wrap;
+          gap: 10px;
+        }
+
+        .logo-img {
+          height: 35px;
+          margin-right: 10px;
+        }
+
+        .topbar-search {
+          width: 100%;
+          order: 3;
+          margin-top: 10px;
+        }
+
+        .btn-sair {
+          padding: 6px 12px;
+          font-size: 0.8rem;
+          margin-left: 10px;
+        }
+
+        #nomeUsuario {
+          font-size: 0.85rem;
+        }
+
+        /* Main e Card */
+        .main {
+          padding: 15px;
+          padding-top: 140px;
+        }
+
+        .card {
+          padding: 20px 15px;
+        }
+
+        .card h2 {
+          font-size: 1.3rem;
+        }
+
+        /* Formulários */
+        input, select {
+          padding: 12px;
+          font-size: 14px;
+        }
+
+        button {
+          padding: 10px 12px;
+          font-size: 0.85rem;
+          width: 100%;
+          margin: 5px 0;
+        }
+
+        .controls {
+          flex-direction: column;
+          align-items: stretch;
+        }
+
+        .controls button {
+          width: 100%;
+        }
+
+        /* Checkbox group */
+        .checkbox-group {
+          flex-direction: column;
+          gap: 15px;
+        }
+
+        /* Tabs */
+        .tabs {
+          overflow-x: auto;
+          gap: 5px;
+          -webkit-overflow-scrolling: touch;
+        }
+
+        .tab {
+          padding: 10px 15px;
+          font-size: 0.8rem;
+          white-space: nowrap;
+        }
+
+        /* Tabelas */
+        .table-container {
+          overflow-x: auto;
+          -webkit-overflow-scrolling: touch;
+        }
+
+        table {
+          min-width: 600px;
+          font-size: 0.85rem;
+        }
+
+        th, td {
+          padding: 8px 5px;
+          font-size: 0.8rem;
+        }
+
+        .icon-btn {
+          font-size: 1.1rem;
+          padding: 2px 4px;
+        }
+
+        /* Modais */
+        .modal, .status-modal {
+          width: 95%;
+          padding: 20px 15px;
+          margin: 10px;
+        }
+
+        .modal h3, .status-modal h3 {
+          font-size: 1.1rem;
+        }
+
+        .modal input, .status-modal select {
+          width: 100%;
+          margin-bottom: 10px;
+        }
+
+        .modal button, .status-modal button {
+          width: 100%;
+          margin: 5px 0;
+          margin-left: 0;
+        }
+
+        /* Login */
+        .login-container {
+          width: 90%;
+          padding: 25px 20px;
+        }
+
+        .logo {
+          width: 280px;
+        }
+
+        /* Admin cards */
+        .admin-cards {
+          grid-template-columns: 1fr;
+        }
+
+        .admin-card .value {
+          font-size: 2rem;
+        }
+      }
+
+      @media (max-width: 480px) {
+        /* Ajustes extra para telas muito pequenas */
+        .topbar {
+          padding: 8px 10px;
+        }
+
+        .logo-img {
+          height: 30px;
+        }
+
+        #nomeUsuario {
+          font-size: 0.75rem;
+        }
+
+        .btn-sair {
+          padding: 5px 10px;
+          font-size: 0.75rem;
+        }
+
+        .main {
+          padding: 10px;
+          padding-top: 150px;
+        }
+
+        .card {
+          padding: 15px 10px;
+        }
+
+        .card h2 {
+          font-size: 1.2rem;
+        }
+
+        table {
+          min-width: 500px;
+          font-size: 0.75rem;
+        }
+
+        th, td {
+          padding: 6px 3px;
+          font-size: 0.75rem;
+        }
+
+        .tab {
+          padding: 8px 12px;
+          font-size: 0.75rem;
+        }
+
+        .logo {
+          width: 240px;
+        }
+
+        .admin-card .value {
+          font-size: 1.8rem;
+        }
+      }
     </style>
   </head>
   <body>
@@ -348,7 +552,6 @@
 
     <div class="topbar">
       <img src="https://i.postimg.cc/zG9TvZGJ/logo.png" alt="LECAR" class="logo-img" />
-      <input type="text" id="buscaSidebar" class="topbar-search" placeholder="🔍 BUSCAR" onkeyup="filtrarBusca()" />
       <div style="display: flex; align-items: center; gap: 15px;">
         <span id="nomeUsuario" style="font-weight: bold; font-size: 0.95rem;"></span>
         <button class="btn-sair" onclick="logout()">Sair</button>
@@ -357,7 +560,34 @@
 
     <div class="main">
       <div class="card">
-        <h2>CADASTRO DE VEÍCULOS</h2>
+        <div style="
+display:flex;
+justify-content:space-between;
+align-items:center;
+gap:15px;
+margin-bottom:20px;
+flex-wrap:wrap;
+">
+
+  <h2 style="margin:0;">
+    CADASTRAR
+  </h2>
+
+  <input
+    type="text"
+    id="buscaSidebar"
+    class="topbar-search"
+    placeholder="🔍 BUSCAR VEÍCULO"
+    onkeyup="filtrarBusca()"
+    style="
+      width:320px;
+      max-width:100%;
+      background:#f1f5f9;
+      border:1px solid #cbd5e1;
+    "
+  />
+
+</div>
 
         <input type="hidden" id="index" />
         <input type="text" id="veiculo" placeholder="VEÍCULO" />
