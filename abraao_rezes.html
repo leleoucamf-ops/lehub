@@ -214,6 +214,7 @@
     }
 
     .saved-item {
+      cursor: pointer;
       background: #f9fafb;
       border: 1px solid var(--border);
       border-radius: 14px;
@@ -225,6 +226,11 @@
     .saved-item strong {
       color: var(--dark);
       font-size: 16px;
+    }
+
+    .saved-item:hover {
+      border-color: var(--primary);
+      box-shadow: 0 8px 18px rgba(37, 99, 235, 0.12);
     }
 
     .saved-item span {
@@ -705,6 +711,7 @@
         data: new Date().toLocaleDateString('pt-BR'),
         cliente,
         telefone,
+        endereco: document.getElementById('clienteEndereco').value.trim(),
         carro,
         placa,
         ano,
@@ -718,7 +725,44 @@
       localStorage.setItem('servicosSalvosOficina', JSON.stringify(servicosSalvos));
 
       atualizarServicosSalvos();
+      limparFormulario();
       alert('Serviço finalizado e salvo com sucesso!');
+    }
+
+    function limparFormulario() {
+      document.getElementById('clienteNome').value = '';
+      document.getElementById('clienteTelefone').value = '';
+      document.getElementById('clienteEndereco').value = '';
+      document.getElementById('carroModelo').value = '';
+      document.getElementById('carroPlaca').value = '';
+      document.getElementById('carroAno').value = '';
+      document.getElementById('servicoDescricao').value = '';
+      document.getElementById('maoObra').value = '';
+      document.getElementById('pecaNome').value = '';
+      document.getElementById('pecaPreco').value = '';
+      pecas = [];
+      atualizarOrcamento();
+    }
+
+    function carregarServicoSalvo(id) {
+      const item = servicosSalvos.find(function(servico) {
+        return servico.id === id;
+      });
+
+      if (!item) return;
+
+      document.getElementById('clienteNome').value = item.cliente || '';
+      document.getElementById('clienteTelefone').value = item.telefone || '';
+      document.getElementById('clienteEndereco').value = item.endereco || '';
+      document.getElementById('carroModelo').value = item.carro || '';
+      document.getElementById('carroPlaca').value = item.placa || '';
+      document.getElementById('carroAno').value = item.ano || '';
+      document.getElementById('servicoDescricao').value = item.servico === '-' ? '' : item.servico;
+      document.getElementById('maoObra').value = item.maoObra || '';
+      pecas = item.pecas ? [...item.pecas] : [];
+
+      atualizarOrcamento();
+      window.scrollTo({ top: 0, behavior: 'smooth' });
     }
 
     function alternarCardSalvos() {
@@ -752,7 +796,7 @@
 
       servicosSalvos.forEach(function(item) {
         lista.innerHTML += `
-          <div class="saved-item">
+          <div class="saved-item" onclick="carregarServicoSalvo(${item.id})">
             <strong>${item.carro} - ${item.placa}</strong>
             <span>Cliente: ${item.cliente}</span>
             <span>Telefone: ${item.telefone || '-'}</span>
@@ -760,7 +804,7 @@
             <span>Serviço: ${item.servico}</span>
             <span>Data: ${item.data}</span>
             <span><strong>Total:</strong> R$ ${formatarMoeda(item.totalGeral)}</span>
-            <button class="btn-danger" onclick="removerServicoSalvo(${item.id})">Remover</button>
+            <button class="btn-danger" onclick="event.stopPropagation(); removerServicoSalvo(${item.id})">Remover</button>
           </div>
         `;
       });
