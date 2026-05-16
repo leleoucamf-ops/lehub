@@ -1,0 +1,690 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Sistema de Orçamento - Oficina Mecânica</title>
+  <style>
+    :root {
+      --primary: #2563eb;
+      --primary-dark: #1d4ed8;
+      --success: #16a34a;
+      --danger: #dc2626;
+      --dark: #111827;
+      --muted: #6b7280;
+      --border: #e5e7eb;
+      --bg: #f3f4f6;
+      --card: #ffffff;
+      --radius: 16px;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: Arial, Helvetica, sans-serif;
+    }
+
+    body {
+      background: #000;
+      color: var(--dark);
+      padding: 18px;
+      min-height: 100vh;
+    }
+
+    .container {
+      max-width: 1120px;
+      margin: 0 auto;
+    }
+
+    header {
+      background: transparent;
+      padding: 10px 0 20px;
+      margin-bottom: 10px;
+      text-align: center;
+    }
+
+    .logo-topo {
+      width: min(100%, 520px);
+      max-height: 180px;
+      object-fit: contain;
+      display: block;
+      margin: 0 auto;
+      filter: drop-shadow(0 12px 24px rgba(239, 68, 68, 0.28));
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 18px;
+    }
+
+    .card {
+      background: rgba(255, 255, 255, 0.92);
+      backdrop-filter: blur(8px);
+      padding: 22px;
+      border-radius: var(--radius);
+      box-shadow: 0 10px 24px rgba(15, 23, 42, 0.08);
+      border: 1px solid rgba(229, 231, 235, 0.9);
+      margin-bottom: 18px;
+    }
+
+    .card h2 {
+      margin-bottom: 16px;
+      color: var(--dark);
+      font-size: 20px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .card h3 {
+      margin-top: 18px;
+      margin-bottom: 10px;
+      font-size: 17px;
+    }
+
+    .form-group {
+      margin-bottom: 13px;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 7px;
+      font-weight: 700;
+      font-size: 14px;
+      color: #374151;
+    }
+
+    input, textarea {
+      width: 100%;
+      padding: 13px 14px;
+      border: 1px solid #d1d5db;
+      border-radius: 12px;
+      font-size: 16px;
+      background: #fff;
+      transition: 0.2s ease;
+      outline: none;
+    }
+
+    input:focus, textarea:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.12);
+    }
+
+    textarea {
+      min-height: 92px;
+      resize: vertical;
+    }
+
+    button {
+      border: none;
+      padding: 13px 18px;
+      border-radius: 12px;
+      cursor: pointer;
+      font-size: 15px;
+      font-weight: 800;
+      transition: 0.2s ease;
+      min-height: 46px;
+    }
+
+    button:active {
+      transform: scale(0.98);
+    }
+
+    .btn-primary {
+      background: var(--primary);
+      color: white;
+      width: 100%;
+      box-shadow: 0 10px 18px rgba(37, 99, 235, 0.2);
+    }
+
+    .btn-primary:hover {
+      background: var(--primary-dark);
+    }
+
+    .btn-danger {
+      background: #fee2e2;
+      color: var(--danger);
+      padding: 8px 11px;
+      min-height: auto;
+      font-size: 13px;
+    }
+
+    .btn-danger:hover {
+      background: #fecaca;
+    }
+
+    .actions {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+      margin-top: 18px;
+    }
+
+    .btn-whatsapp {
+      background: #25d366;
+      color: white;
+      box-shadow: 0 10px 18px rgba(37, 211, 102, 0.2);
+    }
+
+    .btn-whatsapp:hover {
+      background: #1fb85a;
+    }
+
+    .btn-pdf {
+      background: #ef4444;
+      color: white;
+      box-shadow: 0 10px 18px rgba(239, 68, 68, 0.2);
+    }
+
+    .btn-pdf:hover {
+      background: #dc2626;
+    }
+
+    .btn-print {
+      background: var(--success);
+      color: white;
+      width: 100%;
+      margin-top: 16px;
+      box-shadow: 0 10px 18px rgba(22, 163, 74, 0.2);
+    }
+
+    .table-wrapper {
+      width: 100%;
+      overflow-x: auto;
+      border-radius: 14px;
+      border: 1px solid var(--border);
+      margin-top: 12px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 14px;
+      background: white;
+    }
+
+    th, td {
+      border-bottom: 1px solid var(--border);
+      padding: 12px;
+      text-align: left;
+      vertical-align: middle;
+    }
+
+    tr:last-child td {
+      border-bottom: none;
+    }
+
+    th {
+      background: #f9fafb;
+      color: #374151;
+      font-size: 13px;
+      text-transform: uppercase;
+      letter-spacing: 0.03em;
+    }
+
+    .resumo {
+      display: grid;
+      gap: 9px;
+    }
+
+    .resumo p {
+      font-size: 15px;
+      line-height: 1.45;
+      color: #374151;
+    }
+
+    .resumo strong {
+      color: var(--dark);
+    }
+
+    .totais {
+      background: #f9fafb;
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 15px;
+      margin-top: 16px;
+    }
+
+    .total {
+      font-size: clamp(24px, 5vw, 34px) !important;
+      font-weight: 900;
+      color: var(--success) !important;
+      margin-top: 6px;
+    }
+
+    .orcamento-final {
+      border: 1px solid rgba(22, 163, 74, 0.2);
+    }
+
+    .empty-message {
+      color: var(--muted);
+      text-align: center;
+      padding: 14px;
+      font-size: 14px;
+    }
+
+    @media (max-width: 850px) {
+      body {
+        padding: 12px;
+      }
+
+      .logo-topo {
+        max-height: 145px;
+      }
+
+      .grid {
+        grid-template-columns: 1fr;
+        gap: 0;
+      }
+
+      header {
+        padding: 8px 0 14px;
+        margin-bottom: 8px;
+      }
+
+      .card {
+        padding: 18px;
+        border-radius: 18px;
+        margin-bottom: 14px;
+      }
+    }
+
+    @media (max-width: 700px) {
+      .actions {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 560px) {
+      body {
+        padding: 10px;
+      }
+
+      .logo-topo {
+        max-height: 110px;
+      }
+
+      .card h2 {
+        font-size: 18px;
+      }
+
+      input, textarea, button {
+        font-size: 16px;
+      }
+
+      .table-wrapper {
+        border: none;
+        overflow: visible;
+      }
+
+      table.responsive-table,
+      table.responsive-table thead,
+      table.responsive-table tbody,
+      table.responsive-table th,
+      table.responsive-table td,
+      table.responsive-table tr {
+        display: block;
+        width: 100%;
+      }
+
+      table.responsive-table thead {
+        display: none;
+      }
+
+      table.responsive-table tr {
+        background: #fff;
+        border: 1px solid var(--border);
+        border-radius: 14px;
+        padding: 10px;
+        margin-bottom: 10px;
+        box-shadow: 0 6px 14px rgba(15, 23, 42, 0.05);
+      }
+
+      table.responsive-table td {
+        border: none;
+        padding: 8px 4px;
+        display: flex;
+        justify-content: space-between;
+        gap: 12px;
+        align-items: center;
+      }
+
+      table.responsive-table td::before {
+        content: attr(data-label);
+        font-weight: 800;
+        color: #374151;
+        min-width: 80px;
+      }
+
+      .btn-danger {
+        width: 100%;
+        margin-top: 4px;
+      }
+
+      table.responsive-table td:last-child {
+        display: block;
+      }
+
+      table.responsive-table td:last-child::before {
+        display: none;
+      }
+    }
+
+    @media print {
+      body {
+        background: white;
+        padding: 0;
+      }
+
+      .card:not(.orcamento-final), header, .btn-print {
+        display: none;
+      }
+
+      .container {
+        max-width: 100%;
+      }
+
+      .orcamento-final {
+        box-shadow: none;
+        border: none;
+      }
+
+      .table-wrapper {
+        overflow: visible;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <img src="https://i.postimg.cc/T1T5TdVy/logo-rezes.png" alt="Abraão Rezes" class="logo-topo" />
+    </header>
+
+    <div class="grid">
+      <div class="card">
+        <h2>👤 Dados do Cliente</h2>
+
+        <div class="form-group">
+          <label>Nome do cliente</label>
+          <input type="text" id="clienteNome" placeholder="Ex: João Silva" />
+        </div>
+
+        <div class="form-group">
+          <label>Telefone</label>
+          <input type="tel" id="clienteTelefone" placeholder="Ex: (15) 99999-9999" />
+        </div>
+
+        <div class="form-group">
+          <label>Endereço</label>
+          <input type="text" id="clienteEndereco" placeholder="Ex: Rua das Oficinas, 123" />
+        </div>
+      </div>
+
+      <div class="card">
+        <h2>🚗 Dados do Veículo</h2>
+
+        <div class="form-group">
+          <label>Carro</label>
+          <input type="text" id="carroModelo" placeholder="Ex: Gol 1.0" />
+        </div>
+
+        <div class="form-group">
+          <label>Placa</label>
+          <input type="text" id="carroPlaca" placeholder="Ex: ABC1D23" />
+        </div>
+
+        <div class="form-group">
+          <label>Ano</label>
+          <input type="number" id="carroAno" placeholder="Ex: 2015" />
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>🔧 Adicionar Peça</h2>
+
+      <div class="grid">
+        <div class="form-group">
+          <label>Nome da peça</label>
+          <input type="text" id="pecaNome" placeholder="Ex: Pastilha de freio" />
+        </div>
+
+        <div class="form-group">
+          <label>Preço da peça</label>
+          <input type="number" id="pecaPreco" placeholder="Ex: 120" step="0.01" />
+        </div>
+      </div>
+
+      <button class="btn-primary" onclick="adicionarPeca()">Adicionar Peça</button>
+
+      <div class="table-wrapper">
+        <table class="responsive-table">
+          <thead>
+            <tr>
+              <th>Peça</th>
+              <th>Preço</th>
+              <th>Ação</th>
+            </tr>
+          </thead>
+          <tbody id="listaPecas"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>🧰 Mão de Obra</h2>
+
+      <div class="form-group">
+        <label>Descrição do serviço</label>
+        <textarea id="servicoDescricao" placeholder="Ex: Troca de pastilha de freio e revisão geral"></textarea>
+      </div>
+
+      <div class="form-group">
+        <label>Valor da mão de obra</label>
+        <input type="number" id="maoObra" placeholder="Ex: 150" step="0.01" oninput="atualizarOrcamento()" />
+      </div>
+    </div>
+
+    <div class="card orcamento-final">
+      <h2>📋 Resumo do Orçamento</h2>
+
+      <div class="resumo">
+        <p><strong>Cliente:</strong> <span id="resumoCliente">-</span></p>
+        <p><strong>Telefone:</strong> <span id="resumoTelefone">-</span></p>
+        <p><strong>Endereço:</strong> <span id="resumoEndereco">-</span></p>
+        <p><strong>Veículo:</strong> <span id="resumoCarro">-</span></p>
+        <p><strong>Placa:</strong> <span id="resumoPlaca">-</span></p>
+        <p><strong>Ano:</strong> <span id="resumoAno">-</span></p>
+        <p><strong>Serviço:</strong> <span id="resumoServico">-</span></p>
+      </div>
+
+      <h3>Peças</h3>
+      <div class="table-wrapper">
+        <table class="responsive-table">
+          <thead>
+            <tr>
+              <th>Peça</th>
+              <th>Preço</th>
+            </tr>
+          </thead>
+          <tbody id="resumoPecas"></tbody>
+        </table>
+      </div>
+
+      <div class="totais">
+        <div class="resumo">
+          <p><strong>Total em peças:</strong> R$ <span id="totalPecas">0,00</span></p>
+          <p><strong>Mão de obra:</strong> R$ <span id="totalMaoObra">0,00</span></p>
+          <p class="total">Total: R$ <span id="totalGeral">0,00</span></p>
+        </div>
+      </div>
+
+      <div class="actions">
+        <button class="btn-whatsapp" onclick="compartilharWhatsApp()">Compartilhar no WhatsApp</button>
+
+        <button class="btn-pdf" onclick="salvarPDF()">Salvar em PDF</button>
+
+        <button class="btn-print" onclick="window.print()">Imprimir Orçamento</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    let pecas = [];
+
+    const campos = [
+      'clienteNome',
+      'clienteTelefone',
+      'clienteEndereco',
+      'carroModelo',
+      'carroPlaca',
+      'carroAno',
+      'servicoDescricao'
+    ];
+
+    campos.forEach(function(id) {
+      document.getElementById(id).addEventListener('input', atualizarOrcamento);
+    });
+
+    function formatarMoeda(valor) {
+      return Number(valor).toLocaleString('pt-BR', {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2
+      });
+    }
+
+    function adicionarPeca() {
+      const nome = document.getElementById('pecaNome').value.trim();
+      const preco = Number(document.getElementById('pecaPreco').value);
+
+      if (!nome) {
+        alert('Digite o nome da peça.');
+        return;
+      }
+
+      if (!preco || preco <= 0) {
+        alert('Digite um preço válido.');
+        return;
+      }
+
+      pecas.push({ nome, preco });
+
+      document.getElementById('pecaNome').value = '';
+      document.getElementById('pecaPreco').value = '';
+
+      atualizarOrcamento();
+    }
+
+    function removerPeca(index) {
+      pecas.splice(index, 1);
+      atualizarOrcamento();
+    }
+
+    function atualizarListaPecas() {
+      const lista = document.getElementById('listaPecas');
+      const resumo = document.getElementById('resumoPecas');
+
+      lista.innerHTML = '';
+      resumo.innerHTML = '';
+
+      if (pecas.length === 0) {
+        lista.innerHTML = '<tr><td colspan="3" class="empty-message">Nenhuma peça adicionada ainda.</td></tr>';
+        resumo.innerHTML = '<tr><td colspan="2" class="empty-message">Nenhuma peça adicionada ainda.</td></tr>';
+        return;
+      }
+
+      pecas.forEach(function(peca, index) {
+        lista.innerHTML += `
+          <tr>
+            <td data-label="Peça">${peca.nome}</td>
+            <td data-label="Preço">R$ ${formatarMoeda(peca.preco)}</td>
+            <td data-label="Ação"><button class="btn-danger" onclick="removerPeca(${index})">Remover</button></td>
+          </tr>
+        `;
+
+        resumo.innerHTML += `
+          <tr>
+            <td data-label="Peça">${peca.nome}</td>
+            <td data-label="Preço">R$ ${formatarMoeda(peca.preco)}</td>
+          </tr>
+        `;
+      });
+    }
+
+    function compartilharWhatsApp() {
+      const cliente = document.getElementById('clienteNome').value || '-';
+      const telefone = document.getElementById('clienteTelefone').value || '-';
+      const carro = document.getElementById('carroModelo').value || '-';
+      const placa = document.getElementById('carroPlaca').value || '-';
+      const servico = document.getElementById('servicoDescricao').value || '-';
+      const maoObra = Number(document.getElementById('maoObra').value) || 0;
+
+      const totalPecas = pecas.reduce(function(total, peca) {
+        return total + peca.preco;
+      }, 0);
+
+      const totalGeral = totalPecas + maoObra;
+
+      let listaPecas = '';
+
+      pecas.forEach(function(peca) {
+        listaPecas += `• ${peca.nome} - R$ ${formatarMoeda(peca.preco)}%0A`;
+      });
+
+      const mensagem =
+        `*ORÇAMENTO OFICINA*%0A%0A` +
+        `👤 Cliente: ${cliente}%0A` +
+        `📞 Telefone: ${telefone}%0A` +
+        `🚗 Veículo: ${carro}%0A` +
+        `🔢 Placa: ${placa}%0A%0A` +
+        `🛠 Serviço:%0A${servico}%0A%0A` +
+        `📦 Peças:%0A${listaPecas}%0A` +
+        `💰 Peças: R$ ${formatarMoeda(totalPecas)}%0A` +
+        `🔧 Mão de obra: R$ ${formatarMoeda(maoObra)}%0A%0A` +
+        `✅ TOTAL: R$ ${formatarMoeda(totalGeral)}`;
+
+      window.open(`https://wa.me/?text=${mensagem}`, '_blank');
+    }
+
+    function salvarPDF() {
+      window.print();
+    }
+
+    function atualizarOrcamento() {
+      const clienteNome = document.getElementById('clienteNome').value || '-';
+      const clienteTelefone = document.getElementById('clienteTelefone').value || '-';
+      const clienteEndereco = document.getElementById('clienteEndereco').value || '-';
+      const carroModelo = document.getElementById('carroModelo').value || '-';
+      const carroPlaca = document.getElementById('carroPlaca').value || '-';
+      const carroAno = document.getElementById('carroAno').value || '-';
+      const servicoDescricao = document.getElementById('servicoDescricao').value || '-';
+      const maoObra = Number(document.getElementById('maoObra').value) || 0;
+
+      const totalPecas = pecas.reduce(function(total, peca) {
+        return total + peca.preco;
+      }, 0);
+
+      const totalGeral = totalPecas + maoObra;
+
+      document.getElementById('resumoCliente').textContent = clienteNome;
+      document.getElementById('resumoTelefone').textContent = clienteTelefone;
+      document.getElementById('resumoEndereco').textContent = clienteEndereco;
+      document.getElementById('resumoCarro').textContent = carroModelo;
+      document.getElementById('resumoPlaca').textContent = carroPlaca;
+      document.getElementById('resumoAno').textContent = carroAno;
+      document.getElementById('resumoServico').textContent = servicoDescricao;
+
+      document.getElementById('totalPecas').textContent = formatarMoeda(totalPecas);
+      document.getElementById('totalMaoObra').textContent = formatarMoeda(maoObra);
+      document.getElementById('totalGeral').textContent = formatarMoeda(totalGeral);
+
+      atualizarListaPecas();
+    }
+
+    atualizarOrcamento();
+  </script>
+</body>
+</html>
