@@ -157,7 +157,7 @@
 
     .actions {
       display: grid;
-      grid-template-columns: repeat(3, 1fr);
+      grid-template-columns: repeat(4, 1fr);
       gap: 10px;
       margin-top: 18px;
     }
@@ -456,7 +456,7 @@
 <body>
   <div class="container">
     <header>
-      <img src="https://i.postimg.cc/T1T5TdVy/logo-rezes.png" alt="Abraão Rezes" class="logo-topo" />
+      <img src="logo.png" alt="Abraão Rezes" class="logo-topo" />
     </header>
 
     <div class="grid">
@@ -627,27 +627,7 @@
       });
     }
 
-    function adicionarPeca() {
-      const nome = document.getElementById('pecaNome').value.trim();
-      const preco = Number(document.getElementById('pecaPreco').value);
-
-      if (!nome) {
-        alert('Digite o nome da peça.');
-        return;
-      }
-
-      if (!preco || preco <= 0) {
-        alert('Digite um preço válido.');
-        return;
-      }
-
-      pecas.push({ nome, preco });
-
-      document.getElementById('pecaNome').value = '';
-      document.getElementById('pecaPreco').value = '';
-
-      atualizarOrcamento();
-    atualizarServicosSalvos();
+    function adicionarPeca() {$1atualizarOrcamento();
     }
 
     function removerPeca(index) {
@@ -881,6 +861,7 @@
     }
 
     atualizarOrcamento();
+    atualizarServicosSalvos();
   </script>
 </body>
 </html>
