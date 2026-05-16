@@ -182,6 +182,56 @@
       background: #dc2626;
     }
 
+    .btn-finish {
+      background: linear-gradient(135deg, #7c3aed, #4f46e5);
+      color: white;
+      box-shadow: 0 10px 18px rgba(79, 70, 229, 0.24);
+    }
+
+    .btn-finish:hover {
+      filter: brightness(1.08);
+    }
+
+    .saved-card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 12px;
+    }
+
+    .btn-toggle {
+      background: #111827;
+      color: white;
+      padding: 10px 14px;
+      min-height: auto;
+      font-size: 13px;
+    }
+
+    .saved-list {
+      display: grid;
+      gap: 10px;
+    }
+
+    .saved-item {
+      background: #f9fafb;
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 13px;
+      display: grid;
+      gap: 5px;
+    }
+
+    .saved-item strong {
+      color: var(--dark);
+      font-size: 16px;
+    }
+
+    .saved-item span {
+      color: #4b5563;
+      font-size: 14px;
+    }
+
     .btn-print {
       background: var(--success);
       color: white;
@@ -400,7 +450,7 @@
 <body>
   <div class="container">
     <header>
-      <img src="https://i.postimg.cc/T1T5TdVy/logo-rezes.png" alt="Abraão Rezes" class="logo-topo" />
+      <img src="logo.png" alt="Abraão Rezes" class="logo-topo" />
     </header>
 
     <div class="grid">
@@ -523,6 +573,8 @@
       </div>
 
       <div class="actions">
+        <button class="btn-finish" onclick="finalizarSalvarServico()">Finalizar e Salvar Serviço</button>
+
         <button class="btn-whatsapp" onclick="compartilharWhatsApp()">Compartilhar no WhatsApp</button>
 
         <button class="btn-pdf" onclick="salvarPDF()">Salvar em PDF</button>
@@ -530,10 +582,23 @@
         <button class="btn-print" onclick="window.print()">Imprimir Orçamento</button>
       </div>
     </div>
+
+    <div class="card" id="cardServicosSalvos">
+      <div class="saved-card-header">
+        <h2>🚘 Carros Salvos</h2>
+        <button class="btn-toggle" onclick="alternarCardSalvos()" id="btnToggleSalvos">Minimizar</button>
+      </div>
+
+      <div id="conteudoSalvos">
+        <div class="saved-list" id="listaServicosSalvos"></div>
+      </div>
+    </div>
   </div>
 
   <script>
     let pecas = [];
+    let servicosSalvos = JSON.parse(localStorage.getItem('servicosSalvosOficina')) || [];
+    let cardSalvosMinimizado = false;
 
     const campos = [
       'clienteNome',
@@ -576,6 +641,7 @@
       document.getElementById('pecaPreco').value = '';
 
       atualizarOrcamento();
+    atualizarServicosSalvos();
     }
 
     function removerPeca(index) {
@@ -610,6 +676,92 @@
             <td data-label="Peça">${peca.nome}</td>
             <td data-label="Preço">R$ ${formatarMoeda(peca.preco)}</td>
           </tr>
+        `;
+      });
+    }
+
+    function finalizarSalvarServico() {
+      const cliente = document.getElementById('clienteNome').value.trim();
+      const telefone = document.getElementById('clienteTelefone').value.trim();
+      const carro = document.getElementById('carroModelo').value.trim();
+      const placa = document.getElementById('carroPlaca').value.trim();
+      const ano = document.getElementById('carroAno').value.trim();
+      const servico = document.getElementById('servicoDescricao').value.trim();
+      const maoObra = Number(document.getElementById('maoObra').value) || 0;
+
+      if (!cliente || !carro || !placa) {
+        alert('Preencha pelo menos cliente, carro e placa antes de salvar.');
+        return;
+      }
+
+      const totalPecas = pecas.reduce(function(total, peca) {
+        return total + peca.preco;
+      }, 0);
+
+      const totalGeral = totalPecas + maoObra;
+
+      const novoServico = {
+        id: Date.now(),
+        data: new Date().toLocaleDateString('pt-BR'),
+        cliente,
+        telefone,
+        carro,
+        placa,
+        ano,
+        servico: servico || '-',
+        pecas: [...pecas],
+        maoObra,
+        totalGeral
+      };
+
+      servicosSalvos.unshift(novoServico);
+      localStorage.setItem('servicosSalvosOficina', JSON.stringify(servicosSalvos));
+
+      atualizarServicosSalvos();
+      alert('Serviço finalizado e salvo com sucesso!');
+    }
+
+    function alternarCardSalvos() {
+      const conteudo = document.getElementById('conteudoSalvos');
+      const botao = document.getElementById('btnToggleSalvos');
+
+      cardSalvosMinimizado = !cardSalvosMinimizado;
+      conteudo.style.display = cardSalvosMinimizado ? 'none' : 'block';
+      botao.textContent = cardSalvosMinimizado ? 'Mostrar' : 'Minimizar';
+    }
+
+    function removerServicoSalvo(id) {
+      if (!confirm('Deseja remover este serviço salvo?')) return;
+
+      servicosSalvos = servicosSalvos.filter(function(item) {
+        return item.id !== id;
+      });
+
+      localStorage.setItem('servicosSalvosOficina', JSON.stringify(servicosSalvos));
+      atualizarServicosSalvos();
+    }
+
+    function atualizarServicosSalvos() {
+      const lista = document.getElementById('listaServicosSalvos');
+      lista.innerHTML = '';
+
+      if (servicosSalvos.length === 0) {
+        lista.innerHTML = '<div class="empty-message">Nenhum carro salvo ainda.</div>';
+        return;
+      }
+
+      servicosSalvos.forEach(function(item) {
+        lista.innerHTML += `
+          <div class="saved-item">
+            <strong>${item.carro} - ${item.placa}</strong>
+            <span>Cliente: ${item.cliente}</span>
+            <span>Telefone: ${item.telefone || '-'}</span>
+            <span>Ano: ${item.ano || '-'}</span>
+            <span>Serviço: ${item.servico}</span>
+            <span>Data: ${item.data}</span>
+            <span><strong>Total:</strong> R$ ${formatarMoeda(item.totalGeral)}</span>
+            <button class="btn-danger" onclick="removerServicoSalvo(${item.id})">Remover</button>
+          </div>
         `;
       });
     }
