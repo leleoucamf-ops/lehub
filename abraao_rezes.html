@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>SISTEMA OFICINA - SERVIÇO, CLIENTES, VEÍCULOS E FINANCEIRO</title>
+  <title>SISTEMA OFICINA - SERVIÇO, CLIENTES, VEÍCULOS, FORNECEDORES E FINANCEIRO</title>
   <style>
     :root {
       --primary: #2563eb;
@@ -104,7 +104,7 @@
 
     .tabs {
       display: grid;
-      grid-template-columns: repeat(4, minmax(0, 1fr));
+      grid-template-columns: repeat(5, minmax(0, 1fr));
       gap: 10px;
       background: rgba(15,23,42,.78);
       border: 1px solid rgba(255,255,255,.10);
@@ -327,13 +327,15 @@
   </div>
 
   <nav class="tabs" aria-label="MENU PRINCIPAL">
-    <button class="tab-btn active" onclick="abrirAba('servico', this)">🔧 SERVIÇO</button>
+    <button class="tab-btn active" onclick="abrirAba('servico', this)">SERVIÇO</button>
 
-    <button class="tab-btn" onclick="abrirAba('clientes', this)">👤 CLIENTES</button>
+    <button class="tab-btn" onclick="abrirAba('clientes', this)">CLIENTES</button>
 
-    <button class="tab-btn" onclick="abrirAba('veiculos', this)">🚗 VEÍCULOS</button>
+    <button class="tab-btn" onclick="abrirAba('veiculos', this)">VEÍCULOS</button>
 
-    <button class="tab-btn" onclick="abrirAba('financeiro', this)">💰 FINANCEIRO</button>
+    <button class="tab-btn" onclick="abrirAba('fornecedores', this)">FORNECEDORES</button>
+
+    <button class="tab-btn" onclick="abrirAba('financeiro', this)">FINANCEIRO</button>
   </nav>
 </header>
 
@@ -361,12 +363,14 @@
 
       <div class="card">
         <h2>🔧 Adicionar Peça</h2>
-        <div class="grid">
+        <p class="subinfo">Toda peça adicionada ao serviço precisa estar vinculada a um fornecedor cadastrado. Esse valor fica registrado para fechamento mensal.</p>
+        <div class="grid-3">
+          <div class="form-group"><label>Fornecedor</label><select id="pecaFornecedor"><option value="">Cadastre ou selecione um fornecedor</option></select></div>
           <div class="form-group"><label>Nome da peça</label><input type="text" id="pecaNome" placeholder="Ex: Pastilha de freio" /></div>
-          <div class="form-group"><label>Preço da peça</label><input type="number" id="pecaPreco" placeholder="Ex: 120" step="0.01" /></div>
+          <div class="form-group"><label>Valor da peça</label><input type="number" id="pecaPreco" placeholder="Ex: 120" step="0.01" /></div>
         </div>
         <button class="btn-primary w-full" onclick="adicionarPeca()">Adicionar Peça</button>
-        <div class="table-wrapper"><table class="responsive-table"><thead><tr><th>Peça</th><th>Preço</th><th>Ação</th></tr></thead><tbody id="listaPecas"></tbody></table></div>
+        <div class="table-wrapper"><table class="responsive-table"><thead><tr><th>Fornecedor</th><th>Peça</th><th>Valor</th><th>Ação</th></tr></thead><tbody id="listaPecas"></tbody></table></div>
       </div>
 
       <div class="card">
@@ -387,7 +391,7 @@
           <p><strong>Serviço:</strong> <span id="resumoServico">-</span></p>
         </div>
         <h3>Peças</h3>
-        <div class="table-wrapper"><table class="responsive-table"><thead><tr><th>Peça</th><th>Preço</th></tr></thead><tbody id="resumoPecas"></tbody></table></div>
+        <div class="table-wrapper"><table class="responsive-table"><thead><tr><th>Fornecedor</th><th>Peça</th><th>Valor</th></tr></thead><tbody id="resumoPecas"></tbody></table></div>
         <div class="totais"><div class="resumo"><p><strong>Total em peças:</strong> R$ <span id="totalPecas">0,00</span></p><p><strong>Mão de obra:</strong> R$ <span id="totalMaoObra">0,00</span></p><p class="total">Total: R$ <span id="totalGeral">0,00</span></p></div></div>
         <div class="actions">
           <button class="btn-finish" onclick="finalizarSalvarServico()">Finalizar e Salvar Serviço</button>
@@ -438,6 +442,39 @@
       <div class="card"><h2>📌 Histórico do Veículo</h2><div id="detalhesVeiculo" class="resumo"><p class="empty-message">Selecione um veículo para ver o histórico de serviços.</p></div></div>
     </main>
 
+    <main id="aba-fornecedores" class="tab-content">
+      <div class="grid">
+        <div class="card">
+          <h2>🏢 Cadastro de Fornecedor</h2>
+          <p class="subinfo">Cadastre os fornecedores para vincular peças aos serviços e facilitar o fechamento mensal.</p>
+          <div class="form-group"><label>Nome do fornecedor</label><input id="cadFornecedorNome" type="text" placeholder="Ex: Auto Peças Central" /></div>
+          <div class="form-group"><label>Telefone</label><input id="cadFornecedorTelefone" type="tel" placeholder="Ex: (15) 99999-9999" /></div>
+          <div class="form-group"><label>Observação</label><textarea id="cadFornecedorObs" placeholder="Ex: Peças de suspensão, freio, motor..."></textarea></div>
+          <div class="actions-2"><button class="btn-primary" onclick="salvarFornecedorAba()">Salvar Fornecedor</button><button class="btn-dark" onclick="limparCadastroFornecedor()">Limpar</button></div>
+        </div>
+
+        <div class="card">
+          <h2>🔎 Buscar Fornecedor</h2>
+          <div class="form-group"><label>Buscar por nome, telefone ou observação</label><input id="buscaFornecedor" type="text" placeholder="Digite para buscar" oninput="renderFornecedores()" /></div>
+          <div class="list" id="listaFornecedores"></div>
+        </div>
+      </div>
+
+      <div class="card">
+        <h2>📦 Fechamento Mensal de Fornecedor</h2>
+        <div class="grid">
+          <div class="form-group"><label>Fornecedor</label><select id="filtroFornecedorFechamento" onchange="renderFechamentoFornecedor()"><option value="">Todos os fornecedores</option></select></div>
+          <div class="form-group"><label>Mês do fechamento</label><input id="filtroMesFornecedor" type="month" onchange="renderFechamentoFornecedor()" /></div>
+        </div>
+        <div class="grid-3">
+          <div class="totais"><p><strong>Total em peças</strong></p><p class="total">R$ <span id="fornTotalPecas">0,00</span></p></div>
+          <div class="totais"><p><strong>Quantidade de peças</strong></p><p class="total"><span id="fornQtdPecas">0</span></p></div>
+          <div class="totais"><p><strong>Serviços vinculados</strong></p><p class="total"><span id="fornQtdServicos">0</span></p></div>
+        </div>
+        <div class="table-wrapper"><table class="responsive-table"><thead><tr><th>Data</th><th>Fornecedor</th><th>Peça</th><th>Cliente</th><th>Placa</th><th>Valor</th></tr></thead><tbody id="listaFechamentoFornecedor"></tbody></table></div>
+      </div>
+    </main>
+
     <main id="aba-financeiro" class="tab-content">
       <div class="card">
         <h2>💰 Financeiro</h2>
@@ -445,6 +482,7 @@
           <div class="totais"><p><strong>Total de serviços</strong></p><p class="total">R$ <span id="finTotal">0,00</span></p></div>
           <div class="totais"><p><strong>Total em peças</strong></p><p class="total">R$ <span id="finPecas">0,00</span></p></div>
           <div class="totais"><p><strong>Total mão de obra</strong></p><p class="total">R$ <span id="finMaoObra">0,00</span></p></div>
+          <div class="totais"><p><strong>Peças por fornecedor</strong></p><p class="total">R$ <span id="finFornecedores">0,00</span></p></div>
         </div>
       </div>
       <div class="card">
@@ -458,6 +496,7 @@
   <script>
     let clientes = JSON.parse(localStorage.getItem('oficinaClientes')) || [];
     let veiculos = JSON.parse(localStorage.getItem('oficinaVeiculos')) || [];
+    let fornecedores = JSON.parse(localStorage.getItem('oficinaFornecedores')) || [];
     let servicos = JSON.parse(localStorage.getItem('oficinaServicos')) || [];
     let pecas = [];
 
@@ -493,11 +532,61 @@
     function salvarDados() {
       localStorage.setItem('oficinaClientes', JSON.stringify(clientes));
       localStorage.setItem('oficinaVeiculos', JSON.stringify(veiculos));
+      localStorage.setItem('oficinaFornecedores', JSON.stringify(fornecedores));
       localStorage.setItem('oficinaServicos', JSON.stringify(servicos));
     }
     function nomeCliente(telefone) {
       const c = clientes.find(item => item.telefone === telefone);
       return c ? c.nome : '-';
+    }
+
+    function gerarIdFornecedor(nome, telefone) {
+      const base = String(nome || 'FORNECEDOR').trim().toUpperCase().replace(/[^A-Z0-9]/g, '-').replace(/-+/g, '-');
+      const tel = somenteNumeros(telefone);
+      return (base || 'FORNECEDOR') + '-' + (tel || Date.now());
+    }
+
+    function nomeFornecedor(id) {
+      const f = fornecedores.find(item => item.id === id);
+      return f ? f.nome : '-';
+    }
+
+    function upsertFornecedor(id, nome, telefone, obs) {
+      nome = String(nome || '').trim().toUpperCase();
+      telefone = somenteNumeros(telefone);
+      obs = String(obs || '').trim().toUpperCase();
+      if (!nome) { alert('Preencha o nome do fornecedor.'); return null; }
+
+      id = id || gerarIdFornecedor(nome, telefone);
+      let fornecedor = fornecedores.find(f => f.id === id);
+
+      if (fornecedor) {
+        fornecedor.nome = nome;
+        fornecedor.telefone = telefone;
+        fornecedor.obs = obs;
+      } else {
+        fornecedor = { id, nome, telefone, obs, criadoEm: new Date().toLocaleDateString('pt-BR') };
+        fornecedores.unshift(fornecedor);
+      }
+
+      salvarDados();
+      renderTudo();
+      return fornecedor;
+    }
+
+    function carregarSelectFornecedores() {
+      const selects = ['pecaFornecedor', 'filtroFornecedorFechamento'];
+      selects.forEach(function(id) {
+        const select = document.getElementById(id);
+        if (!select) return;
+        const valorAtual = select.value;
+        const primeiraOpcao = id === 'pecaFornecedor' ? 'Selecione o fornecedor' : 'Todos os fornecedores';
+        select.innerHTML = `<option value="">${primeiraOpcao}</option>`;
+        fornecedores.forEach(function(f) {
+          select.innerHTML += `<option value="${f.id}">${f.nome}${f.telefone ? ' - ' + f.telefone : ''}</option>`;
+        });
+        select.value = valorAtual;
+      });
     }
 
     function upsertCliente(telefone, nome, endereco) {
@@ -582,10 +671,15 @@
     }
 
     function adicionarPeca() {
+      const fornecedorId = document.getElementById('pecaFornecedor').value;
+      const fornecedor = fornecedores.find(f => f.id === fornecedorId);
       const nome = document.getElementById('pecaNome').value.trim().toUpperCase();
       const preco = Number(document.getElementById('pecaPreco').value) || 0;
-      if (!nome || preco <= 0) { alert('Informe o nome e o preço da peça.'); return; }
-      pecas.push({ nome, preco });
+
+      if (!fornecedorId || !fornecedor) { alert('Selecione um fornecedor cadastrado para esta peça.'); return; }
+      if (!nome || preco <= 0) { alert('Informe o nome e o valor da peça.'); return; }
+
+      pecas.push({ fornecedorId, fornecedorNome: fornecedor.nome, nome, preco });
       document.getElementById('pecaNome').value = '';
       document.getElementById('pecaPreco').value = '';
       atualizarOrcamento();
@@ -598,13 +692,13 @@
       const resumo = document.getElementById('resumoPecas');
       lista.innerHTML = ''; resumo.innerHTML = '';
       if (pecas.length === 0) {
-        lista.innerHTML = '<tr><td colspan="3" class="empty-message">Nenhuma peça adicionada ainda.</td></tr>';
-        resumo.innerHTML = '<tr><td colspan="2" class="empty-message">Nenhuma peça adicionada ainda.</td></tr>';
+        lista.innerHTML = '<tr><td colspan="4" class="empty-message">Nenhuma peça adicionada ainda.</td></tr>';
+        resumo.innerHTML = '<tr><td colspan="3" class="empty-message">Nenhuma peça adicionada ainda.</td></tr>';
         return;
       }
       pecas.forEach(function(peca, index) {
-        lista.innerHTML += `<tr><td data-label="Peça">${peca.nome}</td><td data-label="Preço">R$ ${formatarMoeda(peca.preco)}</td><td data-label="Ação"><button class="btn-danger" onclick="removerPeca(${index})">Remover</button></td></tr>`;
-        resumo.innerHTML += `<tr><td data-label="Peça">${peca.nome}</td><td data-label="Preço">R$ ${formatarMoeda(peca.preco)}</td></tr>`;
+        lista.innerHTML += `<tr><td data-label="Fornecedor">${peca.fornecedorNome || nomeFornecedor(peca.fornecedorId)}</td><td data-label="Peça">${peca.nome}</td><td data-label="Valor">R$ ${formatarMoeda(peca.preco)}</td><td data-label="Ação"><button class="btn-danger" onclick="removerPeca(${index})">Remover</button></td></tr>`;
+        resumo.innerHTML += `<tr><td data-label="Fornecedor">${peca.fornecedorNome || nomeFornecedor(peca.fornecedorId)}</td><td data-label="Peça">${peca.nome}</td><td data-label="Valor">R$ ${formatarMoeda(peca.preco)}</td></tr>`;
       });
     }
 
@@ -654,7 +748,7 @@
     }
 
     function limparFormularioServico() {
-      ['clienteNome','clienteTelefone','clienteEndereco','carroModelo','carroPlaca','carroAno','servicoDescricao','maoObra','pecaNome','pecaPreco'].forEach(id => document.getElementById(id).value = '');
+      ['clienteNome','clienteTelefone','clienteEndereco','carroModelo','carroPlaca','carroAno','servicoDescricao','maoObra','pecaNome','pecaPreco','pecaFornecedor'].forEach(id => document.getElementById(id).value = '');
       document.getElementById('selectVeiculoCliente').innerHTML = '<option value="">Digite o telefone para listar</option>';
       pecas = [];
       atualizarOrcamento();
@@ -695,7 +789,7 @@
       const maoObra = Number(document.getElementById('maoObra').value) || 0;
       const totalPecas = pecas.reduce((total, peca) => total + peca.preco, 0);
       let listaPecas = '';
-      pecas.forEach(peca => { listaPecas += `• ${peca.nome} - R$ ${formatarMoeda(peca.preco)}%0A`; });
+      pecas.forEach(peca => { listaPecas += `• ${peca.nome} (${peca.fornecedorNome || nomeFornecedor(peca.fornecedorId)}) - R$ ${formatarMoeda(peca.preco)}%0A`; });
       const mensagem = `*SERVIÇO OFICINA*%0A%0A👤 Cliente: ${cliente}%0A📞 Telefone: ${telefone}%0A🚗 Veículo: ${carro}%0A🔢 Placa: ${placa}%0A%0A🛠 Serviço:%0A${servico}%0A%0A📦 Peças:%0A${listaPecas || '-'}%0A💰 Peças: R$ ${formatarMoeda(totalPecas)}%0A🔧 Mão de obra: R$ ${formatarMoeda(maoObra)}%0A%0A✅ TOTAL: R$ ${formatarMoeda(totalPecas + maoObra)}`;
       window.open(`https://wa.me/?text=${mensagem}`, '_blank');
     }
@@ -773,6 +867,130 @@
       el.innerHTML = `<p><strong>Veículo:</strong> ${v.modelo}</p><p><strong>Placa:</strong> ${v.placa}</p><p><strong>Ano:</strong> ${v.ano || '-'}</p><p><strong>Cliente:</strong> ${nomeCliente(v.telefone)}</p><p><strong>Telefone/ID:</strong> ${v.telefone}</p><h3>Histórico de serviços</h3>${ss.length ? ss.map(s => `<p>🔧 ${s.data} - ${s.descricao} - R$ ${formatarMoeda(s.totalGeral)} <button class="btn-small btn-dark" onclick="carregarServico(${s.id})">Abrir</button></p>`).join('') : '<p>Nenhum serviço para este veículo.</p>'}`;
     }
 
+
+    function salvarFornecedorAba() {
+      const f = upsertFornecedor(
+        document.getElementById('cadFornecedorId') ? document.getElementById('cadFornecedorId').value : '',
+        document.getElementById('cadFornecedorNome').value,
+        document.getElementById('cadFornecedorTelefone').value,
+        document.getElementById('cadFornecedorObs').value
+      );
+      if (f) { limparCadastroFornecedor(); alert('Fornecedor salvo com sucesso!'); }
+    }
+
+    function limparCadastroFornecedor() {
+      ['cadFornecedorNome','cadFornecedorTelefone','cadFornecedorObs'].forEach(id => document.getElementById(id).value = '');
+      const hidden = document.getElementById('cadFornecedorId');
+      if (hidden) hidden.value = '';
+    }
+
+    function editarFornecedor(id) {
+      const f = fornecedores.find(item => item.id === id);
+      if (!f) return;
+      let hidden = document.getElementById('cadFornecedorId');
+      if (!hidden) {
+        hidden = document.createElement('input');
+        hidden.type = 'hidden';
+        hidden.id = 'cadFornecedorId';
+        document.getElementById('cadFornecedorNome').parentElement.appendChild(hidden);
+      }
+      hidden.value = f.id;
+      document.getElementById('cadFornecedorNome').value = f.nome;
+      document.getElementById('cadFornecedorTelefone').value = f.telefone || '';
+      document.getElementById('cadFornecedorObs').value = f.obs || '';
+      document.getElementById('filtroFornecedorFechamento').value = f.id;
+      renderFechamentoFornecedor();
+    }
+
+    function removerFornecedor(id) {
+      const possuiPeca = servicos.some(s => (s.pecas || []).some(p => p.fornecedorId === id)) || pecas.some(p => p.fornecedorId === id);
+      if (possuiPeca) {
+        alert('Este fornecedor possui peças vinculadas em serviços. Para manter o histórico correto, ele não pode ser removido.');
+        return;
+      }
+      if (!confirm('Remover fornecedor?')) return;
+      fornecedores = fornecedores.filter(f => f.id !== id);
+      salvarDados();
+      renderTudo();
+    }
+
+    function renderFornecedores() {
+      const buscaEl = document.getElementById('buscaFornecedor');
+      const lista = document.getElementById('listaFornecedores');
+      if (!buscaEl || !lista) return;
+
+      const busca = String(buscaEl.value || '').toLowerCase();
+      lista.innerHTML = '';
+
+      const filtrados = fornecedores.filter(f =>
+        String(f.nome).toLowerCase().includes(busca) ||
+        String(f.telefone || '').includes(somenteNumeros(busca)) ||
+        String(f.obs || '').toLowerCase().includes(busca)
+      );
+
+      if (filtrados.length === 0) {
+        lista.innerHTML = '<div class="empty-message">Nenhum fornecedor encontrado.</div>';
+        return;
+      }
+
+      filtrados.forEach(function(f) {
+        const itens = [];
+        servicos.forEach(function(s) {
+          (s.pecas || []).forEach(function(p) {
+            if (p.fornecedorId === f.id) itens.push({ servico: s, peca: p });
+          });
+        });
+
+        const total = itens.reduce((t, item) => t + Number(item.peca.preco || 0), 0);
+        lista.innerHTML += `<div class="item" onclick="editarFornecedor('${f.id}')"><strong>${f.nome}</strong><span>Telefone: ${f.telefone || '-'}</span><span>Observação: ${f.obs || '-'}</span><span class="pill">${itens.length} peça(s) • R$ ${formatarMoeda(total)}</span><button class="btn-danger" onclick="event.stopPropagation(); removerFornecedor('${f.id}')">Remover</button></div>`;
+      });
+    }
+
+    function obterPecasFornecedorFiltradas() {
+      const fornecedorId = document.getElementById('filtroFornecedorFechamento') ? document.getElementById('filtroFornecedorFechamento').value : '';
+      const mes = document.getElementById('filtroMesFornecedor') ? document.getElementById('filtroMesFornecedor').value : '';
+      const itens = [];
+
+      servicos.forEach(function(s) {
+        const partesData = String(s.data || '').split('/');
+        const mesServico = partesData.length === 3 ? `${partesData[2]}-${partesData[1]}` : '';
+
+        if (mes && mesServico !== mes) return;
+
+        (s.pecas || []).forEach(function(p) {
+          if (fornecedorId && p.fornecedorId !== fornecedorId) return;
+          itens.push({ servico: s, peca: p });
+        });
+      });
+
+      return itens;
+    }
+
+    function renderFechamentoFornecedor() {
+      const tbody = document.getElementById('listaFechamentoFornecedor');
+      if (!tbody) return;
+
+      const itens = obterPecasFornecedorFiltradas();
+      const total = itens.reduce((t, item) => t + Number(item.peca.preco || 0), 0);
+      const servicosUnicos = new Set(itens.map(item => item.servico.id));
+
+      document.getElementById('fornTotalPecas').textContent = formatarMoeda(total);
+      document.getElementById('fornQtdPecas').textContent = itens.length;
+      document.getElementById('fornQtdServicos').textContent = servicosUnicos.size;
+
+      tbody.innerHTML = '';
+      if (itens.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="6" class="empty-message">Nenhuma peça encontrada para este fechamento.</td></tr>';
+        return;
+      }
+
+      itens.forEach(function(item) {
+        const s = item.servico;
+        const p = item.peca;
+        tbody.innerHTML += `<tr><td data-label="Data">${s.data}</td><td data-label="Fornecedor">${p.fornecedorNome || nomeFornecedor(p.fornecedorId)}</td><td data-label="Peça">${p.nome}</td><td data-label="Cliente">${s.cliente}</td><td data-label="Placa">${s.placa}</td><td data-label="Valor">R$ ${formatarMoeda(p.preco)}</td></tr>`;
+      });
+    }
+
     function renderFinanceiro() {
       const busca = String(document.getElementById('buscaServicoFinanceiro').value || '').toLowerCase();
       const tbody = document.getElementById('listaFinanceiro'); tbody.innerHTML = '';
@@ -783,6 +1001,7 @@
       document.getElementById('finTotal').textContent = formatarMoeda(total);
       document.getElementById('finPecas').textContent = formatarMoeda(totalPecas);
       document.getElementById('finMaoObra').textContent = formatarMoeda(totalMao);
+      document.getElementById('finFornecedores').textContent = formatarMoeda(totalPecas);
       if (filtrados.length === 0) { tbody.innerHTML = '<tr><td colspan="7" class="empty-message">Nenhum serviço encontrado.</td></tr>'; return; }
       filtrados.forEach(s => {
         tbody.innerHTML += `<tr><td data-label="Data">${s.data}</td><td data-label="Cliente">${s.cliente}</td><td data-label="Telefone">${s.telefone}</td><td data-label="Veículo">${s.carro}</td><td data-label="Placa">${s.placa}</td><td data-label="Total">R$ ${formatarMoeda(s.totalGeral)}</td><td data-label="Ação"><button class="btn-small btn-dark" onclick="carregarServico(${s.id})">Abrir</button> <button class="btn-danger" onclick="removerServico(${s.id})">Remover</button></td></tr>`;
@@ -791,8 +1010,11 @@
 
     function renderTudo() {
       carregarSelectVeiculosDoCliente();
+      carregarSelectFornecedores();
       renderClientes();
       renderVeiculos();
+      renderFornecedores();
+      renderFechamentoFornecedor();
       renderFinanceiro();
       atualizarOrcamento();
     }
