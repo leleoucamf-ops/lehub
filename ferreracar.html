@@ -1,0 +1,803 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>LEHUB - SISTEMA OFICINA</title>
+  <style>
+    :root {
+      --primary: #2563eb;
+      --primary-dark: #1d4ed8;
+      --success: #16a34a;
+      --danger: #dc2626;
+      --warning: #f59e0b;
+      --dark: #111827;
+      --muted: #6b7280;
+      --border: #e5e7eb;
+      --card: rgba(255,255,255,.94);
+      --radius: 18px;
+      --shadow: 0 14px 34px rgba(15, 23, 42, 0.14);
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: Arial, Helvetica, sans-serif; }
+
+    html { scroll-behavior: smooth; -webkit-text-size-adjust: 100%; }
+
+    body, button, input, textarea, select, label, h1, h2, h3, p, span, strong, th, td, option {
+      text-transform: uppercase;
+    }
+
+    input::placeholder, textarea::placeholder { text-transform: uppercase; color: #9ca3af; }
+
+    body {
+      min-height: 100vh;
+      padding: 18px;
+      color: var(--dark);
+      background:
+        radial-gradient(circle at top left, rgba(37,99,235,.22), transparent 36%),
+        radial-gradient(circle at bottom right, rgba(239,68,68,.15), transparent 32%),
+        #020617;
+    }
+
+    .container { max-width: 1180px; margin: 0 auto; }
+
+    header { text-align: center; padding: 10px 0 16px; }
+
+    .brand {
+      width: min(100%, 520px);
+      min-height: 118px;
+      display: grid;
+      place-items: center;
+      margin: 0 auto 14px;
+      border-radius: 24px;
+      background: linear-gradient(145deg, rgba(15,23,42,.88), rgba(30,41,59,.70));
+      border: 1px solid rgba(255,255,255,.14);
+      box-shadow: 0 18px 38px rgba(0,0,0,.28), inset 0 1px 0 rgba(255,255,255,.10);
+      overflow: hidden;
+      position: relative;
+    }
+
+    .brand::before {
+      content: '';
+      position: absolute;
+      inset: -40%;
+      background: radial-gradient(circle, rgba(37,99,235,.28), transparent 46%);
+      pointer-events: none;
+    }
+
+    .logo-topo {
+      width: 100%;
+      max-height: 150px;
+      object-fit: contain;
+      display: block;
+      padding: 14px 18px;
+      position: relative;
+      z-index: 2;
+      filter: drop-shadow(0 12px 26px rgba(37, 99, 235, 0.30));
+    }
+
+    .logo-fallback {
+      display: none;
+      position: relative;
+      z-index: 2;
+      padding: 22px 18px;
+      color: white;
+      text-align: center;
+      line-height: 1.1;
+    }
+
+    .logo-fallback strong {
+      display: block;
+      font-size: clamp(28px, 7vw, 48px);
+      font-weight: 1000;
+      letter-spacing: .06em;
+    }
+
+    .logo-fallback span {
+      display: block;
+      margin-top: 8px;
+      color: #cbd5e1;
+      font-size: clamp(12px, 3vw, 16px);
+      font-weight: 900;
+      letter-spacing: .22em;
+    }
+
+    .tabs {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 10px;
+      background: rgba(15,23,42,.78);
+      border: 1px solid rgba(255,255,255,.10);
+      border-radius: 20px;
+      padding: 10px;
+      position: sticky;
+      top: 10px;
+      z-index: 10;
+      backdrop-filter: blur(10px);
+      box-shadow: 0 16px 30px rgba(0,0,0,.22);
+    }
+
+    .tab-btn {
+      color: white;
+      background: rgba(255,255,255,.08);
+      border: 1px solid rgba(255,255,255,.10);
+      border-radius: 15px;
+      padding: 13px 10px;
+      cursor: pointer;
+      font-weight: 900;
+      letter-spacing: .02em;
+      transition: .2s ease;
+      min-height: 48px;
+      white-space: nowrap;
+    }
+
+    .tab-btn:hover, .tab-btn.active {
+      background: linear-gradient(135deg, var(--primary), #4f46e5);
+      transform: translateY(-1px);
+      box-shadow: 0 12px 22px rgba(37,99,235,.25);
+    }
+
+    .tab-content { display: none; margin-top: 18px; }
+    .tab-content.active { display: block; }
+
+    .grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px; }
+    .grid-3 { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; }
+
+    .card {
+      background: var(--card);
+      backdrop-filter: blur(8px);
+      padding: 22px;
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      border: 1px solid rgba(229,231,235,.88);
+      margin-bottom: 18px;
+    }
+
+    .card h2 { margin-bottom: 16px; font-size: 20px; display: flex; align-items: center; gap: 8px; }
+    .card h3 { margin: 18px 0 10px; font-size: 17px; }
+
+    .subinfo {
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.45;
+      margin: -6px 0 16px;
+    }
+
+    .form-group { margin-bottom: 13px; }
+    label { display: block; margin-bottom: 7px; font-weight: 800; font-size: 14px; color: #374151; }
+
+    input, textarea, select {
+      width: 100%;
+      padding: 13px 14px;
+      border: 1px solid #d1d5db;
+      border-radius: 13px;
+      font-size: 16px;
+      background: #fff;
+      outline: none;
+      transition: .2s ease;
+    }
+
+    input:focus, textarea:focus, select:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 4px rgba(37,99,235,.12);
+    }
+
+    textarea { min-height: 92px; resize: vertical; }
+
+    button {
+      border: none;
+      border-radius: 13px;
+      padding: 13px 18px;
+      cursor: pointer;
+      font-size: 15px;
+      font-weight: 900;
+      min-height: 46px;
+      transition: .2s ease;
+    }
+    button:active { transform: scale(.98); }
+
+    .btn-primary { background: var(--primary); color: white; box-shadow: 0 10px 18px rgba(37,99,235,.22); }
+    .btn-primary:hover { background: var(--primary-dark); }
+    .btn-success { background: var(--success); color: white; box-shadow: 0 10px 18px rgba(22,163,74,.20); }
+    .btn-whatsapp { background: #25d366; color: white; box-shadow: 0 10px 18px rgba(37,211,102,.20); }
+    .btn-pdf { background: #ef4444; color: white; box-shadow: 0 10px 18px rgba(239,68,68,.20); }
+    .btn-finish { background: linear-gradient(135deg, #7c3aed, #4f46e5); color: white; box-shadow: 0 10px 18px rgba(79,70,229,.24); }
+    .btn-dark { background: #111827; color: white; }
+    .btn-danger { background: #fee2e2; color: var(--danger); padding: 8px 11px; min-height: auto; font-size: 13px; }
+    .btn-small { padding: 8px 11px; min-height: auto; font-size: 13px; }
+    .w-full { width: 100%; }
+
+    .actions { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-top: 18px; }
+    .actions-2 { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; }
+
+    .table-wrapper { width: 100%; overflow-x: auto; border-radius: 15px; border: 1px solid var(--border); margin-top: 12px; }
+    table { width: 100%; border-collapse: collapse; font-size: 14px; background: white; }
+    th, td { border-bottom: 1px solid var(--border); padding: 12px; text-align: left; vertical-align: middle; }
+    tr:last-child td { border-bottom: none; }
+    th { background: #f9fafb; color: #374151; font-size: 13px; text-transform: uppercase; letter-spacing: .03em; }
+
+    .resumo { display: grid; gap: 9px; }
+    .resumo p { font-size: 15px; line-height: 1.45; color: #374151; }
+    .resumo strong { color: var(--dark); }
+
+    .totais { background: #f9fafb; border: 1px solid var(--border); border-radius: 15px; padding: 15px; margin-top: 16px; }
+    .total { font-size: clamp(24px, 5vw, 34px) !important; font-weight: 900; color: var(--success) !important; margin-top: 6px; }
+    .empty-message { color: var(--muted); text-align: center; padding: 14px; font-size: 14px; }
+
+    .list { display: grid; gap: 10px; }
+    .item {
+      cursor: pointer;
+      background: #f9fafb;
+      border: 1px solid var(--border);
+      border-radius: 15px;
+      padding: 14px;
+      display: grid;
+      gap: 5px;
+      transition: .2s ease;
+    }
+    .item:hover { border-color: var(--primary); box-shadow: 0 8px 18px rgba(37,99,235,.12); }
+    .item strong { font-size: 16px; }
+    .item span { color: #4b5563; font-size: 14px; }
+
+    .pill {
+      display: inline-flex;
+      width: fit-content;
+      padding: 5px 9px;
+      border-radius: 999px;
+      background: #dbeafe;
+      color: #1d4ed8;
+      font-weight: 900;
+      font-size: 12px;
+    }
+
+    @media (max-width: 900px) {
+      body { padding: 12px; }
+      .grid, .grid-3 { grid-template-columns: 1fr; gap: 0; }
+      .actions { grid-template-columns: 1fr; }
+      .tabs { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .brand { min-height: 105px; border-radius: 22px; }
+      .logo-topo { max-height: 125px; }
+    }
+
+    @media (max-width: 560px) {
+      body { padding: 8px; }
+      .container { max-width: 100%; }
+      header { padding: 6px 0 10px; }
+      .brand { width: 100%; min-height: 82px; margin-bottom: 10px; border-radius: 18px; }
+      .logo-topo { max-height: 96px; padding: 10px 12px; }
+      .logo-fallback { padding: 16px 12px; }
+      .card { padding: 16px; border-radius: 17px; margin-bottom: 12px; }
+      .card h2 { font-size: 17px; line-height: 1.25; }
+      .card h3 { font-size: 15px; }
+      .subinfo { font-size: 12px; line-height: 1.35; }
+      .tabs {
+        display: flex;
+        gap: 8px;
+        padding: 8px;
+        overflow-x: auto;
+        border-radius: 17px;
+        top: 6px;
+        scrollbar-width: none;
+        -webkit-overflow-scrolling: touch;
+      }
+      .tabs::-webkit-scrollbar { display: none; }
+      .tab-btn { flex: 0 0 auto; min-width: 126px; font-size: 12px; padding: 10px 9px; min-height: 44px; }
+      input, textarea, button, select { font-size: 16px; min-height: 46px; }
+      label { font-size: 12px; }
+      .actions-2 { grid-template-columns: 1fr; }
+      .item { padding: 12px; }
+      .item strong { font-size: 14px; }
+      .item span { font-size: 12px; }
+      .total { font-size: 25px !important; overflow-wrap: anywhere; }
+
+      .table-wrapper { border: none; overflow: visible; }
+      table.responsive-table, table.responsive-table thead, table.responsive-table tbody,
+      table.responsive-table th, table.responsive-table td, table.responsive-table tr { display: block; width: 100%; }
+      table.responsive-table thead { display: none; }
+      table.responsive-table tr { background: #fff; border: 1px solid var(--border); border-radius: 14px; padding: 10px; margin-bottom: 10px; box-shadow: 0 6px 14px rgba(15,23,42,.05); }
+      table.responsive-table td { border: none; padding: 8px 4px; display: flex; justify-content: space-between; gap: 12px; align-items: center; text-align: right; overflow-wrap: anywhere; }
+      table.responsive-table td::before { content: attr(data-label); font-weight: 900; color: #374151; min-width: 78px; text-align: left; }
+      table.responsive-table td:last-child { display: block; text-align: left; }
+      table.responsive-table td:last-child::before { display: none; }
+      .btn-danger, .btn-small { width: 100%; margin-top: 6px; }
+    }
+
+    @media (max-width: 380px) {
+      .tab-btn { min-width: 112px; font-size: 11px; }
+      .card { padding: 14px; }
+      .logo-fallback strong { font-size: 25px; }
+      .logo-fallback span { letter-spacing: .16em; }
+    }
+
+    @media print {
+      body { background: white; padding: 0; }
+      header, .tabs, .card:not(.orcamento-final), .actions { display: none !important; }
+      .container { max-width: 100%; }
+      .tab-content { display: block !important; margin: 0; }
+      .orcamento-final { box-shadow: none; border: none; }
+      .table-wrapper { overflow: visible; }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+<header>
+  <div class="brand">
+    <img src="https://i.postimg.cc/RV3J4zCs/logofc.png" alt="LOGO DA OFICINA" class="logo-topo" />
+  </div>
+
+  <nav class="tabs" aria-label="MENU PRINCIPAL">
+    <button class="tab-btn active" onclick="abrirAba('servico', this)">🔧 SERVIÇO</button>
+
+    <button class="tab-btn" onclick="abrirAba('clientes', this)">👤 CLIENTES</button>
+
+    <button class="tab-btn" onclick="abrirAba('veiculos', this)">🚗 VEÍCULOS</button>
+
+    <button class="tab-btn" onclick="abrirAba('financeiro', this)">💰 FINANCEIRO</button>
+  </nav>
+</header>
+
+    <main id="aba-servico" class="tab-content active">
+      <div class="grid">
+        <div class="card">
+          <h2>👤 Dados do Cliente</h2>
+          <p class="subinfo">O telefone é o ID principal do cliente. Ao digitar um telefone já cadastrado, o sistema carrega os dados automaticamente.</p>
+          <div class="form-group"><label>Telefone do cliente</label><input type="tel" id="clienteTelefone" placeholder="Ex: (15) 99999-9999" onblur="buscarClientePorTelefone()" /></div>
+          <div class="form-group"><label>Nome do cliente</label><input type="text" id="clienteNome" placeholder="Ex: João Silva" /></div>
+          <div class="form-group"><label>Endereço</label><input type="text" id="clienteEndereco" placeholder="Ex: Rua das Oficinas, 123" /></div>
+          <button class="btn-primary w-full" onclick="salvarClientePeloServico()">Salvar/Atualizar Cliente</button>
+        </div>
+
+        <div class="card">
+          <h2>🚗 Dados do Veículo</h2>
+          <p class="subinfo">O veículo fica vinculado ao telefone do cliente e a placa identifica o carro.</p>
+          <div class="form-group"><label>Veículos deste cliente</label><select id="selectVeiculoCliente" onchange="carregarVeiculoSelecionado()"><option value="">Digite o telefone para listar</option></select></div>
+          <div class="form-group"><label>Carro</label><input type="text" id="carroModelo" placeholder="Ex: Gol 1.0" /></div>
+          <div class="form-group"><label>Placa</label><input type="text" id="carroPlaca" placeholder="Ex: ABC1D23" /></div>
+          <div class="form-group"><label>Ano</label><input type="number" id="carroAno" placeholder="Ex: 2015" /></div>
+          <button class="btn-primary w-full" onclick="salvarVeiculoPeloServico()">Salvar/Atualizar Veículo</button>
+        </div>
+      </div>
+
+      <div class="card">
+        <h2>🔧 Adicionar Peça</h2>
+        <div class="grid">
+          <div class="form-group"><label>Nome da peça</label><input type="text" id="pecaNome" placeholder="Ex: Pastilha de freio" /></div>
+          <div class="form-group"><label>Preço da peça</label><input type="number" id="pecaPreco" placeholder="Ex: 120" step="0.01" /></div>
+        </div>
+        <button class="btn-primary w-full" onclick="adicionarPeca()">Adicionar Peça</button>
+        <div class="table-wrapper"><table class="responsive-table"><thead><tr><th>Peça</th><th>Preço</th><th>Ação</th></tr></thead><tbody id="listaPecas"></tbody></table></div>
+      </div>
+
+      <div class="card">
+        <h2>🧰 Mão de Obra</h2>
+        <div class="form-group"><label>Descrição do serviço</label><textarea id="servicoDescricao" placeholder="Ex: Troca de pastilha de freio e revisão geral"></textarea></div>
+        <div class="form-group"><label>Valor da mão de obra</label><input type="number" id="maoObra" placeholder="Ex: 150" step="0.01" oninput="atualizarOrcamento()" /></div>
+      </div>
+
+      <div class="card orcamento-final">
+        <h2>📋 Resumo do Serviço</h2>
+        <div class="resumo">
+          <p><strong>Cliente:</strong> <span id="resumoCliente">-</span></p>
+          <p><strong>Telefone/ID:</strong> <span id="resumoTelefone">-</span></p>
+          <p><strong>Endereço:</strong> <span id="resumoEndereco">-</span></p>
+          <p><strong>Veículo:</strong> <span id="resumoCarro">-</span></p>
+          <p><strong>Placa:</strong> <span id="resumoPlaca">-</span></p>
+          <p><strong>Ano:</strong> <span id="resumoAno">-</span></p>
+          <p><strong>Serviço:</strong> <span id="resumoServico">-</span></p>
+        </div>
+        <h3>Peças</h3>
+        <div class="table-wrapper"><table class="responsive-table"><thead><tr><th>Peça</th><th>Preço</th></tr></thead><tbody id="resumoPecas"></tbody></table></div>
+        <div class="totais"><div class="resumo"><p><strong>Total em peças:</strong> R$ <span id="totalPecas">0,00</span></p><p><strong>Mão de obra:</strong> R$ <span id="totalMaoObra">0,00</span></p><p class="total">Total: R$ <span id="totalGeral">0,00</span></p></div></div>
+        <div class="actions">
+          <button class="btn-finish" onclick="finalizarSalvarServico()">Finalizar e Salvar Serviço</button>
+          <button class="btn-whatsapp" onclick="compartilharWhatsApp()">Compartilhar no WhatsApp</button>
+          <button class="btn-pdf" onclick="salvarPDF()">Salvar em PDF</button>
+          <button class="btn-success" onclick="window.print()">Imprimir Serviço</button>
+        </div>
+      </div>
+    </main>
+
+    <main id="aba-clientes" class="tab-content">
+      <div class="grid">
+        <div class="card">
+          <h2>👤 Cadastro de Cliente</h2>
+          <div class="form-group"><label>Telefone / ID principal</label><input id="cadClienteTelefone" type="tel" placeholder="Ex: (15) 99999-9999" /></div>
+          <div class="form-group"><label>Nome</label><input id="cadClienteNome" type="text" placeholder="Nome completo" /></div>
+          <div class="form-group"><label>Endereço</label><input id="cadClienteEndereco" type="text" placeholder="Endereço" /></div>
+          <div class="actions-2"><button class="btn-primary" onclick="salvarClienteAba()">Salvar Cliente</button><button class="btn-dark" onclick="limparCadastroCliente()">Limpar</button></div>
+        </div>
+        <div class="card">
+          <h2>🔎 Buscar Cliente</h2>
+          <div class="form-group"><label>Buscar por nome ou telefone</label><input id="buscaCliente" type="text" placeholder="Digite para buscar" oninput="renderClientes()" /></div>
+          <div class="list" id="listaClientes"></div>
+        </div>
+      </div>
+      <div class="card">
+        <h2>📌 Detalhes do Cliente</h2>
+        <div id="detalhesCliente" class="resumo"><p class="empty-message">Selecione um cliente para ver veículos e serviços vinculados.</p></div>
+      </div>
+    </main>
+
+    <main id="aba-veiculos" class="tab-content">
+      <div class="grid">
+        <div class="card">
+          <h2>🚗 Cadastro de Veículo</h2>
+          <div class="form-group"><label>Telefone do cliente</label><input id="cadVeiculoTelefone" type="tel" placeholder="ID do cliente" /></div>
+          <div class="form-group"><label>Modelo</label><input id="cadVeiculoModelo" type="text" placeholder="Ex: Gol 1.0" /></div>
+          <div class="form-group"><label>Placa</label><input id="cadVeiculoPlaca" type="text" placeholder="Ex: ABC1D23" /></div>
+          <div class="form-group"><label>Ano</label><input id="cadVeiculoAno" type="number" placeholder="Ex: 2015" /></div>
+          <div class="actions-2"><button class="btn-primary" onclick="salvarVeiculoAba()">Salvar Veículo</button><button class="btn-dark" onclick="limparCadastroVeiculo()">Limpar</button></div>
+        </div>
+        <div class="card">
+          <h2>🔎 Buscar Veículo</h2>
+          <div class="form-group"><label>Buscar por placa, modelo, telefone ou cliente</label><input id="buscaVeiculo" type="text" placeholder="Digite para buscar" oninput="renderVeiculos()" /></div>
+          <div class="list" id="listaVeiculos"></div>
+        </div>
+      </div>
+      <div class="card"><h2>📌 Histórico do Veículo</h2><div id="detalhesVeiculo" class="resumo"><p class="empty-message">Selecione um veículo para ver o histórico de serviços.</p></div></div>
+    </main>
+
+    <main id="aba-financeiro" class="tab-content">
+      <div class="card">
+        <h2>💰 Financeiro</h2>
+        <div class="grid-3">
+          <div class="totais"><p><strong>Total de serviços</strong></p><p class="total">R$ <span id="finTotal">0,00</span></p></div>
+          <div class="totais"><p><strong>Total em peças</strong></p><p class="total">R$ <span id="finPecas">0,00</span></p></div>
+          <div class="totais"><p><strong>Total mão de obra</strong></p><p class="total">R$ <span id="finMaoObra">0,00</span></p></div>
+        </div>
+      </div>
+      <div class="card">
+        <h2>📋 Serviços Finalizados</h2>
+        <div class="form-group"><label>Buscar por cliente, telefone, placa ou serviço</label><input id="buscaServicoFinanceiro" type="text" placeholder="Digite para buscar" oninput="renderFinanceiro()" /></div>
+        <div class="table-wrapper"><table class="responsive-table"><thead><tr><th>Data</th><th>Cliente</th><th>Telefone</th><th>Veículo</th><th>Placa</th><th>Total</th><th>Ação</th></tr></thead><tbody id="listaFinanceiro"></tbody></table></div>
+      </div>
+    </main>
+  </div>
+
+  <script>
+    let clientes = JSON.parse(localStorage.getItem('oficinaClientes')) || [];
+    let veiculos = JSON.parse(localStorage.getItem('oficinaVeiculos')) || [];
+    let servicos = JSON.parse(localStorage.getItem('oficinaServicos')) || [];
+    let pecas = [];
+
+
+
+    document.addEventListener('input', function(event) {
+      const campo = event.target;
+      if (!campo || !['INPUT', 'TEXTAREA'].includes(campo.tagName)) return;
+      if (campo.type === 'number' || campo.type === 'tel') return;
+      const inicio = campo.selectionStart;
+      const fim = campo.selectionEnd;
+      const novoValor = campo.value.toUpperCase();
+      if (campo.value !== novoValor) {
+        campo.value = novoValor;
+        try { campo.setSelectionRange(inicio, fim); } catch (e) {}
+      }
+    });
+
+    const camposServico = ['clienteNome','clienteTelefone','clienteEndereco','carroModelo','carroPlaca','carroAno','servicoDescricao'];
+    camposServico.forEach(function(id) { document.getElementById(id).addEventListener('input', atualizarOrcamento); });
+
+    function abrirAba(nome, btn) {
+      document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+      document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
+      document.getElementById('aba-' + nome).classList.add('active');
+      btn.classList.add('active');
+      renderTudo();
+    }
+
+    function somenteNumeros(valor) { return String(valor || '').replace(/\D/g, ''); }
+    function normalizarPlaca(valor) { return String(valor || '').replace(/[^a-zA-Z0-9]/g, '').toUpperCase(); }
+    function formatarMoeda(valor) { return Number(valor || 0).toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }
+    function salvarDados() {
+      localStorage.setItem('oficinaClientes', JSON.stringify(clientes));
+      localStorage.setItem('oficinaVeiculos', JSON.stringify(veiculos));
+      localStorage.setItem('oficinaServicos', JSON.stringify(servicos));
+    }
+    function nomeCliente(telefone) {
+      const c = clientes.find(item => item.telefone === telefone);
+      return c ? c.nome : '-';
+    }
+
+    function upsertCliente(telefone, nome, endereco) {
+      telefone = somenteNumeros(telefone);
+      nome = String(nome || '').trim().toUpperCase();
+      endereco = String(endereco || '').trim().toUpperCase();
+      if (!telefone || !nome) { alert('Preencha telefone e nome do cliente.'); return null; }
+      let cliente = clientes.find(c => c.telefone === telefone);
+      if (cliente) {
+        cliente.nome = nome;
+        cliente.endereco = endereco;
+      } else {
+        cliente = { telefone, nome, endereco, criadoEm: new Date().toLocaleDateString('pt-BR') };
+        clientes.unshift(cliente);
+      }
+      salvarDados();
+      renderTudo();
+      return cliente;
+    }
+
+    function upsertVeiculo(telefone, modelo, placa, ano) {
+      telefone = somenteNumeros(telefone);
+      placa = normalizarPlaca(placa);
+      modelo = String(modelo || '').trim().toUpperCase();
+      ano = String(ano || '').trim().toUpperCase();
+      if (!telefone) { alert('Informe o telefone do cliente para vincular o veículo.'); return null; }
+      if (!clientes.some(c => c.telefone === telefone)) { alert('Cliente não encontrado. Salve o cliente primeiro.'); return null; }
+      if (!modelo || !placa) { alert('Preencha modelo e placa do veículo.'); return null; }
+      let veiculo = veiculos.find(v => v.telefone === telefone && v.placa === placa);
+      if (veiculo) {
+        veiculo.modelo = modelo;
+        veiculo.ano = ano;
+      } else {
+        veiculo = { telefone, modelo, placa, ano, criadoEm: new Date().toLocaleDateString('pt-BR') };
+        veiculos.unshift(veiculo);
+      }
+      salvarDados();
+      renderTudo();
+      return veiculo;
+    }
+
+    function buscarClientePorTelefone() {
+      const telefone = somenteNumeros(document.getElementById('clienteTelefone').value);
+      if (!telefone) return;
+      const cliente = clientes.find(c => c.telefone === telefone);
+      if (cliente) {
+        document.getElementById('clienteTelefone').value = cliente.telefone;
+        document.getElementById('clienteNome').value = cliente.nome || '';
+        document.getElementById('clienteEndereco').value = cliente.endereco || '';
+      }
+      carregarSelectVeiculosDoCliente();
+      atualizarOrcamento();
+    }
+
+    function carregarSelectVeiculosDoCliente() {
+      const telefone = somenteNumeros(document.getElementById('clienteTelefone').value);
+      const select = document.getElementById('selectVeiculoCliente');
+      const lista = veiculos.filter(v => v.telefone === telefone);
+      select.innerHTML = '<option value="">Selecione ou cadastre um veículo</option>';
+      lista.forEach(v => { select.innerHTML += `<option value="${v.placa}">${v.modelo} - ${v.placa}</option>`; });
+    }
+
+    function carregarVeiculoSelecionado() {
+      const telefone = somenteNumeros(document.getElementById('clienteTelefone').value);
+      const placa = document.getElementById('selectVeiculoCliente').value;
+      const v = veiculos.find(item => item.telefone === telefone && item.placa === placa);
+      if (!v) return;
+      document.getElementById('carroModelo').value = v.modelo || '';
+      document.getElementById('carroPlaca').value = v.placa || '';
+      document.getElementById('carroAno').value = v.ano || '';
+      atualizarOrcamento();
+    }
+
+    function salvarClientePeloServico() {
+      const c = upsertCliente(document.getElementById('clienteTelefone').value, document.getElementById('clienteNome').value, document.getElementById('clienteEndereco').value);
+      if (c) alert('Cliente salvo/atualizado com sucesso!');
+    }
+
+    function salvarVeiculoPeloServico() {
+      const v = upsertVeiculo(document.getElementById('clienteTelefone').value, document.getElementById('carroModelo').value, document.getElementById('carroPlaca').value, document.getElementById('carroAno').value);
+      if (v) { carregarSelectVeiculosDoCliente(); document.getElementById('selectVeiculoCliente').value = v.placa; alert('Veículo salvo/atualizado com sucesso!'); }
+    }
+
+    function adicionarPeca() {
+      const nome = document.getElementById('pecaNome').value.trim().toUpperCase();
+      const preco = Number(document.getElementById('pecaPreco').value) || 0;
+      if (!nome || preco <= 0) { alert('Informe o nome e o preço da peça.'); return; }
+      pecas.push({ nome, preco });
+      document.getElementById('pecaNome').value = '';
+      document.getElementById('pecaPreco').value = '';
+      atualizarOrcamento();
+    }
+
+    function removerPeca(index) { pecas.splice(index, 1); atualizarOrcamento(); }
+
+    function atualizarListaPecas() {
+      const lista = document.getElementById('listaPecas');
+      const resumo = document.getElementById('resumoPecas');
+      lista.innerHTML = ''; resumo.innerHTML = '';
+      if (pecas.length === 0) {
+        lista.innerHTML = '<tr><td colspan="3" class="empty-message">Nenhuma peça adicionada ainda.</td></tr>';
+        resumo.innerHTML = '<tr><td colspan="2" class="empty-message">Nenhuma peça adicionada ainda.</td></tr>';
+        return;
+      }
+      pecas.forEach(function(peca, index) {
+        lista.innerHTML += `<tr><td data-label="Peça">${peca.nome}</td><td data-label="Preço">R$ ${formatarMoeda(peca.preco)}</td><td data-label="Ação"><button class="btn-danger" onclick="removerPeca(${index})">Remover</button></td></tr>`;
+        resumo.innerHTML += `<tr><td data-label="Peça">${peca.nome}</td><td data-label="Preço">R$ ${formatarMoeda(peca.preco)}</td></tr>`;
+      });
+    }
+
+    function atualizarOrcamento() {
+      const clienteNome = document.getElementById('clienteNome').value || '-';
+      const clienteTelefone = somenteNumeros(document.getElementById('clienteTelefone').value) || '-';
+      const clienteEndereco = document.getElementById('clienteEndereco').value || '-';
+      const carroModelo = document.getElementById('carroModelo').value || '-';
+      const carroPlaca = normalizarPlaca(document.getElementById('carroPlaca').value) || '-';
+      const carroAno = document.getElementById('carroAno').value || '-';
+      const servicoDescricao = document.getElementById('servicoDescricao').value || '-';
+      const maoObra = Number(document.getElementById('maoObra').value) || 0;
+      const totalPecas = pecas.reduce((total, peca) => total + peca.preco, 0);
+      const totalGeral = totalPecas + maoObra;
+      document.getElementById('resumoCliente').textContent = clienteNome;
+      document.getElementById('resumoTelefone').textContent = clienteTelefone;
+      document.getElementById('resumoEndereco').textContent = clienteEndereco;
+      document.getElementById('resumoCarro').textContent = carroModelo;
+      document.getElementById('resumoPlaca').textContent = carroPlaca;
+      document.getElementById('resumoAno').textContent = carroAno;
+      document.getElementById('resumoServico').textContent = servicoDescricao;
+      document.getElementById('totalPecas').textContent = formatarMoeda(totalPecas);
+      document.getElementById('totalMaoObra').textContent = formatarMoeda(maoObra);
+      document.getElementById('totalGeral').textContent = formatarMoeda(totalGeral);
+      atualizarListaPecas();
+    }
+
+    function finalizarSalvarServico() {
+      const telefone = somenteNumeros(document.getElementById('clienteTelefone').value);
+      const cliente = document.getElementById('clienteNome').value.trim().toUpperCase();
+      const endereco = document.getElementById('clienteEndereco').value.trim().toUpperCase();
+      const carro = document.getElementById('carroModelo').value.trim().toUpperCase();
+      const placa = normalizarPlaca(document.getElementById('carroPlaca').value);
+      const ano = document.getElementById('carroAno').value.trim();
+      const descricao = document.getElementById('servicoDescricao').value.trim().toUpperCase();
+      const maoObra = Number(document.getElementById('maoObra').value) || 0;
+      if (!telefone || !cliente || !carro || !placa) { alert('Preencha telefone, cliente, carro e placa antes de salvar.'); return; }
+      upsertCliente(telefone, cliente, endereco);
+      upsertVeiculo(telefone, carro, placa, ano);
+      const totalPecas = pecas.reduce((total, peca) => total + peca.preco, 0);
+      const novoServico = { id: Date.now(), data: new Date().toLocaleDateString('pt-BR'), telefone, placa, cliente, carro, ano, descricao: descricao || '-', pecas: [...pecas], maoObra, totalPecas, totalGeral: totalPecas + maoObra };
+      servicos.unshift(novoServico);
+      salvarDados();
+      renderTudo();
+      limparFormularioServico();
+      alert('Serviço finalizado e vinculado ao cliente e veículo com sucesso!');
+    }
+
+    function limparFormularioServico() {
+      ['clienteNome','clienteTelefone','clienteEndereco','carroModelo','carroPlaca','carroAno','servicoDescricao','maoObra','pecaNome','pecaPreco'].forEach(id => document.getElementById(id).value = '');
+      document.getElementById('selectVeiculoCliente').innerHTML = '<option value="">Digite o telefone para listar</option>';
+      pecas = [];
+      atualizarOrcamento();
+    }
+
+    function carregarServico(id) {
+      const s = servicos.find(item => item.id === id);
+      if (!s) return;
+      const c = clientes.find(item => item.telefone === s.telefone);
+      const v = veiculos.find(item => item.telefone === s.telefone && item.placa === s.placa);
+      document.getElementById('clienteTelefone').value = s.telefone;
+      document.getElementById('clienteNome').value = c?.nome || s.cliente || '';
+      document.getElementById('clienteEndereco').value = c?.endereco || '';
+      document.getElementById('carroModelo').value = v?.modelo || s.carro || '';
+      document.getElementById('carroPlaca').value = s.placa || '';
+      document.getElementById('carroAno').value = v?.ano || s.ano || '';
+      document.getElementById('servicoDescricao').value = s.descricao === '-' ? '' : s.descricao;
+      document.getElementById('maoObra').value = s.maoObra || '';
+      pecas = s.pecas ? [...s.pecas] : [];
+      carregarSelectVeiculosDoCliente();
+      atualizarOrcamento();
+      document.querySelectorAll('.tab-btn')[0].click();
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function removerServico(id) {
+      if (!confirm('Deseja remover este serviço?')) return;
+      servicos = servicos.filter(item => item.id !== id);
+      salvarDados(); renderTudo();
+    }
+
+    function compartilharWhatsApp() {
+      const cliente = (document.getElementById('clienteNome').value || '-').toUpperCase();
+      const telefone = somenteNumeros(document.getElementById('clienteTelefone').value) || '-';
+      const carro = (document.getElementById('carroModelo').value || '-').toUpperCase();
+      const placa = normalizarPlaca(document.getElementById('carroPlaca').value) || '-';
+      const servico = (document.getElementById('servicoDescricao').value || '-').toUpperCase();
+      const maoObra = Number(document.getElementById('maoObra').value) || 0;
+      const totalPecas = pecas.reduce((total, peca) => total + peca.preco, 0);
+      let listaPecas = '';
+      pecas.forEach(peca => { listaPecas += `• ${peca.nome} - R$ ${formatarMoeda(peca.preco)}%0A`; });
+      const mensagem = `*SERVIÇO OFICINA*%0A%0A👤 Cliente: ${cliente}%0A📞 Telefone: ${telefone}%0A🚗 Veículo: ${carro}%0A🔢 Placa: ${placa}%0A%0A🛠 Serviço:%0A${servico}%0A%0A📦 Peças:%0A${listaPecas || '-'}%0A💰 Peças: R$ ${formatarMoeda(totalPecas)}%0A🔧 Mão de obra: R$ ${formatarMoeda(maoObra)}%0A%0A✅ TOTAL: R$ ${formatarMoeda(totalPecas + maoObra)}`;
+      window.open(`https://wa.me/?text=${mensagem}`, '_blank');
+    }
+    function salvarPDF() { window.print(); }
+
+    function salvarClienteAba() {
+      const c = upsertCliente(document.getElementById('cadClienteTelefone').value, document.getElementById('cadClienteNome').value, document.getElementById('cadClienteEndereco').value);
+      if (c) { limparCadastroCliente(); alert('Cliente salvo com sucesso!'); }
+    }
+    function limparCadastroCliente() { ['cadClienteTelefone','cadClienteNome','cadClienteEndereco'].forEach(id => document.getElementById(id).value = ''); }
+    function editarCliente(telefone) {
+      const c = clientes.find(item => item.telefone === telefone); if (!c) return;
+      document.getElementById('cadClienteTelefone').value = c.telefone;
+      document.getElementById('cadClienteNome').value = c.nome;
+      document.getElementById('cadClienteEndereco').value = c.endereco || '';
+      mostrarDetalhesCliente(telefone);
+    }
+    function removerCliente(telefone) {
+      if (!confirm('Remover cliente? Os veículos e serviços dele também serão removidos.')) return;
+      clientes = clientes.filter(c => c.telefone !== telefone);
+      veiculos = veiculos.filter(v => v.telefone !== telefone);
+      servicos = servicos.filter(s => s.telefone !== telefone);
+      salvarDados(); renderTudo();
+    }
+    function renderClientes() {
+      const busca = String(document.getElementById('buscaCliente').value || '').toLowerCase();
+      const lista = document.getElementById('listaClientes'); lista.innerHTML = '';
+      const filtrados = clientes.filter(c => c.nome.toLowerCase().includes(busca) || c.telefone.includes(somenteNumeros(busca)) || (c.endereco || '').toLowerCase().includes(busca));
+      if (filtrados.length === 0) { lista.innerHTML = '<div class="empty-message">Nenhum cliente encontrado.</div>'; return; }
+      filtrados.forEach(c => {
+        const qtdV = veiculos.filter(v => v.telefone === c.telefone).length;
+        const qtdS = servicos.filter(s => s.telefone === c.telefone).length;
+        lista.innerHTML += `<div class="item" onclick="editarCliente('${c.telefone}')"><strong>${c.nome}</strong><span>Telefone/ID: ${c.telefone}</span><span>Endereço: ${c.endereco || '-'}</span><span class="pill">${qtdV} veículo(s) • ${qtdS} serviço(s)</span><button class="btn-danger" onclick="event.stopPropagation(); removerCliente('${c.telefone}')">Remover</button></div>`;
+      });
+    }
+    function mostrarDetalhesCliente(telefone) {
+      const c = clientes.find(item => item.telefone === telefone); const el = document.getElementById('detalhesCliente'); if (!c) return;
+      const vs = veiculos.filter(v => v.telefone === telefone);
+      const ss = servicos.filter(s => s.telefone === telefone);
+      el.innerHTML = `<p><strong>Cliente:</strong> ${c.nome}</p><p><strong>Telefone/ID:</strong> ${c.telefone}</p><p><strong>Endereço:</strong> ${c.endereco || '-'}</p><h3>Veículos vinculados</h3>${vs.length ? vs.map(v => `<p>🚗 ${v.modelo} - ${v.placa} (${v.ano || '-'})</p>`).join('') : '<p>Nenhum veículo vinculado.</p>'}<h3>Serviços vinculados</h3>${ss.length ? ss.map(s => `<p>🔧 ${s.data} - ${s.carro} ${s.placa} - R$ ${formatarMoeda(s.totalGeral)}</p>`).join('') : '<p>Nenhum serviço vinculado.</p>'}`;
+    }
+
+    function salvarVeiculoAba() {
+      const v = upsertVeiculo(document.getElementById('cadVeiculoTelefone').value, document.getElementById('cadVeiculoModelo').value, document.getElementById('cadVeiculoPlaca').value, document.getElementById('cadVeiculoAno').value);
+      if (v) { limparCadastroVeiculo(); alert('Veículo salvo com sucesso!'); }
+    }
+    function limparCadastroVeiculo() { ['cadVeiculoTelefone','cadVeiculoModelo','cadVeiculoPlaca','cadVeiculoAno'].forEach(id => document.getElementById(id).value = ''); }
+    function editarVeiculo(telefone, placa) {
+      const v = veiculos.find(item => item.telefone === telefone && item.placa === placa); if (!v) return;
+      document.getElementById('cadVeiculoTelefone').value = v.telefone;
+      document.getElementById('cadVeiculoModelo').value = v.modelo;
+      document.getElementById('cadVeiculoPlaca').value = v.placa;
+      document.getElementById('cadVeiculoAno').value = v.ano || '';
+      mostrarDetalhesVeiculo(telefone, placa);
+    }
+    function removerVeiculo(telefone, placa) {
+      if (!confirm('Remover veículo? Os serviços dele também serão removidos.')) return;
+      veiculos = veiculos.filter(v => !(v.telefone === telefone && v.placa === placa));
+      servicos = servicos.filter(s => !(s.telefone === telefone && s.placa === placa));
+      salvarDados(); renderTudo();
+    }
+    function renderVeiculos() {
+      const busca = String(document.getElementById('buscaVeiculo').value || '').toLowerCase();
+      const lista = document.getElementById('listaVeiculos'); lista.innerHTML = '';
+      const filtrados = veiculos.filter(v => v.modelo.toLowerCase().includes(busca) || v.placa.toLowerCase().includes(busca) || v.telefone.includes(somenteNumeros(busca)) || nomeCliente(v.telefone).toLowerCase().includes(busca));
+      if (filtrados.length === 0) { lista.innerHTML = '<div class="empty-message">Nenhum veículo encontrado.</div>'; return; }
+      filtrados.forEach(v => {
+        const qtdS = servicos.filter(s => s.telefone === v.telefone && s.placa === v.placa).length;
+        lista.innerHTML += `<div class="item" onclick="editarVeiculo('${v.telefone}','${v.placa}')"><strong>${v.modelo} - ${v.placa}</strong><span>Cliente: ${nomeCliente(v.telefone)}</span><span>Telefone/ID: ${v.telefone}</span><span>Ano: ${v.ano || '-'}</span><span class="pill">${qtdS} serviço(s)</span><button class="btn-danger" onclick="event.stopPropagation(); removerVeiculo('${v.telefone}','${v.placa}')">Remover</button></div>`;
+      });
+    }
+    function mostrarDetalhesVeiculo(telefone, placa) {
+      const v = veiculos.find(item => item.telefone === telefone && item.placa === placa); const el = document.getElementById('detalhesVeiculo'); if (!v) return;
+      const ss = servicos.filter(s => s.telefone === telefone && s.placa === placa);
+      el.innerHTML = `<p><strong>Veículo:</strong> ${v.modelo}</p><p><strong>Placa:</strong> ${v.placa}</p><p><strong>Ano:</strong> ${v.ano || '-'}</p><p><strong>Cliente:</strong> ${nomeCliente(v.telefone)}</p><p><strong>Telefone/ID:</strong> ${v.telefone}</p><h3>Histórico de serviços</h3>${ss.length ? ss.map(s => `<p>🔧 ${s.data} - ${s.descricao} - R$ ${formatarMoeda(s.totalGeral)} <button class="btn-small btn-dark" onclick="carregarServico(${s.id})">Abrir</button></p>`).join('') : '<p>Nenhum serviço para este veículo.</p>'}`;
+    }
+
+    function renderFinanceiro() {
+      const busca = String(document.getElementById('buscaServicoFinanceiro').value || '').toLowerCase();
+      const tbody = document.getElementById('listaFinanceiro'); tbody.innerHTML = '';
+      const filtrados = servicos.filter(s => String(s.cliente).toLowerCase().includes(busca) || String(s.telefone).includes(somenteNumeros(busca)) || String(s.placa).toLowerCase().includes(busca) || String(s.descricao).toLowerCase().includes(busca));
+      const total = servicos.reduce((t, s) => t + Number(s.totalGeral || 0), 0);
+      const totalPecas = servicos.reduce((t, s) => t + Number(s.totalPecas || 0), 0);
+      const totalMao = servicos.reduce((t, s) => t + Number(s.maoObra || 0), 0);
+      document.getElementById('finTotal').textContent = formatarMoeda(total);
+      document.getElementById('finPecas').textContent = formatarMoeda(totalPecas);
+      document.getElementById('finMaoObra').textContent = formatarMoeda(totalMao);
+      if (filtrados.length === 0) { tbody.innerHTML = '<tr><td colspan="7" class="empty-message">Nenhum serviço encontrado.</td></tr>'; return; }
+      filtrados.forEach(s => {
+        tbody.innerHTML += `<tr><td data-label="Data">${s.data}</td><td data-label="Cliente">${s.cliente}</td><td data-label="Telefone">${s.telefone}</td><td data-label="Veículo">${s.carro}</td><td data-label="Placa">${s.placa}</td><td data-label="Total">R$ ${formatarMoeda(s.totalGeral)}</td><td data-label="Ação"><button class="btn-small btn-dark" onclick="carregarServico(${s.id})">Abrir</button> <button class="btn-danger" onclick="removerServico(${s.id})">Remover</button></td></tr>`;
+      });
+    }
+
+    function renderTudo() {
+      carregarSelectVeiculosDoCliente();
+      renderClientes();
+      renderVeiculos();
+      renderFinanceiro();
+      atualizarOrcamento();
+    }
+
+    renderTudo();
+  </script>
+</body>
+</html>
