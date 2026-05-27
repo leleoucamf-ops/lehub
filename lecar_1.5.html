@@ -1334,7 +1334,7 @@ async function salvarStatus() {
         const pecasTexto = v.pecas && v.pecas.length > 0 ? v.pecas.join(", ") : "Nenhuma";
 
         const texto =
-`VEÍCULO FINALIZADO!
+`DIAGNOSTICO FINALIZADO!
 
 VEÍCULO: ${v.veiculo}
 PLACA: ${v.placa}
@@ -1342,8 +1342,7 @@ DESCRIÇÃO: ${v.descricao}
 PEÇAS: ${pecasTexto}
 ORIGEM: ${v.origem}
 MECÂNICO: ${localStorage.getItem("sessao_lecar")}
-DATA: ${new Date().toLocaleString()}
-STATUS: ${novoStatus}`;
+DATA: ${new Date().toLocaleString()}`;
 
         const url = `https://wa.me/?text=${encodeURIComponent(texto)}`;
 
