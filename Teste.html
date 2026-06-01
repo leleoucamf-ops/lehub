@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Leitor de Placa</title>
+
+  <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
+
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #111;
+      color: white;
+      margin: 0;
+      padding: 20px;
+      text-align: center;
+    }
+
+    video, canvas {
+      width: 100%;
+      max-width: 420px;
+      border-radius: 12px;
+      margin-top: 15px;
+    }
+
+    button {
+      width: 100%;
+      max-width: 420px;
+      padding: 14px;
+      margin-top: 12px;
+      border: none;
+      border-radius: 10px;
+      background: #00a859;
+      color: white;
+      font-size: 16px;
+      font-weight: bold;
+    }
+
+    .resultado {
+      margin-top: 20px;
+      font-size: 26px;
+      font-weight: bold;
+      color: #00ff88;
+    }
+
+    .status {
+      margin-top: 15px;
+      color: #ccc;
+    }
+  </style>
+</head>
+<body>
+
+  <h2>Leitor de Placa</h2>
+
+  <video id="video" autoplay playsinline></video>
+  <canvas id="canvas" style="display:none;"></canvas>
+
+  <button onclick="tirarFoto()">Ler placa</button>
+
+  <div class="status" id="status">Aponte a câmera para a placa.</div>
+  <div class="resultado" id="resultado"></div>
+
+  <script>
+    const video = document.getElementById("video");
+    const canvas = document.getElementById("canvas");
+    const statusEl = document.getElementById("status");
+    const resultadoEl = document.getElementById("resultado");
+
+    async function iniciarCamera() {
+      try {
+        const stream = await navigator.mediaDevices.getUserMedia({
+          video: {
+            facingMode: "environment"
+          },
+          audio: false
+        });
+
+        video.srcObject = stream;
+      } catch (error) {
+        statusEl.innerText = "Erro ao acessar a câmera.";
+        console.error(error);
+      }
+    }
+
+    async function tirarFoto() {
+      resultadoEl.innerText = "";
+      statusEl.innerText = "Capturando imagem...";
+
+      const context = canvas.getContext("2d");
+
+      canvas.width = video.videoWidth;
+      canvas.height = video.videoHeight;
+
+      context.drawImage(video, 0, 0, canvas.width, canvas.height);
+
+      statusEl.innerText = "Lendo placa...";
+
+      try {
+        const { data } = await Tesseract.recognize(
+          canvas,
+          "eng",
+          {
+            logger: info => {
+              if (info.status === "recognizing text") {
+                const progresso = Math.round(info.progress * 100);
+                statusEl.innerText = `Lendo placa... ${progresso}%`;
+              }
+            }
+          }
+        );
+
+        const textoBruto = data.text.toUpperCase();
+
+        const placa = extrairPlaca(textoBruto);
+
+        if (placa) {
+          resultadoEl.innerText = placa;
+          statusEl.innerText = "Placa identificada.";
+        } else {
+          resultadoEl.innerText = "Não identificada";
+          statusEl.innerText = "Tente tirar outra foto mais próxima e legível.";
+        }
+
+        limparImagemTemporaria();
+
+      } catch (error) {
+        statusEl.innerText = "Erro ao ler a placa.";
+        console.error(error);
+        limparImagemTemporaria();
+      }
+    }
+
+    function extrairPlaca(texto) {
+      const limpo = texto.replace(/[^A-Z0-9]/g, "");
+
+      const placaMercosul = limpo.match(/[A-Z]{3}[0-9][A-Z][0-9]{2}/);
+      if (placaMercosul) return placaMercosul[0];
+
+      const placaAntiga = limpo.match(/[A-Z]{3}[0-9]{4}/);
+      if (placaAntiga) return placaAntiga[0];
+
+      return null;
+    }
+
+    function limparImagemTemporaria() {
+      const context = canvas.getContext("2d");
+      context.clearRect(0, 0, canvas.width, canvas.height);
+      canvas.width = 0;
+      canvas.height = 0;
+    }
+
+    iniciarCamera();
+  </script>
+
+</body>
+</html>
