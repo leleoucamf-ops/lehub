@@ -1948,26 +1948,30 @@ STATUS: ${statusAtual}`;
       }
 
 
-      function abrirModal(i) {
-        indicePecasAtual = i;
-        novaPeca.value = "";
-        limparModeloCategoria();
-        listaPecas.innerHTML = "";
-        (dados[i].pecas || []).forEach((p, j) => {
-          let li = document.createElement("li");
-          li.textContent = p;
-          let btn = document.createElement("button");
-          btn.textContent = "X";
-          btn.onclick = () => {
-            navegar("remover_peca_" + j);
-            removerPeca(j);
-          };
-          li.appendChild(btn);
-          listaPecas.appendChild(li);
-        });
-        modal.style.display = "flex";
-        novaPeca.focus();
-      }
+function abrirModal(i) {
+  indicePecasAtual = i;
+  novaPeca.value = "";
+  limparModeloCategoria();
+  listaPecas.innerHTML = "";
+
+  (dados[i].pecas || []).forEach((p, j) => {
+    let li = document.createElement("li");
+    li.textContent = p;
+
+    let btn = document.createElement("button");
+    btn.textContent = "X";
+
+    btn.onclick = () => {
+      navegar("remover_peca_" + j);
+      removerPeca(j);
+    };
+
+    li.appendChild(btn);
+    listaPecas.appendChild(li);
+  });
+
+  modal.style.display = "flex";
+}
 
       async function adicionarPeca() {
         let valor = novaPeca.value.trim();
