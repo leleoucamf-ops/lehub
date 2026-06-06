@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="pt-BR" translate="no">
+<html lang="pt-BR">
   <head>
     <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
@@ -567,6 +567,94 @@
 
 
 
+
+      /* ========== BUSCA + CARD DE CADASTRO RECOLHÍVEL ========== */
+      .busca-operacional {
+        width:100%;
+        margin-bottom:12px;
+        display:flex;
+        justify-content:center;
+      }
+
+      .busca-operacional .topbar-search {
+        width:100%;
+        max-width:560px;
+        background:#f8fafc;
+        border:1px solid #cbd5e1;
+        border-radius:12px;
+        box-shadow:0 2px 8px rgba(15, 23, 42, 0.04);
+        text-align:center;
+      }
+
+      .cadastro-collapsible {
+        background:#ffffff;
+        border:1px solid #e2e8f0;
+        border-radius:14px;
+        box-shadow:0 4px 14px rgba(15, 23, 42, 0.06);
+        margin-bottom:18px;
+        overflow:hidden;
+      }
+
+      .cadastro-header {
+        width:100%;
+        min-height:46px;
+        margin:0;
+        padding:10px 14px;
+        border:none;
+        border-radius:0;
+        background:linear-gradient(90deg, #f8fafc, #eef4ff);
+        color:#1e3a8a;
+        display:flex;
+        align-items:center;
+        justify-content:space-between;
+        cursor:pointer;
+        font-weight:800;
+        font-size:0.95rem;
+        letter-spacing:0.03em;
+        text-transform:uppercase;
+      }
+
+      .cadastro-header:hover {
+        opacity:1;
+        transform:none;
+        background:linear-gradient(90deg, #eef4ff, #dbeafe);
+      }
+
+      .cadastro-toggle-icon {
+        width:72px;
+        height:30px;
+        min-width:72px;
+        border-radius:999px;
+        background:#ffffff;
+        color:#1e3a8a;
+        border:1px solid #bfdbfe;
+        display:flex;
+        align-items:center;
+        justify-content:center;
+        font-size:1.25rem;
+        font-weight:900;
+        line-height:1;
+        box-shadow:0 2px 8px rgba(37,99,235,0.12);
+      }
+
+      .cadastro-collapsible.open .cadastro-toggle-icon {
+        background:#1e3a8a;
+        color:#ffffff;
+        border-color:#1e3a8a;
+      }
+
+      .cadastro-body {
+        display:none;
+        padding:14px;
+        border-top:1px solid #e2e8f0;
+        background:#ffffff;
+      }
+
+      .cadastro-collapsible.open .cadastro-body {
+        display:block;
+      }
+
+
       /* ========== LAPIDAÇÃO VISUAL DAS TABELAS ========== */
       .table-container {
         background:#ffffff;
@@ -704,6 +792,16 @@
           width: 100%;
           order: 3;
           margin-top: 10px;
+        }
+
+        .busca-operacional .topbar-search {
+          max-width:100%;
+          text-align:left;
+        }
+
+        .cadastro-toggle-icon {
+          width:60px;
+          min-width:60px;
         }
 
         .btn-sair {
@@ -940,59 +1038,49 @@
 
     <div class="main">
       <div class="card">
-        <div style="
-display:flex;
-justify-content:space-between;
-align-items:center;
-gap:15px;
-margin-bottom:20px;
-flex-wrap:wrap;
-">
-
-  <h2 style="margin:0;">
-    CADASTRAR
-  </h2>
-
-  <input
-    type="text"
-    id="buscaSidebar"
-    class="topbar-search"
-    placeholder="🔍 BUSCAR VEÍCULO"
-    onkeyup="filtrarBusca()"
-    style="
-      width:320px;
-      max-width:100%;
-      background:#f1f5f9;
-      border:1px solid #cbd5e1;
-    "
-  />
-
-</div>
-
-        <input type="hidden" id="index" />
-        <input type="text" id="veiculo" placeholder="VEÍCULO" />
-        <input type="text" id="placa" placeholder="PLACA" oninput="this.value = this.value.replace(/[^a-zA-Z0-9]/g, '')" />
-        <textarea id="descricao" placeholder="DESCRIÇÃO"></textarea>
-        <div class="descricao-actions">
-          <button type="button" class="btn-secondary" onclick="navegar('abrir_modal_descricao'); abrirModalDescricao()">OTIMIZAR DESCRIÇÃO</button>
+        <div class="busca-operacional">
+          <input
+            type="text"
+            id="buscaSidebar"
+            class="topbar-search"
+            placeholder="🔍 BUSCAR VEÍCULO"
+            onkeyup="filtrarBusca()"
+          />
         </div>
 
-        <select id="status">
-          <option>AGUARDANDO ORÇAMENTO</option>
-          <option>AGUARDANDO PEÇAS</option>
-          <option>AGUARDANDO SERVIÇO</option>
-          <option>FORNECEDOR</option>
-          <option>ENVIAR PARA TERCEIROS</option>
-          <option>VEÍCULO FINALIZADO</option>
-        </select>
+        <div id="cadastroCard" class="cadastro-collapsible">
+          <button type="button" class="cadastro-header" onclick="navegar('toggle_cadastro'); toggleCadastroCard()">
+            <span>CADASTRAR</span>
+            <span id="cadastroToggleIcon" class="cadastro-toggle-icon">+</span>
+          </button>
 
-        <div class="checkbox-group">
-          <label><input type="checkbox" id="atm" onclick="navegar('selecionar_atm'); selecionarTipo('atm')" /> ATM</label>
-          <label><input type="checkbox" id="bolsao" onclick="navegar('selecionar_bolsao'); selecionarTipo('bolsao')" /> BOLSÃO</label>
-        </div>
+          <div class="cadastro-body">
+            <input type="hidden" id="index" />
+            <input type="text" id="veiculo" placeholder="VEÍCULO" />
+            <input type="text" id="placa" placeholder="PLACA" oninput="this.value = this.value.replace(/[^a-zA-Z0-9]/g, '')" />
+            <textarea id="descricao" placeholder="DESCRIÇÃO"></textarea>
+            <div class="descricao-actions">
+              <button type="button" class="btn-secondary" onclick="navegar('abrir_modal_descricao'); abrirModalDescricao()">OTIMIZAR DESCRIÇÃO</button>
+            </div>
 
-        <div class="controls">
-          <button onclick="navegar('salvar_veiculo'); salvar()">SALVAR</button>
+            <select id="status">
+              <option>AGUARDANDO ORÇAMENTO</option>
+              <option>AGUARDANDO PEÇAS</option>
+              <option>AGUARDANDO SERVIÇO</option>
+              <option>FORNECEDOR</option>
+              <option>ENVIAR PARA TERCEIROS</option>
+              <option>VEÍCULO FINALIZADO</option>
+            </select>
+
+            <div class="checkbox-group">
+              <label><input type="checkbox" id="atm" onclick="navegar('selecionar_atm'); selecionarTipo('atm')" /> ATM</label>
+              <label><input type="checkbox" id="bolsao" onclick="navegar('selecionar_bolsao'); selecionarTipo('bolsao')" /> BOLSÃO</label>
+            </div>
+
+            <div class="controls">
+              <button onclick="navegar('salvar_veiculo'); salvar()">SALVAR</button>
+            </div>
+          </div>
         </div>
 
         <!-- Sistema de Abas -->
@@ -1412,6 +1500,36 @@ setTimeout(() => {
         }
       };
 
+      function toggleCadastroCard() {
+        const cadastroCard = document.getElementById("cadastroCard");
+        const cadastroToggleIcon = document.getElementById("cadastroToggleIcon");
+
+        if (!cadastroCard || !cadastroToggleIcon) return;
+
+        const aberto = cadastroCard.classList.toggle("open");
+        cadastroToggleIcon.textContent = aberto ? "−" : "+";
+      }
+
+      function abrirCadastroCard() {
+        const cadastroCard = document.getElementById("cadastroCard");
+        const cadastroToggleIcon = document.getElementById("cadastroToggleIcon");
+
+        if (!cadastroCard || !cadastroToggleIcon) return;
+
+        cadastroCard.classList.add("open");
+        cadastroToggleIcon.textContent = "−";
+      }
+
+      function fecharCadastroCard() {
+        const cadastroCard = document.getElementById("cadastroCard");
+        const cadastroToggleIcon = document.getElementById("cadastroToggleIcon");
+
+        if (!cadastroCard || !cadastroToggleIcon) return;
+
+        cadastroCard.classList.remove("open");
+        cadastroToggleIcon.textContent = "+";
+      }
+
       // ========== VARIÁVEIS GLOBAIS ==========
       const veiculo = document.getElementById("veiculo");
       const placa = document.getElementById("placa");
@@ -1778,6 +1896,7 @@ STATUS: ${statusAtual}`;
 
       function editar(i) {
         let v = dados[i];
+        abrirCadastroCard();
         veiculo.value = v.veiculo;
         placa.value = v.placa;
         descricao.value = v.descricao;
@@ -2624,6 +2743,7 @@ ${gerarLinhaRelatorioMecanicos(relatoriosPorMecanico, "pendentes")}`;
         atm.checked = false;
         bolsao.checked = false;
         index.value = "";
+        fecharCadastroCard();
       }
 
       window.onload = () => {
