@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="pt-BR" translate="no">
+<html lang="pt-BR">
   <head>
     <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
@@ -296,7 +296,10 @@
       .status-agendamento { background:#f87171; color:white; border-radius:6px; padding:4px 6px; }
       .status-fornecedor { background:#3b82f6; color:white; border-radius:6px; padding:4px 6px; }
       .status-pecas { background:#facc15; color:white; border-radius:6px; padding:4px 6px; }
-      .status-servico { background:#8b5cf6; color:white; border-radius:6px; padding:4px 6px; }
+.status-servico {
+  background: #cbd5e1;
+  color: #334155;
+}
       .status-finalizado { background:#4ade80; color:white; border-radius:6px; padding:4px 6px; }
 
       .modal-bg, .status-modal-bg { display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.4); justify-content:center; align-items:center; z-index:1000; }
@@ -365,8 +368,62 @@
 
       .modal-grid input[type="checkbox"],
       .check-line input[type="checkbox"] {
-        width:auto;
+        width:22px;
+        height:22px;
+        min-width:22px;
         margin:0;
+        cursor:pointer;
+        accent-color:#2563eb;
+      }
+
+      .checkbox-group input[type="checkbox"] {
+        width:22px;
+        height:22px;
+        min-width:22px;
+        margin:0;
+        cursor:pointer;
+        accent-color:#2563eb;
+      }
+
+      .checkbox-group label {
+        justify-content:flex-start;
+      }
+
+      #listaPecas {
+        list-style:none;
+        margin:0;
+        padding:0;
+      }
+
+      #listaPecas li {
+        display:flex;
+        align-items:center;
+        justify-content:space-between;
+        gap:12px;
+        padding:10px 0;
+        border-bottom:1px solid #e2e8f0;
+        font-size:0.95rem;
+        font-weight:500;
+        color:#1e293b;
+      }
+
+      #listaPecas li button {
+        width:42px;
+        height:34px;
+        min-width:42px;
+        max-width:42px;
+        padding:0;
+        margin:0;
+        border:none;
+        border-radius:8px;
+        background:#ef4444;
+        color:#ffffff;
+        font-size:18px;
+        font-weight:700;
+        line-height:1;
+        display:flex;
+        align-items:center;
+        justify-content:center;
       }
 
       .modal-row {
@@ -471,6 +528,163 @@
       .servico-item { background: #f9fafb; padding: 15px; border-radius: 8px; margin-bottom: 10px; border-left: 4px solid #2563eb; }
       .servico-item strong { display: block; margin-bottom: 5px; color: #1e293b; }
       .servico-item small { color: #64748b; }
+
+
+      .terceiro-box {
+        background:#f8fafc;
+        border:1px solid #e2e8f0;
+        border-radius:12px;
+        padding:12px;
+        margin:10px 0;
+      }
+
+      .terceiro-alerta {
+        background:#eff6ff;
+        border-left:4px solid #2563eb;
+        color:#1e3a8a;
+        padding:10px 12px;
+        border-radius:8px;
+        font-size:0.9rem;
+        font-weight:600;
+        margin-bottom:12px;
+      }
+
+      #modalTerceiro input {
+        width:100%;
+      }
+
+      #modalTerceiro .modal-actions {
+        display:flex;
+        gap:8px;
+        flex-wrap:wrap;
+        margin-top:10px;
+      }
+
+      #modalTerceiro .modal-actions button {
+        margin-left:0;
+      }
+
+
+
+
+      /* ========== LAPIDAÇÃO VISUAL DAS TABELAS ========== */
+      .table-container {
+        background:#ffffff;
+        padding:8px;
+        border-radius:14px;
+      }
+
+      .table-container table {
+        border-collapse:separate;
+        border-spacing:0 7px;
+        background:transparent;
+        overflow:visible;
+      }
+
+      .table-container thead {
+        background:transparent;
+      }
+
+      .table-container thead th {
+        padding:8px 9px;
+        font-size:0.78rem;
+        line-height:1.1;
+        letter-spacing:0.02em;
+        background:#1e3a8a;
+        color:#ffffff;
+      }
+
+      .table-container thead th:first-child {
+        border-top-left-radius:10px;
+        border-bottom-left-radius:10px;
+      }
+
+      .table-container thead th:last-child {
+        border-top-right-radius:10px;
+        border-bottom-right-radius:10px;
+      }
+
+      .table-container tbody tr {
+        background:transparent;
+        box-shadow:0 2px 8px rgba(15, 23, 42, 0.06);
+      }
+
+      .table-container tbody tr:hover {
+        transform:none;
+        background:transparent;
+      }
+
+      .table-container tbody td {
+        padding:6px 8px;
+        font-size:0.82rem;
+        line-height:1.15;
+        background:#ffffff;
+        vertical-align:middle;
+      }
+
+      .table-container tbody tr:nth-child(even) {
+        background:transparent;
+      }
+
+      .table-container tbody tr:nth-child(even) td {
+        background:#f8fafc;
+      }
+
+      .table-container tbody tr:hover td {
+        background:#eef4ff;
+      }
+
+      .table-container tbody td:first-child {
+        border-top-left-radius:10px;
+        border-bottom-left-radius:10px;
+      }
+
+      .table-container tbody td:last-child {
+        border-top-right-radius:10px;
+        border-bottom-right-radius:10px;
+      }
+
+      .status-badge {
+        display:inline-flex;
+        align-items:center;
+        justify-content:center;
+        width:190px;
+        height:32px;
+        max-width:100%;
+        padding:0 12px;
+        border-radius:999px;
+        font-size:0.75rem;
+        font-weight:800;
+        line-height:1;
+        letter-spacing:0.03em;
+        white-space:nowrap;
+        box-shadow:0 2px 6px rgba(0,0,0,0.08);
+      }
+
+      .status-badge.status-agendamento,
+      .status-badge.status-fornecedor,
+      .status-badge.status-pecas,
+      .status-badge.status-servico,
+      .status-badge.status-finalizado {
+        border-radius:999px;
+      }
+
+      .status-badge.status-servico {
+        background:#cbd5e1;
+        color:#334155;
+      }
+
+      .status-badge.status-pecas {
+        color:#1e293b;
+      }
+
+      .table-container .icon-btn {
+        width:auto;
+        min-width:28px;
+        padding:2px 4px;
+        margin:0 1px;
+        font-size:1.05rem;
+      }
 
       /* ========== RESPONSIVIDADE MOBILE ========== */
       @media (max-width: 768px) {
@@ -768,6 +982,7 @@ flex-wrap:wrap;
           <option>AGUARDANDO PEÇAS</option>
           <option>AGUARDANDO SERVIÇO</option>
           <option>FORNECEDOR</option>
+          <option>ENVIAR PARA TERCEIROS</option>
           <option>VEÍCULO FINALIZADO</option>
         </select>
 
@@ -1018,10 +1233,30 @@ flex-wrap:wrap;
           <option>AGUARDANDO PEÇAS</option>
           <option>AGUARDANDO SERVIÇO</option>
           <option>FORNECEDOR</option>
+          <option>ENVIAR PARA TERCEIROS</option>
           <option>VEÍCULO FINALIZADO</option>
         </select>
         <button onclick="navegar('salvar_status'); salvarStatus()">SALVAR</button>
         <button onclick="navegar('fechar_modal_status'); fecharModalStatus()">FECHAR</button>
+      </div>
+    </div>
+
+    <!-- Modal Enviar para Terceiros -->
+    <div class="modal-bg" id="modalTerceiro">
+      <div class="modal">
+        <h3>Enviar para Terceiros</h3>
+        <div class="terceiro-alerta">
+          Informe o fornecedor/terceiro que receberá o veículo.
+        </div>
+
+        <div class="terceiro-box">
+          <input type="text" id="fornecedorTerceiroInput" placeholder="NOME DO FORNECEDOR / TERCEIRO" />
+        </div>
+
+        <div class="modal-actions">
+          <button class="btn-secondary" onclick="navegar('confirmar_envio_terceiro'); confirmarEnvioTerceiro()">CONFIRMAR E ENVIAR WHATSAPP</button>
+          <button onclick="navegar('cancelar_envio_terceiro'); fecharModalTerceiro()">CANCELAR</button>
+        </div>
       </div>
     </div>
 
@@ -1206,12 +1441,15 @@ setTimeout(() => {
 
       const modalStatus = document.getElementById("modalStatus");
       const statusSelect = document.getElementById("statusSelect");
+      const modalTerceiro = document.getElementById("modalTerceiro");
+      const fornecedorTerceiroInput = document.getElementById("fornecedorTerceiroInput");
 
       let dados = [];
       let indicePecasAtual = null;
       let idStatusAtual = null;
       let abaAtiva = "servicos";
       let indiceFinalizadoAtual = null;
+      let terceiroPendente = null;
 
       // ========== FUNÇÕES DO SISTEMA DE ABAS ==========
       function trocarAba(aba) {
@@ -1271,6 +1509,16 @@ async function salvar() {
     return;
   }
 
+  // Fluxo especial: quando o mecânico precisa enviar o veículo para um terceiro/fornecedor.
+  // O sistema coleta o fornecedor em um modal, salva como finalizado e gera o WhatsApp.
+  if (statusAtual === "ENVIAR PARA TERCEIROS") {
+    abrirModalTerceiro("cadastro", {
+      obj,
+      indexAtual: index.value
+    });
+    return;
+  }
+
   try {
     let docId = null;
 
@@ -1288,10 +1536,8 @@ async function salvar() {
 
     // 🔥 WHATSAPP AO FINALIZAR via botão SALVAR - usando confirm + location para evitar bloqueio de popup
     if (statusAtual === "VEÍCULO FINALIZADO") {
-const texto =
-`*CONFIRMADO ENTRADA NA PORTARIA*
-
-VEÍCULO: ${obj.veiculo}
+      const texto =
+`VEÍCULO: ${obj.veiculo}
 PLACA: ${obj.placa}
 DESCRIÇÃO: ${obj.descricao}
 ORIGEM: ${obj.origem}
@@ -1407,9 +1653,9 @@ STATUS: ${statusAtual}`;
 
 <td>${v.dataEntrada || "-"}</td>
 
-<td class="tr-clickable ${corClass}"
+<td class="tr-clickable"
     onclick="abrirModalStatus('${v.id}')">
-  ${v.status}
+  <span class="status-badge ${corClass}">${v.status}</span>
 </td>
 
 <td>
@@ -1434,10 +1680,10 @@ STATUS: ${statusAtual}`;
 <td>${v.origem}</td>
 <td>${v.mecanico_responsavel || "N/A"}</td>
 <td 
-  class="status-finalizado tr-clickable"
+  class="tr-clickable"
   onclick="event.stopPropagation(); navegar('abrir_modal_status_finalizado_${v.iOriginal}'); abrirModalStatusFinalizados(${v.iOriginal})"
 >
-  ${v.status}
+  <span class="status-badge status-finalizado">${v.status}</span>
 </td>
 </tr>`;
         });
@@ -1507,6 +1753,7 @@ STATUS: ${statusAtual}`;
   <strong>PLACA:</strong> ${v.placa}<br>
   <strong>DESCRIÇÃO:</strong> ${v.descricao}<br>
   <strong>STATUS:</strong> ${v.status}<br>
+  ${v.finalizacaoTipo === "TERCEIRO" || v.fornecedorTerceiro ? `<strong>FINALIZAÇÃO:</strong> ENVIADO PARA TERCEIRO<br><strong>FORNECEDOR:</strong> ${v.fornecedorTerceiro || "-"}<br>` : ""}
   <strong>DATA FINALIZAÇÃO:</strong> ${v.dataFinalizacao || "-"}
 `;
 
@@ -1950,30 +2197,26 @@ STATUS: ${statusAtual}`;
       }
 
 
-function abrirModal(i) {
-  indicePecasAtual = i;
-  novaPeca.value = "";
-  limparModeloCategoria();
-  listaPecas.innerHTML = "";
-
-  (dados[i].pecas || []).forEach((p, j) => {
-    let li = document.createElement("li");
-    li.textContent = p;
-
-    let btn = document.createElement("button");
-    btn.textContent = "X";
-
-    btn.onclick = () => {
-      navegar("remover_peca_" + j);
-      removerPeca(j);
-    };
-
-    li.appendChild(btn);
-    listaPecas.appendChild(li);
-  });
-
-  modal.style.display = "flex";
-}
+      function abrirModal(i) {
+        indicePecasAtual = i;
+        novaPeca.value = "";
+        limparModeloCategoria();
+        listaPecas.innerHTML = "";
+        (dados[i].pecas || []).forEach((p, j) => {
+          let li = document.createElement("li");
+          li.textContent = p;
+          let btn = document.createElement("button");
+          btn.textContent = "X";
+          btn.onclick = () => {
+            navegar("remover_peca_" + j);
+            removerPeca(j);
+          };
+          li.appendChild(btn);
+          listaPecas.appendChild(li);
+        });
+        modal.style.display = "flex";
+        novaPeca.focus();
+      }
 
       async function adicionarPeca() {
         let valor = novaPeca.value.trim();
@@ -2031,6 +2274,122 @@ function abrirModal(i) {
         indicePecasAtual = null;
       }
 
+function abrirModalTerceiro(tipo, dadosFluxo = {}) {
+  terceiroPendente = {
+    tipo,
+    ...dadosFluxo
+  };
+
+  fornecedorTerceiroInput.value = "";
+  modalTerceiro.style.display = "flex";
+  setTimeout(() => fornecedorTerceiroInput.focus(), 100);
+}
+
+function fecharModalTerceiro() {
+  modalTerceiro.style.display = "none";
+  fornecedorTerceiroInput.value = "";
+  terceiroPendente = null;
+}
+
+function gerarTextoEnvioTerceiro(v, fornecedor) {
+  const pecasTexto = v.pecas && v.pecas.length > 0 ? v.pecas.join(", ") : "Nenhuma";
+  const mecanico = localStorage.getItem("sessao_lecar") || v.mecanico_responsavel || v.mecanico || "-";
+
+  return `NECESSÁRIO ENVIAR PARA TERCEIRO
+FORNECEDOR: ${fornecedor}
+
+VEÍCULO: ${v.veiculo}
+PLACA: ${v.placa}
+DESCRIÇÃO: ${v.descricao}
+PEÇAS: ${pecasTexto}
+ORIGEM: ${v.origem}
+MECÂNICO: ${mecanico}
+DATA: ${new Date().toLocaleString()}`;
+}
+
+async function confirmarEnvioTerceiro() {
+  if (!terceiroPendente) return;
+
+  const fornecedor = fornecedorTerceiroInput.value.trim().toUpperCase();
+
+  if (!fornecedor) {
+    alert("Informe o nome do fornecedor/terceiro.");
+    fornecedorTerceiroInput.focus();
+    return;
+  }
+
+  try {
+    let payload = {};
+    let docId = null;
+
+    if (terceiroPendente.tipo === "cadastro") {
+      payload = {
+        ...terceiroPendente.obj,
+        status: "VEÍCULO FINALIZADO",
+        finalizacaoTipo: "TERCEIRO",
+        fornecedorTerceiro: fornecedor,
+        dataEnvioTerceiro: new Date().toLocaleString(),
+        dataFinalizacao: new Date().toLocaleString(),
+        mecanico: localStorage.getItem("sessao_lecar"),
+        ultima_modificacao: new Date().toLocaleString()
+      };
+
+      if (terceiroPendente.indexAtual === "") {
+        const docRef = await db.collection("veiculos").add(payload);
+        docId = docRef.id;
+        console.log("[v0] Veículo enviado para terceiro criado com ID:", docId);
+      } else {
+        docId = dados[terceiroPendente.indexAtual].id;
+        await db.collection("veiculos").doc(docId).update(payload);
+        console.log("[v0] Veículo enviado para terceiro atualizado:", docId);
+      }
+    }
+
+    if (terceiroPendente.tipo === "status") {
+      docId = terceiroPendente.id;
+
+      payload = {
+        status: "VEÍCULO FINALIZADO",
+        finalizacaoTipo: "TERCEIRO",
+        fornecedorTerceiro: fornecedor,
+        dataEnvioTerceiro: new Date().toLocaleString(),
+        dataFinalizacao: new Date().toLocaleString(),
+        mecanico: localStorage.getItem("sessao_lecar"),
+        ultima_modificacao: new Date().toLocaleString()
+      };
+
+      await db.collection("veiculos").doc(docId).update(payload);
+
+      const indexLocal = dados.findIndex(v => v.id === docId);
+      if (indexLocal !== -1) {
+        dados[indexLocal] = {
+          ...dados[indexLocal],
+          ...payload
+        };
+      }
+    }
+
+    const veiculoWhatsApp = terceiroPendente.tipo === "cadastro"
+      ? payload
+      : dados.find(v => v.id === docId);
+
+    if (veiculoWhatsApp) {
+      const texto = gerarTextoEnvioTerceiro(veiculoWhatsApp, fornecedor);
+      const url = `https://wa.me/?text=${encodeURIComponent(texto)}`;
+      window.open(url, "_blank");
+    }
+
+    fecharModalTerceiro();
+    fecharModalStatus();
+    limpar();
+    atualizarTabela();
+
+  } catch (err) {
+    console.error("[v0] Erro ao enviar para terceiro:", err);
+    alert("Erro ao enviar para terceiro. Verifique sua conexão.");
+  }
+}
+
 function abrirModalStatus(id) {
   const v = dados.find(item => String(item.id) === String(id));
 
@@ -2050,6 +2409,15 @@ async function salvarStatus() {
   if (!idStatusAtual) return;
 
   const novoStatus = statusSelect.value.toUpperCase();
+
+  if (novoStatus === "ENVIAR PARA TERCEIROS") {
+    const idTerceiro = idStatusAtual;
+    fecharModalStatus();
+    abrirModalTerceiro("status", {
+      id: idTerceiro
+    });
+    return;
+  }
 
   const payload = {
     status: novoStatus,
