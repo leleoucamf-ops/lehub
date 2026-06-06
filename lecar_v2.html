@@ -1288,8 +1288,10 @@ async function salvar() {
 
     // 🔥 WHATSAPP AO FINALIZAR via botão SALVAR - usando confirm + location para evitar bloqueio de popup
     if (statusAtual === "VEÍCULO FINALIZADO") {
-      const texto =
-`VEÍCULO: ${obj.veiculo}
+const texto =
+`*CONFIRMADO ENTRADA NA PORTARIA*
+
+VEÍCULO: ${obj.veiculo}
 PLACA: ${obj.placa}
 DESCRIÇÃO: ${obj.descricao}
 ORIGEM: ${obj.origem}
