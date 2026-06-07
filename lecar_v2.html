@@ -1983,6 +1983,186 @@
         }
       }
 
+
+      /* ========== LAPIDAÇÃO DO MODAL DE CONFIGURAÇÕES ========== */
+      .config-user-profile {
+        display: flex;
+        align-items: center;
+        gap: 14px;
+      }
+
+      .config-user-photo {
+        width: 66px;
+        height: 66px;
+        min-width: 66px;
+        border-radius: 20px;
+        background: linear-gradient(135deg, #1e3a8a, #2563eb);
+        color: #ffffff;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.55rem;
+        font-weight: 950;
+        letter-spacing: 0.04em;
+        box-shadow: 0 8px 20px rgba(37, 99, 235, 0.22);
+        border: 3px solid #dbeafe;
+        overflow: hidden;
+      }
+
+      .config-user-photo img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        display: block;
+      }
+
+      .config-user-info {
+        min-width: 0;
+      }
+
+      .config-user-specialty {
+        display: flex;
+        align-items: center;
+        gap: 7px;
+        color: #475569;
+        font-size: 0.82rem;
+        font-weight: 800;
+        margin-top: 8px;
+      }
+
+      .config-user-specialty .ui-icon {
+        width: 17px !important;
+        height: 17px !important;
+        color: #2563eb;
+        stroke-width: 2.2;
+      }
+
+      .ranking-empty-card {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 14px;
+        border-radius: 14px;
+        background: #f8fafc;
+        border: 1px dashed #cbd5e1;
+        color: #64748b;
+        font-size: 0.84rem;
+        font-weight: 700;
+        line-height: 1.45;
+      }
+
+      .ranking-empty-icon {
+        width: 42px;
+        height: 42px;
+        min-width: 42px;
+        border-radius: 14px;
+        background: #e2e8f0;
+        color: #475569;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .ranking-empty-icon .ui-icon {
+        width: 21px !important;
+        height: 21px !important;
+      }
+
+      .about-lecar.clean {
+        display: block;
+      }
+
+      .about-lecar.clean .about-text {
+        background: #f8fafc;
+        border: 1px solid #e2e8f0;
+        border-radius: 14px;
+        padding: 14px;
+      }
+
+      @media (max-width: 480px) {
+        .config-user-photo {
+          width: 58px;
+          height: 58px;
+          min-width: 58px;
+          border-radius: 18px;
+          font-size: 1.35rem;
+        }
+
+        .config-user-profile {
+          align-items: flex-start;
+        }
+      }
+
+      /* ========== CONFIGURAÇÕES PREMIUM - MOCKUP PROFISSIONAL ========== */
+      .config-modal-bg{backdrop-filter:blur(6px);background:rgba(15,23,42,.54)!important;padding:22px}
+      .config-modal{width:860px!important;max-width:96%!important;background:linear-gradient(180deg,#fff,#f8fafc)!important;border-radius:20px!important;border:1px solid rgba(226,232,240,.95)!important;box-shadow:0 24px 70px rgba(15,23,42,.35)!important}
+      .config-modal-header{min-height:78px!important;padding:26px 32px 18px!important;background:transparent!important;border-bottom:none!important}
+      .config-modal-header h3{color:#0f2748!important;font-size:1.45rem!important;letter-spacing:.01em!important}
+      .btn-fechar-config{width:42px!important;height:42px!important;border:none!important;background:transparent!important;color:#0f2748!important;box-shadow:none!important}
+      .btn-fechar-config .ui-icon{width:27px!important;height:27px!important;stroke-width:2.1!important}
+      .config-modal-body{padding:0 26px 20px!important;gap:20px!important}
+      .config-section{border:1px solid #dbe3ef!important;border-radius:16px!important;background:rgba(255,255,255,.94)!important;box-shadow:0 10px 28px rgba(15,23,42,.055)!important;padding:22px!important}
+      .config-section-head{margin-bottom:18px!important}
+      .config-section-title{color:#0f2748!important;font-size:1rem!important;letter-spacing:.01em!important}
+      .config-section-subtitle{color:#64748b!important}
+      .config-icon{width:38px!important;height:38px!important;min-width:38px!important;border-radius:50%!important;background:#eaf2ff!important;color:#2563eb!important;box-shadow:none!important}
+      .config-icon.gold{background:#eef5ff!important;color:#2563eb!important}
+      .config-icon.info{background:linear-gradient(135deg,#1e3a8a,#2563eb)!important;color:#fff!important}
+      .config-icon .ui-icon{width:22px!important;height:22px!important;color:currentColor!important}
+      .config-user-profile{display:grid!important;grid-template-columns:210px 1fr!important;gap:26px!important;align-items:center!important}
+      .config-user-left{display:flex;flex-direction:column;align-items:center;gap:16px;padding-right:26px;border-right:1px solid #e2e8f0}
+      .config-user-photo{width:150px!important;height:150px!important;min-width:150px!important;border-radius:50%!important;background:linear-gradient(135deg,#2f7df0,#0f55d8)!important;font-size:3.2rem!important;color:#fff!important;border:none!important;box-shadow:0 15px 35px rgba(37,99,235,.28)!important;position:relative!important}
+      .config-user-photo::after{content:"";position:absolute;width:27px;height:27px;right:12px;bottom:12px;border-radius:50%;background:#3bc66b;border:4px solid #fff;box-shadow:0 4px 12px rgba(21,128,61,.25)}
+      .btn-edit-profile{width:150px;height:48px;padding:0 16px;margin:0;border-radius:12px;border:1px solid #2563eb;background:#fff;color:#2563eb;font-size:.9rem;font-weight:900;text-transform:none;display:inline-flex;align-items:center;justify-content:center;gap:8px}
+      .btn-edit-profile:hover{opacity:1;transform:none;background:#eff6ff}
+      .btn-edit-profile .ui-icon{width:18px!important;height:18px!important;stroke-width:2.4!important}
+      .config-user-info{min-width:0!important}
+      .config-user-name{color:#0f2748!important;font-size:1.55rem!important;line-height:1.15!important;margin-bottom:8px!important;letter-spacing:-.02em!important}
+      .config-user-role{background:#eaf2ff!important;color:#2563eb!important;border:1px solid #bfdbfe!important;font-size:.78rem!important}
+      .config-user-specialty{margin-top:20px!important;font-size:1.02rem!important;color:#0f2748!important}
+      .config-user-specialty strong{color:#64748b;font-size:.84rem;display:block;margin-bottom:8px;font-weight:700}
+      .config-user-specialty .ui-icon{color:#2563eb!important;width:20px!important;height:20px!important}
+      .config-profile-meta{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px;margin-top:22px;padding-top:18px;border-top:1px solid #e2e8f0}
+      .profile-meta-item{display:flex;align-items:center;gap:10px;color:#475569;font-size:.88rem;font-weight:700}
+      .profile-meta-item .ui-icon{width:22px!important;height:22px!important;color:#2563eb}
+      .profile-meta-item span{display:block;color:#64748b;font-size:.76rem;margin-bottom:2px}
+      .profile-meta-item strong{color:#0f2748;font-size:.9rem}
+      .ranking-header-premium{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:16px}
+      .ranking-date-badge{height:34px;padding:0 12px;border-radius:10px;background:#f8fafc;border:1px solid #cbd5e1;color:#334155;font-weight:800;font-size:.86rem;display:inline-flex;align-items:center;gap:7px}
+      .ranking-date-badge .ui-icon{width:17px!important;height:17px!important}
+      .ranking-grid{grid-template-columns:220px 1fr!important;gap:24px!important}
+      .ranking-position-card{min-height:238px!important;border-radius:14px!important;background:linear-gradient(180deg,#eef6ff,#f8fbff)!important;border:1px solid #cfe1ff!important;box-shadow:0 8px 22px rgba(37,99,235,.06)!important;text-align:center!important;display:flex;flex-direction:column;justify-content:center;align-items:center}
+      .mini-chart-icon{width:42px;height:42px;color:#2563eb;margin-bottom:12px}
+      .ranking-position-label{font-size:.86rem!important;color:#0f2748!important;margin-bottom:14px!important}
+      .ranking-position-value{font-size:3rem!important;color:#2563eb!important;letter-spacing:-.05em}
+      .ranking-position-services{width:100%;margin-top:14px!important;padding-top:14px;border-top:1px solid #dbeafe;color:#0f2748!important;font-size:1.4rem!important}
+      .ranking-position-services small{display:block;color:#64748b;font-size:.86rem;font-weight:700;margin-top:4px}
+      .ranking-position-note{display:none!important}
+      .ranking-list{border:1px solid #e2e8f0;border-radius:14px;overflow:hidden;gap:0!important;background:#fff}
+      .ranking-row{min-height:52px!important;grid-template-columns:42px 42px 1fr 70px!important;border-radius:0!important;background:#fff!important;border-bottom:1px solid #e2e8f0!important;padding:8px 14px!important;font-size:.95rem!important;color:#0f2748!important}
+      .ranking-row:last-child{border-bottom:none!important}
+      .ranking-row.current-user{background:#eef6ff!important;border:1px solid #bfdbfe!important;margin:-1px;position:relative;z-index:2}
+      .ranking-row .rank-pos{width:31px;height:31px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;color:#92400e!important;background:#fcd34d;font-size:.82rem}
+      .ranking-row:nth-child(2) .rank-pos{background:#e2e8f0;color:#475569!important}
+      .ranking-row:nth-child(3) .rank-pos{background:#fdba74;color:#7c2d12!important}
+      .rank-avatar{width:32px;height:32px;border-radius:50%;background:#1d4ed8;color:#fff;display:inline-flex;align-items:center;justify-content:center;font-weight:950;font-size:.82rem}
+      .ranking-row .rank-total{color:#2563eb!important;font-size:1.1rem!important;line-height:1.05}
+      .ranking-row .rank-total small{display:block;color:#64748b;font-size:.68rem;font-weight:700;margin-top:2px}
+      .ranking-note{margin-top:14px;color:#64748b;font-size:.78rem;font-weight:700;display:flex;align-items:center;gap:7px}
+      .ranking-note .ui-icon{width:17px!important;height:17px!important}
+      .ranking-empty-card{border:none!important;background:#fff!important;min-height:155px;justify-content:center}
+      .about-lecar.clean .about-text{display:grid;grid-template-columns:1fr 250px;gap:22px;background:transparent!important;border:none!important;padding:0!important;color:#334155!important}
+      .about-description{color:#475569;font-size:.92rem;line-height:1.7}
+      .about-info-list{border-left:1px solid #e2e8f0;padding-left:22px;display:grid;gap:10px}
+      .about-info-row{display:grid;grid-template-columns:85px 1fr;gap:10px;align-items:center;color:#64748b;font-size:.88rem;font-weight:700}
+      .about-pill{justify-self:start;background:#eaf2ff;border:1px solid #bfdbfe;color:#2563eb;border-radius:999px;padding:4px 10px;font-size:.78rem;font-weight:950}
+      .about-link{color:#2563eb;font-weight:900}
+      .config-modal-actions{padding:10px 26px 28px!important;grid-template-columns:160px 260px!important;justify-content:end!important}
+      .btn-config-secondary,.btn-config-logout{height:56px!important;border-radius:14px!important;font-size:1rem!important;text-transform:none!important}
+      .btn-config-secondary{background:#fff!important}
+      .btn-config-logout{background:#fff!important;border:1px solid #ef4444!important}
+      @media(max-width:768px){.config-modal{width:96%!important}.config-modal-header{padding:22px 20px 14px!important}.config-modal-body{padding:0 14px 16px!important}.config-user-profile{grid-template-columns:1fr!important;gap:18px!important}.config-user-left{border-right:none;border-bottom:1px solid #e2e8f0;padding-right:0;padding-bottom:18px}.config-profile-meta,.about-lecar.clean .about-text{grid-template-columns:1fr!important}.about-info-list{border-left:none;border-top:1px solid #e2e8f0;padding-left:0;padding-top:16px}.ranking-grid{grid-template-columns:1fr!important}.ranking-row{grid-template-columns:38px 38px 1fr 58px!important}.config-modal-actions{grid-template-columns:1fr!important}}
+
     </style>
   </head>
   <body translate="no">
@@ -2373,57 +2553,146 @@
 
         <div class="config-modal-body">
           <div class="config-section">
+            <div class="config-user-profile">
+              <div class="config-user-left">
+                <div class="config-user-photo" id="configFotoUsuario">LJ</div>
+                <button type="button" class="btn-edit-profile" onclick="abrirEditarPerfil()">
+                  <svg class="ui-icon" viewBox="0 0 24 24" aria-hidden="true">
+                    <path d="M12 20H21"></path>
+                    <path d="M16.5 3.5A2.1 2.1 0 0 1 19.5 6.5L7 19L3 20L4 16L16.5 3.5Z"></path>
+                  </svg>
+                  Editar perfil
+                </button>
+              </div>
+
+              <div class="config-user-info">
+                <div class="config-section-head" style="margin-bottom:18px;">
+                  <span class="config-icon">
+                    <svg class="ui-icon" viewBox="0 0 24 24" aria-hidden="true">
+                      <circle cx="9" cy="8" r="3"></circle>
+                      <path d="M3.5 19C4.2 15.8 6.1 14 9 14C11.9 14 13.8 15.8 14.5 19"></path>
+                      <circle cx="17" cy="9" r="2.4"></circle>
+                      <path d="M15.5 15.2C17.8 15.4 19.4 16.7 20 19"></path>
+                    </svg>
+                  </span>
+                  <p class="config-section-title">Perfil do usuário</p>
+                </div>
+
+                <div>
+                  <span class="config-user-name" id="configNomeUsuario">USUÁRIO</span>
+                  <span class="config-user-role">Mecânico</span>
+                </div>
+
+                <div class="config-user-specialty">
+                  <div>
+                    <strong>Especialidade</strong>
+                    <div style="display:flex; align-items:center; gap:8px;">
+                      <svg class="ui-icon" viewBox="0 0 24 24" aria-hidden="true">
+                        <path d="M14.7 6.3C15.1 4.8 14.8 3.2 13.7 2.1L10.6 5.2L8.8 3.4L11.9 0.3C10.8 -0.2 9.4 -0.1 8.3 0.6C6.6 1.6 5.9 3.7 6.5 5.5L1.5 10.5C0.7 11.3 0.7 12.6 1.5 13.4C2.3 14.2 3.6 14.2 4.4 13.4L9.4 8.4C11.7 9.2 14 8.6 14.7 6.3Z" transform="translate(4 5)"></path>
+                        <path d="M15 14L21 20"></path>
+                      </svg>
+                      <span id="configEspecialidadeUsuario">Mecânica Geral</span>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="config-profile-meta">
+                  <div class="profile-meta-item">
+                    <svg class="ui-icon" viewBox="0 0 24 24" aria-hidden="true">
+                      <path d="M16 2V6"></path><path d="M8 2V6"></path><path d="M3 10H21"></path>
+                      <path d="M5 4H19C20.1 4 21 4.9 21 6V20C21 21.1 20.1 22 19 22H5C3.9 22 3 21.1 3 20V6C3 4.9 3.9 4 5 4Z"></path>
+                    </svg>
+                    <div><span>Usuário desde</span><strong id="configUsuarioDesde">12/03/2024</strong></div>
+                  </div>
+
+                  <div class="profile-meta-item">
+                    <svg class="ui-icon" viewBox="0 0 24 24" aria-hidden="true">
+                      <path d="M12 22C12 22 20 18 20 11V5L12 2L4 5V11C4 18 12 22 12 22Z"></path>
+                      <path d="M9 12L11 14L15 10"></path>
+                    </svg>
+                    <div><span>Último acesso</span><strong id="configUltimoAcesso">Hoje</strong></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="config-section" id="editarPerfilBox" style="display:none;">
             <div class="config-section-head">
               <span class="config-icon">
                 <svg class="ui-icon" viewBox="0 0 24 24" aria-hidden="true">
-                  <circle cx="12" cy="8" r="4"></circle>
-                  <path d="M4 21C4.8 16.8 7.8 14.5 12 14.5C16.2 14.5 19.2 16.8 20 21"></path>
+                  <path d="M12 20H21"></path>
+                  <path d="M16.5 3.5A2.1 2.1 0 0 1 19.5 6.5L7 19L3 20L4 16L16.5 3.5Z"></path>
                 </svg>
               </span>
               <div>
-                <p class="config-section-title">Usuário logado</p>
-                <p class="config-section-subtitle">Perfil ativo no sistema</p>
+                <p class="config-section-title">Editar perfil</p>
+                <p class="config-section-subtitle">Dados salvos apenas neste navegador</p>
               </div>
             </div>
-
-            <div class="config-user-name" id="configNomeUsuario">USUÁRIO</div>
-            <span class="config-user-role">Mecânico</span>
+            <div class="modal-row">
+              <input type="text" id="perfilNomeInput" placeholder="NOME DE EXIBIÇÃO">
+              <input type="text" id="perfilEspecialidadeInput" placeholder="ESPECIALIDADE">
+            </div>
+            <div class="modal-actions" style="display:flex; gap:10px; flex-wrap:wrap; margin-top:8px;">
+              <button class="btn-secondary" onclick="salvarPerfilUsuario()">SALVAR PERFIL</button>
+              <button onclick="fecharEditarPerfil()">CANCELAR</button>
+            </div>
           </div>
 
           <div class="config-section">
-            <div class="config-section-head">
-              <span class="config-icon gold">
-                <svg class="ui-icon" viewBox="0 0 24 24" aria-hidden="true">
-                  <path d="M8 4H16V8C16 11.3 14.3 13.5 12 13.5C9.7 13.5 8 11.3 8 8V4Z"></path>
-                  <path d="M8 6H4V8C4 10.2 5.6 12 8.4 12"></path>
-                  <path d="M16 6H20V8C20 10.2 18.4 12 15.6 12"></path>
-                  <path d="M12 13.5V18"></path>
-                  <path d="M8.5 20H15.5"></path>
-                  <path d="M10 18H14"></path>
-                </svg>
-              </span>
-              <div>
-                <p class="config-section-title">Ranking de produtividade hoje</p>
-                <p class="config-section-subtitle">Baseado em veículos finalizados no dia</p>
+            <div class="ranking-header-premium">
+              <div class="config-section-head" style="margin:0;">
+                <span class="config-icon gold">
+                  <svg class="ui-icon" viewBox="0 0 24 24" aria-hidden="true">
+                    <path d="M8 4H16V8C16 11.3 14.3 13.5 12 13.5C9.7 13.5 8 11.3 8 8V4Z"></path>
+                    <path d="M8 6H4V8C4 10.2 5.6 12 8.4 12"></path>
+                    <path d="M16 6H20V8C20 10.2 18.4 12 15.6 12"></path>
+                    <path d="M12 13.5V18"></path><path d="M8.5 20H15.5"></path><path d="M10 18H14"></path>
+                  </svg>
+                </span>
+                <div>
+                  <p class="config-section-title">Ranking de produtividade — hoje</p>
+                  <p class="config-section-subtitle">Serviços com status “VEÍCULO FINALIZADO”</p>
+                </div>
               </div>
+              <span class="ranking-date-badge">
+                <svg class="ui-icon" viewBox="0 0 24 24" aria-hidden="true">
+                  <path d="M16 2V6"></path><path d="M8 2V6"></path><path d="M3 10H21"></path>
+                  <path d="M5 4H19C20.1 4 21 4.9 21 6V20C21 21.1 20.1 22 19 22H5C3.9 22 3 21.1 3 20V6C3 4.9 3.9 4 5 4Z"></path>
+                </svg>
+                <span id="rankingDataHoje">Hoje</span>
+              </span>
             </div>
 
             <div class="ranking-grid">
               <div class="ranking-position-card">
+                <svg class="mini-chart-icon" viewBox="0 0 24 24" aria-hidden="true">
+                  <path d="M4 17L9 12L13 15L20 7" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"></path>
+                  <path d="M16 7H20V11" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"></path>
+                </svg>
                 <div class="ranking-position-label">Sua posição</div>
-                <div class="ranking-position-value" id="rankingMinhaPosicao">--</div>
-                <div class="ranking-position-services" id="rankingMeusServicos">0 serviços finalizados</div>
+                <div class="ranking-position-value" id="rankingMinhaPosicao">—</div>
+                <div class="ranking-position-services" id="rankingMeusServicos">—<small>Sem finalizações hoje</small></div>
                 <div class="ranking-position-note" id="rankingObservacao">Aguardando dados do dia.</div>
               </div>
 
               <div>
-                <p class="config-section-subtitle" style="margin-bottom:8px; text-transform:uppercase; font-weight:900;">Top 5 do dia</p>
                 <div class="ranking-list" id="rankingLista">
-                  <div class="ranking-row">
-                    <span class="rank-pos">--</span>
-                    <span>Nenhum finalizado hoje</span>
-                    <span class="rank-total">0</span>
+                  <div class="ranking-empty-card">
+                    <span class="ranking-empty-icon">
+                      <svg class="ui-icon" viewBox="0 0 24 24" aria-hidden="true">
+                        <path d="M4 19H20"></path><path d="M7 16V11"></path><path d="M12 16V7"></path><path d="M17 16V9"></path>
+                      </svg>
+                    </span>
+                    <span>Nenhum veículo finalizado hoje. O ranking aparecerá aqui automaticamente após a primeira finalização.</span>
                   </div>
+                </div>
+                <div class="ranking-note">
+                  <svg class="ui-icon" viewBox="0 0 24 24" aria-hidden="true">
+                    <circle cx="12" cy="12" r="9"></circle><path d="M12 10V16"></path><path d="M12 7H12.01"></path>
+                  </svg>
+                  Ranking considera apenas serviços finalizados hoje.
                 </div>
               </div>
             </div>
@@ -2433,9 +2702,7 @@
             <div class="config-section-head">
               <span class="config-icon info">
                 <svg class="ui-icon" viewBox="0 0 24 24" aria-hidden="true">
-                  <circle cx="12" cy="12" r="9"></circle>
-                  <path d="M12 10V17"></path>
-                  <path d="M12 7H12.01"></path>
+                  <circle cx="12" cy="12" r="9"></circle><path d="M12 10V17"></path><path d="M12 7H12.01"></path>
                 </svg>
               </span>
               <div>
@@ -2443,15 +2710,16 @@
                 <p class="config-section-subtitle">Gestão de veículos</p>
               </div>
             </div>
-
-            <div class="about-lecar">
+            <div class="about-lecar clean">
               <div class="about-text">
-                Sistema de gestão para acompanhamento de veículos, serviços, peças, fornecedores e finalizações.<br>
-                <strong>Versão:</strong> 2.1.1<br>
-                <strong>Powered by:</strong> LeHub<br>
-                <strong>Desenvolvido por:</strong> Leandro dos Santos
+                <div class="about-description">
+                  Sistema de gestão desenvolvido para oficinas e mecânicos que buscam organização, agilidade e controle total de seus serviços.
+                </div>
+                <div class="about-info-list">
+                  <div class="about-info-row"><span>Versão</span><strong class="about-pill">2.1.1</strong></div>
+                  <div class="about-info-row"><span>Powered by</span><strong class="about-link">LeHub Soluções</strong></div>
+                </div>
               </div>
-              <img class="about-lecar-logo" src="https://i.postimg.cc/zG9TvZGJ/logo.png" alt="LECAR">
             </div>
           </div>
         </div>
@@ -2459,19 +2727,16 @@
         <div class="config-modal-actions">
           <button class="btn-config-secondary" onclick="fecharModalConfig()">
             <svg class="ui-icon" viewBox="0 0 24 24" aria-hidden="true">
-              <path d="M6 6L18 18"></path>
-              <path d="M18 6L6 18"></path>
+              <path d="M6 6L18 18"></path><path d="M18 6L6 18"></path>
             </svg>
-            FECHAR
+            Fechar
           </button>
-
           <button class="btn-config-logout" onclick="logout()">
             <svg class="ui-icon" viewBox="0 0 24 24" aria-hidden="true">
               <path d="M15 3H19C20.1 3 21 3.9 21 5V19C21 20.1 20.1 21 19 21H15"></path>
-              <path d="M10 17L15 12L10 7"></path>
-              <path d="M15 12H3"></path>
+              <path d="M10 17L15 12L10 7"></path><path d="M15 12H3"></path>
             </svg>
-            SAIR DO SISTEMA
+            Sair do sistema
           </button>
         </div>
       </div>
@@ -2635,9 +2900,43 @@ setTimeout(() => {
       function atualizarModalConfig() {
         const usuario = localStorage.getItem("sessao_lecar") || "USUÁRIO";
         const nomeUsuario = document.getElementById("configNomeUsuario");
+        const perfilSalvo = JSON.parse(localStorage.getItem(`perfil_lecar_${usuario}`) || "{}");
+        const nomeExibicao = perfilSalvo.nome || usuario;
 
         if (nomeUsuario) {
-          nomeUsuario.textContent = usuario;
+          nomeUsuario.textContent = nomeExibicao;
+        }
+
+        const fotoUsuario = document.getElementById("configFotoUsuario");
+        if (fotoUsuario) {
+          const partesNome = nomeExibicao.split(" ").filter(Boolean);
+          const iniciais = partesNome.length >= 2 ? `${partesNome[0][0]}${partesNome[1][0]}` : nomeExibicao.substring(0, 2);
+          fotoUsuario.textContent = iniciais.toUpperCase();
+        }
+
+        const especialidades = {
+          "LEANDRO": "Gestão e Administração",
+          "JUNINHO_DEL": "Mecânica Geral",
+          "HARON": "Diagnóstico e Manutenção",
+          "ABRAÃO": "Mecânica Geral",
+          "PEDRO": "Mecânica Geral",
+          "MAICON": "Mecânica Geral",
+          "DOUGLAS": "Mecânica Geral"
+        };
+
+        const especialidadeUsuario = document.getElementById("configEspecialidadeUsuario");
+        if (especialidadeUsuario) {
+          especialidadeUsuario.textContent = perfilSalvo.especialidade || especialidades[usuario] || "Mecânica Geral";
+        }
+
+        const ultimoAcesso = document.getElementById("configUltimoAcesso");
+        if (ultimoAcesso) {
+          ultimoAcesso.textContent = new Date().toLocaleDateString("pt-BR") + " às " + new Date().toLocaleTimeString("pt-BR", { hour: "2-digit", minute: "2-digit" });
+        }
+
+        const rankingDataHoje = document.getElementById("rankingDataHoje");
+        if (rankingDataHoje) {
+          rankingDataHoje.textContent = new Date().toLocaleDateString("pt-BR");
         }
 
         atualizarRankingProdutividade();
@@ -2679,6 +2978,38 @@ setTimeout(() => {
         );
       }
 
+
+      function abrirEditarPerfil() {
+        const usuario = localStorage.getItem("sessao_lecar") || "USUÁRIO";
+        const perfilSalvo = JSON.parse(localStorage.getItem(`perfil_lecar_${usuario}`) || "{}");
+        const nomeAtual = document.getElementById("configNomeUsuario")?.textContent || usuario;
+        const especialidadeAtual = document.getElementById("configEspecialidadeUsuario")?.textContent || "Mecânica Geral";
+        const nomeInput = document.getElementById("perfilNomeInput");
+        const especialidadeInput = document.getElementById("perfilEspecialidadeInput");
+        const box = document.getElementById("editarPerfilBox");
+        if (nomeInput) nomeInput.value = perfilSalvo.nome || nomeAtual;
+        if (especialidadeInput) especialidadeInput.value = perfilSalvo.especialidade || especialidadeAtual;
+        if (box) box.style.display = "block";
+      }
+
+      function fecharEditarPerfil() {
+        const box = document.getElementById("editarPerfilBox");
+        if (box) box.style.display = "none";
+      }
+
+      function salvarPerfilUsuario() {
+        const usuario = localStorage.getItem("sessao_lecar") || "USUÁRIO";
+        const nomeInput = document.getElementById("perfilNomeInput");
+        const especialidadeInput = document.getElementById("perfilEspecialidadeInput");
+        const perfil = {
+          nome: (nomeInput?.value || usuario).trim().toUpperCase(),
+          especialidade: (especialidadeInput?.value || "Mecânica Geral").trim()
+        };
+        localStorage.setItem(`perfil_lecar_${usuario}`, JSON.stringify(perfil));
+        fecharEditarPerfil();
+        atualizarModalConfig();
+      }
+
       function atualizarRankingProdutividade() {
         const usuario = localStorage.getItem("sessao_lecar") || "USUÁRIO";
         const hoje = new Date().toLocaleDateString("pt-BR");
@@ -2695,17 +3026,15 @@ setTimeout(() => {
           }
         });
 
-        if (!contagem[usuario]) {
-          contagem[usuario] = 0;
-        }
-
         const ranking = Object.entries(contagem)
           .map(([nome, total]) => ({ nome, total }))
+          .filter(item => item.total > 0)
           .sort((a, b) => b.total - a.total || a.nome.localeCompare(b.nome));
 
+        const existeMovimentoHoje = ranking.length > 0;
         const minhaPosicaoIndex = ranking.findIndex(item => item.nome === usuario);
         const minhaPosicao = minhaPosicaoIndex >= 0 ? minhaPosicaoIndex + 1 : "--";
-        const meusServicos = ranking[minhaPosicaoIndex]?.total || 0;
+        const meusServicos = minhaPosicaoIndex >= 0 ? ranking[minhaPosicaoIndex].total : 0;
         const lider = ranking[0];
         const diferencaLider = lider ? Math.max(0, lider.total - meusServicos) : 0;
 
@@ -2715,18 +3044,22 @@ setTimeout(() => {
         const listaEl = document.getElementById("rankingLista");
 
         if (posicaoEl) {
-          posicaoEl.textContent = minhaPosicao === "--" ? "--" : `${minhaPosicao}º`;
+          posicaoEl.textContent = existeMovimentoHoje && minhaPosicao !== "--" ? `${minhaPosicao}º` : "—";
         }
 
         if (servicosEl) {
-          servicosEl.textContent = `${meusServicos} ${meusServicos === 1 ? "serviço finalizado" : "serviços finalizados"}`;
+          servicosEl.innerHTML = existeMovimentoHoje
+            ? `${meusServicos}<small>${meusServicos === 1 ? "serviço finalizado" : "serviços finalizados"}</small>`
+            : `—<small>Sem finalizações hoje</small>`;
         }
 
         if (observacaoEl) {
-          if (!lider || lider.total === 0) {
-            observacaoEl.textContent = "Nenhum veículo finalizado hoje.";
+          if (!existeMovimentoHoje) {
+            observacaoEl.textContent = "O ranking será ativado automaticamente assim que houver o primeiro veículo finalizado no dia.";
           } else if (lider.nome === usuario) {
             observacaoEl.textContent = "Você está liderando o ranking de hoje.";
+          } else if (minhaPosicao === "--") {
+            observacaoEl.textContent = `Líder atual: ${lider.nome} com ${lider.total} ${lider.total === 1 ? "finalização" : "finalizações"}.`;
           } else {
             observacaoEl.textContent = `${diferencaLider} ${diferencaLider === 1 ? "serviço atrás" : "serviços atrás"} do líder ${lider.nome}.`;
           }
@@ -2735,12 +3068,18 @@ setTimeout(() => {
         if (listaEl) {
           const top5 = ranking.slice(0, 5);
 
-          if (!top5.length || top5.every(item => item.total === 0)) {
+          if (!existeMovimentoHoje) {
             listaEl.innerHTML = `
-              <div class="ranking-row current-user">
-                <span class="rank-pos">--</span>
-                <span>Nenhum finalizado hoje</span>
-                <span class="rank-total">0</span>
+              <div class="ranking-empty-card">
+                <span class="ranking-empty-icon">
+                  <svg class="ui-icon" viewBox="0 0 24 24" aria-hidden="true">
+                    <path d="M4 19H20"></path>
+                    <path d="M7 16V11"></path>
+                    <path d="M12 16V7"></path>
+                    <path d="M17 16V9"></path>
+                  </svg>
+                </span>
+                <span>Nenhum veículo finalizado hoje. O ranking aparecerá aqui automaticamente após a primeira finalização.</span>
               </div>
             `;
             return;
@@ -2749,12 +3088,14 @@ setTimeout(() => {
           listaEl.innerHTML = top5.map((item, index) => {
             const atual = item.nome === usuario ? " current-user" : "";
             const nome = item.nome === usuario ? `${item.nome} (Você)` : item.nome;
+            const avatar = item.nome.substring(0, 2).replace("_", "").toUpperCase();
 
             return `
               <div class="ranking-row${atual}">
-                <span class="rank-pos">${index + 1}º</span>
+                <span class="rank-pos">${index + 1}</span>
+                <span class="rank-avatar">${avatar}</span>
                 <span>${nome}</span>
-                <span class="rank-total">${item.total}</span>
+                <span class="rank-total">${item.total}<small>serviços</small></span>
               </div>
             `;
           }).join("");
