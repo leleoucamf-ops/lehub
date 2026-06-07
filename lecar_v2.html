@@ -1,9 +1,10 @@
 <!doctype html>
-<html lang="pt-BR">
+<html lang="pt-BR" translate="no">
   <head>
     <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
     <meta charset="UTF-8" />
+    <meta name="google" content="notranslate">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>LECAR - GESTÃO DE VEÍCULOS</title>
 
@@ -245,29 +246,40 @@
       /* Sistema de Abas */
       .tabs-container { margin-top:25px; }
       .tabs {
-        display: flex;
-        gap: 10px;
-        border-bottom: 2px solid #e2e8f0;
-        margin-bottom: 20px;
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 14px;
+        border-bottom: none;
+        margin-bottom: 24px;
       }
       .tab {
-        padding: 10px 20px;
-        background: transparent;
-        border: none;
-        border-bottom: 3px solid transparent;
+        width: 100%;
+        min-height: 58px;
+        margin: 0;
+        padding: 14px 18px;
+        background: linear-gradient(90deg, #f8fafc, #eef4ff);
+        border: 1px solid #dbeafe;
+        border-radius: 14px;
         cursor: pointer;
         text-transform: uppercase;
-        font-weight: bold;
+        font-weight: 800;
         color: #64748b;
-        transition: all 0.3s ease;
+        transition: all 0.25s ease;
+        box-shadow: 0 4px 14px rgba(15, 23, 42, 0.06);
+        letter-spacing: 0.02em;
       }
       .tab:hover {
-        color: #2563eb;
-        transform: translateY(0);
+        color: #1e3a8a;
+        opacity: 1;
+        transform: none;
+        background: linear-gradient(90deg, #eef4ff, #dbeafe);
+        border-color: #bfdbfe;
       }
       .tab.active {
-        color: #2563eb;
-        border-bottom-color: #2563eb;
+        color: #1e3a8a;
+        background: linear-gradient(90deg, #eef4ff, #dbeafe);
+        border-color: #93c5fd;
+        box-shadow: 0 6px 18px rgba(37, 99, 235, 0.12);
       }
       .tab-content {
         display: none;
@@ -536,6 +548,56 @@
         margin:0;
         cursor:pointer;
         accent-color:#2563eb;
+      }
+
+
+
+      /* ========== SUGESTÕES DO CAMPO VEÍCULO ========== */
+      .veiculo-sugestoes-wrap {
+        position: relative;
+        width: 100%;
+      }
+
+      .veiculo-sugestoes {
+        display: none;
+        position: absolute;
+        top: calc(100% + 4px);
+        left: 0;
+        right: 0;
+        background: #ffffff;
+        border: 1px solid #bfdbfe;
+        border-radius: 12px;
+        box-shadow: 0 10px 24px rgba(15, 23, 42, 0.14);
+        z-index: 1200;
+        max-height: 220px;
+        overflow-y: auto;
+      }
+
+      .veiculo-sugestao-item {
+        width: 100%;
+        padding: 10px 12px;
+        border-bottom: 1px solid #e2e8f0;
+        color: #1e293b;
+        font-weight: 700;
+        font-size: 0.9rem;
+        cursor: pointer;
+        background: #ffffff;
+      }
+
+      .veiculo-sugestao-item:hover {
+        background: #eef4ff;
+        color: #1e3a8a;
+      }
+
+      .veiculo-sugestao-item:last-child {
+        border-bottom: none;
+      }
+
+      .veiculo-sugestoes-empty {
+        padding: 10px 12px;
+        color: #64748b;
+        font-size: 0.85rem;
+        font-weight: 600;
       }
 
 
@@ -826,6 +888,48 @@
         font-size:1.05rem;
       }
 
+
+      /* ========== TONALIDADE SUAVE DA LINHA POR STATUS ========== */
+      .table-container tbody tr.status-row-orcamento td {
+        background: rgba(248, 113, 113, 0.035) !important;
+      }
+
+      .table-container tbody tr.status-row-pecas td {
+        background: rgba(250, 204, 21, 0.04) !important;
+      }
+
+      .table-container tbody tr.status-row-servico td {
+        background: rgba(203, 213, 225, 0.09) !important;
+      }
+
+      .table-container tbody tr.status-row-fornecedor td {
+        background: rgba(59, 130, 246, 0.035) !important;
+      }
+
+      .table-container tbody tr.status-row-finalizado td {
+        background: rgba(74, 222, 128, 0.04) !important;
+      }
+
+      .table-container tbody tr.status-row-orcamento:hover td {
+        background: rgba(248, 113, 113, 0.065) !important;
+      }
+
+      .table-container tbody tr.status-row-pecas:hover td {
+        background: rgba(250, 204, 21, 0.075) !important;
+      }
+
+      .table-container tbody tr.status-row-servico:hover td {
+        background: rgba(203, 213, 225, 0.14) !important;
+      }
+
+      .table-container tbody tr.status-row-fornecedor:hover td {
+        background: rgba(59, 130, 246, 0.065) !important;
+      }
+
+      .table-container tbody tr.status-row-finalizado:hover td {
+        background: rgba(74, 222, 128, 0.075) !important;
+      }
+
       /* ========== RESPONSIVIDADE MOBILE ========== */
       @media (max-width: 768px) {
         /* Topbar em mobile */
@@ -910,15 +1014,18 @@
 
         /* Tabs */
         .tabs {
-          overflow-x: auto;
-          gap: 5px;
-          -webkit-overflow-scrolling: touch;
+          grid-template-columns: repeat(2, minmax(0, 1fr));
+          gap: 8px;
+          overflow: visible;
         }
 
         .tab {
-          padding: 10px 15px;
-          font-size: 0.8rem;
-          white-space: nowrap;
+          width: 100%;
+          min-height: 52px;
+          padding: 10px 8px;
+          font-size: 0.76rem;
+          white-space: normal;
+          line-height: 1.15;
         }
 
         /* Tabelas */
@@ -1032,8 +1139,9 @@
         }
 
         .tab {
-          padding: 8px 12px;
-          font-size: 0.75rem;
+          min-height: 48px;
+          padding: 8px 6px;
+          font-size: 0.7rem;
         }
 
         .logo {
@@ -1046,7 +1154,7 @@
       }
     </style>
   </head>
-  <body>
+  <body translate="no">
 
     <!-- ========== TELA DE LOGIN ========== -->
     <div id="loginPage" class="login-page">
@@ -1108,7 +1216,18 @@
 
           <div class="cadastro-body">
             <input type="hidden" id="index" />
-            <input type="text" id="veiculo" placeholder="VEÍCULO" />
+            <div class="veiculo-sugestoes-wrap">
+              <input
+                type="text"
+                id="veiculo"
+                placeholder="VEÍCULO"
+                autocomplete="off"
+                oninput="buscarSugestoesVeiculos()"
+                onfocus="buscarSugestoesVeiculos()"
+                onkeydown="controlarTeclaSugestaoVeiculo(event)"
+              />
+              <div id="veiculoSugestoes" class="veiculo-sugestoes"></div>
+            </div>
             <input type="text" id="placa" placeholder="PLACA" oninput="this.value = this.value.replace(/[^a-zA-Z0-9]/g, '')" />
             <textarea id="descricao" placeholder="DESCRIÇÃO"></textarea>
             <div class="descricao-actions">
@@ -1489,6 +1608,7 @@ function sincronizarFirebase() {
       });
 
       dados = temp;
+      atualizarCatalogoVeiculos(temp);
       atualizarTabela();
     },
     (error) => {
@@ -1576,6 +1696,7 @@ setTimeout(() => {
 
       // ========== VARIÁVEIS GLOBAIS ==========
       const veiculo = document.getElementById("veiculo");
+      const veiculoSugestoes = document.getElementById("veiculoSugestoes");
       const placa = document.getElementById("placa");
       const descricao = document.getElementById("descricao");
       const status = document.getElementById("status");
@@ -1612,6 +1733,9 @@ setTimeout(() => {
       let abaAtiva = "servicos";
       let indiceFinalizadoAtual = null;
       let terceiroPendente = null;
+      let catalogoVeiculos = [];
+      let sugestoesVeiculosAtuais = [];
+      let sugestaoVeiculoSelecionada = -1;
 
       // ========== FUNÇÕES DO SISTEMA DE ABAS ==========
       function trocarAba(aba) {
@@ -1634,6 +1758,139 @@ setTimeout(() => {
 
         atualizarTabela();
       }
+
+      // ========== SUGESTÕES AUTOMÁTICAS DO CAMPO VEÍCULO ==========
+      function normalizarTextoBusca(texto) {
+        return String(texto || "")
+          .toUpperCase()
+          .normalize("NFD")
+          .replace(/[\u0300-\u036f]/g, "")
+          .replace(/\s+/g, " ")
+          .trim();
+      }
+
+      function atualizarCatalogoVeiculos(lista = []) {
+        const nomes = lista
+          .map((v) => normalizarTextoBusca(v.veiculo))
+          .filter(Boolean);
+
+        catalogoVeiculos = [...new Set(nomes)].sort();
+      }
+
+      function buscarSugestoesVeiculos() {
+        if (!veiculoSugestoes) return;
+
+        const termo = normalizarTextoBusca(veiculo.value);
+
+        if (termo.length < 2) {
+          fecharSugestoesVeiculos();
+          return;
+        }
+
+        const base = catalogoVeiculos.length
+          ? catalogoVeiculos
+          : [...new Set(dados.map((v) => normalizarTextoBusca(v.veiculo)).filter(Boolean))].sort();
+
+        const comecaCom = base.filter((nome) => nome.startsWith(termo));
+        const contem = base.filter((nome) => !nome.startsWith(termo) && nome.includes(termo));
+
+        sugestoesVeiculosAtuais = [...comecaCom, ...contem].slice(0, 8);
+        sugestaoVeiculoSelecionada = -1;
+
+        renderizarSugestoesVeiculos();
+      }
+
+      function renderizarSugestoesVeiculos() {
+        if (!veiculoSugestoes) return;
+
+        veiculoSugestoes.innerHTML = "";
+
+        if (!sugestoesVeiculosAtuais.length) {
+          veiculoSugestoes.innerHTML = '<div class="veiculo-sugestoes-empty">Nenhum veículo encontrado na base</div>';
+          veiculoSugestoes.style.display = "block";
+          return;
+        }
+
+        sugestoesVeiculosAtuais.forEach((nome, i) => {
+          const item = document.createElement("div");
+          item.className = "veiculo-sugestao-item";
+          item.textContent = nome;
+
+          if (i === sugestaoVeiculoSelecionada) {
+            item.style.background = "#eef4ff";
+            item.style.color = "#1e3a8a";
+          }
+
+          item.onmousedown = (event) => {
+            event.preventDefault();
+            selecionarSugestaoVeiculo(nome);
+          };
+
+          veiculoSugestoes.appendChild(item);
+        });
+
+        veiculoSugestoes.style.display = "block";
+      }
+
+      function selecionarSugestaoVeiculo(nome) {
+        veiculo.value = normalizarTextoBusca(nome);
+        fecharSugestoesVeiculos();
+
+        // Depois de escolher o veículo, o foco vai direto para a placa.
+        if (placa && typeof placa.focus === "function") {
+          placa.focus();
+        }
+      }
+
+      function fecharSugestoesVeiculos() {
+        if (!veiculoSugestoes) return;
+
+        veiculoSugestoes.style.display = "none";
+        veiculoSugestoes.innerHTML = "";
+        sugestoesVeiculosAtuais = [];
+        sugestaoVeiculoSelecionada = -1;
+      }
+
+      function controlarTeclaSugestaoVeiculo(event) {
+        if (!sugestoesVeiculosAtuais.length) return;
+
+        if (event.key === "ArrowDown") {
+          event.preventDefault();
+          sugestaoVeiculoSelecionada =
+            (sugestaoVeiculoSelecionada + 1) % sugestoesVeiculosAtuais.length;
+          renderizarSugestoesVeiculos();
+        }
+
+        if (event.key === "ArrowUp") {
+          event.preventDefault();
+          sugestaoVeiculoSelecionada =
+            sugestaoVeiculoSelecionada <= 0
+              ? sugestoesVeiculosAtuais.length - 1
+              : sugestaoVeiculoSelecionada - 1;
+          renderizarSugestoesVeiculos();
+        }
+
+        if (event.key === "Enter" && sugestaoVeiculoSelecionada >= 0) {
+          event.preventDefault();
+          selecionarSugestaoVeiculo(sugestoesVeiculosAtuais[sugestaoVeiculoSelecionada]);
+        }
+
+        if (event.key === "Escape") {
+          fecharSugestoesVeiculos();
+        }
+      }
+
+      document.addEventListener("click", (event) => {
+        if (!veiculoSugestoes || !veiculo) return;
+
+        const clicouNoCampo = event.target === veiculo;
+        const clicouNasSugestoes = veiculoSugestoes.contains(event.target);
+
+        if (!clicouNoCampo && !clicouNasSugestoes) {
+          fecharSugestoesVeiculos();
+        }
+      });
+
 
       // ========== FUNÇÕES PRINCIPAIS ==========
       function selecionarTipo(tipo) {
@@ -1730,6 +1987,18 @@ STATUS: ${statusAtual}`;
       }
 
 
+      function obterClasseLinhaStatus(statusTexto) {
+        const statusNormalizado = String(statusTexto || "").toUpperCase().trim();
+
+        if (statusNormalizado === "AGUARDANDO ORÇAMENTO") return "status-row-orcamento";
+        if (statusNormalizado === "AGUARDANDO PEÇAS") return "status-row-pecas";
+        if (statusNormalizado === "AGUARDANDO SERVIÇO") return "status-row-servico";
+        if (statusNormalizado === "FORNECEDOR") return "status-row-fornecedor";
+        if (statusNormalizado === "VEÍCULO FINALIZADO") return "status-row-finalizado";
+
+        return "";
+      }
+
       function gerarResumoServico(texto) {
         const conteudo = String(texto || "").toUpperCase();
         const categorias = [];
@@ -1798,7 +2067,9 @@ STATUS: ${statusAtual}`;
           else if (v.status === "AGUARDANDO SERVIÇO") corClass = "status-servico";
           else if (v.status === "FORNECEDOR") corClass = "status-fornecedor";
 
-          listaServicosHTML.innerHTML += `<tr>
+          const linhaStatusClass = obterClasseLinhaStatus(v.status);
+
+          listaServicosHTML.innerHTML += `<tr class="${linhaStatusClass}">
 <td class="tr-clickable"
     onclick="navegar('editar_veiculo_${v.iOriginal}'); editar(${v.iOriginal})">
   ${v.veiculo}
@@ -1836,7 +2107,8 @@ STATUS: ${statusAtual}`;
         // Renderizar Veículos Finalizados (ORDEM FIXA DAS COLUNAS)
         listaFinalizadosHTML.innerHTML = "";
         veiculosFinalizados.forEach((v) => {
-          listaFinalizadosHTML.innerHTML += `<tr class="tr-clickable" onclick="navegar('abrir_finalizado_${v.iOriginal}'); abrirModalFinalizado(${v.iOriginal})">
+          const linhaStatusClass = obterClasseLinhaStatus(v.status);
+          listaFinalizadosHTML.innerHTML += `<tr class="tr-clickable ${linhaStatusClass}" onclick="navegar('abrir_finalizado_${v.iOriginal}'); abrirModalFinalizado(${v.iOriginal})">
 <td>${v.veiculo}</td>
 <td>${v.placa}</td>
 <td>${v.origem}</td>
@@ -2798,6 +3070,7 @@ ${gerarLinhaRelatorioMecanicos(relatoriosPorMecanico, "pendentes")}`;
 
       function limpar() {
         veiculo.value = "";
+        fecharSugestoesVeiculos();
         placa.value = "";
         descricao.value = "";
         status.value = "AGUARDANDO ORÇAMENTO";
