@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="pt-BR" translate="no">
+<html lang="pt-BR">
   <head>
     <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
@@ -484,6 +484,58 @@
         font-size:0.82rem;
         color:#64748b;
         margin:6px 0 10px;
+      }
+
+
+      .peca-option-row {
+        display:flex;
+        align-items:center;
+        justify-content:space-between;
+        gap:10px;
+        background:#f8fafc;
+        border:1px solid #e2e8f0;
+        border-radius:10px;
+        padding:8px 10px;
+        font-size:0.9rem;
+        font-weight:700;
+      }
+
+      .peca-main-check {
+        display:flex;
+        align-items:center;
+        gap:8px;
+        flex:1;
+        cursor:pointer;
+      }
+
+      .peca-side-options {
+        display:flex;
+        align-items:center;
+        gap:8px;
+        flex-wrap:wrap;
+      }
+
+      .peca-side-options label {
+        display:flex;
+        align-items:center;
+        gap:4px;
+        background:#ffffff;
+        border:1px solid #bfdbfe;
+        color:#1e3a8a;
+        border-radius:999px;
+        padding:4px 8px;
+        font-size:0.78rem;
+        font-weight:800;
+        cursor:pointer;
+      }
+
+      .peca-option-row input[type="checkbox"] {
+        width:22px;
+        height:22px;
+        min-width:22px;
+        margin:0;
+        cursor:pointer;
+        accent-color:#2563eb;
       }
 
 
@@ -1229,7 +1281,7 @@
         <div class="modal-section-title">Modelos rápidos: outras categorias de peças</div>
         <div class="pecas-builder">
           <div class="pecas-builder-header">
-            <span class="helper-text" style="margin:0;">Selecione a categoria, marque as peças e informe o lado quando necessário.</span>
+            <span class="helper-text" style="margin:0;">Selecione a categoria, marque as peças e escolha LD/LE individualmente em cada item.</span>
             <span class="side-badge">LD = lado direito | LE = lado esquerdo</span>
           </div>
 
@@ -1246,14 +1298,6 @@
               <option value="CÂMBIO">CÂMBIO</option>
               <option value="ELÉTRICA">ELÉTRICA</option>
               <option value="ACESSÓRIOS / ACABAMENTO">ACESSÓRIOS / ACABAMENTO</option>
-            </select>
-
-            <select id="pecaLado">
-              <option value="">LADO DA PEÇA, SE APLICÁVEL</option>
-              <option value="LD">LD - LADO DIREITO</option>
-              <option value="LE">LE - LADO ESQUERDO</option>
-              <option value="LD/LE">LD + LE - AMBOS OS LADOS</option>
-              <option value="N/A">NÃO SE APLICA</option>
             </select>
           </div>
 
@@ -2171,13 +2215,28 @@ STATUS: ${statusAtual}`;
           return;
         }
 
-        pecaCategoriaAviso.textContent = "Peças com indicação de lado precisam de LD, LE ou LD + LE antes de adicionar.";
+        pecaCategoriaAviso.textContent = "Marque a peça e selecione LD, LE ou ambos no próprio item quando houver lado.";
 
-        modelo.forEach((item) => {
-          const label = document.createElement("label");
-          const sufixo = item.lado ? " <span class='side-badge'>LD/LE</span>" : "";
-          label.innerHTML = `<input type="checkbox" class="pecaCategoriaCheck" value="${item.nome}" data-lado="${item.lado ? "SIM" : "NAO"}" /> ${item.nome}${sufixo}`;
-          pecasCategoriaOpcoes.appendChild(label);
+        modelo.forEach((item, idx) => {
+          const row = document.createElement("div");
+          row.className = "peca-option-row";
+
+          const ladosHTML = item.lado
+            ? `<div class="peca-side-options">
+                <label><input type="checkbox" class="pecaLadoCheck" data-peca-index="${idx}" value="LD" /> LD</label>
+                <label><input type="checkbox" class="pecaLadoCheck" data-peca-index="${idx}" value="LE" /> LE</label>
+              </div>`
+            : `<span class="side-badge">SEM LADO</span>`;
+
+          row.innerHTML = `
+            <label class="peca-main-check">
+              <input type="checkbox" class="pecaCategoriaCheck" value="${item.nome}" data-lado="${item.lado ? "SIM" : "NAO"}" data-peca-index="${idx}" />
+              <span>${item.nome}</span>
+            </label>
+            ${ladosHTML}
+          `;
+
+          pecasCategoriaOpcoes.appendChild(row);
         });
       }
 
@@ -2237,27 +2296,26 @@ STATUS: ${statusAtual}`;
           return;
         }
 
-        const ladoSelecionado = pecaLado.value;
-        const precisaLado = selecionadas.some(item => item.dataset.lado === "SIM");
-
-        if (precisaLado && (!ladoSelecionado || ladoSelecionado === "N/A")) {
-          alert("Informe o lado da peça: LD, LE ou LD + LE");
-          return;
-        }
-
-        selecionadas.forEach((item) => {
+        for (const item of selecionadas) {
           const nome = item.value;
           const itemPrecisaLado = item.dataset.lado === "SIM";
+          const itemIndex = item.dataset.pecaIndex;
 
-          if (itemPrecisaLado && ladoSelecionado === "LD/LE") {
-            adicionarPecaNaLista(`${nome} LD`);
-            adicionarPecaNaLista(`${nome} LE`);
-          } else if (itemPrecisaLado) {
-            adicionarPecaNaLista(`${nome} ${ladoSelecionado}`);
+          if (itemPrecisaLado) {
+            const ladosSelecionados = Array.from(
+              document.querySelectorAll(`.pecaLadoCheck[data-peca-index="${itemIndex}"]:checked`)
+            ).map(lado => lado.value);
+
+            if (ladosSelecionados.length === 0) {
+              alert(`Selecione LD, LE ou ambos para: ${nome}`);
+              return;
+            }
+
+            adicionarPecaNaLista(`${nome} ${ladosSelecionados.join(" ")}`);
           } else {
             adicionarPecaNaLista(nome);
           }
-        });
+        }
 
         const salvou = await salvarPecasNoFirebase({ alterarStatusAutomatico: true });
 
@@ -2269,7 +2327,6 @@ STATUS: ${statusAtual}`;
 
       function limparModeloCategoria() {
         if (pecaCategoria) pecaCategoria.value = "";
-        if (pecaLado) pecaLado.value = "";
         if (pecasCategoriaOpcoes) pecasCategoriaOpcoes.innerHTML = "";
         if (pecaCategoriaAviso) pecaCategoriaAviso.textContent = "Escolha uma categoria para carregar as peças.";
       }
