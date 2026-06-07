@@ -1151,46 +1151,67 @@
       }
 
 
-      /* ========== TONALIDADE SUAVE DA LINHA POR STATUS ========== */
+      /* ========== TONALIDADE DA LINHA POR STATUS (MELHOR VISUALIZAÇÃO) ========== */
+
       .table-container tbody tr.status-row-orcamento td {
-        background: rgba(248, 113, 113, 0.035) !important;
+        background: #fff1f2 !important;
       }
 
       .table-container tbody tr.status-row-pecas td {
-        background: rgba(250, 204, 21, 0.04) !important;
+        background: #fffbeb !important;
       }
 
       .table-container tbody tr.status-row-servico td {
-        background: rgba(203, 213, 225, 0.09) !important;
+        background: #f1f5f9 !important;
       }
 
       .table-container tbody tr.status-row-fornecedor td {
-        background: rgba(59, 130, 246, 0.035) !important;
+        background: #eff6ff !important;
       }
 
       .table-container tbody tr.status-row-finalizado td {
-        background: rgba(74, 222, 128, 0.04) !important;
+        background: #ecfdf5 !important;
       }
 
       .table-container tbody tr.status-row-orcamento:hover td {
-        background: rgba(248, 113, 113, 0.065) !important;
+        background: #ffe4e6 !important;
       }
 
       .table-container tbody tr.status-row-pecas:hover td {
-        background: rgba(250, 204, 21, 0.075) !important;
+        background: #fef3c7 !important;
       }
 
       .table-container tbody tr.status-row-servico:hover td {
-        background: rgba(203, 213, 225, 0.14) !important;
+        background: #e2e8f0 !important;
       }
 
       .table-container tbody tr.status-row-fornecedor:hover td {
-        background: rgba(59, 130, 246, 0.065) !important;
+        background: #dbeafe !important;
       }
 
       .table-container tbody tr.status-row-finalizado:hover td {
-        background: rgba(74, 222, 128, 0.075) !important;
+        background: #d1fae5 !important;
       }
+
+      .table-container tbody tr.status-row-orcamento td:first-child,
+      .table-container tbody tr.status-row-pecas td:first-child,
+      .table-container tbody tr.status-row-servico td:first-child,
+      .table-container tbody tr.status-row-fornecedor td:first-child,
+      .table-container tbody tr.status-row-finalizado td:first-child {
+        border-top-left-radius: 10px;
+        border-bottom-left-radius: 10px;
+      }
+
+      .table-container tbody tr.status-row-orcamento td:last-child,
+      .table-container tbody tr.status-row-pecas td:last-child,
+      .table-container tbody tr.status-row-servico td:last-child,
+      .table-container tbody tr.status-row-fornecedor td:last-child,
+      .table-container tbody tr.status-row-finalizado td:last-child {
+        border-top-right-radius: 10px;
+        border-bottom-right-radius: 10px;
+      }
+
+
 
       /* ========== RESPONSIVIDADE MOBILE ========== */
       @media (max-width: 768px) {
@@ -1655,7 +1676,7 @@
               type="text"
               id="buscaSidebar"
               class="topbar-search action-search-input"
-              placeholder=""
+              placeholder="BUSCAR VEÍCULOS"
               onkeyup="filtrarBusca()"
             />
           </div>
