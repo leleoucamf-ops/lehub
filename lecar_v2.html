@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="pt-BR">
+<html lang="pt-BR" translate="no">
   <head>
     <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
@@ -2334,7 +2334,11 @@ STATUS: ${statusAtual}`;
           listaPecas.appendChild(li);
         });
         modal.style.display = "flex";
-        novaPeca.focus();
+
+        // Evita abrir o teclado automaticamente no celular ao abrir o modal de peças.
+        if (document.activeElement && typeof document.activeElement.blur === "function") {
+          document.activeElement.blur();
+        }
       }
 
       async function adicionarPeca() {
