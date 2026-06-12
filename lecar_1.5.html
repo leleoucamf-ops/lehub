@@ -2481,7 +2481,154 @@
         }
       }
 
-    </style>
+    
+
+      /* ========== AJUSTE SOLICITADO: BACKGROUND AZUL PREMIUM NO TOPO ========== */
+      /* Aplicado somente no fundo da topbar, sem alterar estrutura, botões, tabelas ou lógica do sistema. */
+      .topbar {
+        position: fixed;
+        overflow: hidden;
+        isolation: isolate;
+        background:
+          radial-gradient(circle at 18% 8%, rgba(32, 211, 255, 0.32) 0%, rgba(32, 211, 255, 0.12) 22%, transparent 46%),
+          radial-gradient(circle at 86% 18%, rgba(59, 130, 246, 0.38) 0%, rgba(59, 130, 246, 0.14) 26%, transparent 52%),
+          linear-gradient(135deg, #001a72 0%, #003bc4 34%, #005eff 62%, #001f8f 100%) !important;
+        background-size: 140% 140%, 130% 130%, 220% 220% !important;
+        animation: lecarPremiumGradient 9s ease-in-out infinite !important;
+        box-shadow: 0 10px 32px rgba(15, 23, 42, 0.22) !important;
+      }
+
+      .topbar::before {
+        content: "";
+        position: absolute;
+        inset: -70px -160px auto auto;
+        width: 520px;
+        height: 230px;
+        border-radius: 50%;
+        background: rgba(255, 255, 255, 0.075);
+        transform: rotate(-12deg);
+        pointer-events: none;
+        z-index: -1;
+      }
+
+      .topbar::after {
+        content: "";
+        position: absolute;
+        left: -110px;
+        bottom: -155px;
+        width: 720px;
+        height: 255px;
+        border-radius: 50%;
+        background: rgba(255, 255, 255, 0.055);
+        filter: blur(1px);
+        pointer-events: none;
+        z-index: -1;
+      }
+
+      .topbar > * {
+        position: relative;
+        z-index: 2;
+      }
+
+      @keyframes lecarPremiumGradient {
+        0% { background-position: 0% 45%, 100% 30%, 0% 50%; }
+        50% { background-position: 35% 55%, 70% 45%, 100% 50%; }
+        100% { background-position: 0% 45%, 100% 30%, 0% 50%; }
+      }
+
+      /* ========== AJUSTE FINAL: BACKGROUND AZUL DESCENDO ATRÁS DO CARD ========== */
+      /* Mantém o sistema igual e cria apenas o contraste visual do topo com o card branco. */
+      .sistema-principal {
+        position: relative !important;
+        overflow-x: hidden !important;
+        background: #eef2f7 !important;
+      }
+
+      .sistema-principal::before {
+        content: "";
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 365px;
+        pointer-events: none;
+        z-index: 0;
+        background:
+          radial-gradient(circle at 16% 10%, rgba(32, 211, 255, 0.30) 0%, rgba(32, 211, 255, 0.11) 24%, transparent 48%),
+          radial-gradient(circle at 88% 18%, rgba(96, 165, 250, 0.42) 0%, rgba(96, 165, 250, 0.14) 27%, transparent 54%),
+          linear-gradient(135deg, #001a72 0%, #003bc4 34%, #005eff 62%, #001f8f 100%);
+        background-size: 140% 140%, 130% 130%, 220% 220%;
+        animation: lecarPremiumGradient 9s ease-in-out infinite;
+      }
+
+      .sistema-principal::after {
+        content: "";
+        position: fixed;
+        top: 110px;
+        left: -120px;
+        width: 760px;
+        height: 260px;
+        border-radius: 50%;
+        background: rgba(255, 255, 255, 0.055);
+        filter: blur(1px);
+        pointer-events: none;
+        z-index: 0;
+      }
+
+      .topbar {
+        background: transparent !important;
+        box-shadow: none !important;
+      }
+
+      .main {
+        position: relative !important;
+        z-index: 1 !important;
+        background: transparent !important;
+      }
+
+      .card {
+        position: relative !important;
+        z-index: 2 !important;
+        border-radius: 28px !important;
+        box-shadow: 0 22px 48px rgba(15, 23, 42, 0.14) !important;
+        border: 1px solid rgba(226, 232, 240, 0.92) !important;
+      }
+
+      @media (max-width: 768px) {
+        .sistema-principal::before {
+          height: 420px;
+        }
+
+        .sistema-principal::after {
+          top: 150px;
+          left: -210px;
+          width: 720px;
+          height: 250px;
+        }
+
+        .card {
+          border-radius: 24px !important;
+        }
+      }
+
+      @media (max-width: 480px) {
+        .sistema-principal::before {
+          height: 390px;
+        }
+
+        .sistema-principal::after {
+          top: 145px;
+          left: -250px;
+          width: 690px;
+          height: 235px;
+        }
+
+        .card {
+          border-radius: 22px !important;
+        }
+      }
+
+</style>
   </head>
   <body translate="no">
 
@@ -3036,8 +3183,8 @@
                 </svg>
               </span>
               <div>
-                <p class="config-section-title">Sobre o Lecar</p>
-                <p class="config-section-subtitle">Lecar v2.1.1</p>
+                <p class="config-section-title">Sobre o LeCar</p>
+                <p class="config-section-subtitle">LeCar v2.1.1</p>
               </div>
             </div>
             <div class="about-lecar clean">
@@ -3047,7 +3194,7 @@
                 </div>
                 <div class="about-info-list">
                   <div class="about-info-row"><span>Versão</span><strong class="about-pill">2.1.1</strong></div>
-                  <div class="about-info-row"><span>Powered by</span><strong class="about-link">LeHub</strong></div>
+                  <div class="about-info-row"><span>Powered by</span><strong class="about-link">LeHub Soluções</strong></div>
                 </div>
               </div>
             </div>
