@@ -4043,6 +4043,146 @@
         }
       }
 
+
+      /* ========== MODAL DE CONFIRMAÇÃO DO RELATÓRIO ========== */
+      .relatorio-confirm-modal-bg {
+        display: none;
+        position: fixed;
+        inset: 0;
+        background: rgba(15, 23, 42, 0.58);
+        backdrop-filter: blur(6px);
+        z-index: 1600;
+        align-items: center;
+        justify-content: center;
+        padding: 18px;
+      }
+
+      .relatorio-confirm-modal-bg.open {
+        display: flex;
+      }
+
+      .relatorio-confirm-modal {
+        width: min(520px, 96vw);
+        background: #ffffff;
+        border-radius: 22px;
+        overflow: hidden;
+        border: 1px solid #dbeafe;
+        box-shadow: 0 24px 70px rgba(15, 23, 42, 0.34);
+      }
+
+      .relatorio-confirm-header {
+        padding: 22px 22px 16px;
+        background: linear-gradient(135deg, #1e3a8a, #2563eb);
+        color: #ffffff;
+        text-align: center;
+      }
+
+      .relatorio-confirm-icon {
+        width: 54px;
+        height: 54px;
+        margin: 0 auto 12px;
+        border-radius: 18px;
+        background: rgba(255,255,255,0.16);
+        border: 1px solid rgba(255,255,255,0.32);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .relatorio-confirm-icon svg {
+        width: 30px;
+        height: 30px;
+        fill: none;
+        stroke: currentColor;
+        stroke-width: 2.3;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+      }
+
+      .relatorio-confirm-header h3 {
+        margin: 0;
+        font-size: 1.08rem;
+        font-weight: 950;
+        letter-spacing: 0.03em;
+        text-transform: uppercase;
+      }
+
+      .relatorio-confirm-body {
+        padding: 20px 22px 22px;
+      }
+
+      .relatorio-confirm-alert {
+        background: #fff7ed;
+        color: #9a3412;
+        border: 1px solid #fed7aa;
+        border-left: 5px solid #f97316;
+        border-radius: 14px;
+        padding: 14px;
+        font-size: 0.94rem;
+        font-weight: 800;
+        line-height: 1.45;
+        text-transform: none;
+      }
+
+      .relatorio-confirm-actions {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 12px;
+        margin-top: 18px;
+      }
+
+      .btn-relatorio-confirmar,
+      .btn-relatorio-fechar {
+        width: 100%;
+        min-height: 48px;
+        margin: 0;
+        border-radius: 14px;
+        font-size: 0.82rem;
+        font-weight: 950;
+        line-height: 1.15;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+      }
+
+      .btn-relatorio-confirmar {
+        background: linear-gradient(135deg, #16a34a, #22c55e);
+        color: #ffffff;
+      }
+
+      .btn-relatorio-fechar {
+        background: #f8fafc;
+        color: #334155;
+        border: 1px solid #cbd5e1;
+      }
+
+      .btn-relatorio-confirmar:hover,
+      .btn-relatorio-fechar:hover {
+        opacity: 1;
+        transform: none;
+      }
+
+      @media (max-width: 480px) {
+        .relatorio-confirm-header {
+          padding: 20px 16px 14px;
+        }
+
+        .relatorio-confirm-body {
+          padding: 16px;
+        }
+
+        .relatorio-confirm-actions {
+          grid-template-columns: 1fr;
+        }
+
+        .btn-relatorio-confirmar,
+        .btn-relatorio-fechar {
+          min-height: 46px;
+          font-size: 0.76rem;
+        }
+      }
+
 </style>
   </head>
   <body translate="no">
@@ -4192,7 +4332,7 @@
         <span class="plus-circle"><svg class="bottom-icon plus-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5V19"></path><path d="M5 12H19"></path></svg></span>
         <span>Cadastrar</span>
       </button>
-      <button type="button" class="bottom-nav-item" data-nav="relatorio" onclick="navegar('gerar_relatorio_diario'); gerarRelatorioDiarioWhatsApp()">
+      <button type="button" class="bottom-nav-item" data-nav="relatorio" onclick="navegar('abrir_confirmacao_relatorio'); abrirModalConfirmacaoRelatorio()">
         <svg class="bottom-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20H20"></path><path d="M7 17V10"></path><path d="M12 17V5"></path><path d="M17 17V8"></path></svg>
         <span>Relatório</span>
       </button>
@@ -4362,6 +4502,36 @@
         <ul id="listaBusca"></ul>
         <br />
         <button onclick="fecharModalBusca()">Fechar</button>
+      </div>
+    </div>
+
+    <!-- Modal Confirmação Relatório -->
+    <div class="relatorio-confirm-modal-bg" id="modalConfirmacaoRelatorio" onclick="fecharModalConfirmacaoRelatorio(event)">
+      <div class="relatorio-confirm-modal" role="dialog" aria-modal="true" aria-labelledby="tituloConfirmacaoRelatorio" onclick="event.stopPropagation()">
+        <div class="relatorio-confirm-header">
+          <div class="relatorio-confirm-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24">
+              <path d="M4 20H20"></path>
+              <path d="M7 17V10"></path>
+              <path d="M12 17V5"></path>
+              <path d="M17 17V8"></path>
+            </svg>
+          </div>
+          <h3 id="tituloConfirmacaoRelatorio">Confirmar relatório diário</h3>
+        </div>
+        <div class="relatorio-confirm-body">
+          <div class="relatorio-confirm-alert">
+            Só confirme o relatório quando estiver finalizado todos os serviços e orçamentos para não haver dados inconsistentes no relatório final.
+          </div>
+          <div class="relatorio-confirm-actions">
+            <button type="button" class="btn-relatorio-confirmar" onclick="navegar('confirmar_relatorio_diario'); confirmarGeracaoRelatorioDiario()">
+              Já finalizei meus serviços do dia
+            </button>
+            <button type="button" class="btn-relatorio-fechar" onclick="navegar('fechar_confirmacao_relatorio'); fecharModalConfirmacaoRelatorio()">
+              Ainda não finalizei
+            </button>
+          </div>
+        </div>
       </div>
     </div>
 
@@ -6667,6 +6837,30 @@ function abrirModalStatusFinalizados(i) {
             return `${m.display} - ${valor}`;
           })
           .join("\n");
+      }
+
+
+      function abrirModalConfirmacaoRelatorio() {
+        const modal = document.getElementById("modalConfirmacaoRelatorio");
+        if (modal) {
+          modal.classList.add("open");
+        }
+      }
+
+      function fecharModalConfirmacaoRelatorio(event) {
+        if (event && event.target && event.currentTarget && event.target !== event.currentTarget) {
+          return;
+        }
+
+        const modal = document.getElementById("modalConfirmacaoRelatorio");
+        if (modal) {
+          modal.classList.remove("open");
+        }
+      }
+
+      function confirmarGeracaoRelatorioDiario() {
+        fecharModalConfirmacaoRelatorio();
+        gerarRelatorioDiarioWhatsApp();
       }
 
       async function gerarRelatorioDiarioWhatsApp() {
