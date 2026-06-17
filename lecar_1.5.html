@@ -164,7 +164,7 @@
 
       /* Logotipo PNG */
       .logo-img {
-        height: 45px;
+        height: 50px;
         width: auto;
         display:block;
         margin-right:15px;
@@ -1354,7 +1354,7 @@
         }
 
         .logo-img {
-          height: 35px;
+          height: 50px;
           margin-right: 10px;
         }
 
@@ -1527,7 +1527,7 @@
         }
 
         .logo-img {
-          height: 30px;
+          height: 50px;
         }
 
         #nomeUsuario {
@@ -2674,7 +2674,7 @@
         position:fixed !important;
       }
       .app-topbar-clean .logo-img {
-        height: 70px !important;
+        height: 50px !important;
         max-width: 260px !important;
         margin:0 !important;
         object-fit:contain !important;
@@ -2837,7 +2837,7 @@
       @media (max-width: 560px) {
         .sistema-principal::before { height: 285px !important; }
         .app-topbar-clean, .topbar.app-topbar-clean { height: 118px !important; padding-top: 20px !important; }
-        .app-topbar-clean .logo-img { height: 62px !important; max-width:230px !important; }
+        .app-topbar-clean .logo-img { height: 50px !important; max-width:230px !important; }
         .main { padding-left: 10px !important; padding-right:10px !important; padding-top: 136px !important; }
         .app-search-shell { margin-left: 4px; margin-right: 4px; }
         .app-search-card { height: 72px; border-radius: 20px; padding: 0 18px; }
@@ -3237,7 +3237,7 @@
       }
 
       .app-topbar-clean .logo-img {
-        height: 78px !important;
+        height: 50px !important;
         max-width: 285px !important;
         object-fit: contain !important;
         filter: drop-shadow(0 12px 24px rgba(0,0,0,.34)) !important;
@@ -3300,7 +3300,7 @@
         }
 
         .app-topbar-clean .logo-img {
-          height: 72px !important;
+          height: 50px !important;
           max-width: 258px !important;
         }
 
@@ -3335,7 +3335,7 @@
         }
 
         .app-topbar-clean .logo-img {
-          height: 64px !important;
+          height: 50px !important;
           max-width: 232px !important;
         }
 
@@ -3644,7 +3644,7 @@
 
       .app-topbar-clean .logo-img,
       .topbar.app-topbar-clean .logo-img {
-        height: 88px !important;
+        height: 50px !important;
         max-width: 315px !important;
       }
 
@@ -3688,7 +3688,7 @@
 
         .app-topbar-clean .logo-img,
         .topbar.app-topbar-clean .logo-img {
-          height: 80px !important;
+          height: 50px !important;
           max-width: 286px !important;
         }
 
@@ -3711,7 +3711,7 @@
 
         .app-topbar-clean .logo-img,
         .topbar.app-topbar-clean .logo-img {
-          height: 72px !important;
+          height: 50px !important;
           max-width: 258px !important;
         }
       }
@@ -3897,7 +3897,7 @@
       .topbar .logo-img,
       .app-topbar-clean .logo-img,
       .topbar.app-topbar-clean .logo-img {
-        height: 96px !important;
+        height: 50px !important;
         max-width: 345px !important;
         object-fit: contain !important;
       }
@@ -3941,7 +3941,7 @@
         .topbar .logo-img,
         .app-topbar-clean .logo-img,
         .topbar.app-topbar-clean .logo-img {
-          height: 88px !important;
+          height: 50px !important;
           max-width: 315px !important;
         }
 
@@ -3967,7 +3967,7 @@
         .topbar .logo-img,
         .app-topbar-clean .logo-img,
         .topbar.app-topbar-clean .logo-img {
-          height: 80px !important;
+          height: 50px !important;
           max-width: 290px !important;
         }
 
@@ -4183,7 +4183,228 @@
         }
       }
 
-</style>
+
+
+      /* ========== AJUSTE: LOGO MAIOR À ESQUERDA + HAMBÚRGUER À DIREITA ========== */
+      :root {
+        --lecar-topbar-h: 94px !important;
+        --lecar-search-top: 106px !important;
+        --lecar-content-top: 180px !important;
+      }
+
+      .app-topbar-clean,
+      .topbar.app-topbar-clean,
+      .topbar {
+        height: var(--lecar-topbar-h) !important;
+        min-height: var(--lecar-topbar-h) !important;
+        padding: 0 18px !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: space-between !important;
+        gap: 14px !important;
+        overflow: hidden !important;
+      }
+
+      .topbar .logo-img,
+      .app-topbar-clean .logo-img,
+      .topbar.app-topbar-clean .logo-img {
+        height: 70px !important;
+        width: auto !important;
+        max-width: 190px !important;
+        object-fit: contain !important;
+        margin: 0 !important;
+        flex: 0 0 auto !important;
+        filter: drop-shadow(0 5px 12px rgba(0,0,0,.38)) !important;
+      }
+
+      .btn-menu-hamburguer {
+        width: 58px !important;
+        height: 58px !important;
+        min-width: 58px !important;
+        padding: 0 !important;
+        margin: 0 !important;
+        border: 1px solid rgba(255,255,255,.45) !important;
+        border-radius: 16px !important;
+        background: rgba(255,255,255,.16) !important;
+        color: #ffffff !important;
+        display: inline-flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        box-shadow: 0 6px 16px rgba(0,0,0,.16) !important;
+        cursor: pointer !important;
+        backdrop-filter: blur(8px) !important;
+        position: relative !important;
+        z-index: 2 !important;
+      }
+
+      .btn-menu-hamburguer:hover {
+        opacity: 1 !important;
+        transform: none !important;
+        background: rgba(255,255,255,.26) !important;
+      }
+
+      .btn-menu-hamburguer svg {
+        width: 31px !important;
+        height: 31px !important;
+        fill: none !important;
+        stroke: currentColor !important;
+        stroke-width: 2.6 !important;
+        stroke-linecap: round !important;
+        stroke-linejoin: round !important;
+      }
+
+      .main {
+        padding-top: var(--lecar-content-top) !important;
+      }
+
+      @media (max-width: 600px) {
+        :root {
+          --lecar-topbar-h: 90px !important;
+          --lecar-search-top: 102px !important;
+          --lecar-content-top: 176px !important;
+        }
+
+        .app-topbar-clean,
+        .topbar.app-topbar-clean,
+        .topbar {
+          padding: 0 14px !important;
+        }
+
+        .topbar .logo-img,
+        .app-topbar-clean .logo-img,
+        .topbar.app-topbar-clean .logo-img {
+          height: 70px !important;
+          max-width: 178px !important;
+        }
+
+        .btn-menu-hamburguer {
+          width: 54px !important;
+          height: 54px !important;
+          min-width: 54px !important;
+          border-radius: 15px !important;
+        }
+
+        .btn-menu-hamburguer svg {
+          width: 29px !important;
+          height: 29px !important;
+        }
+      }
+
+
+      /* ========== DRAWER LATERAL ANIMADO - MENU HAMBÚRGUER ========== */
+      .drawer-overlay {
+        position: fixed;
+        inset: 0;
+        background: rgba(15, 23, 42, 0.45);
+        backdrop-filter: blur(4px);
+        opacity: 0;
+        visibility: hidden;
+        pointer-events: none;
+        transition: opacity 0.28s ease, visibility 0.28s ease;
+        z-index: 1500;
+      }
+
+      .drawer-lateral {
+        position: fixed;
+        top: 0;
+        right: 0;
+        width: min(84vw, 360px);
+        height: 100vh;
+        height: 100dvh;
+        background: #ffffff;
+        border-top-left-radius: 24px;
+        border-bottom-left-radius: 24px;
+        box-shadow: -18px 0 48px rgba(15, 23, 42, 0.28);
+        transform: translateX(110%);
+        transition: transform 0.34s cubic-bezier(.22,.72,.22,1);
+        z-index: 1501;
+        overflow: hidden;
+        display: flex;
+        flex-direction: column;
+      }
+
+      .drawer-header {
+        min-height: 82px;
+        padding: 18px;
+        background: linear-gradient(90deg, #1e3a8a, #2563eb, #3b82f6);
+        display: flex;
+        align-items: center;
+        justify-content: flex-end;
+        box-shadow: 0 8px 20px rgba(15, 23, 42, 0.12);
+      }
+
+      .btn-fechar-drawer {
+        width: 46px !important;
+        height: 46px !important;
+        min-width: 46px !important;
+        padding: 0 !important;
+        margin: 0 !important;
+        border-radius: 15px !important;
+        border: 1px solid rgba(255,255,255,.5) !important;
+        background: rgba(255,255,255,.16) !important;
+        color: #ffffff !important;
+        display: inline-flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        box-shadow: 0 6px 16px rgba(0,0,0,.16) !important;
+      }
+
+      .btn-fechar-drawer:hover {
+        opacity: 1 !important;
+        transform: none !important;
+        background: rgba(255,255,255,.26) !important;
+      }
+
+      .btn-fechar-drawer svg {
+        width: 25px !important;
+        height: 25px !important;
+        fill: none !important;
+        stroke: currentColor !important;
+        stroke-width: 2.6 !important;
+        stroke-linecap: round !important;
+        stroke-linejoin: round !important;
+      }
+
+      .drawer-body {
+        flex: 1;
+        background: linear-gradient(180deg, #ffffff, #f8fafc);
+      }
+
+      body.drawer-open {
+        overflow: hidden;
+      }
+
+      body.drawer-open .drawer-overlay {
+        opacity: 1;
+        visibility: visible;
+        pointer-events: auto;
+      }
+
+      body.drawer-open .drawer-lateral {
+        transform: translateX(0);
+      }
+
+      @media (max-width: 600px) {
+        .drawer-lateral {
+          width: min(88vw, 340px);
+          border-top-left-radius: 22px;
+          border-bottom-left-radius: 22px;
+        }
+
+        .drawer-header {
+          min-height: 74px;
+          padding: 14px;
+        }
+
+        .btn-fechar-drawer {
+          width: 42px !important;
+          height: 42px !important;
+          min-width: 42px !important;
+          border-radius: 14px !important;
+        }
+      }
+
+    </style>
   </head>
   <body translate="no">
 
@@ -4221,7 +4442,28 @@
 
     <div class="topbar app-topbar-clean">
       <img src="https://i.postimg.cc/zG9TvZGJ/logo.png" alt="LECAR" class="logo-img" />
+
+      <button type="button" class="btn-menu-hamburguer" aria-label="Abrir menu" onclick="abrirDrawerLateral()">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M4 7H20"></path>
+          <path d="M4 12H20"></path>
+          <path d="M4 17H20"></path>
+        </svg>
+      </button>
     </div>
+
+    <div id="drawerOverlay" class="drawer-overlay" onclick="fecharDrawerLateral()"></div>
+    <aside id="drawerLateral" class="drawer-lateral" aria-hidden="true">
+      <div class="drawer-header">
+        <button type="button" class="btn-fechar-drawer" aria-label="Fechar menu" onclick="fecharDrawerLateral()">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M6 6L18 18"></path>
+            <path d="M18 6L6 18"></path>
+          </svg>
+        </button>
+      </div>
+      <div class="drawer-body"></div>
+    </aside>
 
     <div class="main">
       <div class="card">
@@ -6950,6 +7192,34 @@ ${gerarLinhaRelatorioMecanicos(relatoriosPorMecanico, "pendentes")}`;
         fecharCadastroCard();
       }
 
+
+
+      /* ========== DRAWER LATERAL DO MENU HAMBÚRGUER ========== */
+      function abrirDrawerLateral() {
+        const drawer = document.getElementById('drawerLateral');
+        document.body.classList.add('drawer-open');
+        if (drawer) drawer.setAttribute('aria-hidden', 'false');
+      }
+
+      function fecharDrawerLateral() {
+        const drawer = document.getElementById('drawerLateral');
+        document.body.classList.remove('drawer-open');
+        if (drawer) drawer.setAttribute('aria-hidden', 'true');
+      }
+
+      function alternarDrawerLateral() {
+        if (document.body.classList.contains('drawer-open')) {
+          fecharDrawerLateral();
+        } else {
+          abrirDrawerLateral();
+        }
+      }
+
+      document.addEventListener('keydown', (event) => {
+        if (event.key === 'Escape' && document.body.classList.contains('drawer-open')) {
+          fecharDrawerLateral();
+        }
+      });
 
 
       /* ========== CONTROLE AUTOMÁTICO: BUSCA SOME QUANDO MODAL ABRE ========== */
