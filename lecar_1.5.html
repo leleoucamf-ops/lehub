@@ -343,6 +343,78 @@
         margin:0;
       }
 
+
+      .km-oleo-box {
+        display: none;
+        margin: 8px 0 10px;
+        padding: 12px;
+        border: 1px solid #bfdbfe;
+        border-radius: 12px;
+        background: #eff6ff;
+      }
+
+      .km-oleo-box.show {
+        display: block;
+      }
+
+      .km-oleo-box label {
+        display: block;
+        color: #1e3a8a;
+        font-size: 0.82rem;
+        font-weight: 900;
+        margin-bottom: 6px;
+        text-transform: uppercase;
+      }
+
+      .km-oleo-box input {
+        margin: 0;
+        background: #ffffff;
+      }
+
+      .lembrete-oleo-box {
+        background: #eff6ff;
+        border: 1px solid #bfdbfe;
+        border-radius: 14px;
+        padding: 14px;
+        color: #1e3a8a;
+        font-weight: 800;
+        line-height: 1.45;
+      }
+
+      .lembrete-oleo-box strong {
+        color: #0f172a;
+      }
+
+      .portaria-aviso-box {
+        background: #fff7ed;
+        border: 1px solid #fed7aa;
+        border-left: 5px solid #ef4444;
+        border-radius: 14px;
+        padding: 14px;
+        color: #7c2d12;
+        font-weight: 800;
+        line-height: 1.45;
+        text-transform: uppercase;
+      }
+
+      .portaria-aviso-box strong {
+        color: #0f172a;
+      }
+
+      .portaria-aviso-destaque {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 100%;
+        margin-bottom: 10px;
+        padding: 10px 12px;
+        border-radius: 12px;
+        background: #fee2e2;
+        color: #991b1b;
+        font-weight: 950;
+        text-align: center;
+      }
+
       .modal-large {
         width:720px;
         max-height:90vh;
@@ -4511,7 +4583,11 @@
               <div id="veiculoSugestoes" class="veiculo-sugestoes"></div>
             </div>
             <input type="text" id="placa" placeholder="PLACA" oninput="this.value = this.value.replace(/[^a-zA-Z0-9]/g, '')" />
-            <textarea id="descricao" placeholder="DESCRIÇÃO"></textarea>
+            <textarea id="descricao" placeholder="DESCRIÇÃO" oninput="verificarCampoKmOleo()"></textarea>
+            <div id="kmOleoBox" class="km-oleo-box">
+              <label for="kmAtualOleo">KM atual do veículo</label>
+              <input type="tel" id="kmAtualOleo" placeholder="EX: 123456" inputmode="numeric" oninput="formatarCampoKmAtual()" />
+            </div>
             <div class="descricao-actions">
               <button type="button" class="btn-secondary" onclick="navegar('abrir_modal_descricao'); abrirModalDescricao()">OTIMIZAR DESCRIÇÃO</button>
               <button type="button" class="btn-secondary" onclick="navegar('adicionar_troca_oleo_descricao'); adicionarTrocaOleoDescricao()">TROCA DE ÓLEO</button>
@@ -4605,6 +4681,28 @@
         <button onclick="reabrirParaServico()" style="background:#f59e0b; margin-top:10px;">
           ↩ VOLTAR PARA LISTA DE SERVIÇOS
         </button>
+      </div>
+    </div>
+
+    <!-- Modal Lembrete Troca de Óleo -->
+    <div class="modal-bg" id="modalLembreteOleo">
+      <div class="modal">
+        <h3>Lembrete de Troca de Óleo</h3>
+        <div id="infoLembreteOleo" class="lembrete-oleo-box"></div>
+        <br>
+        <button id="btnEnviarWhatsLembreteOleo" onclick="enviarWhatsAppLembreteOleo()">Enviar WhatsApp</button>
+        <button onclick="fecharModalLembreteOleo()" style="background:#64748b; margin-top:10px;">Fechar</button>
+      </div>
+    </div>
+
+    <!-- Modal Aviso Portaria -->
+    <div class="modal-bg" id="modalAvisoPortaria">
+      <div class="modal">
+        <h3>AVISO À PORTARIA</h3>
+        <div id="infoAvisoPortaria" class="portaria-aviso-box"></div>
+        <br>
+        <button id="btnEnviarAvisoPortaria" onclick="enviarWhatsAppAvisoPortaria()">ENVIAR AVISO</button>
+        <button onclick="fecharModalAvisoPortaria()" style="background:#64748b; margin-top:10px;">FECHAR</button>
       </div>
     </div>
 
@@ -5397,6 +5495,31 @@ setTimeout(() => {
         return 0;
       }
 
+
+      function obterTimestampEntrada(v) {
+        const camposPossiveis = [
+          v.dataEntradaISO,
+          v.data_entrada_iso,
+          v.criadoEmISO,
+          v.criado_em_iso,
+          v.dataEntrada,
+          v.data_entrada,
+          v.createdAt,
+          v.criado_em,
+          v.data,
+          v.ultima_modificacao_iso,
+          v.ultima_modificacao,
+          v.updatedAt
+        ];
+
+        for (const campo of camposPossiveis) {
+          const timestamp = obterTimestampOrdenacaoLeCar(campo);
+          if (timestamp > 0) return timestamp;
+        }
+
+        return 0;
+      }
+
       function ehMesmoDiaLocal(timestamp, referencia = new Date()) {
         if (!timestamp) return false;
         const data = new Date(timestamp);
@@ -5624,6 +5747,8 @@ setTimeout(() => {
       const veiculoSugestoes = document.getElementById("veiculoSugestoes");
       const placa = document.getElementById("placa");
       const descricao = document.getElementById("descricao");
+      const kmOleoBox = document.getElementById("kmOleoBox");
+      const kmAtualOleo = document.getElementById("kmAtualOleo");
       const status = document.getElementById("status");
       const atm = document.getElementById("atm");
       const bolsao = document.getElementById("bolsao");
@@ -5832,6 +5957,138 @@ setTimeout(() => {
       });
 
 
+      // ========== TROCA DE ÓLEO / KM ==========
+      let lembreteOleoWhatsUrl = "";
+      let avisoPortariaWhatsUrl = "";
+      const PORTARIA_WHATSAPP_NUMERO = "5515992862789";
+
+      function montarUrlWhatsAppPortaria(texto) {
+        return `https://wa.me/${PORTARIA_WHATSAPP_NUMERO}?text=${encodeURIComponent(texto)}`;
+      }
+
+      function montarUrlWhatsAppCompartilhar(texto) {
+        return `https://wa.me/?text=${encodeURIComponent(texto)}`;
+      }
+
+      function obterDataHoraAtualPortaria() {
+        return new Date().toLocaleString("pt-BR");
+      }
+
+      function obterPecasTextoPortaria(v) {
+        return v && v.pecas && v.pecas.length > 0 ? v.pecas.join(", ") : "NENHUMA";
+      }
+
+      function gerarTextoSaidaPortaria(v) {
+        return `🔴 *VEÍCULO SAÍDA PORTARIA BOLSÃO*
+
+VEÍCULO: ${v.veiculo || "-"}
+PLACA: ${v.placa || "-"}
+DATA E HORA: ${obterDataHoraAtualPortaria()}`;
+      }
+
+      function gerarTextoEntradaPortaria(v, mecanico = "-") {
+        return `🟢 *VEÍCULO ENTRADA PORTARIA BOLSÃO*
+
+SERVIÇO FINALIZADO!
+
+VEÍCULO: ${v.veiculo || "-"}
+PLACA: ${v.placa || "-"}
+DESCRIÇÃO: ${v.descricao || "-"}
+PEÇAS: ${obterPecasTextoPortaria(v)}
+ORIGEM: ${v.origem || "-"}
+MECÂNICO: ${mecanico || "-"}
+DATA: ${obterDataHoraAtualPortaria()}${montarLinhaKmOleo(v)}`;
+      }
+
+      function abrirModalAvisoPortaria(v) {
+        const modal = document.getElementById("modalAvisoPortaria");
+        const info = document.getElementById("infoAvisoPortaria");
+        if (!modal || !info || !v) return false;
+
+        avisoPortariaWhatsUrl = montarUrlWhatsAppPortaria(gerarTextoSaidaPortaria(v));
+        info.innerHTML = `
+          <span class="portaria-aviso-destaque">🔴 VEÍCULO SAÍDA PORTARIA BOLSÃO</span>
+          AO CONFIRMAR, O SISTEMA ENVIARÁ UMA MENSAGEM PARA A PORTARIA INFORMANDO A SAÍDA DO VEÍCULO PARA O BOLSÃO.<br><br>
+          <strong>VEÍCULO:</strong> ${escaparHTML(v.veiculo || "-")}<br>
+          <strong>PLACA:</strong> ${escaparHTML(v.placa || "-")}<br>
+          <strong>DATA E HORA:</strong> ${escaparHTML(obterDataHoraAtualPortaria())}
+        `;
+        modal.style.display = "flex";
+        return true;
+      }
+
+      function fecharModalAvisoPortaria() {
+        const modal = document.getElementById("modalAvisoPortaria");
+        if (modal) modal.style.display = "none";
+        avisoPortariaWhatsUrl = "";
+      }
+
+      function enviarWhatsAppAvisoPortaria() {
+        if (avisoPortariaWhatsUrl) {
+          window.open(avisoPortariaWhatsUrl, "_blank");
+        }
+        fecharModalAvisoPortaria();
+      }
+
+      function normalizarTextoLeCar(texto) {
+        return String(texto || "")
+          .normalize("NFD")
+          .replace(/[\u0300-\u036f]/g, "")
+          .toUpperCase()
+          .trim();
+      }
+
+      function descricaoEhTrocaOleo(texto) {
+        const normalizado = normalizarTextoLeCar(texto);
+        return normalizado.includes("TROCA DE OLEO") || normalizado.includes("TROCA OLEO");
+      }
+
+      function verificarCampoKmOleo() {
+        const deveMostrar = descricaoEhTrocaOleo(descricao.value);
+        if (kmOleoBox) kmOleoBox.classList.toggle("show", deveMostrar);
+        if (!deveMostrar && kmAtualOleo) kmAtualOleo.value = "";
+      }
+
+      function formatarCampoKmAtual() {
+        if (!kmAtualOleo) return;
+        kmAtualOleo.value = String(kmAtualOleo.value || "").replace(/\D/g, "");
+      }
+
+      function montarLinhaKmOleo(v) {
+        if (!v || !v.trocaOleo || !v.kmAtualOleo) return "";
+        return `\nTROCA DE ÓLEO: SIM\nKM ATUAL: ${v.kmAtualOleo} KM`;
+      }
+
+      function abrirModalLembreteOleo(v, urlWhatsApp) {
+        if (!v || !v.trocaOleo || !v.kmAtualOleo) return false;
+        const modal = document.getElementById("modalLembreteOleo");
+        const info = document.getElementById("infoLembreteOleo");
+        if (!modal || !info) return false;
+
+        lembreteOleoWhatsUrl = urlWhatsApp || "";
+        info.innerHTML = `
+          <strong>VEÍCULO:</strong> ${escaparHTML(v.veiculo || "-")}<br>
+          <strong>PLACA:</strong> ${escaparHTML(v.placa || "-")}<br>
+          <strong>KM atual:</strong> ${escaparHTML(v.kmAtualOleo)} KM<br><br>
+          Lembrete registrado para controle da próxima troca de óleo.
+        `;
+        modal.style.display = "flex";
+        return true;
+      }
+
+      function fecharModalLembreteOleo() {
+        const modal = document.getElementById("modalLembreteOleo");
+        if (modal) modal.style.display = "none";
+        lembreteOleoWhatsUrl = "";
+      }
+
+      function enviarWhatsAppLembreteOleo() {
+        if (lembreteOleoWhatsUrl) {
+          window.open(lembreteOleoWhatsUrl, "_blank");
+        }
+        fecharModalLembreteOleo();
+      }
+
       // ========== FUNÇÕES PRINCIPAIS ==========
       function selecionarTipo(tipo) {
         if (tipo === "atm") bolsao.checked = false;
@@ -5849,12 +6106,16 @@ async function salvar() {
     veiculo: veiculo.value.toUpperCase(),
     placa: placa.value.toUpperCase(),
     descricao: descricao.value.toUpperCase(),
+    trocaOleo: descricaoEhTrocaOleo(descricao.value),
+    kmAtualOleo: descricaoEhTrocaOleo(descricao.value) ? (kmAtualOleo?.value || "").trim() : "",
     origem,
-    dataEntrada: new Date().toLocaleString(),
+    dataEntrada: new Date().toLocaleString("pt-BR"),
+    dataEntradaISO: new Date().toISOString(),
     status: statusAtual,
     pecas: index.value !== "" ? dados[index.value]?.pecas || [] : [],
     mecanico_responsavel: usuarioLogado,
-    ultima_modificacao: new Date().toLocaleString()
+    ultima_modificacao: new Date().toLocaleString("pt-BR"),
+    ultima_modificacao_iso: new Date().toISOString()
   };
 
   // Se status for VEÍCULO FINALIZADO, adiciona data de finalização
@@ -5867,6 +6128,13 @@ async function salvar() {
 
   if (!obj.veiculo || !obj.placa) {
     alert("PREENCHA OS CAMPOS!");
+    return;
+  }
+
+  if (obj.trocaOleo && !obj.kmAtualOleo) {
+    verificarCampoKmOleo();
+    alert("INFORME A KM ATUAL DO VEÍCULO PARA A TROCA DE ÓLEO.");
+    kmAtualOleo?.focus();
     return;
   }
 
@@ -5895,22 +6163,20 @@ async function salvar() {
       console.log("[v0] Veículo atualizado:", docId);
     }
 
-    // 🔥 WHATSAPP AO FINALIZAR via botão SALVAR - usando confirm + location para evitar bloqueio de popup
+    // 🔥 WHATSAPP AO FINALIZAR via botão SALVAR - COMPARTILHAMENTO SEM DESTINATÁRIO FIXO
     if (statusAtual === "VEÍCULO FINALIZADO") {
-      const texto =
-`VEÍCULO: ${obj.veiculo}
-PLACA: ${obj.placa}
-DESCRIÇÃO: ${obj.descricao}
-ORIGEM: ${obj.origem}
-DATA ENTRADA: ${obj.dataEntrada}
-MECÂNICO: ${usuarioLogado}
-STATUS: ${statusAtual}`;
+      const texto = gerarTextoEntradaPortaria(obj, usuarioLogado);
+      const url = montarUrlWhatsAppCompartilhar(texto);
 
-      const url = `https://wa.me/?text=${encodeURIComponent(texto)}`;
-
-      if (confirm("Deseja enviar os dados do veículo finalizado via WhatsApp?")) {
+      if (obj.trocaOleo && obj.kmAtualOleo) {
+        abrirModalLembreteOleo(obj, url);
+      } else if (confirm("DESEJA COMPARTILHAR O AVISO DE ENTRADA DO VEÍCULO NO WHATSAPP?")) {
         window.location.href = url;
       }
+    }
+
+    if (index.value === "" && statusAtual !== "VEÍCULO FINALIZADO") {
+      abrirModalAvisoPortaria(obj);
     }
 
     limpar();
@@ -6131,6 +6397,17 @@ STATUS: ${statusAtual}`;
           return placaA;
         });
 
+        veiculosServicos = veiculosServicos.sort((a, b) => {
+          const dataA = obterTimestampEntrada(a);
+          const dataB = obterTimestampEntrada(b);
+
+          if (dataA !== dataB) {
+            return dataB - dataA;
+          }
+
+          return String(a.placa || "").localeCompare(String(b.placa || ""));
+        });
+
         veiculosServicos = veiculosServicos.map((v) => {
           let indexOriginal = dados.findIndex((d) => d === v);
           return { ...v, iOriginal: indexOriginal };
@@ -6253,6 +6530,7 @@ STATUS: ${statusAtual}`;
   <strong>PLACA:</strong> ${v.placa}<br>
   <strong>DESCRIÇÃO:</strong> ${v.descricao}<br>
   <strong>STATUS:</strong> ${v.status}<br>
+  ${v.trocaOleo && v.kmAtualOleo ? `<strong>KM TROCA DE ÓLEO:</strong> ${v.kmAtualOleo} KM<br>` : ""}
   ${v.finalizacaoTipo === "TERCEIRO" || v.fornecedorTerceiro ? `<strong>FINALIZAÇÃO:</strong> ENVIADO PARA TERCEIRO<br><strong>FORNECEDOR:</strong> ${v.fornecedorTerceiro || "-"}<br>` : ""}
   <strong>DATA FINALIZAÇÃO:</strong> ${v.dataFinalizacao || "-"}
 `;
@@ -6282,6 +6560,8 @@ STATUS: ${statusAtual}`;
         veiculo.value = v.veiculo;
         placa.value = v.placa;
         descricao.value = v.descricao;
+        if (kmAtualOleo) kmAtualOleo.value = v.kmAtualOleo || "";
+        verificarCampoKmOleo();
         status.value = v.status;
         atm.checked = v.origem === "ATM";
         bolsao.checked = v.origem === "BOLSÃO";
@@ -6363,7 +6643,8 @@ STATUS: ${statusAtual}`;
           descricao.value = textoTrocaOleo;
         }
 
-        descricao.focus();
+        verificarCampoKmOleo();
+        if (kmAtualOleo) kmAtualOleo.focus();
       }
 
       function fecharModalDescricao() {
@@ -6992,23 +7273,14 @@ async function salvarStatus() {
       const v = dados.find(x => x.id === idStatusAtual);
 
       if (v) {
-        const pecasTexto = v.pecas && v.pecas.length > 0 ? v.pecas.join(", ") : "Nenhuma";
+        const texto = gerarTextoEntradaPortaria(v, localStorage.getItem("sessao_lecar"));
+        const url = montarUrlWhatsAppCompartilhar(texto);
 
-        const texto =
-`SERVIÇO FINALIZADO!
-
-VEÍCULO: ${v.veiculo}
-PLACA: ${v.placa}
-DESCRIÇÃO: ${v.descricao}
-PEÇAS: ${pecasTexto}
-ORIGEM: ${v.origem}
-MECÂNICO: ${localStorage.getItem("sessao_lecar")}
-DATA: ${new Date().toLocaleString()}`;
-
-        const url = `https://wa.me/?text=${encodeURIComponent(texto)}`;
-
-        // 👇 ESSENCIAL PRA NÃO BLOQUEAR
-        window.open(url, "_blank");
+        if (v.trocaOleo && v.kmAtualOleo) {
+          abrirModalLembreteOleo(v, url);
+        } else {
+          window.open(url, "_blank");
+        }
       }
     }
 
@@ -7192,6 +7464,8 @@ ${gerarLinhaRelatorioMecanicos(relatoriosPorMecanico, "pendentes")}`;
         fecharSugestoesVeiculos();
         placa.value = "";
         descricao.value = "";
+        if (kmAtualOleo) kmAtualOleo.value = "";
+        verificarCampoKmOleo();
         status.value = "AGUARDANDO ORÇAMENTO";
         atm.checked = false;
         bolsao.checked = false;
