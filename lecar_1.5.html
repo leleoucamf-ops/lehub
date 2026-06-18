@@ -5979,11 +5979,11 @@ setTimeout(() => {
       }
 
       function gerarTextoSaidaPortaria(v) {
-        return `🔴 *VEÍCULO SAÍDA PORTARIA BOLSÃO*
-
-VEÍCULO: ${v.veiculo || "-"}
+        return `VEÍCULO: ${v.veiculo || "-"}
 PLACA: ${v.placa || "-"}
 DATA E HORA: ${obterDataHoraAtualPortaria()}`;
+
+🔴 *VEÍCULO SAÍDA PORTARIA BOLSÃO*
       }
 
       function gerarTextoEntradaPortaria(v, mecanico = "-") {
