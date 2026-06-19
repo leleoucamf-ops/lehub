@@ -5495,6 +5495,31 @@ setTimeout(() => {
         return 0;
       }
 
+
+      function obterTimestampEntrada(v) {
+        const camposPossiveis = [
+          v.dataEntradaISO,
+          v.data_entrada_iso,
+          v.criadoEmISO,
+          v.criado_em_iso,
+          v.dataEntrada,
+          v.data_entrada,
+          v.createdAt,
+          v.criado_em,
+          v.data,
+          v.ultima_modificacao_iso,
+          v.ultima_modificacao,
+          v.updatedAt
+        ];
+
+        for (const campo of camposPossiveis) {
+          const timestamp = obterTimestampOrdenacaoLeCar(campo);
+          if (timestamp > 0) return timestamp;
+        }
+
+        return 0;
+      }
+
       function ehMesmoDiaLocal(timestamp, referencia = new Date()) {
         if (!timestamp) return false;
         const data = new Date(timestamp);
@@ -5941,6 +5966,10 @@ setTimeout(() => {
         return `https://wa.me/${PORTARIA_WHATSAPP_NUMERO}?text=${encodeURIComponent(texto)}`;
       }
 
+      function montarUrlWhatsAppCompartilhar(texto) {
+        return `https://wa.me/?text=${encodeURIComponent(texto)}`;
+      }
+
       function obterDataHoraAtualPortaria() {
         return new Date().toLocaleString("pt-BR");
       }
@@ -5966,9 +5995,8 @@ DESCRIÇÃO: ${v.descricao || "-"}
 PEÇAS: ${obterPecasTextoPortaria(v)}
 ORIGEM: ${v.origem || "-"}
 MECÂNICO: ${mecanico || "-"}
-DATA: ${obterDataHoraAtualPortaria()}${montarLinhaKmOleo(v)}
-
-🟢 *VEÍCULO ENTRADA PORTARIA BOLSÃO*`;
+DATA: ${obterDataHoraAtualPortaria()}${montarLinhaKmOleo(v)}`;
+🟢 *VEÍCULO ENTRADA PORTARIA BOLSÃO*
       }
 
       function abrirModalAvisoPortaria(v) {
@@ -6080,11 +6108,13 @@ async function salvar() {
     trocaOleo: descricaoEhTrocaOleo(descricao.value),
     kmAtualOleo: descricaoEhTrocaOleo(descricao.value) ? (kmAtualOleo?.value || "").trim() : "",
     origem,
-    dataEntrada: new Date().toLocaleString(),
+    dataEntrada: new Date().toLocaleString("pt-BR"),
+    dataEntradaISO: new Date().toISOString(),
     status: statusAtual,
     pecas: index.value !== "" ? dados[index.value]?.pecas || [] : [],
     mecanico_responsavel: usuarioLogado,
-    ultima_modificacao: new Date().toLocaleString()
+    ultima_modificacao: new Date().toLocaleString("pt-BR"),
+    ultima_modificacao_iso: new Date().toISOString()
   };
 
   // Se status for VEÍCULO FINALIZADO, adiciona data de finalização
@@ -6132,14 +6162,14 @@ async function salvar() {
       console.log("[v0] Veículo atualizado:", docId);
     }
 
-    // 🔥 WHATSAPP AO FINALIZAR via botão SALVAR - AVISO DE ENTRADA PARA PORTARIA
+    // 🔥 WHATSAPP AO FINALIZAR via botão SALVAR - COMPARTILHAMENTO SEM DESTINATÁRIO FIXO
     if (statusAtual === "VEÍCULO FINALIZADO") {
       const texto = gerarTextoEntradaPortaria(obj, usuarioLogado);
-      const url = montarUrlWhatsAppPortaria(texto);
+      const url = montarUrlWhatsAppCompartilhar(texto);
 
       if (obj.trocaOleo && obj.kmAtualOleo) {
         abrirModalLembreteOleo(obj, url);
-      } else if (confirm("DESEJA ENVIAR O AVISO DE ENTRADA DO VEÍCULO PARA A PORTARIA?")) {
+      } else if (confirm("DESEJA COMPARTILHAR O AVISO DE ENTRADA DO VEÍCULO NO WHATSAPP?")) {
         window.location.href = url;
       }
     }
@@ -6364,6 +6394,17 @@ async function salvar() {
 
           const placaA = String(a.placa || "").localeCompare(String(b.placa || ""));
           return placaA;
+        });
+
+        veiculosServicos = veiculosServicos.sort((a, b) => {
+          const dataA = obterTimestampEntrada(a);
+          const dataB = obterTimestampEntrada(b);
+
+          if (dataA !== dataB) {
+            return dataB - dataA;
+          }
+
+          return String(a.placa || "").localeCompare(String(b.placa || ""));
         });
 
         veiculosServicos = veiculosServicos.map((v) => {
@@ -7232,7 +7273,7 @@ async function salvarStatus() {
 
       if (v) {
         const texto = gerarTextoEntradaPortaria(v, localStorage.getItem("sessao_lecar"));
-        const url = montarUrlWhatsAppPortaria(texto);
+        const url = montarUrlWhatsAppCompartilhar(texto);
 
         if (v.trocaOleo && v.kmAtualOleo) {
           abrirModalLembreteOleo(v, url);
