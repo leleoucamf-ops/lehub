@@ -5978,26 +5978,33 @@ setTimeout(() => {
         return v && v.pecas && v.pecas.length > 0 ? v.pecas.join(", ") : "NENHUMA";
       }
 
-      function gerarTextoSaidaPortaria(v) {
-        return `🔴 *VEÍCULO SAÍDA PORTARIA BOLSÃO*
-
-VEÍCULO: ${v.veiculo || "-"}
-PLACA: ${v.placa || "-"}
-DATA E HORA: ${obterDataHoraAtualPortaria()}`;
+      function obterMecanicoTextoPortaria(v, mecanico = "") {
+        const nomeMecanico = mecanico || localStorage.getItem("sessao_lecar") || v?.mecanico_responsavel || v?.mecanico || "-";
+        return String(nomeMecanico).trim() || "-";
       }
 
-      function gerarTextoEntradaPortaria(v, mecanico = "-") {
-        return `🟢 *VEÍCULO ENTRADA PORTARIA BOLSÃO*
+      function gerarTextoSaidaPortaria(v, mecanico = "") {
+        return `VEÍCULO: ${v.veiculo || "-"}
+PLACA: ${v.placa || "-"}
+MECÂNICO: ${obterMecanicoTextoPortaria(v, mecanico)}
 
-SERVIÇO FINALIZADO!
+DATA E HORA: ${obterDataHoraAtualPortaria()}
+
+🔴 *VEÍCULO SAÍDA PORTARIA BOLSÃO*`;
+      }
+
+      function gerarTextoEntradaPortaria(v, mecanico = "") {
+        return `SERVIÇO FINALIZADO!
 
 VEÍCULO: ${v.veiculo || "-"}
 PLACA: ${v.placa || "-"}
 DESCRIÇÃO: ${v.descricao || "-"}
 PEÇAS: ${obterPecasTextoPortaria(v)}
 ORIGEM: ${v.origem || "-"}
-MECÂNICO: ${mecanico || "-"}
-DATA: ${obterDataHoraAtualPortaria()}${montarLinhaKmOleo(v)}`;
+MECÂNICO: ${obterMecanicoTextoPortaria(v, mecanico)}
+DATA: ${obterDataHoraAtualPortaria()}${montarLinhaKmOleo(v)}
+
+🟢 *VEÍCULO ENTRADA PORTARIA BOLSÃO*`;
       }
 
       function abrirModalAvisoPortaria(v) {
@@ -6011,6 +6018,7 @@ DATA: ${obterDataHoraAtualPortaria()}${montarLinhaKmOleo(v)}`;
           AO CONFIRMAR, O SISTEMA ENVIARÁ UMA MENSAGEM PARA A PORTARIA INFORMANDO A SAÍDA DO VEÍCULO PARA O BOLSÃO.<br><br>
           <strong>VEÍCULO:</strong> ${escaparHTML(v.veiculo || "-")}<br>
           <strong>PLACA:</strong> ${escaparHTML(v.placa || "-")}<br>
+          <strong>MECÂNICO:</strong> ${escaparHTML(obterMecanicoTextoPortaria(v))}<br><br>
           <strong>DATA E HORA:</strong> ${escaparHTML(obterDataHoraAtualPortaria())}
         `;
         modal.style.display = "flex";
@@ -6056,7 +6064,8 @@ DATA: ${obterDataHoraAtualPortaria()}${montarLinhaKmOleo(v)}`;
 
       function montarLinhaKmOleo(v) {
         if (!v || !v.trocaOleo || !v.kmAtualOleo) return "";
-        return `\nTROCA DE ÓLEO: SIM\nKM ATUAL: ${v.kmAtualOleo} KM`;
+        return `
+KM: ${v.kmAtualOleo}`;
       }
 
       function abrirModalLembreteOleo(v, urlWhatsApp) {
@@ -7116,19 +7125,21 @@ function fecharModalTerceiro() {
 }
 
 function gerarTextoEnvioTerceiro(v, fornecedor) {
-  const pecasTexto = v.pecas && v.pecas.length > 0 ? v.pecas.join(", ") : "Nenhuma";
-  const mecanico = localStorage.getItem("sessao_lecar") || v.mecanico_responsavel || v.mecanico || "-";
+  const pecasTexto = obterPecasTextoPortaria(v);
+  const mecanico = obterMecanicoTextoPortaria(v);
 
   return `NECESSÁRIO ENVIAR PARA TERCEIRO
 FORNECEDOR: ${fornecedor}
 
-VEÍCULO: ${v.veiculo}
-PLACA: ${v.placa}
-DESCRIÇÃO: ${v.descricao}
+VEÍCULO: ${v.veiculo || "-"}
+PLACA: ${v.placa || "-"}
+DESCRIÇÃO: ${v.descricao || "-"}
 PEÇAS: ${pecasTexto}
-ORIGEM: ${v.origem}
+ORIGEM: ${v.origem || "-"}
 MECÂNICO: ${mecanico}
-DATA: ${new Date().toLocaleString()}`;
+DATA: ${obterDataHoraAtualPortaria()}${montarLinhaKmOleo(v)}
+
+🟢 *VEÍCULO ENTRADA PORTARIA BOLSÃO*`;
 }
 
 async function confirmarEnvioTerceiro() {
