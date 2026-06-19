@@ -5987,7 +5987,9 @@ DATA E HORA: ${obterDataHoraAtualPortaria()}`;
       }
 
       function gerarTextoEntradaPortaria(v, mecanico = "-") {
-        return `SERVIÇO FINALIZADO!
+        return `🟢 *VEÍCULO ENTRADA PORTARIA BOLSÃO*
+
+SERVIÇO FINALIZADO!
 
 VEÍCULO: ${v.veiculo || "-"}
 PLACA: ${v.placa || "-"}
@@ -5996,7 +5998,6 @@ PEÇAS: ${obterPecasTextoPortaria(v)}
 ORIGEM: ${v.origem || "-"}
 MECÂNICO: ${mecanico || "-"}
 DATA: ${obterDataHoraAtualPortaria()}${montarLinhaKmOleo(v)}`;
-🟢 *VEÍCULO ENTRADA PORTARIA BOLSÃO*
       }
 
       function abrirModalAvisoPortaria(v) {
