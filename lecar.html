@@ -3800,7 +3800,7 @@
       /* ========== V3.9 - BARRA INFERIOR PREMIUM COM TEXTOS ALINHADOS ========== */
       .bottom-nav {
         display: none;
-        height: 76px !important;
+        height: 66px !important;
         left: 12px !important;
         right: 12px !important;
         bottom: calc(10px + var(--safe-bottom)) !important;
@@ -3820,9 +3820,9 @@
       }
 
       .bottom-nav-item {
-        height: 76px !important;
-        min-height: 76px !important;
-        padding: 0 2px 12px !important;
+        height: 66px !important;
+        min-height: 66px !important;
+        padding: 0 2px 9px !important;
         display: flex !important;
         flex-direction: column !important;
         align-items: center !important;
@@ -3867,7 +3867,7 @@
       }
 
       .bottom-plus {
-        padding-bottom: 12px !important;
+        padding-bottom: 9px !important;
         padding-top: 0 !important;
         margin-top: 0 !important;
         justify-content: flex-end !important;
@@ -3911,15 +3911,15 @@
         .bottom-nav {
           left: 8px !important;
           right: 8px !important;
-          height: 74px !important;
+          height: 64px !important;
           border-radius: 22px !important;
         }
 
         .bottom-nav-item {
-          height: 74px !important;
-          min-height: 74px !important;
-          padding-bottom: 11px !important;
-          gap: 5px !important;
+          height: 64px !important;
+          min-height: 64px !important;
+          padding-bottom: 8px !important;
+          gap: 4px !important;
           font-size: .51rem !important;
         }
 
@@ -4853,21 +4853,21 @@
 </style>
 
 
-<style id="lecar-busca-mobile-190px">
-/* AJUSTE FINAL DA LARGURA DA BUSCA NO MOBILE */
+<style id="lecar-busca-mobile-170px">
+/* AJUSTE FINAL DA LARGURA DA BUSCA NO MOBILE: -20 PX */
 @media (max-width: 768px) {
   .topbar.app-topbar-clean .app-search-shell {
-    width: 190px !important;
-    max-width: 190px !important;
-    flex: 0 0 190px !important;
+    width: 170px !important;
+    max-width: 170px !important;
+    flex: 0 0 170px !important;
   }
 }
 
 @media (max-width: 480px) {
   .topbar.app-topbar-clean .app-search-shell {
-    width: 190px !important;
-    max-width: 190px !important;
-    flex: 0 0 190px !important;
+    width: 170px !important;
+    max-width: 170px !important;
+    flex: 0 0 170px !important;
   }
 }
 </style>
@@ -7532,6 +7532,9 @@ setTimeout(() => {
       let catalogoVeiculos = [];
       let sugestoesVeiculosAtuais = [];
       let sugestaoVeiculoSelecionada = -1;
+      let sugestaoVeiculoTimer = null;
+      let sugestaoVeiculoToken = 0;
+      const cacheSugestoesVeiculos = new Map();
       let historicosBuscaAtuais = [];
 
       // ========== FUNÇÕES DO SISTEMA DE ABAS ==========
@@ -7588,27 +7591,85 @@ setTimeout(() => {
         catalogoVeiculos = [...new Set(nomes)].sort();
       }
 
+      function obterSugestoesLocaisVeiculos(termo) {
+        const baseGlobalCache = dadosBuscaGlobal
+          .map((v) => normalizarTextoBusca(v.veiculo))
+          .filter(Boolean);
+
+        const base = [...new Set([
+          ...catalogoVeiculos,
+          ...baseGlobalCache,
+          ...dados.map((v) => normalizarTextoBusca(v.veiculo)).filter(Boolean)
+        ])].sort();
+
+        const comecaCom = base.filter((nome) => nome.startsWith(termo));
+        const contem = base.filter((nome) => !nome.startsWith(termo) && nome.includes(termo));
+        return [...comecaCom, ...contem].slice(0, 8);
+      }
+
+      function mesclarSugestoesVeiculos(...listas) {
+        return [...new Set(listas.flat().map(normalizarTextoBusca).filter(Boolean))].slice(0, 8);
+      }
+
       function buscarSugestoesVeiculos() {
-        if (!veiculoSugestoes) return;
+        if (!veiculoSugestoes || !veiculo) return;
 
         const termo = normalizarTextoBusca(veiculo.value);
+        const tokenAtual = ++sugestaoVeiculoToken;
+
+        if (sugestaoVeiculoTimer) {
+          clearTimeout(sugestaoVeiculoTimer);
+          sugestaoVeiculoTimer = null;
+        }
 
         if (termo.length < 2) {
           fecharSugestoesVeiculos();
           return;
         }
 
-        const base = catalogoVeiculos.length
-          ? catalogoVeiculos
-          : [...new Set(dados.map((v) => normalizarTextoBusca(v.veiculo)).filter(Boolean))].sort();
-
-        const comecaCom = base.filter((nome) => nome.startsWith(termo));
-        const contem = base.filter((nome) => !nome.startsWith(termo) && nome.includes(termo));
-
-        sugestoesVeiculosAtuais = [...comecaCom, ...contem].slice(0, 8);
+        const locais = obterSugestoesLocaisVeiculos(termo);
+        const cacheRemoto = cacheSugestoesVeiculos.get(termo) || [];
+        sugestoesVeiculosAtuais = mesclarSugestoesVeiculos(locais, cacheRemoto);
         sugestaoVeiculoSelecionada = -1;
-
         renderizarSugestoesVeiculos();
+
+        if (cacheSugestoesVeiculos.has(termo)) return;
+
+        // Consulta limitada e com debounce: evita reler toda a coleção para o autocomplete.
+        sugestaoVeiculoTimer = setTimeout(async () => {
+          try {
+            const snapshot = await db.collection("veiculos")
+              .orderBy("veiculo")
+              .startAt(termo)
+              .endAt(termo + "\uf8ff")
+              .limit(30)
+              .get();
+
+            if (tokenAtual !== sugestaoVeiculoToken) return;
+            if (normalizarTextoBusca(veiculo.value) !== termo) return;
+
+            const remotas = [...new Set(
+              snapshot.docs
+                .map((doc) => normalizarTextoBusca(doc.data()?.veiculo))
+                .filter(Boolean)
+            )].slice(0, 8);
+
+            cacheSugestoesVeiculos.set(termo, remotas);
+            catalogoVeiculos = [...new Set([...catalogoVeiculos, ...remotas])].sort();
+            sugestoesVeiculosAtuais = mesclarSugestoesVeiculos(remotas, locais);
+            sugestaoVeiculoSelecionada = -1;
+            renderizarSugestoesVeiculos();
+          } catch (erro) {
+            // Sem mensagem na tela: se a consulta falhar ou não houver resultado, a lista fica fechada.
+            if (tokenAtual === sugestaoVeiculoToken && !sugestoesVeiculosAtuais.length) {
+              veiculoSugestoes.style.display = "none";
+              veiculoSugestoes.innerHTML = "";
+            }
+            console.warn("Autocomplete de veículos indisponível:", erro);
+          } finally {
+            if (tokenAtual === sugestaoVeiculoToken) sugestaoVeiculoTimer = null;
+          }
+        }, 280);
       }
 
       function renderizarSugestoesVeiculos() {
@@ -7616,9 +7677,9 @@ setTimeout(() => {
 
         veiculoSugestoes.innerHTML = "";
 
+        // Quando não houver veículo correspondente, não exibe mensagem nem caixa vazia.
         if (!sugestoesVeiculosAtuais.length) {
-          veiculoSugestoes.innerHTML = '<div class="veiculo-sugestoes-empty">Nenhum veículo encontrado na base</div>';
-          veiculoSugestoes.style.display = "block";
+          veiculoSugestoes.style.display = "none";
           return;
         }
 
@@ -7656,6 +7717,12 @@ setTimeout(() => {
       function fecharSugestoesVeiculos() {
         if (!veiculoSugestoes) return;
 
+        if (sugestaoVeiculoTimer) {
+          clearTimeout(sugestaoVeiculoTimer);
+          sugestaoVeiculoTimer = null;
+        }
+
+        sugestaoVeiculoToken += 1;
         veiculoSugestoes.style.display = "none";
         veiculoSugestoes.innerHTML = "";
         sugestoesVeiculosAtuais = [];
@@ -10297,6 +10364,82 @@ ${gerarLinhaRelatorioMecanicos(relatoriosPorMecanico, "pendentes")}`;
         document.addEventListener('DOMContentLoaded', iniciarControleDeModaisLeCar);
       } else {
         iniciarControleDeModaisLeCar();
+      }
+
+
+
+      /* ========== FECHAMENTO PADRÃO AO CLICAR FORA DOS MODAIS ========== */
+      function fecharModalLeCarPeloFundo(modalId) {
+        const acoesFechamento = {
+          modalFinalizado: () => fecharModalFinalizado(),
+          modalLembreteOleo: () => fecharModalLembreteOleo(),
+          modalAvisoPortaria: () => fecharModalAvisoPortaria(),
+          modalPecas: () => fecharModal(),
+          modalDescricao: () => fecharModalDescricao(),
+          modalStatus: () => fecharModalStatus(),
+          modalTerceiro: () => fecharModalTerceiro(),
+          modalPopupAvisos: () => confirmarLeituraPopupAvisos()
+        };
+
+        const acao = acoesFechamento[modalId];
+        if (typeof acao === "function") {
+          Promise.resolve(acao()).finally(() => {
+            if (typeof atualizarEstadoModalAberto === "function") atualizarEstadoModalAberto();
+          });
+          return;
+        }
+
+        const modal = document.getElementById(modalId);
+        if (!modal) return;
+        modal.style.display = "none";
+        modal.classList.remove("show", "open", "active");
+        modal.setAttribute("aria-hidden", "true");
+        if (typeof atualizarEstadoModalAberto === "function") atualizarEstadoModalAberto();
+      }
+
+      function iniciarFechamentoExternoDosModais() {
+        const modaisSemFechamentoExterno = [
+          "modalFinalizado",
+          "modalLembreteOleo",
+          "modalAvisoPortaria",
+          "modalPecas",
+          "modalDescricao",
+          "modalStatus",
+          "modalTerceiro",
+          "modalPopupAvisos"
+        ];
+
+        modaisSemFechamentoExterno.forEach((modalId) => {
+          const fundo = document.getElementById(modalId);
+          if (!fundo || fundo.dataset.fechamentoExternoAtivo === "true") return;
+
+          fundo.dataset.fechamentoExternoAtivo = "true";
+          fundo.addEventListener("click", (event) => {
+            if (event.target !== fundo) return;
+            fecharModalLeCarPeloFundo(modalId);
+          });
+        });
+
+        /* O resultado da busca usa fundo transparente para permitir digitação.
+           Fecha ao tocar fora da caixa de resultados e fora do próprio campo de busca. */
+        document.addEventListener("pointerdown", (event) => {
+          const modalBuscaAtual = document.getElementById("modalBusca");
+          if (!modalBuscaAtual || modalBuscaAtual.dataset.buscaAberta !== "true") return;
+
+          const caixaResultado = modalBuscaAtual.querySelector(".modal");
+          const clicouNaCaixa = caixaResultado && caixaResultado.contains(event.target);
+          const clicouNaBusca = event.target.closest?.(".app-search-shell, .busca-operacional");
+
+          if (!clicouNaCaixa && !clicouNaBusca) {
+            fecharModalBusca(false);
+          }
+        }, true);
+      }
+
+      if (document.readyState === "loading") {
+        document.addEventListener("DOMContentLoaded", iniciarFechamentoExternoDosModais);
+      } else {
+        iniciarFechamentoExternoDosModais();
       }
 
       window.onload = () => {
