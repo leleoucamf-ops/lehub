@@ -4483,8 +4483,376 @@
         }
       }
 
-    </style>
-  </head>
+    
+
+      /* ========== AJUSTE FINAL: TOPBAR COMPACTA + BUSCA INTEGRADA ========== */
+      :root {
+        --lecar-topbar-h: 66px !important;
+        --lecar-search-top: 72px !important;
+        --lecar-content-top: 82px !important;
+      }
+
+      .app-topbar-clean,
+      .topbar.app-topbar-clean,
+      .topbar {
+        height: var(--lecar-topbar-h) !important;
+        min-height: var(--lecar-topbar-h) !important;
+        padding: 0 14px !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: flex-start !important;
+        gap: 12px !important;
+        overflow: hidden !important;
+      }
+
+      .topbar .logo-img,
+      .app-topbar-clean .logo-img,
+      .topbar.app-topbar-clean .logo-img {
+        height: 44px !important;
+        width: auto !important;
+        max-width: 132px !important;
+        margin: 0 !important;
+        flex: 0 0 auto !important;
+      }
+
+      .topbar .app-search-shell {
+        position: relative !important;
+        inset: auto !important;
+        top: auto !important;
+        left: auto !important;
+        right: auto !important;
+        width: auto !important;
+        max-width: none !important;
+        margin: 0 !important;
+        flex: 1 1 auto !important;
+        z-index: 2 !important;
+        pointer-events: auto !important;
+      }
+
+      .topbar .app-search-card {
+        width: 100% !important;
+        height: 40px !important;
+        min-height: 40px !important;
+        padding: 0 13px !important;
+        border-radius: 12px !important;
+        display: flex !important;
+        align-items: center !important;
+        gap: 9px !important;
+        background: rgba(255,255,255,.96) !important;
+        box-shadow: 0 5px 14px rgba(0,0,0,.16) !important;
+      }
+
+      .topbar .app-search-icon {
+        width: 20px !important;
+        height: 20px !important;
+        min-width: 20px !important;
+      }
+
+      .topbar .app-search-input,
+      .topbar .app-search-input:focus {
+        height: 100% !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        border: 0 !important;
+        box-shadow: none !important;
+        background: transparent !important;
+        font-size: .88rem !important;
+      }
+
+      .btn-menu-hamburguer,
+      .drawer-overlay,
+      .drawer-lateral {
+        display: none !important;
+      }
+
+      .main {
+        padding-top: var(--lecar-content-top) !important;
+      }
+
+      @media (max-width: 600px) {
+        :root {
+          --lecar-topbar-h: 58px !important;
+          --lecar-search-top: 64px !important;
+          --lecar-content-top: 72px !important;
+        }
+
+        .app-topbar-clean,
+        .topbar.app-topbar-clean,
+        .topbar {
+          padding: 0 9px !important;
+          gap: 8px !important;
+          flex-wrap: nowrap !important;
+        }
+
+        .topbar .logo-img,
+        .app-topbar-clean .logo-img,
+        .topbar.app-topbar-clean .logo-img {
+          height: 36px !important;
+          max-width: 92px !important;
+        }
+
+        .topbar .app-search-card {
+          height: 36px !important;
+          min-height: 36px !important;
+          padding: 0 10px !important;
+          border-radius: 10px !important;
+          gap: 7px !important;
+        }
+
+        .topbar .app-search-icon {
+          width: 18px !important;
+          height: 18px !important;
+          min-width: 18px !important;
+        }
+
+        .topbar .app-search-input,
+        .topbar .app-search-input:focus {
+          font-size: .76rem !important;
+        }
+      }
+
+      @media (max-width: 390px) {
+        .topbar .logo-img,
+        .app-topbar-clean .logo-img,
+        .topbar.app-topbar-clean .logo-img {
+          max-width: 78px !important;
+          height: 32px !important;
+        }
+
+        .topbar .app-search-input,
+        .topbar .app-search-input:focus {
+          font-size: .70rem !important;
+        }
+      }
+
+      /* ========== AJUSTE: LARGURA DA BUSCA PROPORCIONAL AO TEXTO ========== */
+      .topbar .app-search-shell {
+        flex: 0 1 auto !important;
+        width: 285px !important;
+        max-width: calc(100vw - 175px) !important;
+      }
+
+      .topbar .app-search-card {
+        width: 100% !important;
+      }
+
+      @media (max-width: 600px) {
+        .topbar .app-search-shell {
+          width: 242px !important;
+          max-width: calc(100vw - 118px) !important;
+        }
+      }
+
+      @media (max-width: 390px) {
+        .topbar .app-search-shell {
+          width: 220px !important;
+          max-width: calc(100vw - 99px) !important;
+        }
+      }
+
+</style>
+  
+<style id="lecar-topbar-ajuste-final">
+/* AJUSTE FINAL TOPBAR */
+.topbar {
+  min-height: 54px !important;
+  height: 54px !important;
+  padding: 5px 18px !important;
+  flex-wrap: nowrap !important;
+  gap: 12px !important;
+}
+
+.logo-img {
+  height: 38px !important;
+  margin-right: auto !important;
+}
+
+.topbar-search {
+  width: 285px !important;
+  max-width: 285px !important;
+  height: 34px !important;
+  min-height: 34px !important;
+  padding: 5px 11px !important;
+  margin: 0 0 0 auto !important;
+  order: initial !important;
+  border-radius: 9px !important;
+  font-size: 0.78rem !important;
+}
+
+.main {
+  padding-top: 72px !important;
+}
+
+@media (max-width: 768px) {
+  .topbar {
+    min-height: 50px !important;
+    height: 50px !important;
+    padding: 5px 10px !important;
+    flex-wrap: nowrap !important;
+    gap: 8px !important;
+  }
+
+  .logo-img {
+    height: 32px !important;
+    margin-right: auto !important;
+  }
+
+  .topbar-search {
+    width: 245px !important;
+    max-width: calc(100vw - 105px) !important;
+    height: 32px !important;
+    min-height: 32px !important;
+    padding: 4px 9px !important;
+    margin: 0 0 0 auto !important;
+    order: initial !important;
+    font-size: 0.68rem !important;
+  }
+
+  .main {
+    padding-top: 64px !important;
+  }
+}
+
+@media (max-width: 480px) {
+  .topbar {
+    min-height: 46px !important;
+    height: 46px !important;
+    padding: 4px 8px !important;
+  }
+
+  .logo-img {
+    height: 29px !important;
+  }
+
+  .topbar-search {
+    width: 220px !important;
+    max-width: calc(100vw - 92px) !important;
+    height: 29px !important;
+    min-height: 29px !important;
+    font-size: 0.62rem !important;
+  }
+
+  .main {
+    padding-top: 58px !important;
+  }
+}
+</style>
+
+
+<style id="lecar-busca-direita-fix">
+/* FORÇA A BUSCA NO CANTO DIREITO DA TOPBAR */
+.topbar.app-topbar-clean {
+  justify-content: flex-start !important;
+}
+
+.topbar.app-topbar-clean .logo-img {
+  margin-right: 0 !important;
+}
+
+.topbar.app-topbar-clean .app-search-shell {
+  margin-left: auto !important;
+  margin-right: 0 !important;
+  flex: 0 0 auto !important;
+}
+</style>
+
+
+<style id="lecar-correcao-real-busca">
+/* CORREÇÃO REAL DO CAMPO DE BUSCA DA TOPBAR */
+.topbar.app-topbar-clean .app-search-shell {
+  margin-left: auto !important;
+  margin-right: 0 !important;
+  width: 285px !important;
+  max-width: 285px !important;
+  flex: 0 0 285px !important;
+}
+
+.topbar.app-topbar-clean .app-search-card {
+  width: 100% !important;
+  height: 30px !important;
+  min-height: 30px !important;
+  border-radius: 9px !important;
+  padding: 0 10px !important;
+  gap: 7px !important;
+  background: rgba(255, 255, 255, 0.10) !important;
+  border: 1px solid rgba(255, 255, 255, 0.24) !important;
+  box-shadow: none !important;
+  backdrop-filter: blur(5px) !important;
+  -webkit-backdrop-filter: blur(5px) !important;
+}
+
+.topbar.app-topbar-clean .app-search-icon {
+  width: 16px !important;
+  height: 16px !important;
+  color: rgba(255, 255, 255, 0.62) !important;
+  flex: 0 0 16px !important;
+}
+
+.topbar.app-topbar-clean .app-search-input,
+.topbar.app-topbar-clean .app-search-input:focus {
+  height: 28px !important;
+  min-height: 28px !important;
+  width: 100% !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  border: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  color: rgba(255, 255, 255, 0.92) !important;
+  font-size: 0.72rem !important;
+  font-weight: 600 !important;
+  text-transform: uppercase !important;
+}
+
+.topbar.app-topbar-clean .app-search-input::placeholder {
+  color: rgba(255, 255, 255, 0.52) !important;
+  opacity: 1 !important;
+  text-transform: uppercase !important;
+}
+
+@media (max-width: 768px) {
+  .topbar.app-topbar-clean .app-search-shell {
+    width: 245px !important;
+    max-width: calc(100vw - 105px) !important;
+    flex-basis: 245px !important;
+  }
+
+  .topbar.app-topbar-clean .app-search-card {
+    height: 28px !important;
+    min-height: 28px !important;
+  }
+
+  .topbar.app-topbar-clean .app-search-input,
+  .topbar.app-topbar-clean .app-search-input:focus {
+    height: 26px !important;
+    min-height: 26px !important;
+    font-size: 0.66rem !important;
+  }
+}
+
+@media (max-width: 480px) {
+  .topbar.app-topbar-clean .app-search-shell {
+    width: 220px !important;
+    max-width: calc(100vw - 92px) !important;
+    flex-basis: 220px !important;
+  }
+
+  .topbar.app-topbar-clean .app-search-card {
+    height: 27px !important;
+    min-height: 27px !important;
+    padding: 0 8px !important;
+  }
+
+  .topbar.app-topbar-clean .app-search-input,
+  .topbar.app-topbar-clean .app-search-input:focus {
+    height: 25px !important;
+    min-height: 25px !important;
+    font-size: 0.62rem !important;
+  }
+}
+</style>
+
+</head>
   <body translate="no">
 
     <!-- ========== TELA DE LOGIN ========== -->
@@ -4520,44 +4888,24 @@
     <div id="sistemaPrincipal" class="sistema-principal">
 
     <div class="topbar app-topbar-clean">
-      <img src="https://i.postimg.cc/zG9TvZGJ/logo.png" alt="LECAR" class="logo-img" />
+      <img src="logo.png" alt="LECAR" class="logo-img" />
 
-      <button type="button" class="btn-menu-hamburguer" aria-label="Abrir menu" onclick="abrirDrawerLateral()">
-        <svg viewBox="0 0 24 24" aria-hidden="true">
-          <path d="M4 7H20"></path>
-          <path d="M4 12H20"></path>
-          <path d="M4 17H20"></path>
-        </svg>
-      </button>
-    </div>
-
-    <div id="drawerOverlay" class="drawer-overlay" onclick="fecharDrawerLateral()"></div>
-    <aside id="drawerLateral" class="drawer-lateral" aria-hidden="true">
-      <div class="drawer-header">
-        <button type="button" class="btn-fechar-drawer" aria-label="Fechar menu" onclick="fecharDrawerLateral()">
-          <svg viewBox="0 0 24 24" aria-hidden="true">
-            <path d="M6 6L18 18"></path>
-            <path d="M18 6L6 18"></path>
-          </svg>
-        </button>
+      <div class="app-search-shell">
+        <div class="app-search-card">
+          <svg class="ui-icon app-search-icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5"></circle><path d="M15.5 15.5L21 21"></path></svg>
+          <input
+            type="text"
+            id="buscaSidebar"
+            class="app-search-input"
+            placeholder="BUSCAR"
+            onkeyup="filtrarBusca()"
+          />
+        </div>
       </div>
-      <div class="drawer-body"></div>
-    </aside>
+    </div>
 
     <div class="main">
       <div class="card">
-        <div class="app-search-shell">
-          <div class="app-search-card">
-            <svg class="ui-icon app-search-icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5"></circle><path d="M15.5 15.5L21 21"></path></svg>
-            <input
-              type="text"
-              id="buscaSidebar"
-              class="app-search-input"
-              placeholder="Buscar veículo, serviço ou placa..."
-              onkeyup="filtrarBusca()"
-            />
-          </div>
-        </div>
 
         <div id="cadastroCard" class="cadastro-collapsible">
           <div class="cadastro-header" onclick="navegar('toggle_cadastro'); toggleCadastroCard()">
