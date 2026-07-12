@@ -6908,24 +6908,82 @@ function verificarSessao() {
   trocarAba("servicos");
 }
 
+function obterInicioHojeISO() {
+  const agora = new Date();
+  const inicio = new Date(agora.getFullYear(), agora.getMonth(), agora.getDate(), 0, 0, 0, 0);
+  return inicio.toISOString();
+}
+
+function obterChaveDiaLocal(data = new Date()) {
+  const ano = data.getFullYear();
+  const mes = String(data.getMonth() + 1).padStart(2, "0");
+  const dia = String(data.getDate()).padStart(2, "0");
+  return `${ano}-${mes}-${dia}`;
+}
+
+function programarReinicioRankingMeiaNoite() {
+  if (rankingReinicioTimer) clearTimeout(rankingReinicioTimer);
+  const agora = new Date();
+  const proximaMeiaNoite = new Date(agora.getFullYear(), agora.getMonth(), agora.getDate() + 1, 0, 0, 3, 0);
+  rankingReinicioTimer = setTimeout(() => {
+    iniciarEscutaRankingDiario(true);
+  }, Math.max(1000, proximaMeiaNoite.getTime() - agora.getTime()));
+}
+
+function iniciarEscutaRankingDiario(forcar = false) {
+  const chaveHoje = obterChaveDiaLocal();
+  if (!forcar && rankingDiaAtual === chaveHoje && typeof window.lecarRankingUnsubscribe === "function") return;
+
+  if (typeof window.lecarRankingUnsubscribe === "function") {
+    window.lecarRankingUnsubscribe();
+    window.lecarRankingUnsubscribe = null;
+  }
+
+  rankingDiaAtual = chaveHoje;
+  dadosRanking = [];
+  atualizarRankingProdutividade();
+
+  // Consulta somente os registros finalizados/modificados a partir de hoje.
+  // Isso preserva o ranking em tempo real sem reler todo o histórico da oficina.
+  window.lecarRankingUnsubscribe = db.collection("veiculos")
+    .where("dataFinalizacaoISO", ">=", obterInicioHojeISO())
+    .onSnapshot(
+      (snapshot) => {
+        dadosRanking = snapshot.docs
+          .map(doc => ({ id: doc.id, ...doc.data() }))
+          .filter(v => {
+            const statusAtual = String(v.status || "").trim().toUpperCase();
+            return statusAtual === "VEÍCULO FINALIZADO" && ehMesmoDiaLocal(obterTimestampFinalizacao(v));
+          });
+        atualizarRankingProdutividade();
+      },
+      (error) => {
+        console.error("Erro Firebase Ranking Diário:", error);
+        // O sistema operacional continua funcionando mesmo se o ranking falhar.
+        dadosRanking = [];
+        atualizarRankingProdutividade();
+      }
+    );
+
+  programarReinicioRankingMeiaNoite();
+}
+
 function sincronizarFirebase() {
   const usuario = localStorage.getItem("sessao_lecar");
-
   if (!usuario) return;
 
-  let query = db.collection("veiculos");
+  if (typeof window.lecarDadosUnsubscribe === "function") {
+    window.lecarDadosUnsubscribe();
+    window.lecarDadosUnsubscribe = null;
+  }
 
-  // Mantém a tela operacional filtrada pelo usuário logado.
-  query = query.where("mecanico_responsavel", "==", usuario);
+  // Mantém apenas os registros do mecânico logado em tempo real.
+  const query = db.collection("veiculos")
+    .where("mecanico_responsavel", "==", usuario);
 
-  query.onSnapshot(
+  window.lecarDadosUnsubscribe = query.onSnapshot(
     (snapshot) => {
-      const temp = [];
-
-      snapshot.forEach((doc) => {
-        temp.push({ id: doc.id, ...doc.data() });
-      });
-
+      const temp = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
       dados = temp;
       atualizarCatalogoVeiculos(temp);
       atualizarTabela();
@@ -6936,34 +6994,9 @@ function sincronizarFirebase() {
     }
   );
 
-  // Ranking precisa enxergar todos os mecânicos, não apenas o usuário logado.
-  if (window.lecarRankingUnsubscribe) {
-    window.lecarRankingUnsubscribe();
-  }
-
-  window.lecarRankingUnsubscribe = db.collection("veiculos").onSnapshot(
-    (snapshot) => {
-      const tempRanking = [];
-
-      snapshot.forEach((doc) => {
-        tempRanking.push({ id: doc.id, ...doc.data() });
-      });
-
-      dadosRanking = tempRanking;
-      atualizarRankingProdutividade();
-
-      const campoBuscaAtivo = document.getElementById("buscaSidebar");
-      const modalBuscaAtivo = document.getElementById("modalBusca");
-      if (campoBuscaAtivo?.value.trim() && modalBuscaAtivo?.dataset.buscaAberta === "true") {
-        filtrarBusca();
-      }
-    },
-    (error) => {
-      console.error("Erro Firebase Ranking:", error);
-    }
-  );
-
+  iniciarEscutaRankingDiario();
 }
+
 
       function realizarLogin(event) {
         event.preventDefault();
@@ -7482,6 +7515,15 @@ setTimeout(() => {
 
       let dados = [];
       let dadosRanking = [];
+      let dadosBuscaGlobal = [];
+      let dadosBuscaGlobalCarregadosEm = 0;
+      let buscaGlobalEmAndamento = null;
+      let buscaGlobalToken = 0;
+      let buscaGlobalTimer = null;
+      let rankingDiaAtual = "";
+      let rankingReinicioTimer = null;
+      const CACHE_BUSCA_GLOBAL_CHAVE = "lecar_cache_busca_global_v1";
+      const CACHE_BUSCA_GLOBAL_TTL = 10 * 60 * 1000;
       let indicePecasAtual = null;
       let idStatusAtual = null;
       let abaAtiva = "servicos";
@@ -8158,8 +8200,91 @@ async function salvar() {
         });
       }
 
+      function normalizarPlacaConsulta(valor) {
+        return String(valor || "").trim().toUpperCase().replace(/\s+/g, "");
+      }
+
+      function parecePlacaCompleta(valor) {
+        const placa = normalizarPlacaConsulta(valor).replace(/[^A-Z0-9]/g, "");
+        return placa.length >= 6 && placa.length <= 8 && /[A-Z]/.test(placa) && /\d/.test(placa);
+      }
+
       function obterBaseBuscaVeiculos() {
-        return dadosRanking.length ? dadosRanking : dados;
+        return dadosBuscaGlobal.length ? dadosBuscaGlobal : dados;
+      }
+
+      function lerCacheBuscaGlobal() {
+        try {
+          const cache = JSON.parse(localStorage.getItem(CACHE_BUSCA_GLOBAL_CHAVE) || "null");
+          if (!cache || !Array.isArray(cache.dados) || !cache.salvoEm) return false;
+          if (Date.now() - Number(cache.salvoEm) > CACHE_BUSCA_GLOBAL_TTL) return false;
+          dadosBuscaGlobal = cache.dados;
+          dadosBuscaGlobalCarregadosEm = Number(cache.salvoEm);
+          return true;
+        } catch (erro) {
+          return false;
+        }
+      }
+
+      function salvarCacheBuscaGlobal(lista) {
+        try {
+          localStorage.setItem(CACHE_BUSCA_GLOBAL_CHAVE, JSON.stringify({
+            salvoEm: Date.now(),
+            dados: lista
+          }));
+        } catch (erro) {
+          // O cache é apenas uma otimização. A busca continua funcionando sem ele.
+          console.warn("Cache local da busca indisponível:", erro);
+        }
+      }
+
+      async function carregarBaseBuscaGlobal(forcar = false) {
+        const cacheValido = dadosBuscaGlobal.length && (Date.now() - dadosBuscaGlobalCarregadosEm < CACHE_BUSCA_GLOBAL_TTL);
+        if (!forcar && cacheValido) return dadosBuscaGlobal;
+        if (!forcar && !dadosBuscaGlobal.length && lerCacheBuscaGlobal()) return dadosBuscaGlobal;
+        if (buscaGlobalEmAndamento) return buscaGlobalEmAndamento;
+
+        buscaGlobalEmAndamento = db.collection("veiculos").get()
+          .then(snapshot => {
+            dadosBuscaGlobal = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+            dadosBuscaGlobalCarregadosEm = Date.now();
+            salvarCacheBuscaGlobal(dadosBuscaGlobal);
+            return dadosBuscaGlobal;
+          })
+          .finally(() => {
+            buscaGlobalEmAndamento = null;
+          });
+
+        return buscaGlobalEmAndamento;
+      }
+
+      async function consultarHistoricoPorPlaca(placa) {
+        const placaExata = normalizarPlacaConsulta(placa);
+        const placaAlfanumerica = placaExata.replace(/[^A-Z0-9]/g, "");
+        if (!placaAlfanumerica) return [];
+
+        const variantes = Array.from(new Set([
+          placaExata,
+          placaAlfanumerica,
+          placaAlfanumerica.length === 7 ? `${placaAlfanumerica.slice(0, 3)}-${placaAlfanumerica.slice(3)}` : ""
+        ].filter(Boolean)));
+
+        try {
+          const consulta = variantes.length === 1
+            ? db.collection("veiculos").where("placa", "==", variantes[0])
+            : db.collection("veiculos").where("placa", "in", variantes);
+          const snapshot = await consulta.get();
+          const encontrados = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+          if (encontrados.length) {
+            return encontrados.sort((a, b) => obterTimestampHistorico(b) - obterTimestampHistorico(a));
+          }
+        } catch (erro) {
+          console.warn("Consulta direta do histórico falhou; usando cache local:", erro);
+        }
+
+        return obterBaseBuscaVeiculos()
+          .filter(registro => normalizarPlacaConsulta(registro?.placa).replace(/[^A-Z0-9]/g, "") === placaAlfanumerica)
+          .sort((a, b) => obterTimestampHistorico(b) - obterTimestampHistorico(a));
       }
 
       function obterChaveHistoricoVeiculo(v) {
@@ -8199,9 +8324,9 @@ async function salvar() {
         return v?.dataFinalizacao || v?.ultima_modificacao || v?.dataEntrada || "DATA NÃO INFORMADA";
       }
 
-      function agruparResultadosBusca(lista) {
+      function agruparResultadosBusca(lista, baseFornecida = null) {
         const grupos = new Map();
-        const baseCompleta = obterBaseBuscaVeiculos();
+        const baseCompleta = Array.isArray(baseFornecida) ? baseFornecida : obterBaseBuscaVeiculos();
         const chavesEncontradas = new Set(lista.map(obterChaveHistoricoVeiculo));
 
         baseCompleta.forEach((registro) => {
@@ -8247,7 +8372,7 @@ async function salvar() {
           .sort((a, b) => obterTimestampHistorico(b) - obterTimestampHistorico(a));
       }
 
-      function abrirHistoricoVeiculoCard(i) {
+      async function abrirHistoricoVeiculoCard(i) {
         const v = dados[i];
         if (!v) return;
 
@@ -8259,22 +8384,25 @@ async function salvar() {
         const lista = document.getElementById("historicoCardLista");
         if (!modal || !titulo || !resumo || !lista) return;
 
-        const historico = obterHistoricoCompletoDoVeiculo(v);
+        titulo.textContent = `${v.veiculo || "SEM VEÍCULO"} · ${v.placa || "SEM PLACA"}`;
+        resumo.textContent = "CARREGANDO HISTÓRICO...";
+        lista.innerHTML = '<div class="busca-historico-vazio">CONSULTANDO REGISTROS DO VEÍCULO...</div>';
+        modal.style.display = "flex";
+        modal.setAttribute("aria-hidden", "false");
+
+        const historico = await consultarHistoricoPorPlaca(v.placa);
         const quantidade = historico.length;
         const mecanicos = new Set(
           historico
-            .map((registro) => normalizarTextoBusca(registro?.mecanico || registro?.mecanico_responsavel))
+            .map(registro => normalizarTextoBusca(registro?.mecanico || registro?.mecanico_responsavel))
             .filter(Boolean)
         );
 
-        titulo.textContent = `${v.veiculo || "SEM VEÍCULO"} · ${v.placa || "SEM PLACA"}`;
         resumo.textContent = `${quantidade} ${quantidade === 1 ? "REGISTRO" : "REGISTROS"} · ${mecanicos.size} ${mecanicos.size === 1 ? "MECÂNICO" : "MECÂNICOS"}`;
         lista.innerHTML = quantidade
           ? historico.map(renderizarItemHistoricoBusca).join("")
           : '<div class="busca-historico-vazio">NENHUM HISTÓRICO ENCONTRADO PARA ESTE VEÍCULO</div>';
 
-        modal.style.display = "flex";
-        modal.setAttribute("aria-hidden", "false");
         registrarAtividadeLeCar("HISTORICO_CONSULTADO", {
           registroId: v.id,
           veiculo: v.veiculo,
@@ -8284,6 +8412,7 @@ async function salvar() {
         });
         navegar(`abrir_info_historico_${i}`);
       }
+
 
       function fecharHistoricoVeiculoCard(event) {
         if (event && event.target !== event.currentTarget) return;
@@ -8345,7 +8474,11 @@ async function salvar() {
           return;
         }
 
-        const busca = normalizarTextoBusca(campoBusca?.value);
+        const buscaOriginal = campoBusca?.value || "";
+        const busca = normalizarTextoBusca(buscaOriginal);
+        const tokenAtual = ++buscaGlobalToken;
+
+        if (buscaGlobalTimer) clearTimeout(buscaGlobalTimer);
 
         if (!busca) {
           fecharModalBusca(false);
@@ -8353,13 +8486,40 @@ async function salvar() {
           return;
         }
 
-        const baseBusca = obterBaseBuscaVeiculos();
-        const resultados = baseBusca.filter((v) =>
+        // Resultado imediato com os registros já carregados do usuário.
+        const locais = dados.filter(v =>
           [v.veiculo, v.placa, v.descricao, v.status, v.origem, v.mecanico, v.mecanico_responsavel]
-            .some((valor) => normalizarTextoBusca(valor).includes(busca))
+            .some(valor => normalizarTextoBusca(valor).includes(busca))
         );
+        abrirModalBusca(locais, dados);
 
-        abrirModalBusca(resultados);
+        buscaGlobalTimer = setTimeout(async () => {
+          try {
+            let baseBusca;
+
+            // Placa completa: consulta direta e barata, retornando somente o histórico daquela placa.
+            if (parecePlacaCompleta(buscaOriginal)) {
+              baseBusca = await consultarHistoricoPorPlaca(buscaOriginal);
+            } else if (busca.length >= 3) {
+              // Busca ampla: carrega a base somente quando o usuário realmente pesquisa.
+              baseBusca = await carregarBaseBuscaGlobal(false);
+            } else {
+              baseBusca = dados;
+            }
+
+            if (tokenAtual !== buscaGlobalToken) return;
+
+            const resultados = baseBusca.filter(v =>
+              [v.veiculo, v.placa, v.descricao, v.status, v.origem, v.mecanico, v.mecanico_responsavel]
+                .some(valor => normalizarTextoBusca(valor).includes(busca))
+            );
+
+            abrirModalBusca(resultados, baseBusca);
+          } catch (erro) {
+            console.error("Erro ao executar busca global:", erro);
+            if (tokenAtual === buscaGlobalToken) abrirModalBusca(locais, dados);
+          }
+        }, 420);
 
         setTimeout(() => {
           if (!campoBusca) return;
@@ -8369,12 +8529,13 @@ async function salvar() {
         }, 0);
       }
 
-      function abrirModalBusca(lista) {
+
+      function abrirModalBusca(lista, baseCompleta = null) {
         const modal = document.getElementById("modalBusca");
         const ul = document.getElementById("listaBusca");
         const campoBusca = document.getElementById("buscaSidebar");
 
-        historicosBuscaAtuais = agruparResultadosBusca(lista);
+        historicosBuscaAtuais = agruparResultadosBusca(lista, baseCompleta);
         ul.innerHTML = "";
 
         if (!historicosBuscaAtuais.length) {
@@ -9769,7 +9930,10 @@ ${gerarLinhaRelatorioMecanicos(relatoriosPorMecanico, "pendentes")}`;
 
         primeiroSnapshotNotificacoes = true;
 
-        notificacoesUnsubscribe = db.collection("notificacoes_lecar").onSnapshot(
+        notificacoesUnsubscribe = db.collection("notificacoes_lecar")
+          .orderBy("criadoEmISO", "desc")
+          .limit(30)
+          .onSnapshot(
           snapshot => {
             notificacoesLeCar = snapshot.docs
               .map(doc => ({ id: doc.id, ...doc.data() }))
@@ -10033,22 +10197,36 @@ ${gerarLinhaRelatorioMecanicos(relatoriosPorMecanico, "pendentes")}`;
         }
       }
 
-      function iniciarEscutaPainelAtividades() {
+      async function iniciarEscutaPainelAtividades() {
         if (!usuarioPodePublicarNotificacao()) return;
-        if (typeof atividadesUnsubscribe === "function") atividadesUnsubscribe();
 
-        atividadesUnsubscribe = db.collection("auditoria_lecar")
-          .orderBy("criadoEmISO", "desc")
-          .limit(500)
-          .onSnapshot(snapshot => {
-            atividadesLeCar = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-            renderizarPainelAtividades();
-          }, erro => {
-            console.error("Erro ao carregar painel de atividades:", erro);
-            const lista = document.getElementById("painelAtividadesLista");
-            if (lista) lista.innerHTML = '<div class="painel-admin-vazio">NÃO FOI POSSÍVEL CARREGAR OS REGISTROS. VERIFIQUE AS REGRAS DO FIREBASE.</div>';
-          });
+        const botao = document.querySelector('[onclick="recarregarPainelAtividades()"]');
+        const textoOriginal = botao?.textContent || "ATUALIZAR";
+        if (botao) {
+          botao.disabled = true;
+          botao.textContent = "CARREGANDO...";
+        }
+
+        try {
+          // Consulta única: o painel não permanece consumindo leituras quando está fechado.
+          const snapshot = await db.collection("auditoria_lecar")
+            .orderBy("criadoEmISO", "desc")
+            .limit(500)
+            .get();
+          atividadesLeCar = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+          renderizarPainelAtividades();
+        } catch (erro) {
+          console.error("Erro ao carregar painel de atividades:", erro);
+          const lista = document.getElementById("painelAtividadesLista");
+          if (lista) lista.innerHTML = '<div class="painel-admin-vazio">NÃO FOI POSSÍVEL CARREGAR OS REGISTROS. VERIFIQUE AS REGRAS DO FIREBASE.</div>';
+        } finally {
+          if (botao) {
+            botao.disabled = false;
+            botao.textContent = textoOriginal;
+          }
+        }
       }
+
 
       function abrirPainelAtividades() {
         if (!usuarioPodePublicarNotificacao()) {
@@ -10069,8 +10247,8 @@ ${gerarLinhaRelatorioMecanicos(relatoriosPorMecanico, "pendentes")}`;
         document.body.style.overflow = "";
       }
 
-      function recarregarPainelAtividades() {
-        iniciarEscutaPainelAtividades();
+      async function recarregarPainelAtividades() {
+        await iniciarEscutaPainelAtividades();
       }
 
       /* ========== CONTROLE AUTOMÁTICO: BUSCA SOME QUANDO MODAL ABRE ========== */
