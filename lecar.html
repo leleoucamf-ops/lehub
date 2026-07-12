@@ -1377,7 +1377,7 @@
         overflow: visible !important;
       }
 
-      .sistema-principal.config-focus .app-search-shell,
+      /* Em Configurações, mantém a topbar exatamente igual às demais abas. */
       .sistema-principal.config-focus #cadastroCard {
         display: none !important;
       }
@@ -5460,9 +5460,54 @@
   background: linear-gradient(90deg, #fff7f7, #fff1f2);
 }
 
-.notificacao-item.prioridade-atencao {
+.notificacao-item.prioridade-atencao,
+.notificacao-item.tipo-atualizacao {
   border-left-color: #f59e0b;
   background: linear-gradient(90deg, #fffdf7, #fffbeb);
+}
+
+.notificacao-item.tipo-informativa {
+  border-left-color: #2563eb;
+  background: linear-gradient(90deg, #ffffff, #f8fbff);
+}
+
+.notificacao-tipo-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 8px;
+  padding: 4px 8px;
+  border-radius: 999px;
+  background: #dbeafe;
+  color: #1e3a8a;
+  font-size: .64rem;
+  font-weight: 950;
+  letter-spacing: .03em;
+  text-transform: uppercase;
+}
+
+.notificacao-tipo-badge.tipo-urgente {
+  background: #fee2e2;
+  color: #b91c1c;
+}
+
+.notificacao-tipo-badge.tipo-atualizacao {
+  background: #fef3c7;
+  color: #92400e;
+}
+
+.popup-urgente .notificacao-modal-header {
+  background: linear-gradient(90deg, #991b1b, #dc2626);
+}
+
+.popup-urgente .btn-notificacao-primary {
+  background: linear-gradient(90deg, #991b1b, #dc2626);
+}
+
+.popup-urgente .popup-aviso-intro {
+  background: #fff1f2;
+  color: #991b1b;
+  border: 1px solid #fecdd3;
 }
 
 .notificacao-item-head {
@@ -5663,6 +5708,22 @@
 }
 </style>
 
+
+<style id="lecar-ajuste-config-topbar-menu-leandro">
+/* Configurações preserva a topbar; menu administrativo aparece somente para LEANDRO. */
+.btn-menu-hamburguer.menu-exclusivo-leandro {
+  display: none !important;
+}
+
+.btn-menu-hamburguer.menu-exclusivo-leandro.show {
+  display: inline-flex !important;
+}
+
+.sistema-principal.config-focus .topbar.app-topbar-clean .app-search-shell {
+  display: block !important;
+}
+</style>
+
 </head>
   <body translate="no">
 
@@ -5723,7 +5784,7 @@
           </svg>
           <span id="notificacaoBadge" class="notificacao-badge">0</span>
         </button>
-        <button type="button" class="btn-menu-hamburguer topbar-icon-btn" title="Menu" aria-label="Abrir menu" onclick="alternarDrawerLateral()">
+        <button type="button" id="btnMenuHamburguer" class="btn-menu-hamburguer topbar-icon-btn menu-exclusivo-leandro" title="Menu administrativo" aria-label="Abrir menu administrativo" onclick="alternarDrawerLateral()">
           <svg viewBox="0 0 24 24" aria-hidden="true">
             <path d="M4 7H20"></path><path d="M4 12H20"></path><path d="M4 17H20"></path>
           </svg>
@@ -6079,16 +6140,16 @@
     </div>
 
     <!-- Popup automático de avisos não lidos -->
-    <div id="modalPopupAvisos" class="notificacao-modal-bg">
+    <div id="modalPopupAvisos" class="notificacao-modal-bg popup-urgente">
       <div class="notificacao-modal compact" role="alertdialog" aria-modal="true" aria-labelledby="tituloPopupAvisos">
         <div class="notificacao-modal-header">
           <div class="notificacao-modal-title-wrap">
             <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 11L21 4V20L3 13V11Z"></path><path d="M7 14V19"></path></svg>
-            <h3 id="tituloPopupAvisos">Aviso do sistema</h3>
+            <h3 id="tituloPopupAvisos">Comunicado importante</h3>
           </div>
         </div>
         <div class="notificacao-modal-body">
-          <div class="popup-aviso-intro">Leia o comunicado abaixo. Depois de confirmar, ele não será exibido novamente como popup para este usuário.</div>
+          <div class="popup-aviso-intro">Avisos urgentes e atualizações do sistema aparecem uma única vez como popup. Depois de confirmar, permanecem disponíveis no sino.</div>
           <div id="listaPopupAvisos" class="notificacao-lista"></div>
         </div>
         <div class="notificacao-modal-actions">
@@ -6112,11 +6173,11 @@
             <label>Título
               <input id="notificacaoTituloInput" type="text" maxlength="80" placeholder="EX: COMUNICADO IMPORTANTE">
             </label>
-            <label>Prioridade
+            <label>Tipo de notificação
               <select id="notificacaoPrioridadeInput">
-                <option value="normal">NORMAL</option>
-                <option value="atencao">ATENÇÃO</option>
-                <option value="urgente">URGENTE</option>
+                <option value="urgente">URGENTE — ABRE POPUP UMA VEZ</option>
+                <option value="atualizacao">ATUALIZAÇÃO DO SISTEMA — ABRE POPUP UMA VEZ</option>
+                <option value="informativa" selected>INFORMATIVA — SOMENTE SININHO</option>
               </select>
             </label>
             <label>Mensagem
@@ -9045,13 +9106,20 @@ ${gerarLinhaRelatorioMecanicos(relatoriosPorMecanico, "pendentes")}`;
 
       function atualizarPermissoesMenuNotificacoes() {
         const usuario = usuarioSessaoLeCar();
+        const acessoLeandro = usuarioPodePublicarNotificacao();
         const admin = document.getElementById("drawerAdminLeandro");
         const nome = document.getElementById("drawerUsuarioNome");
         const perfil = document.getElementById("drawerUsuarioPerfil");
+        const botaoMenu = document.getElementById("btnMenuHamburguer");
 
-        if (admin) admin.classList.toggle("show", usuarioPodePublicarNotificacao());
+        if (admin) admin.classList.toggle("show", acessoLeandro);
+        if (botaoMenu) botaoMenu.classList.toggle("show", acessoLeandro);
         if (nome) nome.textContent = usuario || "USUÁRIO";
-        if (perfil) perfil.textContent = usuarioPodePublicarNotificacao() ? "ADMINISTRADOR" : "MECÂNICO";
+        if (perfil) perfil.textContent = acessoLeandro ? "ADMINISTRADOR" : "MECÂNICO";
+
+        if (!acessoLeandro && document.body.classList.contains("drawer-open")) {
+          fecharDrawerLateral();
+        }
       }
 
       function notificacoesAtivas() {
@@ -9071,14 +9139,32 @@ ${gerarLinhaRelatorioMecanicos(relatoriosPorMecanico, "pendentes")}`;
         badge.classList.toggle("show", total > 0);
       }
 
+      function tipoNotificacao(item) {
+        const tipoSalvo = String(item?.tipo || item?.categoria || "").trim().toLowerCase();
+        if (["urgente", "atualizacao", "informativa"].includes(tipoSalvo)) return tipoSalvo;
+
+        // Compatibilidade com avisos publicados nas versões anteriores.
+        const prioridadeAntiga = String(item?.prioridade || "").trim().toLowerCase();
+        if (prioridadeAntiga === "urgente") return "urgente";
+        if (prioridadeAntiga === "atencao") return "atualizacao";
+        return "informativa";
+      }
+
+      function rotuloTipoNotificacao(tipo) {
+        if (tipo === "urgente") return "URGENTE";
+        if (tipo === "atualizacao") return "ATUALIZAÇÃO DO SISTEMA";
+        return "INFORMATIVA";
+      }
+
       function htmlItemNotificacao(item, permitirExcluir = false) {
-        const prioridade = ["urgente", "atencao"].includes(item.prioridade) ? item.prioridade : "normal";
+        const tipo = tipoNotificacao(item);
         const excluir = permitirExcluir
           ? `<button type="button" class="btn-excluir-notificacao" onclick="excluirNotificacaoLeCar('${escaparTextoNotificacao(item.id)}')">EXCLUIR</button>`
           : "";
 
         return `
-          <article class="notificacao-item prioridade-${prioridade}">
+          <article class="notificacao-item tipo-${tipo} prioridade-${tipo === "urgente" ? "urgente" : tipo === "atualizacao" ? "atencao" : "normal"}">
+            <div class="notificacao-tipo-badge tipo-${tipo}">${escaparTextoNotificacao(rotuloTipoNotificacao(tipo))}</div>
             <div class="notificacao-item-head">
               <div class="notificacao-item-title">${escaparTextoNotificacao(item.titulo || "AVISO")}</div>
               <div class="notificacao-item-date">${escaparTextoNotificacao(formatarDataNotificacao(item))}</div>
@@ -9104,7 +9190,8 @@ ${gerarLinhaRelatorioMecanicos(relatoriosPorMecanico, "pendentes")}`;
 
       function tentarExibirPopupNotificacoes() {
         if (popupAvisosEmExibicao) return;
-        const naoLidas = notificacoesNaoLidas();
+        // Avisos URGENTES e ATUALIZAÇÕES DO SISTEMA abrem popup. Informativas ficam somente no sino.
+        const naoLidas = notificacoesNaoLidas().filter(item => ["urgente", "atualizacao"].includes(tipoNotificacao(item)));
         if (!naoLidas.length) return;
 
         notificacoesPopupAtuais = naoLidas;
@@ -9179,7 +9266,7 @@ ${gerarLinhaRelatorioMecanicos(relatoriosPorMecanico, "pendentes")}`;
         }
         document.getElementById("notificacaoTituloInput").value = "";
         document.getElementById("notificacaoMensagemInput").value = "";
-        document.getElementById("notificacaoPrioridadeInput").value = "normal";
+        document.getElementById("notificacaoPrioridadeInput").value = "informativa";
         document.getElementById("modalPublicarNotificacao")?.classList.add("show");
         document.body.style.overflow = "hidden";
         setTimeout(() => document.getElementById("notificacaoTituloInput")?.focus(), 80);
@@ -9199,7 +9286,7 @@ ${gerarLinhaRelatorioMecanicos(relatoriosPorMecanico, "pendentes")}`;
 
         const titulo = (document.getElementById("notificacaoTituloInput")?.value || "AVISO").trim().toUpperCase();
         const mensagem = (document.getElementById("notificacaoMensagemInput")?.value || "").trim();
-        const prioridade = document.getElementById("notificacaoPrioridadeInput")?.value || "normal";
+        const tipo = document.getElementById("notificacaoPrioridadeInput")?.value || "informativa";
         const botao = document.getElementById("btnPublicarNotificacao");
 
         if (!mensagem) {
@@ -9216,7 +9303,9 @@ ${gerarLinhaRelatorioMecanicos(relatoriosPorMecanico, "pendentes")}`;
           await db.collection("notificacoes_lecar").add({
             titulo: titulo || "AVISO",
             mensagem,
-            prioridade,
+            tipo,
+            // Mantido para compatibilidade com versões antigas do LeCar.
+            prioridade: tipo === "urgente" ? "urgente" : tipo === "atualizacao" ? "atencao" : "normal",
             autor: "LEANDRO",
             ativo: true,
             lidosPor: [],
@@ -9224,7 +9313,11 @@ ${gerarLinhaRelatorioMecanicos(relatoriosPorMecanico, "pendentes")}`;
             criadoEmISO: new Date().toISOString()
           });
           fecharPublicarNotificacao();
-          alert("Aviso publicado para todos os usuários.");
+          alert(tipo === "urgente"
+            ? "Aviso urgente publicado. Ele abrirá como popup uma vez para cada usuário."
+            : tipo === "atualizacao"
+              ? "Atualização do sistema publicada. Ela abrirá como popup uma vez para cada usuário."
+              : "Notificação informativa publicada somente no sininho para todos os usuários.");
         } catch (erro) {
           console.error("Erro ao publicar aviso:", erro);
           alert("Não foi possível publicar o aviso. Verifique a conexão e as permissões do Firebase.");
@@ -9287,6 +9380,11 @@ ${gerarLinhaRelatorioMecanicos(relatoriosPorMecanico, "pendentes")}`;
 
       /* ========== DRAWER LATERAL DO MENU HAMBÚRGUER ========== */
       function abrirDrawerLateral() {
+        if (!usuarioPodePublicarNotificacao()) {
+          fecharDrawerLateral();
+          return;
+        }
+
         const drawer = document.getElementById('drawerLateral');
         atualizarPermissoesMenuNotificacoes();
         document.body.classList.add('drawer-open');
@@ -9300,6 +9398,11 @@ ${gerarLinhaRelatorioMecanicos(relatoriosPorMecanico, "pendentes")}`;
       }
 
       function alternarDrawerLateral() {
+        if (!usuarioPodePublicarNotificacao()) {
+          fecharDrawerLateral();
+          return;
+        }
+
         if (document.body.classList.contains('drawer-open')) {
           fecharDrawerLateral();
         } else {
