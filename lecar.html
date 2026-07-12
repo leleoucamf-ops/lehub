@@ -4872,6 +4872,797 @@
 }
 </style>
 
+
+<style id="lecar-historico-busca-veiculo">
+/* Histórico expansível diretamente abaixo do veículo pesquisado */
+#modalBusca .modal {
+  max-height: 72vh !important;
+}
+
+#modalBusca #listaBusca {
+  list-style: none !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  max-height: 52vh !important;
+  overflow-y: auto !important;
+  display: grid !important;
+  gap: 9px !important;
+}
+
+#modalBusca #listaBusca > li {
+  display: block !important;
+  padding: 0 !important;
+  border: 1px solid #dbeafe !important;
+  border-radius: 13px !important;
+  overflow: hidden !important;
+  background: #ffffff !important;
+  box-shadow: 0 3px 10px rgba(15, 23, 42, 0.06) !important;
+}
+
+.busca-veiculo-resumo {
+  width: 100%;
+  min-height: 64px;
+  padding: 11px 13px;
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 10px;
+  align-items: center;
+  cursor: pointer;
+  background: linear-gradient(90deg, #ffffff, #f8fbff);
+  -webkit-tap-highlight-color: transparent;
+}
+
+.busca-veiculo-resumo:hover,
+.busca-veiculo-resumo.aberto {
+  background: linear-gradient(90deg, #eef4ff, #dbeafe);
+}
+
+.busca-veiculo-identificacao {
+  min-width: 0;
+}
+
+.busca-veiculo-titulo {
+  color: #0f2748;
+  font-size: 0.92rem;
+  font-weight: 950;
+  line-height: 1.2;
+  text-transform: uppercase;
+}
+
+.busca-veiculo-subtitulo {
+  margin-top: 4px;
+  color: #475569;
+  font-size: 0.76rem;
+  font-weight: 750;
+  line-height: 1.3;
+  text-transform: uppercase;
+}
+
+.busca-veiculo-contador {
+  min-width: 36px;
+  height: 30px;
+  padding: 0 9px;
+  border-radius: 999px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: #1e3a8a;
+  color: #ffffff;
+  font-size: 0.72rem;
+  font-weight: 950;
+  white-space: nowrap;
+}
+
+.busca-historico-painel {
+  display: none;
+  padding: 10px;
+  border-top: 1px solid #bfdbfe;
+  background: #f8fafc;
+}
+
+.busca-historico-painel.aberto {
+  display: grid;
+  gap: 9px;
+}
+
+.busca-historico-titulo {
+  color: #1e3a8a;
+  font-size: 0.76rem;
+  font-weight: 950;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+}
+
+.busca-historico-item {
+  padding: 11px;
+  border: 1px solid #e2e8f0;
+  border-left: 4px solid #2563eb;
+  border-radius: 11px;
+  background: #ffffff;
+}
+
+.busca-historico-topo {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 10px;
+  margin-bottom: 8px;
+}
+
+.busca-historico-data {
+  color: #0f172a;
+  font-size: 0.76rem;
+  font-weight: 900;
+}
+
+.busca-historico-status {
+  max-width: 55%;
+  padding: 4px 8px;
+  border-radius: 999px;
+  background: #e2e8f0;
+  color: #334155;
+  font-size: 0.63rem;
+  font-weight: 900;
+  line-height: 1.15;
+  text-align: center;
+  text-transform: uppercase;
+}
+
+.busca-historico-linha {
+  margin-top: 5px;
+  color: #334155;
+  font-size: 0.75rem;
+  line-height: 1.38;
+  text-transform: uppercase;
+  overflow-wrap: anywhere;
+}
+
+.busca-historico-linha strong {
+  color: #0f2748;
+}
+
+.busca-historico-vazio {
+  padding: 16px 10px;
+  color: #64748b;
+  font-size: 0.82rem;
+  font-weight: 750;
+  text-align: center;
+}
+
+@media (max-width: 480px) {
+  #modalBusca .modal {
+    max-height: 76vh !important;
+    padding: 13px !important;
+  }
+
+  #modalBusca #listaBusca {
+    max-height: 58vh !important;
+  }
+
+  .busca-veiculo-resumo {
+    min-height: 58px;
+    padding: 9px 10px;
+  }
+
+  .busca-veiculo-titulo {
+    font-size: 0.82rem;
+  }
+
+  .busca-veiculo-subtitulo,
+  .busca-historico-linha,
+  .busca-historico-data {
+    font-size: 0.69rem;
+  }
+}
+</style>
+
+
+
+<style id="lecar-info-historico-card">
+/* Quatro ações lado a lado: excluir, editar, info e compartilhar */
+.card-actions {
+  grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+  gap: 8px !important;
+}
+
+.card-action-btn.info {
+  color: #0f766e !important;
+  background: #f0fdfa !important;
+  border-color: #99f6e4 !important;
+}
+
+.historico-card-modal {
+  width: min(720px, calc(100vw - 24px)) !important;
+  max-height: 88vh !important;
+  overflow: hidden !important;
+  padding: 0 !important;
+}
+
+.historico-card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 16px 18px;
+  border-bottom: 1px solid #dbeafe;
+  background: linear-gradient(90deg, #f8fafc, #eef4ff);
+}
+
+.historico-card-header h3 {
+  margin: 0 !important;
+  color: #1e3a8a;
+  font-size: 1rem;
+  font-weight: 950;
+  text-transform: uppercase;
+}
+
+.historico-card-close {
+  width: 38px !important;
+  height: 38px !important;
+  min-width: 38px !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  border-radius: 11px !important;
+  background: #ffffff !important;
+  color: #334155 !important;
+  border: 1px solid #cbd5e1 !important;
+  font-size: 1.25rem !important;
+  line-height: 1 !important;
+}
+
+.historico-card-identificacao {
+  padding: 14px 18px;
+  border-bottom: 1px solid #e2e8f0;
+  background: #ffffff;
+}
+
+.historico-card-veiculo {
+  color: #0f2748;
+  font-size: 1rem;
+  font-weight: 950;
+  line-height: 1.25;
+  text-transform: uppercase;
+}
+
+.historico-card-resumo {
+  margin-top: 5px;
+  color: #64748b;
+  font-size: 0.76rem;
+  font-weight: 800;
+  text-transform: uppercase;
+}
+
+.historico-card-lista {
+  max-height: 62vh;
+  overflow-y: auto;
+  padding: 12px;
+  display: grid;
+  gap: 9px;
+  background: #f8fafc;
+  -webkit-overflow-scrolling: touch;
+}
+
+@media (max-width: 560px) {
+  .card-actions {
+    gap: 5px !important;
+  }
+
+  .card-action-btn .ui-icon {
+    width: 17px !important;
+    height: 17px !important;
+  }
+
+  .historico-card-modal {
+    max-height: 91vh !important;
+  }
+
+  .historico-card-header,
+  .historico-card-identificacao {
+    padding-left: 13px;
+    padding-right: 13px;
+  }
+
+  .historico-card-lista {
+    max-height: 68vh;
+    padding: 9px;
+  }
+}
+</style>
+
+
+
+<style id="lecar-sistema-notificacoes">
+/* ========== SISTEMA DE AVISOS E NOTIFICAÇÕES ========== */
+.topbar.app-topbar-clean {
+  overflow: visible !important;
+}
+
+.topbar-tools {
+  display: flex !important;
+  align-items: center;
+  gap: 5px;
+  flex: 0 0 auto;
+  position: relative;
+  z-index: 6;
+}
+
+.topbar-icon-btn,
+.btn-menu-hamburguer.topbar-icon-btn {
+  width: 34px !important;
+  height: 34px !important;
+  min-width: 34px !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  border: 1px solid rgba(255,255,255,.28) !important;
+  border-radius: 10px !important;
+  background: rgba(255,255,255,.12) !important;
+  color: #ffffff !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  box-shadow: none !important;
+  position: relative !important;
+  cursor: pointer !important;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.topbar-icon-btn:hover,
+.btn-menu-hamburguer.topbar-icon-btn:hover {
+  opacity: 1 !important;
+  transform: none !important;
+  background: rgba(255,255,255,.22) !important;
+}
+
+.topbar-icon-btn svg,
+.btn-menu-hamburguer.topbar-icon-btn svg {
+  width: 20px !important;
+  height: 20px !important;
+  fill: none !important;
+  stroke: currentColor !important;
+  stroke-width: 2.2 !important;
+  stroke-linecap: round !important;
+  stroke-linejoin: round !important;
+}
+
+.notificacao-badge {
+  display: none;
+  position: absolute;
+  top: -5px;
+  right: -5px;
+  min-width: 18px;
+  height: 18px;
+  padding: 0 5px;
+  border-radius: 999px;
+  background: #ef4444;
+  color: #ffffff;
+  border: 2px solid #2563eb;
+  align-items: center;
+  justify-content: center;
+  font-size: .62rem;
+  font-weight: 950;
+  line-height: 1;
+}
+
+.notificacao-badge.show {
+  display: inline-flex;
+}
+
+/* Reativa e lapida o drawer já previsto no arquivo */
+.drawer-overlay {
+  display: block !important;
+}
+
+.drawer-lateral {
+  display: flex !important;
+  width: min(88vw, 360px) !important;
+}
+
+.drawer-header {
+  min-height: 72px;
+  padding: 15px 16px;
+  justify-content: space-between !important;
+}
+
+.drawer-header-title {
+  color: #ffffff;
+  font-size: 1rem;
+  font-weight: 950;
+  letter-spacing: .04em;
+  text-transform: uppercase;
+}
+
+.drawer-user-box {
+  padding: 16px;
+  border-bottom: 1px solid #e2e8f0;
+  background: #f8fafc;
+}
+
+.drawer-user-name {
+  color: #0f172a;
+  font-size: 1rem;
+  font-weight: 950;
+}
+
+.drawer-user-role {
+  margin-top: 4px;
+  color: #64748b;
+  font-size: .76rem;
+  font-weight: 800;
+  text-transform: uppercase;
+}
+
+.drawer-menu-list {
+  display: grid;
+  gap: 9px;
+  padding: 15px;
+}
+
+.drawer-menu-btn {
+  width: 100%;
+  min-height: 48px;
+  margin: 0;
+  padding: 0 14px;
+  border-radius: 12px;
+  border: 1px solid #dbeafe;
+  background: linear-gradient(90deg, #f8fafc, #eef4ff);
+  color: #1e3a8a;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 11px;
+  font-size: .82rem;
+  font-weight: 900;
+}
+
+.drawer-menu-btn:hover {
+  opacity: 1;
+  transform: none;
+  background: #dbeafe;
+}
+
+.drawer-menu-btn svg {
+  width: 21px;
+  height: 21px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2.2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.drawer-admin-section {
+  display: none;
+  margin: 2px 15px 15px;
+  padding: 13px;
+  border: 1px solid #bfdbfe;
+  border-radius: 14px;
+  background: #eff6ff;
+}
+
+.drawer-admin-section.show {
+  display: block;
+}
+
+.drawer-admin-label {
+  margin-bottom: 9px;
+  color: #1e3a8a;
+  font-size: .72rem;
+  font-weight: 950;
+  text-transform: uppercase;
+  letter-spacing: .05em;
+}
+
+/* Modais próprios, independentes dos modais operacionais */
+.notificacao-modal-bg {
+  display: none;
+  position: fixed;
+  inset: 0;
+  z-index: 1900;
+  padding: 16px;
+  background: rgba(15,23,42,.58);
+  backdrop-filter: blur(5px);
+  align-items: center;
+  justify-content: center;
+}
+
+.notificacao-modal-bg.show {
+  display: flex;
+}
+
+.notificacao-modal {
+  width: min(640px, 96vw);
+  max-height: 90vh;
+  overflow: hidden;
+  border-radius: 19px;
+  border: 1px solid #dbeafe;
+  background: #ffffff;
+  box-shadow: 0 24px 70px rgba(15,23,42,.34);
+  display: flex;
+  flex-direction: column;
+}
+
+.notificacao-modal.compact {
+  width: min(520px, 96vw);
+}
+
+.notificacao-modal-header {
+  min-height: 68px;
+  padding: 16px 18px;
+  background: linear-gradient(90deg, #1e3a8a, #2563eb);
+  color: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.notificacao-modal-title-wrap {
+  display: flex;
+  align-items: center;
+  gap: 11px;
+  min-width: 0;
+}
+
+.notificacao-modal-title-wrap svg {
+  width: 24px;
+  height: 24px;
+  flex: 0 0 auto;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2.2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.notificacao-modal-header h3 {
+  margin: 0;
+  color: #ffffff;
+  font-size: 1rem;
+  font-weight: 950;
+  text-transform: uppercase;
+  letter-spacing: .03em;
+}
+
+.notificacao-close {
+  width: 36px !important;
+  height: 36px !important;
+  min-width: 36px !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  border: 1px solid rgba(255,255,255,.35) !important;
+  border-radius: 11px !important;
+  background: rgba(255,255,255,.12) !important;
+  color: #ffffff !important;
+  font-size: 1.45rem !important;
+  line-height: 1 !important;
+}
+
+.notificacao-modal-body {
+  padding: 15px;
+  overflow-y: auto;
+}
+
+.notificacao-lista {
+  display: grid;
+  gap: 10px;
+}
+
+.notificacao-item {
+  padding: 13px;
+  border-radius: 14px;
+  border: 1px solid #dbeafe;
+  border-left: 5px solid #2563eb;
+  background: linear-gradient(90deg, #ffffff, #f8fbff);
+}
+
+.notificacao-item.prioridade-urgente {
+  border-left-color: #ef4444;
+  background: linear-gradient(90deg, #fff7f7, #fff1f2);
+}
+
+.notificacao-item.prioridade-atencao {
+  border-left-color: #f59e0b;
+  background: linear-gradient(90deg, #fffdf7, #fffbeb);
+}
+
+.notificacao-item-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.notificacao-item-title {
+  color: #0f172a;
+  font-size: .9rem;
+  font-weight: 950;
+  text-transform: uppercase;
+}
+
+.notificacao-item-date {
+  color: #64748b;
+  font-size: .68rem;
+  font-weight: 800;
+  white-space: nowrap;
+}
+
+.notificacao-item-message {
+  margin-top: 8px;
+  color: #334155;
+  font-size: .86rem;
+  font-weight: 650;
+  line-height: 1.48;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+.notificacao-item-footer {
+  margin-top: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 9px;
+}
+
+.notificacao-item-author {
+  color: #64748b;
+  font-size: .69rem;
+  font-weight: 850;
+  text-transform: uppercase;
+}
+
+.btn-excluir-notificacao {
+  width: auto !important;
+  min-height: 30px !important;
+  margin: 0 !important;
+  padding: 0 10px !important;
+  border-radius: 9px !important;
+  background: #fff1f2 !important;
+  color: #dc2626 !important;
+  border: 1px solid #fecdd3 !important;
+  font-size: .68rem !important;
+  font-weight: 900 !important;
+}
+
+.notificacao-vazio {
+  padding: 30px 16px;
+  text-align: center;
+  color: #64748b;
+  font-size: .84rem;
+  font-weight: 750;
+}
+
+.notificacao-modal-actions {
+  padding: 0 15px 15px;
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 9px;
+}
+
+.btn-notificacao-primary,
+.btn-notificacao-secondary {
+  width: 100%;
+  min-height: 44px;
+  margin: 0;
+  border-radius: 12px;
+  font-weight: 950;
+}
+
+.btn-notificacao-primary {
+  background: linear-gradient(90deg, #1e3a8a, #2563eb);
+}
+
+.btn-notificacao-secondary {
+  background: #f8fafc;
+  color: #334155;
+  border: 1px solid #cbd5e1;
+}
+
+.notificacao-form {
+  display: grid;
+  gap: 11px;
+}
+
+.notificacao-form label {
+  color: #1e3a8a;
+  font-size: .74rem;
+  font-weight: 950;
+  text-transform: uppercase;
+}
+
+.notificacao-form input,
+.notificacao-form textarea,
+.notificacao-form select {
+  width: 100%;
+  margin: 5px 0 0;
+  padding: 11px;
+  border-radius: 11px;
+  border: 1px solid #cbd5e1;
+  background: #ffffff;
+  color: #0f172a;
+  font-size: .86rem;
+}
+
+.notificacao-form textarea {
+  min-height: 128px;
+  resize: vertical;
+}
+
+.popup-aviso-intro {
+  margin-bottom: 12px;
+  padding: 11px 12px;
+  border-radius: 12px;
+  background: #eff6ff;
+  color: #1e3a8a;
+  font-size: .8rem;
+  font-weight: 850;
+  line-height: 1.4;
+}
+
+@media (max-width: 768px) {
+  .topbar.app-topbar-clean {
+    gap: 6px !important;
+  }
+
+  .topbar.app-topbar-clean .logo-img {
+    max-width: 78px !important;
+  }
+
+  .topbar.app-topbar-clean .app-search-shell {
+    width: 190px !important;
+    max-width: calc(100vw - 176px) !important;
+    flex: 1 1 auto !important;
+    margin-left: auto !important;
+  }
+
+  .topbar-tools {
+    gap: 4px;
+  }
+
+  .topbar-icon-btn,
+  .btn-menu-hamburguer.topbar-icon-btn {
+    width: 31px !important;
+    height: 31px !important;
+    min-width: 31px !important;
+    border-radius: 9px !important;
+  }
+
+  .topbar-icon-btn svg,
+  .btn-menu-hamburguer.topbar-icon-btn svg {
+    width: 18px !important;
+    height: 18px !important;
+  }
+
+  .notificacao-modal-bg {
+    padding: 10px;
+    align-items: flex-end;
+  }
+
+  .notificacao-modal {
+    width: 100%;
+    max-height: 88vh;
+    border-bottom-left-radius: 0;
+    border-bottom-right-radius: 0;
+  }
+}
+
+@media (max-width: 390px) {
+  .topbar.app-topbar-clean .logo-img {
+    max-width: 62px !important;
+  }
+
+  .topbar.app-topbar-clean .app-search-shell {
+    width: 150px !important;
+    max-width: calc(100vw - 148px) !important;
+  }
+
+  .topbar.app-topbar-clean .app-search-input,
+  .topbar.app-topbar-clean .app-search-input:focus {
+    font-size: .58rem !important;
+  }
+}
+</style>
+
 </head>
   <body translate="no">
 
@@ -4918,11 +5709,60 @@
             id="buscaSidebar"
             class="app-search-input"
             placeholder="BUSCAR"
-            onkeyup="filtrarBusca()"
+            onkeydown="limparBuscaAoEnter(event)"
+            onkeyup="filtrarBusca(event)"
           />
         </div>
       </div>
+
+      <div class="topbar-tools" aria-label="Ações rápidas">
+        <button type="button" class="topbar-icon-btn" title="Notificações" aria-label="Abrir notificações" onclick="abrirCentralNotificacoes()">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M18 8A6 6 0 0 0 6 8C6 15 3 16 3 16H21C21 16 18 15 18 8Z"></path>
+            <path d="M10 20H14"></path>
+          </svg>
+          <span id="notificacaoBadge" class="notificacao-badge">0</span>
+        </button>
+        <button type="button" class="btn-menu-hamburguer topbar-icon-btn" title="Menu" aria-label="Abrir menu" onclick="alternarDrawerLateral()">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M4 7H20"></path><path d="M4 12H20"></path><path d="M4 17H20"></path>
+          </svg>
+        </button>
+      </div>
     </div>
+
+    <div class="drawer-overlay" onclick="fecharDrawerLateral()" aria-hidden="true"></div>
+    <aside id="drawerLateral" class="drawer-lateral" aria-hidden="true" aria-label="Menu do sistema">
+      <div class="drawer-header">
+        <div class="drawer-header-title">Menu</div>
+        <button type="button" class="btn-fechar-drawer" onclick="fecharDrawerLateral()" aria-label="Fechar menu">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6L18 18"></path><path d="M18 6L6 18"></path></svg>
+        </button>
+      </div>
+      <div class="drawer-body">
+        <div class="drawer-user-box">
+          <div id="drawerUsuarioNome" class="drawer-user-name">USUÁRIO</div>
+          <div id="drawerUsuarioPerfil" class="drawer-user-role">MECÂNICO</div>
+        </div>
+        <div class="drawer-menu-list">
+          <button type="button" class="drawer-menu-btn" onclick="fecharDrawerLateral(); abrirCentralNotificacoes();">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M18 8A6 6 0 0 0 6 8C6 15 3 16 3 16H21C21 16 18 15 18 8Z"></path><path d="M10 20H14"></path></svg>
+            Notificações
+          </button>
+          <button type="button" class="drawer-menu-btn" onclick="fecharDrawerLateral(); abrirAbaConfig();">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15A1.7 1.7 0 0 0 19.7 16.9L19.8 17A2 2 0 1 1 17 19.8L16.9 19.7A1.7 1.7 0 0 0 15 19.4A1.7 1.7 0 0 0 14 21V21.2A2 2 0 1 1 10 21.2V21A1.7 1.7 0 0 0 9 19.4A1.7 1.7 0 0 0 7.1 19.7L7 19.8A2 2 0 1 1 4.2 17L4.3 16.9A1.7 1.7 0 0 0 4.6 15A1.7 1.7 0 0 0 3 14H2.8A2 2 0 1 1 2.8 10H3A1.7 1.7 0 0 0 4.6 9A1.7 1.7 0 0 0 4.3 7.1L4.2 7A2 2 0 1 1 7 4.2L7.1 4.3A1.7 1.7 0 0 0 9 4.6A1.7 1.7 0 0 0 10 3V2.8A2 2 0 1 1 14 2.8V3A1.7 1.7 0 0 0 15 4.6A1.7 1.7 0 0 0 16.9 4.3L17 4.2A2 2 0 1 1 19.8 7L19.7 7.1A1.7 1.7 0 0 0 19.4 9A1.7 1.7 0 0 0 21 10H21.2A2 2 0 1 1 21.2 14H21A1.7 1.7 0 0 0 19.4 15Z"></path></svg>
+            Configurações
+          </button>
+        </div>
+        <div id="drawerAdminLeandro" class="drawer-admin-section">
+          <div class="drawer-admin-label">Administração Leandro</div>
+          <button type="button" class="drawer-menu-btn" onclick="fecharDrawerLateral(); abrirPublicarNotificacao();">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 11L21 4V20L3 13V11Z"></path><path d="M7 14V19"></path></svg>
+            Publicar aviso
+          </button>
+        </div>
+      </div>
+    </aside>
 
     <div class="main">
       <div class="card">
@@ -5217,6 +6057,92 @@
         <ul id="listaBusca"></ul>
         <br />
         <button onclick="fecharModalBusca()">Fechar</button>
+      </div>
+    </div>
+
+
+
+    <!-- Central de Notificações -->
+    <div id="modalCentralNotificacoes" class="notificacao-modal-bg" onclick="fecharCentralNotificacoes(event)">
+      <div class="notificacao-modal" role="dialog" aria-modal="true" aria-labelledby="tituloCentralNotificacoes" onclick="event.stopPropagation()">
+        <div class="notificacao-modal-header">
+          <div class="notificacao-modal-title-wrap">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M18 8A6 6 0 0 0 6 8C6 15 3 16 3 16H21C21 16 18 15 18 8Z"></path><path d="M10 20H14"></path></svg>
+            <h3 id="tituloCentralNotificacoes">Notificações</h3>
+          </div>
+          <button type="button" class="notificacao-close" onclick="fecharCentralNotificacoes()" aria-label="Fechar">×</button>
+        </div>
+        <div class="notificacao-modal-body">
+          <div id="listaCentralNotificacoes" class="notificacao-lista"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Popup automático de avisos não lidos -->
+    <div id="modalPopupAvisos" class="notificacao-modal-bg">
+      <div class="notificacao-modal compact" role="alertdialog" aria-modal="true" aria-labelledby="tituloPopupAvisos">
+        <div class="notificacao-modal-header">
+          <div class="notificacao-modal-title-wrap">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 11L21 4V20L3 13V11Z"></path><path d="M7 14V19"></path></svg>
+            <h3 id="tituloPopupAvisos">Aviso do sistema</h3>
+          </div>
+        </div>
+        <div class="notificacao-modal-body">
+          <div class="popup-aviso-intro">Leia o comunicado abaixo. Depois de confirmar, ele não será exibido novamente como popup para este usuário.</div>
+          <div id="listaPopupAvisos" class="notificacao-lista"></div>
+        </div>
+        <div class="notificacao-modal-actions">
+          <button type="button" class="btn-notificacao-primary" onclick="confirmarLeituraPopupAvisos()">ENTENDI</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Publicação de aviso: somente LEANDRO -->
+    <div id="modalPublicarNotificacao" class="notificacao-modal-bg" onclick="fecharPublicarNotificacao(event)">
+      <div class="notificacao-modal compact" role="dialog" aria-modal="true" aria-labelledby="tituloPublicarNotificacao" onclick="event.stopPropagation()">
+        <div class="notificacao-modal-header">
+          <div class="notificacao-modal-title-wrap">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 11L21 4V20L3 13V11Z"></path><path d="M7 14V19"></path></svg>
+            <h3 id="tituloPublicarNotificacao">Publicar aviso</h3>
+          </div>
+          <button type="button" class="notificacao-close" onclick="fecharPublicarNotificacao()" aria-label="Fechar">×</button>
+        </div>
+        <div class="notificacao-modal-body">
+          <div class="notificacao-form">
+            <label>Título
+              <input id="notificacaoTituloInput" type="text" maxlength="80" placeholder="EX: COMUNICADO IMPORTANTE">
+            </label>
+            <label>Prioridade
+              <select id="notificacaoPrioridadeInput">
+                <option value="normal">NORMAL</option>
+                <option value="atencao">ATENÇÃO</option>
+                <option value="urgente">URGENTE</option>
+              </select>
+            </label>
+            <label>Mensagem
+              <textarea id="notificacaoMensagemInput" maxlength="1200" placeholder="DIGITE A MENSAGEM QUE TODOS OS USUÁRIOS DEVERÃO RECEBER"></textarea>
+            </label>
+          </div>
+        </div>
+        <div class="notificacao-modal-actions">
+          <button id="btnPublicarNotificacao" type="button" class="btn-notificacao-primary" onclick="publicarNotificacaoLeCar()">PUBLICAR PARA TODOS</button>
+          <button type="button" class="btn-notificacao-secondary" onclick="fecharPublicarNotificacao()">CANCELAR</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Modal Histórico do Veículo pelo botão INFO -->
+    <div class="modal-bg" id="modalHistoricoVeiculo" onclick="fecharHistoricoVeiculoCard(event)">
+      <div class="modal historico-card-modal" role="dialog" aria-modal="true" aria-labelledby="tituloHistoricoVeiculo" onclick="event.stopPropagation()">
+        <div class="historico-card-header">
+          <h3 id="tituloHistoricoVeiculo">Histórico do veículo</h3>
+          <button type="button" class="historico-card-close" aria-label="Fechar histórico" onclick="fecharHistoricoVeiculoCard()">×</button>
+        </div>
+        <div class="historico-card-identificacao">
+          <div id="historicoCardVeiculo" class="historico-card-veiculo">VEÍCULO</div>
+          <div id="historicoCardResumo" class="historico-card-resumo">0 REGISTROS</div>
+        </div>
+        <div id="historicoCardLista" class="historico-card-lista"></div>
       </div>
     </div>
 
@@ -5579,6 +6505,7 @@ function verificarSessao() {
 
 
   sincronizarFirebase();
+  iniciarSistemaNotificacoes();
 
   trocarAba("servicos");
 }
@@ -5626,6 +6553,12 @@ function sincronizarFirebase() {
 
       dadosRanking = tempRanking;
       atualizarRankingProdutividade();
+
+      const campoBuscaAtivo = document.getElementById("buscaSidebar");
+      const modalBuscaAtivo = document.getElementById("modalBusca");
+      if (campoBuscaAtivo?.value.trim() && modalBuscaAtivo?.dataset.buscaAberta === "true") {
+        filtrarBusca();
+      }
     },
     (error) => {
       console.error("Erro Firebase Ranking:", error);
@@ -5654,6 +6587,7 @@ setTimeout(() => {
   overlay.style.display = 'none';
 
   sincronizarFirebase();
+  iniciarSistemaNotificacoes();
 
 }, 2000);
         } else {
@@ -6155,6 +7089,7 @@ setTimeout(() => {
       let catalogoVeiculos = [];
       let sugestoesVeiculosAtuais = [];
       let sugestaoVeiculoSelecionada = -1;
+      let historicosBuscaAtuais = [];
 
       // ========== FUNÇÕES DO SISTEMA DE ABAS ==========
       function trocarAba(aba) {
@@ -6743,8 +7678,9 @@ async function salvar() {
               </div>
               <div class="card-actions">
                 <button type="button" class="card-action-btn delete" title="Excluir" onclick="event.stopPropagation(); navegar('excluir_veiculo_${v.iOriginal}'); excluir(${v.iOriginal}, event)"><svg class="ui-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 6H21"></path><path d="M8 6V4C8 3.4 8.4 3 9 3H15C15.6 3 16 3.4 16 4V6"></path><path d="M19 6L18 21H6L5 6"></path><path d="M10 11V17"></path><path d="M14 11V17"></path></svg></button>
-                <button type="button" class="card-action-btn edit" title="Editar" onclick="event.stopPropagation(); navegar('editar_veiculo_${v.iOriginal}'); editar(${v.iOriginal})"><svg class="ui-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 20H21"></path><path d="M16.5 3.5A2.1 2.1 0 0 1 19.5 6.5L7 19L3 20L4 16L16.5 3.5Z"></path></svg></button>
-                <button type="button" class="card-action-btn share" title="Compartilhar WhatsApp" onclick="event.stopPropagation(); navegar('compartilhar_whatsapp_${v.iOriginal}'); compartilharWhatsApp(${v.iOriginal})"><svg class="ui-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M15 3H19C20.1 3 21 3.9 21 5V19C21 20.1 20.1 21 19 21H15"></path><path d="M10 17L15 12L10 7"></path><path d="M15 12H3"></path></svg></button>
+                <button type="button" class="card-action-btn edit" title="Editar" aria-label="Editar veículo" onclick="event.stopPropagation(); navegar('editar_veiculo_${v.iOriginal}'); editar(${v.iOriginal})"><svg class="ui-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 20H21"></path><path d="M16.5 3.5A2.1 2.1 0 0 1 19.5 6.5L7 19L3 20L4 16L16.5 3.5Z"></path></svg></button>
+                <button type="button" class="card-action-btn info" title="Informações e histórico" aria-label="Abrir histórico completo do veículo" onclick="event.stopPropagation(); abrirHistoricoVeiculoCard(${v.iOriginal})"><svg class="ui-icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"></circle><path d="M12 11V17"></path><path d="M12 7H12.01"></path></svg></button>
+                <button type="button" class="card-action-btn share" title="Compartilhar WhatsApp" aria-label="Compartilhar no WhatsApp" onclick="event.stopPropagation(); navegar('compartilhar_whatsapp_${v.iOriginal}'); compartilharWhatsApp(${v.iOriginal})"><svg class="ui-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M15 3H19C20.1 3 21 3.9 21 5V19C21 20.1 20.1 21 19 21H15"></path><path d="M10 17L15 12L10 7"></path><path d="M15 12H3"></path></svg></button>
               </div>
             </section>
           </article>`;
@@ -6812,6 +7748,177 @@ async function salvar() {
         });
       }
 
+      function obterBaseBuscaVeiculos() {
+        return dadosRanking.length ? dadosRanking : dados;
+      }
+
+      function obterChaveHistoricoVeiculo(v) {
+        const placaNormalizada = normalizarTextoBusca(v?.placa).replace(/[^A-Z0-9]/g, "");
+        if (placaNormalizada) return `PLACA:${placaNormalizada}`;
+        return `VEICULO:${normalizarTextoBusca(v?.veiculo) || "SEM-IDENTIFICACAO"}`;
+      }
+
+      function obterTimestampHistorico(v) {
+        const candidatos = [
+          v?.dataFinalizacaoISO,
+          v?.ultima_modificacao_iso,
+          v?.dataEntradaISO,
+          v?.dataFinalizacao,
+          v?.ultima_modificacao,
+          v?.dataEntrada
+        ];
+
+        for (const valor of candidatos) {
+          if (!valor) continue;
+
+          const direto = new Date(valor).getTime();
+          if (Number.isFinite(direto)) return direto;
+
+          const partes = String(valor).match(/(\d{2})\/(\d{2})\/(\d{4})(?:,?\s+(\d{2}):(\d{2})(?::(\d{2}))?)?/);
+          if (partes) {
+            const [, dia, mes, ano, hora = "00", minuto = "00", segundo = "00"] = partes;
+            const convertido = new Date(Number(ano), Number(mes) - 1, Number(dia), Number(hora), Number(minuto), Number(segundo)).getTime();
+            if (Number.isFinite(convertido)) return convertido;
+          }
+        }
+
+        return 0;
+      }
+
+      function formatarDataHistorico(v) {
+        return v?.dataFinalizacao || v?.ultima_modificacao || v?.dataEntrada || "DATA NÃO INFORMADA";
+      }
+
+      function agruparResultadosBusca(lista) {
+        const grupos = new Map();
+        const baseCompleta = obterBaseBuscaVeiculos();
+        const chavesEncontradas = new Set(lista.map(obterChaveHistoricoVeiculo));
+
+        baseCompleta.forEach((registro) => {
+          const chave = obterChaveHistoricoVeiculo(registro);
+          if (!chavesEncontradas.has(chave)) return;
+          if (!grupos.has(chave)) grupos.set(chave, []);
+          grupos.get(chave).push(registro);
+        });
+
+        return Array.from(grupos.entries())
+          .map(([chave, historico]) => {
+            historico.sort((a, b) => obterTimestampHistorico(b) - obterTimestampHistorico(a));
+            return { chave, historico, maisRecente: historico[0] || {} };
+          })
+          .sort((a, b) => obterTimestampHistorico(b.maisRecente) - obterTimestampHistorico(a.maisRecente));
+      }
+
+      function renderizarItemHistoricoBusca(v) {
+        const pecasTexto = Array.isArray(v?.pecas) && v.pecas.length
+          ? v.pecas.join(", ")
+          : "NENHUMA";
+        const mecanico = v?.mecanico || v?.mecanico_responsavel || "NÃO INFORMADO";
+
+        return `
+          <div class="busca-historico-item">
+            <div class="busca-historico-topo">
+              <span class="busca-historico-data">${escaparHTML(formatarDataHistorico(v))}</span>
+              <span class="busca-historico-status">${escaparHTML(v?.status || "SEM STATUS")}</span>
+            </div>
+            <div class="busca-historico-linha"><strong>MANUTENÇÃO:</strong> ${escaparHTML(v?.descricao || "SEM DESCRIÇÃO")}</div>
+            <div class="busca-historico-linha"><strong>PEÇAS:</strong> ${escaparHTML(pecasTexto)}</div>
+            <div class="busca-historico-linha"><strong>MECÂNICO:</strong> ${escaparHTML(mecanico)}</div>
+            <div class="busca-historico-linha"><strong>ORIGEM:</strong> ${escaparHTML(v?.origem || "-")}</div>
+          </div>`;
+      }
+
+      function obterHistoricoCompletoDoVeiculo(v) {
+        if (!v) return [];
+        const chave = obterChaveHistoricoVeiculo(v);
+
+        return obterBaseBuscaVeiculos()
+          .filter((registro) => obterChaveHistoricoVeiculo(registro) === chave)
+          .sort((a, b) => obterTimestampHistorico(b) - obterTimestampHistorico(a));
+      }
+
+      function abrirHistoricoVeiculoCard(i) {
+        const v = dados[i];
+        if (!v) return;
+
+        fecharModalBusca(false);
+
+        const modal = document.getElementById("modalHistoricoVeiculo");
+        const titulo = document.getElementById("historicoCardVeiculo");
+        const resumo = document.getElementById("historicoCardResumo");
+        const lista = document.getElementById("historicoCardLista");
+        if (!modal || !titulo || !resumo || !lista) return;
+
+        const historico = obterHistoricoCompletoDoVeiculo(v);
+        const quantidade = historico.length;
+        const mecanicos = new Set(
+          historico
+            .map((registro) => normalizarTextoBusca(registro?.mecanico || registro?.mecanico_responsavel))
+            .filter(Boolean)
+        );
+
+        titulo.textContent = `${v.veiculo || "SEM VEÍCULO"} · ${v.placa || "SEM PLACA"}`;
+        resumo.textContent = `${quantidade} ${quantidade === 1 ? "REGISTRO" : "REGISTROS"} · ${mecanicos.size} ${mecanicos.size === 1 ? "MECÂNICO" : "MECÂNICOS"}`;
+        lista.innerHTML = quantidade
+          ? historico.map(renderizarItemHistoricoBusca).join("")
+          : '<div class="busca-historico-vazio">NENHUM HISTÓRICO ENCONTRADO PARA ESTE VEÍCULO</div>';
+
+        modal.style.display = "flex";
+        modal.setAttribute("aria-hidden", "false");
+        navegar(`abrir_info_historico_${i}`);
+      }
+
+      function fecharHistoricoVeiculoCard(event) {
+        if (event && event.target !== event.currentTarget) return;
+        const modal = document.getElementById("modalHistoricoVeiculo");
+        if (!modal) return;
+        modal.style.display = "none";
+        modal.setAttribute("aria-hidden", "true");
+      }
+
+      function alternarHistoricoBusca(indiceGrupo) {
+        const grupo = historicosBuscaAtuais[indiceGrupo];
+        if (!grupo) return;
+
+        document.querySelectorAll(".busca-historico-painel.aberto").forEach((painel) => {
+          if (painel.id !== `historicoBusca_${indiceGrupo}`) painel.classList.remove("aberto");
+        });
+        document.querySelectorAll(".busca-veiculo-resumo.aberto").forEach((resumo) => {
+          if (resumo.dataset.grupo !== String(indiceGrupo)) resumo.classList.remove("aberto");
+        });
+
+        const painel = document.getElementById(`historicoBusca_${indiceGrupo}`);
+        const resumo = document.querySelector(`.busca-veiculo-resumo[data-grupo="${indiceGrupo}"]`);
+        if (!painel || !resumo) return;
+
+        const vaiAbrir = !painel.classList.contains("aberto");
+        painel.classList.toggle("aberto", vaiAbrir);
+        resumo.classList.toggle("aberto", vaiAbrir);
+        resumo.setAttribute("aria-expanded", vaiAbrir ? "true" : "false");
+
+        if (vaiAbrir) {
+          document.getElementById("buscaSidebar")?.blur();
+          navegar("abrir_historico_busca_" + indiceGrupo);
+          setTimeout(() => resumo.scrollIntoView({ behavior: "smooth", block: "nearest" }), 0);
+        }
+      }
+
+      function limparBuscaAoEnter(event) {
+        if (!event || event.key !== "Enter") return;
+
+        event.preventDefault();
+        event.stopPropagation();
+
+        const campoBusca = event.currentTarget || document.getElementById("buscaSidebar");
+        if (campoBusca) {
+          campoBusca.value = "";
+          campoBusca.blur();
+        }
+
+        fecharModalBusca(false);
+        atualizarTabela();
+      }
+
       function filtrarBusca() {
         const campoBusca = document.getElementById("buscaSidebar");
 
@@ -6821,7 +7928,7 @@ async function salvar() {
           return;
         }
 
-        let busca = campoBusca.value.toUpperCase().trim();
+        const busca = normalizarTextoBusca(campoBusca?.value);
 
         if (!busca) {
           fecharModalBusca(false);
@@ -6829,18 +7936,16 @@ async function salvar() {
           return;
         }
 
-        let resultados = dados.filter(
-          (v) =>
-            (v.veiculo && String(v.veiculo).toUpperCase().includes(busca)) ||
-            (v.placa && String(v.placa).toUpperCase().includes(busca)) ||
-            (v.descricao && String(v.descricao).toUpperCase().includes(busca)) ||
-            (v.status && String(v.status).toUpperCase().includes(busca)) ||
-            (v.origem && String(v.origem).toUpperCase().includes(busca))
+        const baseBusca = obterBaseBuscaVeiculos();
+        const resultados = baseBusca.filter((v) =>
+          [v.veiculo, v.placa, v.descricao, v.status, v.origem, v.mecanico, v.mecanico_responsavel]
+            .some((valor) => normalizarTextoBusca(valor).includes(busca))
         );
 
         abrirModalBusca(resultados);
 
         setTimeout(() => {
+          if (!campoBusca) return;
           campoBusca.focus({ preventScroll: true });
           const fim = campoBusca.value.length;
           campoBusca.setSelectionRange(fim, fim);
@@ -6852,23 +7957,39 @@ async function salvar() {
         const ul = document.getElementById("listaBusca");
         const campoBusca = document.getElementById("buscaSidebar");
 
+        historicosBuscaAtuais = agruparResultadosBusca(lista);
         ul.innerHTML = "";
 
-        if (lista.length === 0) {
-          ul.innerHTML = "<li>Nenhum resultado encontrado</li>";
+        if (!historicosBuscaAtuais.length) {
+          ul.innerHTML = '<li><div class="busca-historico-vazio">NENHUM VEÍCULO ENCONTRADO</div></li>';
         } else {
-          lista.forEach((v) => {
-            const indexOriginal = dados.findIndex((d) => d === v);
+          historicosBuscaAtuais.forEach((grupo, indiceGrupo) => {
+            const v = grupo.maisRecente;
+            const li = document.createElement("li");
+            const quantidade = grupo.historico.length;
+            const textoQuantidade = `${quantidade} ${quantidade === 1 ? "REGISTRO" : "REGISTROS"}`;
 
-            let li = document.createElement("li");
-            li.style.cursor = "pointer";
-            li.innerHTML = `<strong>${v.veiculo || "SEM VEÍCULO"}</strong> - ${v.placa || "SEM PLACA"}<br><small>${v.descricao || "SEM DESCRIÇÃO"}</small>`;
+            li.innerHTML = `
+              <div class="busca-veiculo-resumo" data-grupo="${indiceGrupo}" role="button" tabindex="0" aria-expanded="false">
+                <div class="busca-veiculo-identificacao">
+                  <div class="busca-veiculo-titulo">${escaparHTML(v?.veiculo || "SEM VEÍCULO")} · ${escaparHTML(v?.placa || "SEM PLACA")}</div>
+                  <div class="busca-veiculo-subtitulo">CLIQUE PARA VER MANUTENÇÕES, PEÇAS E MECÂNICOS</div>
+                </div>
+                <span class="busca-veiculo-contador">${escaparHTML(textoQuantidade)}</span>
+              </div>
+              <div id="historicoBusca_${indiceGrupo}" class="busca-historico-painel">
+                <div class="busca-historico-titulo">HISTÓRICO DE MANUTENÇÕES</div>
+                ${grupo.historico.map(renderizarItemHistoricoBusca).join("")}
+              </div>`;
 
-            li.onclick = () => {
-              navegar("buscar_veiculo_" + indexOriginal);
-              fecharModalBusca();
-              editar(indexOriginal);
-            };
+            const resumo = li.querySelector(".busca-veiculo-resumo");
+            resumo.addEventListener("click", () => alternarHistoricoBusca(indiceGrupo));
+            resumo.addEventListener("keydown", (event) => {
+              if (event.key === "Enter" || event.key === " ") {
+                event.preventDefault();
+                alternarHistoricoBusca(indiceGrupo);
+              }
+            });
 
             ul.appendChild(li);
           });
@@ -6880,6 +8001,7 @@ async function salvar() {
         modal.setAttribute("aria-hidden", "false");
 
         requestAnimationFrame(() => {
+          if (!campoBusca) return;
           campoBusca.focus({ preventScroll: true });
           const fim = campoBusca.value.length;
           campoBusca.setSelectionRange(fim, fim);
@@ -7854,9 +8976,319 @@ ${gerarLinhaRelatorioMecanicos(relatoriosPorMecanico, "pendentes")}`;
 
 
 
+
+      /* ========== SISTEMA DE POPUP E NOTIFICAÇÕES ========== */
+      let notificacoesLeCar = [];
+      let notificacoesPopupAtuais = [];
+      let notificacoesUnsubscribe = null;
+      let popupAvisosEmExibicao = false;
+      let primeiroSnapshotNotificacoes = true;
+
+      function usuarioSessaoLeCar() {
+        return (localStorage.getItem("sessao_lecar") || "").trim().toUpperCase();
+      }
+
+      function usuarioPodePublicarNotificacao() {
+        return usuarioSessaoLeCar() === "LEANDRO";
+      }
+
+      function escaparTextoNotificacao(valor) {
+        return String(valor ?? "")
+          .replace(/&/g, "&amp;")
+          .replace(/</g, "&lt;")
+          .replace(/>/g, "&gt;")
+          .replace(/\"/g, "&quot;")
+          .replace(/'/g, "&#039;");
+      }
+
+      function obterIdsLidosLocalmente(usuario = usuarioSessaoLeCar()) {
+        if (!usuario) return [];
+        try {
+          const valor = JSON.parse(localStorage.getItem(`lecar_notificacoes_lidas_${usuario}`) || "[]");
+          return Array.isArray(valor) ? valor : [];
+        } catch (erro) {
+          return [];
+        }
+      }
+
+      function salvarIdsLidosLocalmente(ids, usuario = usuarioSessaoLeCar()) {
+        if (!usuario) return;
+        const atuais = new Set(obterIdsLidosLocalmente(usuario));
+        ids.forEach(id => atuais.add(id));
+        localStorage.setItem(`lecar_notificacoes_lidas_${usuario}`, JSON.stringify([...atuais]));
+      }
+
+      function notificacaoFoiLida(item, usuario = usuarioSessaoLeCar()) {
+        if (!item || !usuario) return true;
+        const lidosRemotos = Array.isArray(item.lidosPor) ? item.lidosPor.map(v => String(v).toUpperCase()) : [];
+        return lidosRemotos.includes(usuario) || obterIdsLidosLocalmente(usuario).includes(item.id);
+      }
+
+      function timestampNotificacao(item) {
+        if (item?.criadoEm?.toMillis) return item.criadoEm.toMillis();
+        const valor = item?.criadoEmISO || item?.dataCriacao || "";
+        const data = new Date(valor);
+        return Number.isNaN(data.getTime()) ? 0 : data.getTime();
+      }
+
+      function formatarDataNotificacao(item) {
+        const ms = timestampNotificacao(item);
+        if (!ms) return "AGORA";
+        return new Date(ms).toLocaleString("pt-BR", {
+          day: "2-digit",
+          month: "2-digit",
+          year: "numeric",
+          hour: "2-digit",
+          minute: "2-digit"
+        });
+      }
+
+      function atualizarPermissoesMenuNotificacoes() {
+        const usuario = usuarioSessaoLeCar();
+        const admin = document.getElementById("drawerAdminLeandro");
+        const nome = document.getElementById("drawerUsuarioNome");
+        const perfil = document.getElementById("drawerUsuarioPerfil");
+
+        if (admin) admin.classList.toggle("show", usuarioPodePublicarNotificacao());
+        if (nome) nome.textContent = usuario || "USUÁRIO";
+        if (perfil) perfil.textContent = usuarioPodePublicarNotificacao() ? "ADMINISTRADOR" : "MECÂNICO";
+      }
+
+      function notificacoesAtivas() {
+        return notificacoesLeCar.filter(item => item.ativo !== false);
+      }
+
+      function notificacoesNaoLidas() {
+        const usuario = usuarioSessaoLeCar();
+        return notificacoesAtivas().filter(item => !notificacaoFoiLida(item, usuario));
+      }
+
+      function atualizarBadgeNotificacoes() {
+        const badge = document.getElementById("notificacaoBadge");
+        if (!badge) return;
+        const total = notificacoesNaoLidas().length;
+        badge.textContent = total > 99 ? "99+" : String(total);
+        badge.classList.toggle("show", total > 0);
+      }
+
+      function htmlItemNotificacao(item, permitirExcluir = false) {
+        const prioridade = ["urgente", "atencao"].includes(item.prioridade) ? item.prioridade : "normal";
+        const excluir = permitirExcluir
+          ? `<button type="button" class="btn-excluir-notificacao" onclick="excluirNotificacaoLeCar('${escaparTextoNotificacao(item.id)}')">EXCLUIR</button>`
+          : "";
+
+        return `
+          <article class="notificacao-item prioridade-${prioridade}">
+            <div class="notificacao-item-head">
+              <div class="notificacao-item-title">${escaparTextoNotificacao(item.titulo || "AVISO")}</div>
+              <div class="notificacao-item-date">${escaparTextoNotificacao(formatarDataNotificacao(item))}</div>
+            </div>
+            <div class="notificacao-item-message">${escaparTextoNotificacao(item.mensagem || "")}</div>
+            <div class="notificacao-item-footer">
+              <div class="notificacao-item-author">PUBLICADO POR ${escaparTextoNotificacao(item.autor || "LEANDRO")}</div>
+              ${excluir}
+            </div>
+          </article>`;
+      }
+
+      function renderizarCentralNotificacoes() {
+        const lista = document.getElementById("listaCentralNotificacoes");
+        if (!lista) return;
+        const itens = notificacoesAtivas();
+        if (!itens.length) {
+          lista.innerHTML = '<div class="notificacao-vazio">NENHUMA NOTIFICAÇÃO PUBLICADA.</div>';
+          return;
+        }
+        lista.innerHTML = itens.map(item => htmlItemNotificacao(item, usuarioPodePublicarNotificacao())).join("");
+      }
+
+      function tentarExibirPopupNotificacoes() {
+        if (popupAvisosEmExibicao) return;
+        const naoLidas = notificacoesNaoLidas();
+        if (!naoLidas.length) return;
+
+        notificacoesPopupAtuais = naoLidas;
+        const lista = document.getElementById("listaPopupAvisos");
+        const modal = document.getElementById("modalPopupAvisos");
+        if (!lista || !modal) return;
+
+        lista.innerHTML = naoLidas.map(item => htmlItemNotificacao(item, false)).join("");
+        popupAvisosEmExibicao = true;
+        modal.classList.add("show");
+        document.body.style.overflow = "hidden";
+      }
+
+      async function marcarNotificacoesComoLidas(itens) {
+        const usuario = usuarioSessaoLeCar();
+        const ids = (itens || []).map(item => typeof item === "string" ? item : item?.id).filter(Boolean);
+        if (!usuario || !ids.length) return;
+
+        salvarIdsLidosLocalmente(ids, usuario);
+        notificacoesLeCar = notificacoesLeCar.map(item => ids.includes(item.id)
+          ? { ...item, lidosPor: Array.from(new Set([...(Array.isArray(item.lidosPor) ? item.lidosPor : []), usuario])) }
+          : item
+        );
+        atualizarBadgeNotificacoes();
+        renderizarCentralNotificacoes();
+
+        try {
+          const lote = db.batch();
+          ids.forEach(id => {
+            const ref = db.collection("notificacoes_lecar").doc(id);
+            lote.set(ref, {
+              lidosPor: firebase.firestore.FieldValue.arrayUnion(usuario)
+            }, { merge: true });
+          });
+          await lote.commit();
+        } catch (erro) {
+          console.warn("Leitura registrada apenas neste dispositivo:", erro);
+        }
+      }
+
+      async function confirmarLeituraPopupAvisos() {
+        const itens = [...notificacoesPopupAtuais];
+        const modal = document.getElementById("modalPopupAvisos");
+        if (modal) modal.classList.remove("show");
+        popupAvisosEmExibicao = false;
+        notificacoesPopupAtuais = [];
+        document.body.style.overflow = "";
+        await marcarNotificacoesComoLidas(itens);
+      }
+
+      async function abrirCentralNotificacoes() {
+        fecharDrawerLateral();
+        renderizarCentralNotificacoes();
+        const modal = document.getElementById("modalCentralNotificacoes");
+        if (modal) modal.classList.add("show");
+        document.body.style.overflow = "hidden";
+
+        const naoLidas = notificacoesNaoLidas();
+        if (naoLidas.length) await marcarNotificacoesComoLidas(naoLidas);
+      }
+
+      function fecharCentralNotificacoes(event) {
+        if (event && event.target !== event.currentTarget) return;
+        document.getElementById("modalCentralNotificacoes")?.classList.remove("show");
+        document.body.style.overflow = "";
+      }
+
+      function abrirPublicarNotificacao() {
+        if (!usuarioPodePublicarNotificacao()) {
+          alert("Apenas o usuário LEANDRO pode publicar avisos.");
+          return;
+        }
+        document.getElementById("notificacaoTituloInput").value = "";
+        document.getElementById("notificacaoMensagemInput").value = "";
+        document.getElementById("notificacaoPrioridadeInput").value = "normal";
+        document.getElementById("modalPublicarNotificacao")?.classList.add("show");
+        document.body.style.overflow = "hidden";
+        setTimeout(() => document.getElementById("notificacaoTituloInput")?.focus(), 80);
+      }
+
+      function fecharPublicarNotificacao(event) {
+        if (event && event.target !== event.currentTarget) return;
+        document.getElementById("modalPublicarNotificacao")?.classList.remove("show");
+        document.body.style.overflow = "";
+      }
+
+      async function publicarNotificacaoLeCar() {
+        if (!usuarioPodePublicarNotificacao()) {
+          alert("Apenas o usuário LEANDRO pode publicar avisos.");
+          return;
+        }
+
+        const titulo = (document.getElementById("notificacaoTituloInput")?.value || "AVISO").trim().toUpperCase();
+        const mensagem = (document.getElementById("notificacaoMensagemInput")?.value || "").trim();
+        const prioridade = document.getElementById("notificacaoPrioridadeInput")?.value || "normal";
+        const botao = document.getElementById("btnPublicarNotificacao");
+
+        if (!mensagem) {
+          alert("Digite a mensagem do aviso.");
+          return;
+        }
+
+        if (botao) {
+          botao.disabled = true;
+          botao.textContent = "PUBLICANDO...";
+        }
+
+        try {
+          await db.collection("notificacoes_lecar").add({
+            titulo: titulo || "AVISO",
+            mensagem,
+            prioridade,
+            autor: "LEANDRO",
+            ativo: true,
+            lidosPor: [],
+            criadoEm: firebase.firestore.FieldValue.serverTimestamp(),
+            criadoEmISO: new Date().toISOString()
+          });
+          fecharPublicarNotificacao();
+          alert("Aviso publicado para todos os usuários.");
+        } catch (erro) {
+          console.error("Erro ao publicar aviso:", erro);
+          alert("Não foi possível publicar o aviso. Verifique a conexão e as permissões do Firebase.");
+        } finally {
+          if (botao) {
+            botao.disabled = false;
+            botao.textContent = "PUBLICAR PARA TODOS";
+          }
+        }
+      }
+
+      async function excluirNotificacaoLeCar(id) {
+        if (!usuarioPodePublicarNotificacao()) {
+          alert("Apenas o usuário LEANDRO pode excluir avisos.");
+          return;
+        }
+        if (!id || !confirm("Excluir esta notificação para todos os usuários?")) return;
+
+        try {
+          await db.collection("notificacoes_lecar").doc(id).delete();
+        } catch (erro) {
+          console.error("Erro ao excluir notificação:", erro);
+          alert("Não foi possível excluir a notificação.");
+        }
+      }
+
+      function iniciarSistemaNotificacoes() {
+        const usuario = usuarioSessaoLeCar();
+        if (!usuario) return;
+
+        atualizarPermissoesMenuNotificacoes();
+
+        if (typeof notificacoesUnsubscribe === "function") {
+          notificacoesUnsubscribe();
+        }
+
+        primeiroSnapshotNotificacoes = true;
+
+        notificacoesUnsubscribe = db.collection("notificacoes_lecar").onSnapshot(
+          snapshot => {
+            notificacoesLeCar = snapshot.docs
+              .map(doc => ({ id: doc.id, ...doc.data() }))
+              .sort((a, b) => timestampNotificacao(b) - timestampNotificacao(a));
+
+            atualizarBadgeNotificacoes();
+            renderizarCentralNotificacoes();
+
+            if (primeiroSnapshotNotificacoes) {
+              primeiroSnapshotNotificacoes = false;
+              setTimeout(tentarExibirPopupNotificacoes, 250);
+            }
+          },
+          erro => {
+            console.error("Erro ao carregar notificações:", erro);
+            notificacoesLeCar = [];
+            atualizarBadgeNotificacoes();
+          }
+        );
+      }
+
       /* ========== DRAWER LATERAL DO MENU HAMBÚRGUER ========== */
       function abrirDrawerLateral() {
         const drawer = document.getElementById('drawerLateral');
+        atualizarPermissoesMenuNotificacoes();
         document.body.classList.add('drawer-open');
         if (drawer) drawer.setAttribute('aria-hidden', 'false');
       }
