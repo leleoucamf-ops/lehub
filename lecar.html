@@ -6002,6 +6002,34 @@
   }
 </style>
 
+
+
+<style id="lecar-ajuste-cadastro-topbar-busca-150px">
+/* Mantém a topbar completa na aba Cadastrar e reduz a busca mobile para 150 px. */
+.sistema-principal.cadastro-focus .topbar.app-topbar-clean .app-search-shell {
+  display: block !important;
+}
+
+@media (max-width: 768px) {
+  .topbar.app-topbar-clean .app-search-shell,
+  .sistema-principal.cadastro-focus .topbar.app-topbar-clean .app-search-shell {
+    width: 150px !important;
+    max-width: 150px !important;
+    flex: 0 0 150px !important;
+    min-width: 0 !important;
+  }
+}
+
+@media (max-width: 480px) {
+  .topbar.app-topbar-clean .app-search-shell,
+  .sistema-principal.cadastro-focus .topbar.app-topbar-clean .app-search-shell {
+    width: 150px !important;
+    max-width: 150px !important;
+    flex: 0 0 150px !important;
+  }
+}
+</style>
+
 </head>
   <body translate="no">
 
