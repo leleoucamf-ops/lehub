@@ -5724,6 +5724,284 @@
 }
 </style>
 
+
+<style id="lecar-painel-atividades-admin">
+  .painel-atividades-modal {
+    width: min(1080px, calc(100vw - 28px)) !important;
+    max-width: 1080px !important;
+    max-height: 92vh !important;
+  }
+
+  .painel-atividades-body {
+    display: grid;
+    gap: 16px;
+  }
+
+  .painel-admin-alerta {
+    padding: 12px 14px;
+    border: 1px solid #bfdbfe;
+    border-left: 5px solid #2563eb;
+    border-radius: 12px;
+    background: #eff6ff;
+    color: #1e3a8a;
+    font-size: .84rem;
+    font-weight: 750;
+    line-height: 1.45;
+  }
+
+  .painel-admin-resumo {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 10px;
+  }
+
+  .painel-admin-card {
+    min-height: 92px;
+    padding: 14px;
+    border: 1px solid #dbeafe;
+    border-radius: 14px;
+    background: linear-gradient(180deg, #ffffff, #f8fafc);
+    box-shadow: 0 4px 14px rgba(15, 23, 42, .05);
+  }
+
+  .painel-admin-card-label {
+    color: #64748b;
+    font-size: .72rem;
+    font-weight: 900;
+    letter-spacing: .04em;
+    text-transform: uppercase;
+  }
+
+  .painel-admin-card-valor {
+    margin-top: 7px;
+    color: #1e3a8a;
+    font-size: 1.85rem;
+    line-height: 1;
+    font-weight: 950;
+  }
+
+  .painel-admin-toolbar {
+    display: grid;
+    grid-template-columns: 1fr 1fr auto;
+    gap: 10px;
+    align-items: center;
+  }
+
+  .painel-admin-toolbar select,
+  .painel-admin-toolbar button {
+    min-height: 42px;
+    margin: 0;
+  }
+
+  .painel-admin-toolbar button {
+    width: auto;
+    min-width: 130px;
+  }
+
+  .painel-admin-section {
+    border: 1px solid #e2e8f0;
+    border-radius: 15px;
+    background: #ffffff;
+    overflow: hidden;
+  }
+
+  .painel-admin-section-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 13px 15px;
+    background: linear-gradient(90deg, #f8fafc, #eef4ff);
+    border-bottom: 1px solid #e2e8f0;
+  }
+
+  .painel-admin-section-head h4 {
+    margin: 0;
+    color: #1e3a8a;
+    font-size: .88rem;
+    font-weight: 950;
+    text-transform: uppercase;
+  }
+
+  .painel-admin-section-head span {
+    color: #64748b;
+    font-size: .74rem;
+    font-weight: 800;
+  }
+
+  .painel-usuarios-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 9px;
+    padding: 12px;
+  }
+
+  .painel-usuario-row {
+    display: grid;
+    grid-template-columns: 42px 1fr auto;
+    gap: 10px;
+    align-items: center;
+    padding: 10px;
+    border: 1px solid #e2e8f0;
+    border-radius: 12px;
+    background: #f8fafc;
+  }
+
+  .painel-usuario-avatar {
+    width: 42px;
+    height: 42px;
+    border-radius: 13px;
+    display: grid;
+    place-items: center;
+    color: #ffffff;
+    background: linear-gradient(135deg, #1e3a8a, #2563eb);
+    font-size: .78rem;
+    font-weight: 950;
+  }
+
+  .painel-usuario-nome {
+    color: #0f172a;
+    font-size: .85rem;
+    font-weight: 950;
+  }
+
+  .painel-usuario-meta {
+    margin-top: 3px;
+    color: #64748b;
+    font-size: .72rem;
+    font-weight: 700;
+  }
+
+  .painel-usuario-acessos {
+    min-width: 58px;
+    text-align: right;
+    color: #1e3a8a;
+    font-size: 1.1rem;
+    font-weight: 950;
+  }
+
+  .painel-usuario-acessos small {
+    display: block;
+    color: #64748b;
+    font-size: .62rem;
+    font-weight: 800;
+    text-transform: uppercase;
+  }
+
+  .painel-notificacoes-lista,
+  .painel-atividades-lista {
+    display: grid;
+    gap: 8px;
+    padding: 12px;
+    max-height: 330px;
+    overflow-y: auto;
+  }
+
+  .painel-notificacao-row {
+    padding: 11px 12px;
+    border: 1px solid #e2e8f0;
+    border-radius: 12px;
+    background: #ffffff;
+  }
+
+  .painel-notificacao-topo {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 10px;
+  }
+
+  .painel-notificacao-titulo {
+    color: #0f172a;
+    font-size: .82rem;
+    font-weight: 950;
+  }
+
+  .painel-notificacao-contador {
+    white-space: nowrap;
+    padding: 4px 8px;
+    border-radius: 999px;
+    background: #dbeafe;
+    color: #1e3a8a;
+    font-size: .68rem;
+    font-weight: 950;
+  }
+
+  .painel-notificacao-usuarios {
+    margin-top: 7px;
+    color: #475569;
+    font-size: .74rem;
+    line-height: 1.45;
+    font-weight: 700;
+  }
+
+  .painel-atividade-row {
+    display: grid;
+    grid-template-columns: 138px 120px 1fr;
+    gap: 10px;
+    align-items: center;
+    padding: 10px 11px;
+    border: 1px solid #e2e8f0;
+    border-radius: 11px;
+    background: #f8fafc;
+  }
+
+  .painel-atividade-data {
+    color: #64748b;
+    font-size: .69rem;
+    font-weight: 800;
+  }
+
+  .painel-atividade-usuario {
+    color: #1e3a8a;
+    font-size: .75rem;
+    font-weight: 950;
+  }
+
+  .painel-atividade-descricao {
+    color: #1e293b;
+    font-size: .76rem;
+    font-weight: 750;
+    line-height: 1.35;
+  }
+
+  .painel-admin-vazio {
+    padding: 20px;
+    text-align: center;
+    color: #64748b;
+    font-size: .8rem;
+    font-weight: 750;
+  }
+
+  @media (max-width: 768px) {
+    .painel-atividades-modal {
+      width: calc(100vw - 18px) !important;
+      max-height: 94vh !important;
+    }
+
+    .painel-admin-resumo {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .painel-admin-toolbar {
+      grid-template-columns: 1fr;
+    }
+
+    .painel-admin-toolbar button {
+      width: 100%;
+    }
+
+    .painel-usuarios-grid {
+      grid-template-columns: 1fr;
+    }
+
+    .painel-atividade-row {
+      grid-template-columns: 1fr;
+      gap: 3px;
+    }
+  }
+</style>
+
 </head>
   <body translate="no">
 
@@ -5820,6 +6098,10 @@
           <button type="button" class="drawer-menu-btn" onclick="fecharDrawerLateral(); abrirPublicarNotificacao();">
             <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 11L21 4V20L3 13V11Z"></path><path d="M7 14V19"></path></svg>
             Publicar aviso
+          </button>
+          <button type="button" class="drawer-menu-btn" onclick="fecharDrawerLateral(); abrirPainelAtividades();">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 19V10"></path><path d="M10 19V5"></path><path d="M16 19V13"></path><path d="M22 19V8"></path><path d="M2 19H23"></path></svg>
+            Painel de atividades
           </button>
         </div>
       </div>
@@ -6192,6 +6474,53 @@
       </div>
     </div>
 
+
+    <!-- Painel administrativo de acessos e atividades: somente LEANDRO -->
+    <div id="modalPainelAtividades" class="notificacao-modal-bg" onclick="fecharPainelAtividades(event)">
+      <div class="notificacao-modal painel-atividades-modal" role="dialog" aria-modal="true" aria-labelledby="tituloPainelAtividades" onclick="event.stopPropagation()">
+        <div class="notificacao-modal-header">
+          <div class="notificacao-modal-title-wrap">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 19V10"></path><path d="M10 19V5"></path><path d="M16 19V13"></path><path d="M22 19V8"></path><path d="M2 19H23"></path></svg>
+            <h3 id="tituloPainelAtividades">Painel de atividades</h3>
+          </div>
+          <button type="button" class="notificacao-close" onclick="fecharPainelAtividades()" aria-label="Fechar">×</button>
+        </div>
+        <div class="notificacao-modal-body painel-atividades-body">
+          <div class="painel-admin-alerta">
+            VISÍVEL APENAS PARA LEANDRO. REGISTRA ACESSOS, VISUALIZAÇÕES DE AVISOS, NAVEGAÇÃO E ALTERAÇÕES OPERACIONAIS FEITAS A PARTIR DESTA VERSÃO.
+          </div>
+
+          <div class="painel-admin-resumo">
+            <div class="painel-admin-card"><div class="painel-admin-card-label">Acessos registrados</div><div id="painelTotalAcessos" class="painel-admin-card-valor">0</div></div>
+            <div class="painel-admin-card"><div class="painel-admin-card-label">Usuários ativos</div><div id="painelUsuariosAtivos" class="painel-admin-card-valor">0</div></div>
+            <div class="painel-admin-card"><div class="painel-admin-card-label">Ações hoje</div><div id="painelAcoesHoje" class="painel-admin-card-valor">0</div></div>
+            <div class="painel-admin-card"><div class="painel-admin-card-label">Avisos publicados</div><div id="painelAvisosTotal" class="painel-admin-card-valor">0</div></div>
+          </div>
+
+          <div class="painel-admin-toolbar">
+            <select id="painelFiltroUsuario" onchange="renderizarPainelAtividades()"><option value="">TODOS OS USUÁRIOS</option></select>
+            <select id="painelFiltroTipo" onchange="renderizarPainelAtividades()"><option value="">TODAS AS AÇÕES</option></select>
+            <button type="button" class="btn-notificacao-primary" onclick="recarregarPainelAtividades()">ATUALIZAR</button>
+          </div>
+
+          <section class="painel-admin-section">
+            <div class="painel-admin-section-head"><h4>Acessos por usuário</h4><span>Quantidade e último acesso</span></div>
+            <div id="painelUsuariosLista" class="painel-usuarios-grid"></div>
+          </section>
+
+          <section class="painel-admin-section">
+            <div class="painel-admin-section-head"><h4>Visualização das notificações</h4><span>Quem já visualizou cada aviso</span></div>
+            <div id="painelNotificacoesVisualizadas" class="painel-notificacoes-lista"></div>
+          </section>
+
+          <section class="painel-admin-section">
+            <div class="painel-admin-section-head"><h4>Atividades recentes</h4><span>Últimos 500 registros</span></div>
+            <div id="painelAtividadesLista" class="painel-atividades-lista"></div>
+          </section>
+        </div>
+      </div>
+    </div>
+
     <!-- Modal Histórico do Veículo pelo botão INFO -->
     <div class="modal-bg" id="modalHistoricoVeiculo" onclick="fecharHistoricoVeiculoCard(event)">
       <div class="modal historico-card-modal" role="dialog" aria-modal="true" aria-labelledby="tituloHistoricoVeiculo" onclick="event.stopPropagation()">
@@ -6517,6 +6846,7 @@ const db = firebase.firestore();
          data: new Date().toLocaleDateString('pt-BR')
         });
         localStorage.setItem("logs_acesso", JSON.stringify(logs));
+        registrarAcessoRemoto(usuario, true);
       }
 
 async function reabrirParaServico() {
@@ -6531,6 +6861,13 @@ async function reabrirParaServico() {
 
   try {
     await db.collection("veiculos").doc(v.id).update(payload);
+    registrarAtividadeLeCar("SERVICO_REABERTO", {
+      registroId: v.id,
+      veiculo: v.veiculo,
+      placa: v.placa,
+      statusAnterior: v.status,
+      statusNovo: payload.status
+    });
 
     const indexLocal = dados.findIndex(x => x.id === v.id);
 
@@ -6564,7 +6901,7 @@ function verificarSessao() {
   document.getElementById("loginPage").style.display = "none";
   document.getElementById("sistemaPrincipal").style.display = "flex";
 
-
+  registrarAcessoRemoto(usuarioLogado);
   sincronizarFirebase();
   iniciarSistemaNotificacoes();
 
@@ -6656,8 +6993,9 @@ setTimeout(() => {
         }
       }
 
-      function logout() {
+      async function logout() {
         if (confirm("Deseja realmente sair do sistema?")) {
+          await registrarAtividadeLeCar("LOGOUT", { descricao: "SAIU DO SISTEMA" });
           localStorage.removeItem("sessao_lecar");
           location.reload();
         }
@@ -6919,6 +7257,7 @@ setTimeout(() => {
           especialidade: (especialidadeInput?.value || "Mecânica Geral").trim()
         };
         localStorage.setItem(`perfil_lecar_${usuario}`, JSON.stringify(perfil));
+        registrarAtividadeLeCar("PERFIL_EDITADO", { nome: perfil.nome, especialidade: perfil.especialidade });
         fecharEditarPerfil();
         atualizarModalConfig();
       }
@@ -7043,6 +7382,7 @@ setTimeout(() => {
       // ========== FUNÇÃO DE NAVEGAÇÃO SPA ==========
       function navegar(rota) {
         window.history.pushState({ rota: rota }, "", "#" + rota);
+        registrarAtividadeLeCar("NAVEGACAO", { rota: String(rota || "").toUpperCase() });
       }
 
       window.onpopstate = function (event) {
@@ -7536,6 +7876,15 @@ async function salvar() {
       console.log("[v0] Veículo atualizado:", docId);
     }
 
+    registrarAtividadeLeCar(index.value === "" ? "VEICULO_CADASTRADO" : "VEICULO_EDITADO", {
+      registroId: docId,
+      veiculo: obj.veiculo,
+      placa: obj.placa,
+      descricao: obj.descricao,
+      statusNovo: obj.status,
+      origem: obj.origem
+    });
+
     // 🔥 WHATSAPP AO FINALIZAR via botão SALVAR - COMPARTILHAMENTO SEM DESTINATÁRIO FIXO
     if (statusAtual === "VEÍCULO FINALIZADO") {
       const texto = gerarTextoEntradaPortaria(obj, usuarioLogado);
@@ -7926,6 +8275,13 @@ async function salvar() {
 
         modal.style.display = "flex";
         modal.setAttribute("aria-hidden", "false");
+        registrarAtividadeLeCar("HISTORICO_CONSULTADO", {
+          registroId: v.id,
+          veiculo: v.veiculo,
+          placa: v.placa,
+          totalRegistros: quantidade,
+          totalMecanicos: mecanicos.size
+        });
         navegar(`abrir_info_historico_${i}`);
       }
 
@@ -8135,6 +8491,13 @@ async function salvar() {
           if (v && v.id) {
             try {
               await db.collection("veiculos").doc(v.id).delete();
+              registrarAtividadeLeCar("VEICULO_EXCLUIDO", {
+                registroId: v.id,
+                veiculo: v.veiculo,
+                placa: v.placa,
+                descricao: v.descricao,
+                statusAnterior: v.status
+              });
               console.log("[v0] Veículo excluído:", v.id);
               // O onSnapshot vai atualizar a lista automaticamente
             } catch (err) {
@@ -8462,6 +8825,15 @@ async function salvar() {
 
         try {
           await db.collection("veiculos").doc(v.id).update(payload);
+          registrarAtividadeLeCar("PECAS_ALTERADAS", {
+            registroId: v.id,
+            veiculo: v.veiculo,
+            placa: v.placa,
+            quantidadePecas: pecasAtualizadas.length,
+            pecas: pecasAtualizadas,
+            statusAnterior: v.status,
+            statusNovo: novoStatus
+          });
 
           dados[indicePecasAtual] = {
             ...dados[indicePecasAtual],
@@ -8761,6 +9133,14 @@ async function confirmarEnvioTerceiro() {
       ? payload
       : dados.find(v => v.id === docId);
 
+    registrarAtividadeLeCar("VEICULO_ENVIADO_TERCEIRO", {
+      registroId: docId,
+      veiculo: veiculoWhatsApp?.veiculo || payload.veiculo,
+      placa: veiculoWhatsApp?.placa || payload.placa,
+      fornecedor,
+      statusNovo: "VEÍCULO FINALIZADO"
+    });
+
     if (veiculoWhatsApp) {
       const texto = gerarTextoEnvioTerceiro(veiculoWhatsApp, fornecedor);
       const url = `https://wa.me/?text=${encodeURIComponent(texto)}`;
@@ -8797,6 +9177,7 @@ async function salvarStatus() {
   if (!idStatusAtual) return;
 
   const novoStatus = statusSelect.value.toUpperCase();
+  const veiculoAntesStatus = dados.find(v => v.id === idStatusAtual);
 
   if (novoStatus === "ENVIAR PARA TERCEIROS") {
     const idTerceiro = idStatusAtual;
@@ -8821,6 +9202,13 @@ async function salvarStatus() {
 
   try {
     await db.collection("veiculos").doc(idStatusAtual).update(payload);
+    registrarAtividadeLeCar("STATUS_ALTERADO", {
+      registroId: idStatusAtual,
+      veiculo: veiculoAntesStatus?.veiculo,
+      placa: veiculoAntesStatus?.placa,
+      statusAnterior: veiculoAntesStatus?.status,
+      statusNovo: novoStatus
+    });
 
     const indexLocal = dados.findIndex(v => v.id === idStatusAtual);
     if (indexLocal !== -1) {
@@ -8987,6 +9375,11 @@ function abrirModalStatusFinalizados(i) {
           // Salva/atualiza o relatório do mecânico logado no Firebase.
           // Se ele gerar novamente no mesmo dia, atualiza os valores e não duplica.
           await db.collection("relatorios_diarios").doc(docIdRelatorio).set(payloadRelatorio, { merge: true });
+          registrarAtividadeLeCar("RELATORIO_GERADO", {
+            data: hoje,
+            finalizados: finalizadosHoje.length,
+            pendentes: pendentesHoje.length
+          });
 
           // Depois de salvar o relatório do mecânico atual, busca todos que já lançaram hoje.
           const snapshot = await db.collection("relatorios_diarios")
@@ -9211,6 +9604,17 @@ ${gerarLinhaRelatorioMecanicos(relatoriosPorMecanico, "pendentes")}`;
         if (!usuario || !ids.length) return;
 
         salvarIdsLidosLocalmente(ids, usuario);
+        (itens || []).forEach(item => {
+          if (typeof item === "string") {
+            registrarAtividadeLeCar("NOTIFICACAO_VISUALIZADA", { notificacaoId: item });
+          } else if (item?.id) {
+            registrarAtividadeLeCar("NOTIFICACAO_VISUALIZADA", {
+              notificacaoId: item.id,
+              titulo: item.titulo || "AVISO",
+              tipo: tipoNotificacao(item)
+            });
+          }
+        });
         notificacoesLeCar = notificacoesLeCar.map(item => ids.includes(item.id)
           ? { ...item, lidosPor: Array.from(new Set([...(Array.isArray(item.lidosPor) ? item.lidosPor : []), usuario])) }
           : item
@@ -9312,6 +9716,10 @@ ${gerarLinhaRelatorioMecanicos(relatoriosPorMecanico, "pendentes")}`;
             criadoEm: firebase.firestore.FieldValue.serverTimestamp(),
             criadoEmISO: new Date().toISOString()
           });
+          registrarAtividadeLeCar("NOTIFICACAO_PUBLICADA", {
+            titulo: titulo || "AVISO",
+            tipo
+          });
           fecharPublicarNotificacao();
           alert(tipo === "urgente"
             ? "Aviso urgente publicado. Ele abrirá como popup uma vez para cada usuário."
@@ -9337,7 +9745,12 @@ ${gerarLinhaRelatorioMecanicos(relatoriosPorMecanico, "pendentes")}`;
         if (!id || !confirm("Excluir esta notificação para todos os usuários?")) return;
 
         try {
+          const aviso = notificacoesLeCar.find(item => item.id === id);
           await db.collection("notificacoes_lecar").doc(id).delete();
+          registrarAtividadeLeCar("NOTIFICACAO_EXCLUIDA", {
+            notificacaoId: id,
+            titulo: aviso?.titulo || "AVISO"
+          });
         } catch (erro) {
           console.error("Erro ao excluir notificação:", erro);
           alert("Não foi possível excluir a notificação.");
@@ -9416,6 +9829,249 @@ ${gerarLinhaRelatorioMecanicos(relatoriosPorMecanico, "pendentes")}`;
         }
       });
 
+
+
+      /* ========== PAINEL ADMINISTRATIVO DE ACESSOS E ATIVIDADES ========== */
+      let atividadesLeCar = [];
+      let atividadesUnsubscribe = null;
+      let acessoPaginaRegistrado = false;
+      const paginaAuditoriaId = `P${Date.now()}_${Math.random().toString(36).slice(2, 9)}`;
+
+      function limparObjetoAuditoria(objeto = {}) {
+        const resultado = {};
+        Object.entries(objeto || {}).forEach(([chave, valor]) => {
+          if (valor === undefined || typeof valor === "function") return;
+          if (valor === null || ["string", "number", "boolean"].includes(typeof valor)) {
+            resultado[chave] = valor;
+            return;
+          }
+          if (Array.isArray(valor)) {
+            resultado[chave] = valor.map(item => String(item)).slice(0, 50);
+            return;
+          }
+          resultado[chave] = String(valor);
+        });
+        return resultado;
+      }
+
+      function obterSessaoAuditoria() {
+        let sessao = sessionStorage.getItem("lecar_sessao_auditoria");
+        if (!sessao) {
+          sessao = `S${Date.now()}_${Math.random().toString(36).slice(2, 10)}`;
+          sessionStorage.setItem("lecar_sessao_auditoria", sessao);
+        }
+        return sessao;
+      }
+
+      async function registrarAtividadeLeCar(tipo, detalhes = {}) {
+        const usuario = (localStorage.getItem("sessao_lecar") || "").trim().toUpperCase();
+        if (!usuario || !tipo || typeof db === "undefined") return;
+
+        const agora = new Date();
+        const payload = {
+          usuario,
+          tipo: String(tipo).trim().toUpperCase(),
+          detalhes: limparObjetoAuditoria(detalhes),
+          criadoEm: firebase.firestore.FieldValue.serverTimestamp(),
+          criadoEmISO: agora.toISOString(),
+          dataLocal: agora.toLocaleString("pt-BR"),
+          sessaoId: obterSessaoAuditoria(),
+          paginaId: paginaAuditoriaId
+        };
+
+        try {
+          await db.collection("auditoria_lecar").add(payload);
+        } catch (erro) {
+          console.warn("Atividade não registrada no Firebase:", erro);
+        }
+      }
+
+      function registrarAcessoRemoto(usuario, forcar = false) {
+        if (!usuario) return;
+        if (acessoPaginaRegistrado && !forcar) return;
+        acessoPaginaRegistrado = true;
+        registrarAtividadeLeCar("ACESSO_SISTEMA", {
+          descricao: "ENTROU NO LECAR",
+          forma: forcar ? "LOGIN" : "SESSÃO SALVA"
+        });
+      }
+
+      function textoSeguroPainel(valor) {
+        return String(valor ?? "")
+          .replace(/&/g, "&amp;")
+          .replace(/</g, "&lt;")
+          .replace(/>/g, "&gt;")
+          .replace(/"/g, "&quot;")
+          .replace(/'/g, "&#039;");
+      }
+
+      function timestampAtividade(item) {
+        if (item?.criadoEm?.toMillis) return item.criadoEm.toMillis();
+        const data = new Date(item?.criadoEmISO || item?.dataLocal || 0);
+        return Number.isNaN(data.getTime()) ? 0 : data.getTime();
+      }
+
+      function formatarDataAtividade(item) {
+        const timestamp = timestampAtividade(item);
+        if (!timestamp) return "SEM DATA";
+        return new Date(timestamp).toLocaleString("pt-BR", {
+          day: "2-digit", month: "2-digit", year: "numeric",
+          hour: "2-digit", minute: "2-digit", second: "2-digit"
+        });
+      }
+
+      function descricaoAtividade(item) {
+        const d = item?.detalhes || {};
+        const tipo = String(item?.tipo || "ATIVIDADE").toUpperCase();
+        const veiculo = [d.veiculo, d.placa].filter(Boolean).join(" · ");
+        const mapa = {
+          ACESSO_SISTEMA: d.descricao || "ENTROU NO LECAR",
+          LOGOUT: "SAIU DO SISTEMA",
+          NAVEGACAO: `ABRIU: ${d.rota || "TELA"}`,
+          VEICULO_CADASTRADO: `CADASTROU ${veiculo || "UM VEÍCULO"}`,
+          VEICULO_EDITADO: `EDITOU ${veiculo || "UM VEÍCULO"}`,
+          VEICULO_EXCLUIDO: `EXCLUIU ${veiculo || "UM VEÍCULO"}`,
+          STATUS_ALTERADO: `ALTEROU STATUS DE ${veiculo || "VEÍCULO"}: ${d.statusAnterior || "-"} → ${d.statusNovo || "-"}`,
+          PECAS_ALTERADAS: `ALTEROU PEÇAS DE ${veiculo || "VEÍCULO"} (${d.quantidadePecas ?? 0})`,
+          SERVICO_REABERTO: `REABRIU ${veiculo || "VEÍCULO"} PARA SERVIÇO`,
+          VEICULO_ENVIADO_TERCEIRO: `ENVIOU ${veiculo || "VEÍCULO"} PARA ${d.fornecedor || "TERCEIRO"}`,
+          HISTORICO_CONSULTADO: `CONSULTOU HISTÓRICO DE ${veiculo || "VEÍCULO"}`,
+          RELATORIO_GERADO: `GEROU RELATÓRIO DIÁRIO (${d.finalizados ?? 0} FINALIZADOS / ${d.pendentes ?? 0} PENDENTES)`,
+          PERFIL_EDITADO: "ALTEROU O PERFIL",
+          NOTIFICACAO_PUBLICADA: `PUBLICOU AVISO: ${d.titulo || "SEM TÍTULO"}`,
+          NOTIFICACAO_EXCLUIDA: `EXCLUIU AVISO: ${d.titulo || d.notificacaoId || "AVISO"}`,
+          NOTIFICACAO_VISUALIZADA: `VISUALIZOU AVISO: ${d.titulo || d.notificacaoId || "AVISO"}`
+        };
+        return mapa[tipo] || d.descricao || tipo.replaceAll("_", " ");
+      }
+
+      function preencherFiltrosPainel() {
+        const filtroUsuario = document.getElementById("painelFiltroUsuario");
+        const filtroTipo = document.getElementById("painelFiltroTipo");
+        if (filtroUsuario) {
+          const atual = filtroUsuario.value;
+          const usuarios = Array.from(new Set([...(usuariosPermitidos || []), ...atividadesLeCar.map(i => i.usuario).filter(Boolean)])).sort();
+          filtroUsuario.innerHTML = '<option value="">TODOS OS USUÁRIOS</option>' + usuarios.map(usuario => `<option value="${textoSeguroPainel(usuario)}">${textoSeguroPainel(usuario)}</option>`).join("");
+          filtroUsuario.value = usuarios.includes(atual) ? atual : "";
+        }
+        if (filtroTipo) {
+          const atual = filtroTipo.value;
+          const tipos = Array.from(new Set(atividadesLeCar.map(i => i.tipo).filter(Boolean))).sort();
+          filtroTipo.innerHTML = '<option value="">TODAS AS AÇÕES</option>' + tipos.map(tipo => `<option value="${textoSeguroPainel(tipo)}">${textoSeguroPainel(tipo.replaceAll("_", " "))}</option>`).join("");
+          filtroTipo.value = tipos.includes(atual) ? atual : "";
+        }
+      }
+
+      function renderizarPainelAtividades() {
+        if (!usuarioPodePublicarNotificacao()) return;
+
+        const hoje = new Date();
+        const inicioHoje = new Date(hoje.getFullYear(), hoje.getMonth(), hoje.getDate()).getTime();
+        const acessos = atividadesLeCar.filter(item => item.tipo === "ACESSO_SISTEMA");
+        const usuariosAtivos = new Set(acessos.map(item => item.usuario).filter(Boolean));
+        const acoesHoje = atividadesLeCar.filter(item => timestampAtividade(item) >= inicioHoje);
+
+        const totalAcessos = document.getElementById("painelTotalAcessos");
+        const totalUsuarios = document.getElementById("painelUsuariosAtivos");
+        const totalHoje = document.getElementById("painelAcoesHoje");
+        const totalAvisos = document.getElementById("painelAvisosTotal");
+        if (totalAcessos) totalAcessos.textContent = String(acessos.length);
+        if (totalUsuarios) totalUsuarios.textContent = String(usuariosAtivos.size);
+        if (totalHoje) totalHoje.textContent = String(acoesHoje.length);
+        if (totalAvisos) totalAvisos.textContent = String(notificacoesAtivas().length);
+
+        preencherFiltrosPainel();
+
+        const usuariosLista = document.getElementById("painelUsuariosLista");
+        if (usuariosLista) {
+          const usuarios = Array.from(new Set([...(usuariosPermitidos || []), ...atividadesLeCar.map(i => i.usuario).filter(Boolean)])).sort();
+          usuariosLista.innerHTML = usuarios.map(usuario => {
+            const eventosUsuario = atividadesLeCar.filter(item => item.usuario === usuario);
+            const acessosUsuario = eventosUsuario.filter(item => item.tipo === "ACESSO_SISTEMA");
+            const ultimo = eventosUsuario.sort((a, b) => timestampAtividade(b) - timestampAtividade(a))[0];
+            const iniciais = usuario.replace(/[^A-Z0-9]/g, "").slice(0, 2) || "US";
+            return `<div class="painel-usuario-row">
+              <div class="painel-usuario-avatar">${textoSeguroPainel(iniciais)}</div>
+              <div><div class="painel-usuario-nome">${textoSeguroPainel(usuario)}</div><div class="painel-usuario-meta">ÚLTIMA ATIVIDADE: ${textoSeguroPainel(ultimo ? formatarDataAtividade(ultimo) : "SEM REGISTRO")}</div></div>
+              <div class="painel-usuario-acessos">${acessosUsuario.length}<small>acessos</small></div>
+            </div>`;
+          }).join("") || '<div class="painel-admin-vazio">NENHUM USUÁRIO REGISTRADO.</div>';
+        }
+
+        const notificacoesLista = document.getElementById("painelNotificacoesVisualizadas");
+        if (notificacoesLista) {
+          const totalUsuariosBase = (usuariosPermitidos || []).length;
+          const itens = notificacoesAtivas();
+          notificacoesLista.innerHTML = itens.length ? itens.map(item => {
+            const lidos = Array.from(new Set((Array.isArray(item.lidosPor) ? item.lidosPor : []).map(v => String(v).toUpperCase()))).sort();
+            const pendentes = (usuariosPermitidos || []).filter(usuario => !lidos.includes(usuario));
+            return `<div class="painel-notificacao-row">
+              <div class="painel-notificacao-topo">
+                <div class="painel-notificacao-titulo">${textoSeguroPainel(item.titulo || "AVISO")}</div>
+                <div class="painel-notificacao-contador">${lidos.length}/${totalUsuariosBase} VISUALIZARAM</div>
+              </div>
+              <div class="painel-notificacao-usuarios"><strong>VISUALIZARAM:</strong> ${textoSeguroPainel(lidos.join(", ") || "NINGUÉM")}</div>
+              <div class="painel-notificacao-usuarios"><strong>PENDENTES:</strong> ${textoSeguroPainel(pendentes.join(", ") || "NENHUM")}</div>
+            </div>`;
+          }).join("") : '<div class="painel-admin-vazio">NENHUMA NOTIFICAÇÃO PUBLICADA.</div>';
+        }
+
+        const filtroUsuario = document.getElementById("painelFiltroUsuario")?.value || "";
+        const filtroTipo = document.getElementById("painelFiltroTipo")?.value || "";
+        const filtradas = atividadesLeCar
+          .filter(item => !filtroUsuario || item.usuario === filtroUsuario)
+          .filter(item => !filtroTipo || item.tipo === filtroTipo)
+          .sort((a, b) => timestampAtividade(b) - timestampAtividade(a));
+
+        const listaAtividades = document.getElementById("painelAtividadesLista");
+        if (listaAtividades) {
+          listaAtividades.innerHTML = filtradas.length ? filtradas.map(item => `<div class="painel-atividade-row">
+            <div class="painel-atividade-data">${textoSeguroPainel(formatarDataAtividade(item))}</div>
+            <div class="painel-atividade-usuario">${textoSeguroPainel(item.usuario || "USUÁRIO")}</div>
+            <div class="painel-atividade-descricao">${textoSeguroPainel(descricaoAtividade(item))}</div>
+          </div>`).join("") : '<div class="painel-admin-vazio">NENHUMA ATIVIDADE ENCONTRADA PARA O FILTRO.</div>';
+        }
+      }
+
+      function iniciarEscutaPainelAtividades() {
+        if (!usuarioPodePublicarNotificacao()) return;
+        if (typeof atividadesUnsubscribe === "function") atividadesUnsubscribe();
+
+        atividadesUnsubscribe = db.collection("auditoria_lecar")
+          .orderBy("criadoEmISO", "desc")
+          .limit(500)
+          .onSnapshot(snapshot => {
+            atividadesLeCar = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+            renderizarPainelAtividades();
+          }, erro => {
+            console.error("Erro ao carregar painel de atividades:", erro);
+            const lista = document.getElementById("painelAtividadesLista");
+            if (lista) lista.innerHTML = '<div class="painel-admin-vazio">NÃO FOI POSSÍVEL CARREGAR OS REGISTROS. VERIFIQUE AS REGRAS DO FIREBASE.</div>';
+          });
+      }
+
+      function abrirPainelAtividades() {
+        if (!usuarioPodePublicarNotificacao()) {
+          alert("Apenas o usuário LEANDRO pode acessar o painel de atividades.");
+          return;
+        }
+        fecharDrawerLateral();
+        const modal = document.getElementById("modalPainelAtividades");
+        if (modal) modal.classList.add("show");
+        document.body.style.overflow = "hidden";
+        iniciarEscutaPainelAtividades();
+        registrarAtividadeLeCar("PAINEL_ADMIN_ABERTO", { descricao: "ABRIU O PAINEL DE ATIVIDADES" });
+      }
+
+      function fecharPainelAtividades(event) {
+        if (event && event.target !== event.currentTarget) return;
+        document.getElementById("modalPainelAtividades")?.classList.remove("show");
+        document.body.style.overflow = "";
+      }
+
+      function recarregarPainelAtividades() {
+        iniciarEscutaPainelAtividades();
+      }
 
       /* ========== CONTROLE AUTOMÁTICO: BUSCA SOME QUANDO MODAL ABRE ========== */
       function atualizarEstadoModalAberto() {
