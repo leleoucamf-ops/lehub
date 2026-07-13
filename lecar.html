@@ -4769,9 +4769,9 @@
 
 .topbar.app-topbar-clean .app-search-card {
   width: 100% !important;
-  height: 30px !important;
-  min-height: 30px !important;
-  border-radius: 9px !important;
+  height: 34px !important;
+  min-height: 34px !important;
+  border-radius: 10px !important;
   padding: 0 10px !important;
   gap: 7px !important;
   background: rgba(255, 255, 255, 0.10) !important;
@@ -4790,8 +4790,8 @@
 
 .topbar.app-topbar-clean .app-search-input,
 .topbar.app-topbar-clean .app-search-input:focus {
-  height: 28px !important;
-  min-height: 28px !important;
+  height: 32px !important;
+  min-height: 32px !important;
   width: 100% !important;
   padding: 0 !important;
   margin: 0 !important;
@@ -4818,14 +4818,14 @@
   }
 
   .topbar.app-topbar-clean .app-search-card {
-    height: 28px !important;
-    min-height: 28px !important;
+    height: 31px !important;
+    min-height: 31px !important;
   }
 
   .topbar.app-topbar-clean .app-search-input,
   .topbar.app-topbar-clean .app-search-input:focus {
-    height: 26px !important;
-    min-height: 26px !important;
+    height: 29px !important;
+    min-height: 29px !important;
     font-size: 0.66rem !important;
   }
 }
@@ -4838,15 +4838,15 @@
   }
 
   .topbar.app-topbar-clean .app-search-card {
-    height: 27px !important;
-    min-height: 27px !important;
+    height: 31px !important;
+    min-height: 31px !important;
     padding: 0 8px !important;
   }
 
   .topbar.app-topbar-clean .app-search-input,
   .topbar.app-topbar-clean .app-search-input:focus {
-    height: 25px !important;
-    min-height: 25px !important;
+    height: 29px !important;
+    min-height: 29px !important;
     font-size: 0.62rem !important;
   }
 }
@@ -6030,7 +6030,156 @@
 }
 </style>
 
-</head>
+
+
+    <style id="lecar-tutorial-baloes">
+      .tutorial-lecar-balao {
+        text-transform: uppercase;
+        display: none;
+        position: fixed;
+        z-index: 5000;
+        width: min(320px, calc(100vw - 28px));
+        padding: 16px;
+        border: 1px solid #334155;
+        border-radius: 16px;
+        background: #0b0f19;
+        color: #ffffff;
+        box-shadow: 0 22px 54px rgba(0, 0, 0, 0.58);
+      }
+
+      .tutorial-lecar-balao.show {
+        display: block;
+        animation: tutorialBalaoEntrada .22s ease-out;
+      }
+
+      @keyframes tutorialBalaoEntrada {
+        from { opacity: 0; transform: translateY(6px) scale(.98); }
+        to { opacity: 1; transform: translateY(0) scale(1); }
+      }
+
+      .tutorial-lecar-balao::before {
+        content: "";
+        position: absolute;
+        left: var(--tutorial-arrow-left, 50%);
+        width: 14px;
+        height: 14px;
+        background: #0b0f19;
+        border-left: 1px solid #334155;
+        border-top: 1px solid #334155;
+        transform: translateX(-50%) rotate(45deg);
+      }
+
+      .tutorial-lecar-balao.abaixo::before {
+        top: -8px;
+      }
+
+      .tutorial-lecar-balao.acima::before {
+        bottom: -8px;
+        transform: translateX(-50%) rotate(225deg);
+      }
+
+      .tutorial-lecar-etiqueta {
+        display: inline-flex;
+        align-items: center;
+        min-height: 24px;
+        padding: 0 9px;
+        margin-bottom: 9px;
+        border-radius: 999px;
+        background: #facc15;
+        color: #111827;
+        font-size: .68rem;
+        font-weight: 950;
+        letter-spacing: .05em;
+        text-transform: uppercase;
+      }
+
+      .tutorial-lecar-balao h3 {
+        margin: 0 0 7px;
+        color: #ffffff;
+        font-size: 1rem;
+        font-weight: 950;
+        text-transform: uppercase;
+      }
+
+      .tutorial-lecar-balao p {
+        margin: 0;
+        color: #e2e8f0;
+        font-size: .88rem;
+        font-weight: 650;
+        line-height: 1.45;
+      }
+
+      .tutorial-lecar-rodape {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 10px;
+        margin-top: 14px;
+      }
+
+      .tutorial-lecar-progresso {
+        color: #94a3b8;
+        font-size: .72rem;
+        font-weight: 850;
+      }
+
+      .tutorial-lecar-acoes {
+        display: flex;
+        align-items: center;
+        gap: 7px;
+      }
+
+      .tutorial-lecar-acoes button {
+        width: auto;
+        min-width: 76px;
+        min-height: 36px;
+        margin: 0;
+        padding: 0 12px;
+        border-radius: 10px;
+        font-size: .72rem;
+        font-weight: 900;
+      }
+
+      .tutorial-lecar-pular {
+        background: #1e293b;
+        color: #ffffff;
+        border: 1px solid #475569;
+      }
+
+      .tutorial-lecar-avancar {
+        background: #2563eb;
+        color: #ffffff;
+        border: 1px solid #60a5fa;
+      }
+
+      .tutorial-lecar-alvo {
+        position: relative !important;
+        z-index: 4999 !important;
+        outline: 4px solid rgba(250, 204, 21, .95) !important;
+        outline-offset: 4px !important;
+        box-shadow: 0 0 0 9px rgba(250, 204, 21, .24), 0 8px 24px rgba(15, 23, 42, .22) !important;
+        animation: tutorialAlvoPulso 1.25s ease-in-out infinite;
+      }
+
+      @keyframes tutorialAlvoPulso {
+        0%, 100% { filter: brightness(1); }
+        50% { filter: brightness(1.12); }
+      }
+
+      @media (max-width: 480px) {
+        .tutorial-lecar-balao {
+          width: calc(100vw - 20px);
+          padding: 14px;
+          border-radius: 14px;
+        }
+
+        .tutorial-lecar-balao h3 { font-size: .9rem; }
+        .tutorial-lecar-balao p { font-size: .8rem; }
+        .tutorial-lecar-acoes button { min-width: 70px; min-height: 34px; }
+      }
+    </style>
+
+  </head>
   <body translate="no">
 
     <!-- ========== TELA DE LOGIN ========== -->
@@ -6076,6 +6225,8 @@
             id="buscaSidebar"
             class="app-search-input"
             placeholder="BUSCAR"
+            onfocus="buscaDeveManterFoco = true"
+            onblur="limparCampoBuscaMantendoResultados()"
             onkeydown="limparBuscaAoEnter(event)"
             onkeyup="filtrarBusca(event)"
           />
@@ -6083,7 +6234,7 @@
       </div>
 
       <div class="topbar-tools" aria-label="Ações rápidas">
-        <button type="button" class="topbar-icon-btn" title="Notificações" aria-label="Abrir notificações" onclick="abrirCentralNotificacoes()">
+        <button type="button" id="btnSinoNotificacoes" class="topbar-icon-btn" title="Notificações" aria-label="Abrir notificações" onclick="abrirCentralNotificacoes()">
           <svg viewBox="0 0 24 24" aria-hidden="true">
             <path d="M18 8A6 6 0 0 0 6 8C6 15 3 16 3 16H21C21 16 18 15 18 8Z"></path>
             <path d="M10 20H14"></path>
@@ -6847,6 +6998,22 @@
       </div>
     </div>
 
+
+
+    <!-- Tutorial inicial das novas funções -->
+    <div id="tutorialBalaoLeCar" class="tutorial-lecar-balao" role="dialog" aria-live="polite" aria-labelledby="tutorialLeCarTitulo">
+      <div class="tutorial-lecar-etiqueta">✨ NOVIDADE NO LECAR ✨</div>
+      <h3 id="tutorialLeCarTitulo">🚗 CONHEÇA AS NOVIDADES</h3>
+      <p id="tutorialLeCarTexto"></p>
+      <div class="tutorial-lecar-rodape">
+        <span id="tutorialLeCarProgresso" class="tutorial-lecar-progresso">1 DE 2</span>
+        <div class="tutorial-lecar-acoes">
+          <button type="button" class="tutorial-lecar-pular" onclick="pularTutorialLeCar()">PULAR ⏭️</button>
+          <button type="button" id="tutorialLeCarBtnAvancar" class="tutorial-lecar-avancar" onclick="avancarTutorialLeCar()">PRÓXIMO 👉</button>
+        </div>
+      </div>
+    </div>
+
     <script>
       /* ========= CONFIG FIREBASE ========= */
 const firebaseConfig = {
@@ -6934,6 +7101,7 @@ function verificarSessao() {
   iniciarSistemaNotificacoes();
 
   trocarAba("servicos");
+  iniciarTutorialNovasFuncoes();
 }
 
 function obterInicioHojeISO() {
@@ -7047,6 +7215,7 @@ setTimeout(() => {
 
   sincronizarFirebase();
   iniciarSistemaNotificacoes();
+  iniciarTutorialNovasFuncoes();
 
 }, 2000);
         } else {
@@ -7548,6 +7717,7 @@ setTimeout(() => {
       let buscaGlobalEmAndamento = null;
       let buscaGlobalToken = 0;
       let buscaGlobalTimer = null;
+      let buscaDeveManterFoco = false;
       let rankingDiaAtual = "";
       let rankingReinicioTimer = null;
       const CACHE_BUSCA_GLOBAL_CHAVE = "lecar_cache_busca_global_v1";
@@ -8544,6 +8714,16 @@ async function salvar() {
         }
       }
 
+      function limparCampoBuscaMantendoResultados() {
+        const campoBusca = document.getElementById("buscaSidebar");
+        buscaDeveManterFoco = false;
+
+        if (!campoBusca) return;
+
+        // Limpa somente o texto digitado. O modal e os resultados permanecem abertos.
+        campoBusca.value = "";
+      }
+
       function limparBuscaAoEnter(event) {
         if (!event || event.key !== "Enter") return;
 
@@ -8562,6 +8742,7 @@ async function salvar() {
 
       function filtrarBusca() {
         const campoBusca = document.getElementById("buscaSidebar");
+        buscaDeveManterFoco = true;
 
         if (existeModalOperacionalAberto()) {
           fecharModalBusca(false);
@@ -8674,7 +8855,7 @@ async function salvar() {
         modal.setAttribute("aria-hidden", "false");
 
         requestAnimationFrame(() => {
-          if (!campoBusca) return;
+          if (!campoBusca || !buscaDeveManterFoco) return;
           campoBusca.focus({ preventScroll: true });
           const fim = campoBusca.value.length;
           campoBusca.setSelectionRange(fim, fim);
@@ -10346,6 +10527,187 @@ ${gerarLinhaRelatorioMecanicos(relatoriosPorMecanico, "pendentes")}`;
         await iniciarEscutaPainelAtividades();
       }
 
+
+
+      /* ========== TUTORIAL INICIAL: INFO + NOTIFICAÇÕES ========== */
+      const TUTORIAL_LECAR_VERSAO = "INFO_SINO_V2_PRETO_EMOJIS";
+      let tutorialLeCarPassos = [];
+      let tutorialLeCarIndice = -1;
+      let tutorialLeCarAlvoAtual = null;
+      let tutorialLeCarIntervalo = null;
+      let tutorialLeCarIniciado = false;
+
+      function obterChaveTutorialLeCar() {
+        const usuario = String(localStorage.getItem("sessao_lecar") || "USUARIO").trim().toUpperCase();
+        return `tutorial_lecar_${TUTORIAL_LECAR_VERSAO}_${usuario}`;
+      }
+
+      function tutorialLeCarJaConcluido() {
+        return localStorage.getItem(obterChaveTutorialLeCar()) === "CONCLUIDO";
+      }
+
+      function existeModalVisivelParaTutorial() {
+        const seletores = [
+          ".notificacao-modal-bg.show",
+          ".modal-bg",
+          ".status-modal-bg",
+          ".config-modal-bg"
+        ];
+
+        return seletores.some(seletor => Array.from(document.querySelectorAll(seletor)).some(elemento => {
+          if (elemento.id === "modalBusca") return false;
+          const estilo = window.getComputedStyle(elemento);
+          return estilo.display !== "none" && estilo.visibility !== "hidden" && estilo.opacity !== "0";
+        }));
+      }
+
+      function limparAlvoTutorialLeCar() {
+        if (tutorialLeCarAlvoAtual) {
+          tutorialLeCarAlvoAtual.classList.remove("tutorial-lecar-alvo");
+        }
+        tutorialLeCarAlvoAtual = null;
+      }
+
+      function posicionarBalaoTutorialLeCar() {
+        const balao = document.getElementById("tutorialBalaoLeCar");
+        const alvo = tutorialLeCarAlvoAtual;
+        if (!balao || !alvo || !document.body.contains(alvo)) return;
+
+        const margem = 10;
+        const distancia = 14;
+        const alvoRect = alvo.getBoundingClientRect();
+        const balaoRect = balao.getBoundingClientRect();
+        const largura = balaoRect.width;
+        const altura = balaoRect.height;
+        const centroAlvo = alvoRect.left + (alvoRect.width / 2);
+
+        let esquerda = centroAlvo - (largura / 2);
+        esquerda = Math.max(margem, Math.min(esquerda, window.innerWidth - largura - margem));
+
+        let topo = alvoRect.bottom + distancia;
+        let direcao = "abaixo";
+
+        if (topo + altura > window.innerHeight - margem) {
+          topo = alvoRect.top - altura - distancia;
+          direcao = "acima";
+        }
+
+        topo = Math.max(margem, Math.min(topo, window.innerHeight - altura - margem));
+        const seta = Math.max(24, Math.min(centroAlvo - esquerda, largura - 24));
+
+        balao.classList.remove("abaixo", "acima");
+        balao.classList.add(direcao);
+        balao.style.left = `${Math.round(esquerda)}px`;
+        balao.style.top = `${Math.round(topo)}px`;
+        balao.style.setProperty("--tutorial-arrow-left", `${Math.round(seta)}px`);
+      }
+
+      function mostrarPassoTutorialLeCar(indice) {
+        const passo = tutorialLeCarPassos[indice];
+        const balao = document.getElementById("tutorialBalaoLeCar");
+        if (!passo || !balao || !passo.alvo || !document.body.contains(passo.alvo)) {
+          concluirTutorialLeCar();
+          return;
+        }
+
+        limparAlvoTutorialLeCar();
+        tutorialLeCarIndice = indice;
+        tutorialLeCarAlvoAtual = passo.alvo;
+        tutorialLeCarAlvoAtual.classList.add("tutorial-lecar-alvo");
+
+        document.getElementById("tutorialLeCarTitulo").textContent = passo.titulo;
+        document.getElementById("tutorialLeCarTexto").textContent = passo.texto;
+        document.getElementById("tutorialLeCarProgresso").textContent = `${indice + 1} DE ${tutorialLeCarPassos.length}`;
+        document.getElementById("tutorialLeCarBtnAvancar").textContent = indice === tutorialLeCarPassos.length - 1 ? "ENTENDI ✅" : "PRÓXIMO 👉";
+
+        if (passo.tipo === "info") {
+          passo.alvo.scrollIntoView({ behavior: "smooth", block: "center", inline: "nearest" });
+        }
+
+        balao.classList.add("show");
+        setTimeout(posicionarBalaoTutorialLeCar, passo.tipo === "info" ? 380 : 40);
+      }
+
+      function avancarTutorialLeCar() {
+        const proximo = tutorialLeCarIndice + 1;
+        if (proximo >= tutorialLeCarPassos.length) {
+          concluirTutorialLeCar();
+          return;
+        }
+        mostrarPassoTutorialLeCar(proximo);
+      }
+
+      function concluirTutorialLeCar() {
+        localStorage.setItem(obterChaveTutorialLeCar(), "CONCLUIDO");
+        limparAlvoTutorialLeCar();
+        document.getElementById("tutorialBalaoLeCar")?.classList.remove("show", "abaixo", "acima");
+        tutorialLeCarIndice = -1;
+        if (tutorialLeCarIntervalo) {
+          clearInterval(tutorialLeCarIntervalo);
+          tutorialLeCarIntervalo = null;
+        }
+        window.removeEventListener("resize", posicionarBalaoTutorialLeCar);
+        window.removeEventListener("scroll", posicionarBalaoTutorialLeCar, true);
+      }
+
+      function pularTutorialLeCar() {
+        concluirTutorialLeCar();
+      }
+
+      function iniciarTutorialNovasFuncoes() {
+        if (tutorialLeCarIniciado || tutorialLeCarJaConcluido()) return;
+        tutorialLeCarIniciado = true;
+
+        const tentarIniciar = () => {
+          if (tutorialLeCarJaConcluido()) {
+            if (tutorialLeCarIntervalo) clearInterval(tutorialLeCarIntervalo);
+            tutorialLeCarIntervalo = null;
+            return;
+          }
+
+          const sistema = document.getElementById("sistemaPrincipal");
+          const sino = document.getElementById("btnSinoNotificacoes");
+          const info = document.querySelector(".card-action-btn.info");
+          const sistemaVisivel = sistema && window.getComputedStyle(sistema).display !== "none";
+
+          if (!sistemaVisivel || !sino || !info || existeModalVisivelParaTutorial()) return;
+
+          tutorialLeCarPassos = [
+            {
+              tipo: "info",
+              alvo: info,
+              titulo: "🚗🔧 HISTÓRICO DO VEÍCULO",
+              texto: "TOQUE NO BOTÃO ℹ️ INFO PARA VER TODAS AS MANUTENÇÕES 🔧, PEÇAS ⚙️ E MECÂNICOS 👨‍🔧 REGISTRADOS NESTE VEÍCULO."
+            },
+            {
+              tipo: "sino",
+              alvo: sino,
+              titulo: "🔔📢 CENTRAL DE NOTIFICAÇÕES",
+              texto: "TOQUE NO SININHO 🔔 PARA VER AVISOS 🚨, ATUALIZAÇÕES DO SISTEMA 🆕 E COMUNICADOS IMPORTANTES 📢 DO LECAR."
+            }
+          ];
+
+          if (tutorialLeCarIntervalo) clearInterval(tutorialLeCarIntervalo);
+          tutorialLeCarIntervalo = null;
+          window.addEventListener("resize", posicionarBalaoTutorialLeCar);
+          window.addEventListener("scroll", posicionarBalaoTutorialLeCar, true);
+          mostrarPassoTutorialLeCar(0);
+        };
+
+        setTimeout(tentarIniciar, 900);
+        tutorialLeCarIntervalo = setInterval(tentarIniciar, 900);
+
+        // Evita manter uma verificação permanente caso o usuário ainda não tenha cards.
+        setTimeout(() => {
+          if (tutorialLeCarIntervalo && tutorialLeCarIndice < 0) {
+            clearInterval(tutorialLeCarIntervalo);
+            tutorialLeCarIntervalo = null;
+            tutorialLeCarIniciado = false;
+          }
+        }, 120000);
+      }
+
+
       /* ========== CONTROLE AUTOMÁTICO: BUSCA SOME QUANDO MODAL ABRE ========== */
       function atualizarEstadoModalAberto() {
         const modais = document.querySelectorAll('.modal-bg:not(#modalBusca):not(#modalConfig), .status-modal-bg');
@@ -10448,18 +10810,15 @@ ${gerarLinhaRelatorioMecanicos(relatoriosPorMecanico, "pendentes")}`;
           });
         });
 
-        /* O resultado da busca usa fundo transparente para permitir digitação.
-           Fecha ao tocar fora da caixa de resultados e fora do próprio campo de busca. */
+        /* Ao tocar fora do campo, limpa apenas o texto digitado.
+           O modal continua aberto com o último resultado encontrado. */
         document.addEventListener("pointerdown", (event) => {
           const modalBuscaAtual = document.getElementById("modalBusca");
           if (!modalBuscaAtual || modalBuscaAtual.dataset.buscaAberta !== "true") return;
 
-          const caixaResultado = modalBuscaAtual.querySelector(".modal");
-          const clicouNaCaixa = caixaResultado && caixaResultado.contains(event.target);
           const clicouNaBusca = event.target.closest?.(".app-search-shell, .busca-operacional");
-
-          if (!clicouNaCaixa && !clicouNaBusca) {
-            fecharModalBusca(false);
+          if (!clicouNaBusca) {
+            document.getElementById("buscaSidebar")?.blur();
           }
         }, true);
       }
