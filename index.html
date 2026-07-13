@@ -6225,6 +6225,8 @@
             id="buscaSidebar"
             class="app-search-input"
             placeholder="BUSCAR"
+            onfocus="buscaDeveManterFoco = true"
+            onblur="limparCampoBuscaMantendoResultados()"
             onkeydown="limparBuscaAoEnter(event)"
             onkeyup="filtrarBusca(event)"
           />
@@ -7715,6 +7717,7 @@ setTimeout(() => {
       let buscaGlobalEmAndamento = null;
       let buscaGlobalToken = 0;
       let buscaGlobalTimer = null;
+      let buscaDeveManterFoco = false;
       let rankingDiaAtual = "";
       let rankingReinicioTimer = null;
       const CACHE_BUSCA_GLOBAL_CHAVE = "lecar_cache_busca_global_v1";
@@ -8711,6 +8714,16 @@ async function salvar() {
         }
       }
 
+      function limparCampoBuscaMantendoResultados() {
+        const campoBusca = document.getElementById("buscaSidebar");
+        buscaDeveManterFoco = false;
+
+        if (!campoBusca) return;
+
+        // Limpa somente o texto digitado. O modal e os resultados permanecem abertos.
+        campoBusca.value = "";
+      }
+
       function limparBuscaAoEnter(event) {
         if (!event || event.key !== "Enter") return;
 
@@ -8729,6 +8742,7 @@ async function salvar() {
 
       function filtrarBusca() {
         const campoBusca = document.getElementById("buscaSidebar");
+        buscaDeveManterFoco = true;
 
         if (existeModalOperacionalAberto()) {
           fecharModalBusca(false);
@@ -8841,7 +8855,7 @@ async function salvar() {
         modal.setAttribute("aria-hidden", "false");
 
         requestAnimationFrame(() => {
-          if (!campoBusca) return;
+          if (!campoBusca || !buscaDeveManterFoco) return;
           campoBusca.focus({ preventScroll: true });
           const fim = campoBusca.value.length;
           campoBusca.setSelectionRange(fim, fim);
@@ -10796,18 +10810,15 @@ ${gerarLinhaRelatorioMecanicos(relatoriosPorMecanico, "pendentes")}`;
           });
         });
 
-        /* O resultado da busca usa fundo transparente para permitir digitação.
-           Fecha ao tocar fora da caixa de resultados e fora do próprio campo de busca. */
+        /* Ao tocar fora do campo, limpa apenas o texto digitado.
+           O modal continua aberto com o último resultado encontrado. */
         document.addEventListener("pointerdown", (event) => {
           const modalBuscaAtual = document.getElementById("modalBusca");
           if (!modalBuscaAtual || modalBuscaAtual.dataset.buscaAberta !== "true") return;
 
-          const caixaResultado = modalBuscaAtual.querySelector(".modal");
-          const clicouNaCaixa = caixaResultado && caixaResultado.contains(event.target);
           const clicouNaBusca = event.target.closest?.(".app-search-shell, .busca-operacional");
-
-          if (!clicouNaCaixa && !clicouNaBusca) {
-            fecharModalBusca(false);
+          if (!clicouNaBusca) {
+            document.getElementById("buscaSidebar")?.blur();
           }
         }, true);
       }
