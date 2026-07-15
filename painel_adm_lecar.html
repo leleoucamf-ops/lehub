@@ -1530,7 +1530,6 @@
   <div class="drawer-overlay" onclick="fecharDrawer()"></div>
   <aside class="drawer" aria-label="Menu administrativo">
     <div class="drawer-head"><strong>Menu ADM</strong><button type="button" class="drawer-close" onclick="fecharDrawer()">×</button></div>
-    <button id="btnVoltarLeCar" type="button" class="drawer-btn" onclick="voltarLeCar()">Voltar ao LeCar</button>
     <button type="button" class="drawer-btn danger" onclick="sairAdmin()">Sair do painel</button>
   </aside>
 
@@ -1623,13 +1622,12 @@
       const usuarioSessao = normalizar(sessionStorage.getItem("sessao_lecar_admin"));
       if (USUARIOS_LPA[usuarioSessao]) return usuarioSessao;
 
+      // Após clicar em SAIR, não reutiliza automaticamente a sessão do LeCar
+      // enquanto esta aba permanecer aberta.
+      if (sessionStorage.getItem("sessao_lecar_admin_encerrada") === "1") return "";
+
       const usuarioLeCar = normalizar(localStorage.getItem("sessao_lecar"));
       return usuarioLeCar === "LEANDRO" ? "LEANDRO" : "";
-    }
-
-    function perfilPainelAtual() {
-      const usuario = usuarioPainelAtual();
-      return USUARIOS_LPA[usuario]?.perfil || "";
     }
 
     function acessoAdminValido() {
@@ -1648,6 +1646,7 @@
         return;
       }
 
+      sessionStorage.removeItem("sessao_lecar_admin_encerrada");
       sessionStorage.setItem("sessao_lecar_admin", usuario);
       sessionStorage.setItem("perfil_lecar_admin", cadastro.perfil);
       erro.style.display = "none";
@@ -1658,15 +1657,9 @@
       if (acessoAdminValido()) abrirAplicacao();
     }
 
-    function aplicarPermissoesInterface() {
-      const btnVoltar = document.getElementById("btnVoltarLeCar");
-      if (btnVoltar) btnVoltar.style.display = perfilPainelAtual() === "ADMINISTRADOR" ? "block" : "none";
-    }
-
     function abrirAplicacao() {
       document.getElementById("loginPage").style.display = "none";
       document.getElementById("app").style.display = "block";
-      aplicarPermissoesInterface();
       iniciarServicos();
       iniciarVeiculosAtivos();
       iniciarNotificacoesAdm();
@@ -1675,10 +1668,22 @@
     function sairAdmin() {
       sessionStorage.removeItem("sessao_lecar_admin");
       sessionStorage.removeItem("perfil_lecar_admin");
+      sessionStorage.setItem("sessao_lecar_admin_encerrada", "1");
+
       if (typeof unsubscribeServicos === "function") unsubscribeServicos();
       if (typeof unsubscribeVeiculosAtivos === "function") unsubscribeVeiculosAtivos();
       if (typeof unsubscribeNotificacoesAdm === "function") unsubscribeNotificacoesAdm();
-      location.reload();
+
+      unsubscribeServicos = null;
+      unsubscribeVeiculosAtivos = null;
+      unsubscribeNotificacoesAdm = null;
+      fecharDrawer();
+
+      document.getElementById("app").style.display = "none";
+      document.getElementById("loginPage").style.display = "flex";
+      document.getElementById("loginSenha").value = "";
+      document.getElementById("loginErro").style.display = "none";
+      document.getElementById("loginUsuario").focus();
     }
 
     function usuarioNotificacoesAdm() {
@@ -1806,7 +1811,6 @@
 
     function abrirDrawer() { document.body.classList.add("drawer-open"); }
     function fecharDrawer() { document.body.classList.remove("drawer-open"); }
-    function voltarLeCar() { window.location.href = "LeCar_integrado_lista_geral.html"; }
 
     function mostrarToast(texto) {
       const toast = document.getElementById("toast");
