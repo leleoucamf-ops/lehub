@@ -5710,11 +5710,8 @@
 
 
 <style id="lecar-ajuste-config-topbar-menu-leandro">
-/* Configurações preserva a topbar; menu administrativo aparece somente para LEANDRO. */
-.btn-menu-hamburguer.menu-exclusivo-leandro {
-  display: none !important;
-}
-
+/* Configurações preserva a topbar; o menu do sistema fica visível para todos. */
+.btn-menu-hamburguer.menu-exclusivo-leandro,
 .btn-menu-hamburguer.menu-exclusivo-leandro.show {
   display: inline-flex !important;
 }
@@ -6029,157 +6026,671 @@
   }
 }
 </style>
+<style id="lecar-correcao-painel-atividades-desktop-v2">
+/* Correção do painel administrativo no desktop:
+   mantém o cabeçalho fixo e libera a rolagem do conteúdo interno. */
+.painel-atividades-modal {
+  height: min(92vh, 920px) !important;
+  max-height: 92vh !important;
+  min-height: 0 !important;
+  display: flex !important;
+  flex-direction: column !important;
+}
+
+.painel-atividades-modal > .notificacao-modal-header {
+  flex: 0 0 auto !important;
+}
+
+.painel-atividades-modal > .painel-atividades-body {
+  flex: 1 1 auto !important;
+  min-height: 0 !important;
+  overflow-y: auto !important;
+  overflow-x: hidden !important;
+  align-content: start !important;
+  grid-auto-rows: max-content !important;
+  overscroll-behavior: contain;
+  scrollbar-gutter: stable;
+}
+
+.painel-atividades-body .painel-admin-section {
+  min-height: 0;
+}
+
+.painel-usuarios-grid,
+.painel-notificacoes-lista,
+.painel-atividades-lista {
+  min-height: 54px;
+}
+
+@media (max-width: 768px) {
+  .painel-atividades-modal {
+    height: 94vh !important;
+    max-height: 94vh !important;
+  }
+}
+</style>
 
 
+<style id="lecar-ficha-oleo-consulta">
+/* ========== FICHA TÉCNICA DE ÓLEO — CONSULTA LOCAL E ISOLADA ========== */
+#btnFichaOleo.topbar-icon-btn {
+  background: linear-gradient(135deg, rgba(30, 58, 138, .78), rgba(37, 99, 235, .78)) !important;
+  border-color: rgba(191, 219, 254, .58) !important;
+  color: #ffffff !important;
+}
 
-    <style id="lecar-tutorial-baloes">
-      .tutorial-lecar-balao {
-        text-transform: uppercase;
-        display: none;
-        position: fixed;
-        z-index: 5000;
-        width: min(320px, calc(100vw - 28px));
-        padding: 16px;
-        border: 1px solid #334155;
-        border-radius: 16px;
-        background: #0b0f19;
-        color: #ffffff;
-        box-shadow: 0 22px 54px rgba(0, 0, 0, 0.58);
-      }
+#btnFichaOleo.topbar-icon-btn:hover,
+#btnFichaOleo.topbar-icon-btn.active {
+  background: linear-gradient(135deg, #1e3a8a, #2563eb) !important;
+  border-color: #bfdbfe !important;
+  color: #ffffff !important;
+}
 
-      .tutorial-lecar-balao.show {
-        display: block;
-        animation: tutorialBalaoEntrada .22s ease-out;
-      }
+#btnFichaOleo.topbar-icon-btn.active {
+  box-shadow: 0 0 0 3px rgba(147, 197, 253, .22) !important;
+}
 
-      @keyframes tutorialBalaoEntrada {
-        from { opacity: 0; transform: translateY(6px) scale(.98); }
-        to { opacity: 1; transform: translateY(0) scale(1); }
-      }
+#btnFichaOleo svg {
+  stroke-width: 1.9 !important;
+}
 
-      .tutorial-lecar-balao::before {
-        content: "";
-        position: absolute;
-        left: var(--tutorial-arrow-left, 50%);
-        width: 14px;
-        height: 14px;
-        background: #0b0f19;
-        border-left: 1px solid #334155;
-        border-top: 1px solid #334155;
-        transform: translateX(-50%) rotate(45deg);
-      }
+.sistema-principal.ficha-oleo-focus #cadastroCard,
+.sistema-principal.ficha-oleo-focus .tabs-container > .tabs {
+  display: none !important;
+}
 
-      .tutorial-lecar-balao.abaixo::before {
-        top: -8px;
-      }
+.sistema-principal.ficha-oleo-focus .card {
+  padding-top: 22px !important;
+}
 
-      .tutorial-lecar-balao.acima::before {
-        bottom: -8px;
-        transform: translateX(-50%) rotate(225deg);
-      }
+.ficha-oleo-tab {
+  width: 100%;
+}
 
-      .tutorial-lecar-etiqueta {
-        display: inline-flex;
-        align-items: center;
-        min-height: 24px;
-        padding: 0 9px;
-        margin-bottom: 9px;
-        border-radius: 999px;
-        background: #facc15;
-        color: #111827;
-        font-size: .68rem;
-        font-weight: 950;
-        letter-spacing: .05em;
-        text-transform: uppercase;
-      }
+.ficha-oleo-shell {
+  width: 100%;
+  display: grid;
+  gap: 16px;
+  text-transform: uppercase;
+}
 
-      .tutorial-lecar-balao h3 {
-        margin: 0 0 7px;
-        color: #ffffff;
-        font-size: 1rem;
-        font-weight: 950;
-        text-transform: uppercase;
-      }
+.ficha-oleo-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 18px 20px;
+  border: 1px solid #fde68a;
+  border-radius: 18px;
+  background: linear-gradient(135deg, #fffdf4, #fef3c7);
+  box-shadow: 0 8px 24px rgba(120, 53, 15, .08);
+}
 
-      .tutorial-lecar-balao p {
-        margin: 0;
-        color: #e2e8f0;
-        font-size: .88rem;
-        font-weight: 650;
-        line-height: 1.45;
-      }
+.ficha-oleo-title-wrap {
+  display: flex;
+  align-items: center;
+  gap: 13px;
+  min-width: 0;
+}
 
-      .tutorial-lecar-rodape {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        gap: 10px;
-        margin-top: 14px;
-      }
+.ficha-oleo-title-icon {
+  width: 48px;
+  height: 48px;
+  min-width: 48px;
+  border-radius: 15px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: #facc15;
+  color: #713f12;
+  box-shadow: 0 7px 18px rgba(202, 138, 4, .18);
+}
 
-      .tutorial-lecar-progresso {
-        color: #94a3b8;
-        font-size: .72rem;
-        font-weight: 850;
-      }
+.ficha-oleo-title-icon svg {
+  width: 27px;
+  height: 27px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.9;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
 
-      .tutorial-lecar-acoes {
-        display: flex;
-        align-items: center;
-        gap: 7px;
-      }
+.ficha-oleo-header h2 {
+  margin: 0 !important;
+  color: #0f2748;
+  font-size: 1.18rem;
+  font-weight: 950;
+  text-transform: uppercase;
+}
 
-      .tutorial-lecar-acoes button {
-        width: auto;
-        min-width: 76px;
-        min-height: 36px;
-        margin: 0;
-        padding: 0 12px;
-        border-radius: 10px;
-        font-size: .72rem;
-        font-weight: 900;
-      }
+.ficha-oleo-header p {
+  margin: 4px 0 0;
+  color: #64748b;
+  font-size: .78rem;
+  font-weight: 700;
+  line-height: 1.35;
+}
 
-      .tutorial-lecar-pular {
-        background: #1e293b;
-        color: #ffffff;
-        border: 1px solid #475569;
-      }
+.ficha-oleo-local-badge {
+  flex: 0 0 auto;
+  padding: 7px 10px;
+  border-radius: 999px;
+  border: 1px solid #dbeafe;
+  background: #eff6ff;
+  color: #1e3a8a;
+  font-size: .68rem;
+  font-weight: 950;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
 
-      .tutorial-lecar-avancar {
-        background: #2563eb;
-        color: #ffffff;
-        border: 1px solid #60a5fa;
-      }
+.ficha-oleo-form {
+  padding: 18px;
+  border: 1px solid #e2e8f0;
+  border-radius: 18px;
+  background: #ffffff;
+  box-shadow: 0 7px 22px rgba(15, 23, 42, .06);
+}
 
-      .tutorial-lecar-alvo {
-        position: relative !important;
-        z-index: 4999 !important;
-        outline: 4px solid rgba(250, 204, 21, .95) !important;
-        outline-offset: 4px !important;
-        box-shadow: 0 0 0 9px rgba(250, 204, 21, .24), 0 8px 24px rgba(15, 23, 42, .22) !important;
-        animation: tutorialAlvoPulso 1.25s ease-in-out infinite;
-      }
+.ficha-oleo-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 12px;
+}
 
-      @keyframes tutorialAlvoPulso {
-        0%, 100% { filter: brightness(1); }
-        50% { filter: brightness(1.12); }
-      }
+.ficha-oleo-field {
+  display: grid;
+  gap: 6px;
+  min-width: 0;
+}
 
-      @media (max-width: 480px) {
-        .tutorial-lecar-balao {
-          width: calc(100vw - 20px);
-          padding: 14px;
-          border-radius: 14px;
-        }
+.ficha-oleo-field label {
+  color: #334155;
+  font-size: .72rem;
+  font-weight: 950;
+  letter-spacing: .04em;
+  text-transform: uppercase;
+}
 
-        .tutorial-lecar-balao h3 { font-size: .9rem; }
-        .tutorial-lecar-balao p { font-size: .8rem; }
-        .tutorial-lecar-acoes button { min-width: 70px; min-height: 34px; }
-      }
-    </style>
+.ficha-oleo-field select {
+  width: 100%;
+  min-height: 46px;
+  margin: 0;
+  border: 1px solid #cbd5e1;
+  border-radius: 12px;
+  background: #f8fafc;
+  color: #0f172a;
+  font-weight: 400;
+}
 
-  </head>
+.ficha-oleo-field select:disabled {
+  color: #94a3b8;
+  cursor: not-allowed;
+  opacity: .75;
+}
+
+.ficha-oleo-status {
+  min-height: 42px;
+  margin-top: 14px;
+  padding: 11px 13px;
+  border-radius: 12px;
+  border: 1px solid #dbeafe;
+  background: #f8fbff;
+  color: #475569;
+  font-size: .8rem;
+  font-weight: 750;
+  line-height: 1.45;
+}
+
+.ficha-oleo-status.erro {
+  border-color: #fecaca;
+  background: #fff1f2;
+  color: #b91c1c;
+}
+
+.ficha-oleo-status.sucesso {
+  border-color: #bbf7d0;
+  background: #f0fdf4;
+  color: #166534;
+}
+
+.ficha-oleo-actions {
+  margin-top: 12px;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.ficha-oleo-reset {
+  width: auto !important;
+  min-height: 40px;
+  margin: 0 !important;
+  padding: 0 16px !important;
+  border-radius: 11px !important;
+  border: 1px solid #cbd5e1 !important;
+  background: #f8fafc !important;
+  color: #334155 !important;
+  font-size: .76rem !important;
+  font-weight: 900 !important;
+}
+
+.ficha-oleo-reset:hover {
+  opacity: 1 !important;
+  transform: none !important;
+  background: #e2e8f0 !important;
+}
+
+.ficha-oleo-resultados {
+  display: grid;
+  gap: 14px;
+}
+
+.ficha-resultado-vazio {
+  padding: 28px 18px;
+  border: 1px dashed #cbd5e1;
+  border-radius: 16px;
+  background: #f8fafc;
+  color: #64748b;
+  text-align: center;
+  font-size: .86rem;
+  font-weight: 750;
+}
+
+.ficha-ambiguidade {
+  padding: 12px 14px;
+  border: 1px solid #fed7aa;
+  border-left: 5px solid #f59e0b;
+  border-radius: 12px;
+  background: #fff7ed;
+  color: #9a3412;
+  font-size: .78rem;
+  font-weight: 850;
+  line-height: 1.45;
+}
+
+.ficha-resultado-card {
+  overflow: hidden;
+  border: 1px solid #dbeafe;
+  border-radius: 18px;
+  background: #ffffff;
+  box-shadow: 0 9px 26px rgba(15, 23, 42, .07);
+}
+
+.ficha-resultado-topo {
+  padding: 17px 18px;
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 12px;
+  align-items: center;
+  border-bottom: 1px solid #dbeafe;
+  background: linear-gradient(90deg, #f8fafc, #eef4ff);
+}
+
+.ficha-resultado-veiculo {
+  color: #0f2748;
+  font-size: 1rem;
+  font-weight: 950;
+  line-height: 1.25;
+  text-transform: uppercase;
+}
+
+.ficha-resultado-motor {
+  margin-top: 5px;
+  color: #475569;
+  font-size: .78rem;
+  font-weight: 800;
+  line-height: 1.4;
+  text-transform: uppercase;
+}
+
+.ficha-volume {
+  min-width: 98px;
+  padding: 10px 12px;
+  border-radius: 13px;
+  background: #1e3a8a;
+  color: #ffffff;
+  text-align: center;
+}
+
+.ficha-volume strong {
+  display: block;
+  font-size: 1.35rem;
+  line-height: 1;
+  font-weight: 950;
+}
+
+.ficha-volume span {
+  display: block;
+  margin-top: 5px;
+  font-size: .62rem;
+  font-weight: 900;
+  text-transform: uppercase;
+}
+
+.ficha-oleos-lista {
+  padding: 15px;
+  display: grid;
+  gap: 12px;
+}
+
+.ficha-oleo-opcao {
+  padding: 14px;
+  border: 1px solid #e2e8f0;
+  border-radius: 14px;
+  background: #ffffff;
+}
+
+.ficha-oleo-opcao-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.ficha-viscosidade {
+  color: #0f2748;
+  font-size: 1.22rem;
+  font-weight: 950;
+}
+
+.ficha-categoria {
+  margin-top: 4px;
+  color: #475569;
+  font-size: .76rem;
+  font-weight: 800;
+}
+
+.ficha-codigo {
+  padding: 5px 8px;
+  border-radius: 999px;
+  background: #fef3c7;
+  color: #92400e;
+  font-size: .62rem;
+  font-weight: 950;
+  white-space: nowrap;
+}
+
+.ficha-tecnica-linha {
+  margin-top: 12px;
+}
+
+.ficha-tecnica-label {
+  margin-bottom: 7px;
+  color: #64748b;
+  font-size: .67rem;
+  font-weight: 950;
+  letter-spacing: .04em;
+  text-transform: uppercase;
+}
+
+.ficha-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.ficha-tag {
+  padding: 6px 8px;
+  border: 1px solid #dbeafe;
+  border-radius: 8px;
+  background: #eff6ff;
+  color: #1e3a8a;
+  font-size: .67rem;
+  font-weight: 850;
+  line-height: 1.2;
+}
+
+.ficha-oleo-details {
+  margin-top: 11px;
+  border-top: 1px solid #e2e8f0;
+  padding-top: 10px;
+}
+
+.ficha-oleo-details summary {
+  color: #1e3a8a;
+  font-size: .72rem;
+  font-weight: 900;
+  cursor: pointer;
+  text-transform: uppercase;
+}
+
+.ficha-oleo-details ul {
+  margin: 9px 0 0 18px;
+  color: #475569;
+  font-size: .73rem;
+  font-weight: 650;
+  line-height: 1.5;
+}
+
+.ficha-oleo-aviso {
+  padding: 13px 14px;
+  border-radius: 13px;
+  border: 1px solid #fde68a;
+  background: #fffbeb;
+  color: #854d0e;
+  font-size: .75rem;
+  font-weight: 800;
+  line-height: 1.45;
+}
+
+@media (max-width: 900px) {
+  .ficha-oleo-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 560px) {
+  .sistema-principal.ficha-oleo-focus .card {
+    padding: 12px 9px 120px !important;
+  }
+
+  .ficha-oleo-header {
+    align-items: flex-start;
+    padding: 14px;
+  }
+
+  .ficha-oleo-title-icon {
+    width: 42px;
+    height: 42px;
+    min-width: 42px;
+  }
+
+  .ficha-oleo-header h2 {
+    font-size: .94rem;
+  }
+
+  .ficha-oleo-header p {
+    font-size: .69rem;
+  }
+
+  .ficha-oleo-local-badge {
+    display: none;
+  }
+
+  .ficha-oleo-form {
+    padding: 13px;
+  }
+
+  .ficha-oleo-grid {
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
+
+  .ficha-resultado-topo {
+    grid-template-columns: 1fr;
+    padding: 14px;
+  }
+
+  .ficha-volume {
+    width: 100%;
+  }
+
+  .ficha-oleos-lista {
+    padding: 10px;
+  }
+
+  .ficha-oleo-opcao {
+    padding: 12px;
+  }
+}
+</style>
+
+
+<style id="lecar-lista-geral-style">
+/* ========== LISTA GERAL: DISTRIBUIÇÃO DE SERVIÇOS PELO PAINEL ADM ========== */
+.lista-geral-head {
+  margin: 0 6px 12px;
+  padding: 13px 14px;
+  border: 1px solid #dbeafe;
+  border-radius: 16px;
+  background: linear-gradient(90deg, #f8fafc, #eef4ff);
+  color: #1e3a8a;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  box-shadow: 0 7px 18px rgba(15, 23, 42, .06);
+}
+
+.lista-geral-head strong {
+  display: block;
+  font-size: .76rem;
+  font-weight: 950;
+  line-height: 1.25;
+  letter-spacing: .03em;
+}
+
+.lista-geral-head span {
+  display: block;
+  margin-top: 4px;
+  color: #64748b;
+  font-size: .67rem;
+  font-weight: 750;
+  line-height: 1.35;
+  text-transform: uppercase;
+}
+
+.lista-geral-resumo {
+  min-width: 112px;
+  padding: 8px 10px;
+  border: 1px solid #bfdbfe;
+  border-radius: 11px;
+  background: #ffffff;
+  color: #1d4ed8;
+  font-size: .62rem;
+  font-weight: 950;
+  text-align: center;
+  text-transform: uppercase;
+}
+
+.service-card-geral {
+  position: relative;
+}
+
+.service-card-geral.lista-geral-assumido {
+  opacity: .78;
+  filter: saturate(.72);
+}
+
+.service-card-geral .service-side {
+  grid-template-rows: auto 1fr auto !important;
+}
+
+.lista-geral-distribuicao {
+  min-height: 34px;
+  margin-left: 44px;
+  padding: 0 10px;
+  border-radius: 11px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  font-size: .61rem;
+  font-weight: 950;
+  letter-spacing: .025em;
+  text-align: center;
+  text-transform: uppercase;
+}
+
+.lista-geral-distribuicao.disponivel {
+  border: 1px solid #86efac;
+  background: #ecfdf5;
+  color: #166534;
+}
+
+.lista-geral-distribuicao.assumido {
+  border: 1px solid #cbd5e1;
+  background: #f1f5f9;
+  color: #475569;
+}
+
+.lista-geral-acao {
+  width: 100%;
+  min-height: 36px;
+  margin: 0;
+  border-radius: 11px;
+  background: linear-gradient(90deg, #1d4ed8, #2563eb);
+  color: #ffffff;
+  font-size: .64rem;
+  font-weight: 950;
+  letter-spacing: .025em;
+  box-shadow: 0 5px 13px rgba(37, 99, 235, .22);
+}
+
+.lista-geral-acao:hover {
+  opacity: 1;
+  transform: none;
+  background: linear-gradient(90deg, #1e40af, #1d4ed8);
+}
+
+.lista-geral-acao:disabled {
+  cursor: not-allowed;
+  opacity: 1;
+  background: #e2e8f0;
+  color: #64748b;
+  box-shadow: none;
+}
+
+.lista-geral-prioridade {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 24px;
+  padding: 0 8px;
+  border-radius: 999px;
+  background: #fff7ed;
+  border: 1px solid #fed7aa;
+  color: #c2410c;
+  font-size: .54rem;
+  font-weight: 950;
+  text-transform: uppercase;
+}
+
+@media (max-width: 600px) {
+  .lista-geral-head {
+    margin-left: 2px;
+    margin-right: 2px;
+    align-items: flex-start;
+  }
+
+  .lista-geral-head strong { font-size: .65rem; }
+  .lista-geral-head span { font-size: .57rem; }
+  .lista-geral-resumo { min-width: 88px; font-size: .53rem; }
+
+  .lista-geral-distribuicao {
+    margin-left: 36px;
+    min-height: 31px;
+    font-size: .52rem;
+  }
+
+  .lista-geral-acao {
+    min-height: 33px;
+    font-size: .55rem;
+  }
+}
+</style>
+
+</head>
   <body translate="no">
 
     <!-- ========== TELA DE LOGIN ========== -->
@@ -6201,7 +6712,7 @@
       </div>
 
       <div class="powered">
-        powered by lehub.top - 2026 - versão 2.1.1
+        powered by lehub.top - 2026 - versão 2.2.0
       </div>
     </div>
 
@@ -6241,7 +6752,8 @@
           </svg>
           <span id="notificacaoBadge" class="notificacao-badge">0</span>
         </button>
-        <button type="button" id="btnMenuHamburguer" class="btn-menu-hamburguer topbar-icon-btn menu-exclusivo-leandro" title="Menu administrativo" aria-label="Abrir menu administrativo" onclick="alternarDrawerLateral()">
+
+        <button type="button" id="btnMenuHamburguer" class="btn-menu-hamburguer topbar-icon-btn menu-exclusivo-leandro show" title="Menu do sistema" aria-label="Abrir menu do sistema" onclick="alternarDrawerLateral()">
           <svg viewBox="0 0 24 24" aria-hidden="true">
             <path d="M4 7H20"></path><path d="M4 12H20"></path><path d="M4 17H20"></path>
           </svg>
@@ -6263,17 +6775,25 @@
           <div id="drawerUsuarioPerfil" class="drawer-user-role">MECÂNICO</div>
         </div>
         <div class="drawer-menu-list">
-          <button type="button" class="drawer-menu-btn" onclick="fecharDrawerLateral(); abrirCentralNotificacoes();">
-            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M18 8A6 6 0 0 0 6 8C6 15 3 16 3 16H21C21 16 18 15 18 8Z"></path><path d="M10 20H14"></path></svg>
-            Notificações
-          </button>
           <button type="button" class="drawer-menu-btn" onclick="fecharDrawerLateral(); abrirAbaConfig();">
             <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15A1.7 1.7 0 0 0 19.7 16.9L19.8 17A2 2 0 1 1 17 19.8L16.9 19.7A1.7 1.7 0 0 0 15 19.4A1.7 1.7 0 0 0 14 21V21.2A2 2 0 1 1 10 21.2V21A1.7 1.7 0 0 0 9 19.4A1.7 1.7 0 0 0 7.1 19.7L7 19.8A2 2 0 1 1 4.2 17L4.3 16.9A1.7 1.7 0 0 0 4.6 15A1.7 1.7 0 0 0 3 14H2.8A2 2 0 1 1 2.8 10H3A1.7 1.7 0 0 0 4.6 9A1.7 1.7 0 0 0 4.3 7.1L4.2 7A2 2 0 1 1 7 4.2L7.1 4.3A1.7 1.7 0 0 0 9 4.6A1.7 1.7 0 0 0 10 3V2.8A2 2 0 1 1 14 2.8V3A1.7 1.7 0 0 0 15 4.6A1.7 1.7 0 0 0 16.9 4.3L17 4.2A2 2 0 1 1 19.8 7L19.7 7.1A1.7 1.7 0 0 0 19.4 9A1.7 1.7 0 0 0 21 10H21.2A2 2 0 1 1 21.2 14H21A1.7 1.7 0 0 0 19.4 15Z"></path></svg>
             Configurações
           </button>
+          <button type="button" id="btnFichaOleo" class="drawer-menu-btn" aria-pressed="false" onclick="fecharDrawerLateral(); alternarFichaOleo();">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.8C12 2.8 6.4 9.1 6.4 14.1A5.6 5.6 0 0 0 17.6 14.1C17.6 9.1 12 2.8 12 2.8Z"></path><path d="M9.2 15.1C9.5 16.6 10.5 17.4 12 17.7"></path></svg>
+            Ficha de lubrificação
+          </button>
+          <button type="button" class="drawer-menu-btn" onclick="fecharDrawerLateral(); abrirRankingDoDia();">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 4H16V8C16 11.3 14.3 13.5 12 13.5C9.7 13.5 8 11.3 8 8V4Z"></path><path d="M8 6H4V8C4 10.2 5.6 12 8.4 12"></path><path d="M16 6H20V8C20 10.2 18.4 12 15.6 12"></path><path d="M12 13.5V18"></path><path d="M8.5 20H15.5"></path><path d="M10 18H14"></path></svg>
+            Ranking do dia
+          </button>
         </div>
         <div id="drawerAdminLeandro" class="drawer-admin-section">
-          <div class="drawer-admin-label">Administração Leandro</div>
+          <div class="drawer-admin-label">Administração</div>
+          <button type="button" class="drawer-menu-btn" onclick="fecharDrawerLateral(); abrirPainelAdminServicos();">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5H20V19H4Z"></path><path d="M8 9H16"></path><path d="M8 13H13"></path><path d="M17 13V17"></path><path d="M15 15H19"></path></svg>
+            Painel ADM de serviços
+          </button>
           <button type="button" class="drawer-menu-btn" onclick="fecharDrawerLateral(); abrirPublicarNotificacao();">
             <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 11L21 4V20L3 13V11Z"></path><path d="M7 14V19"></path></svg>
             Publicar aviso
@@ -6350,6 +6870,18 @@
             <button class="tab" onclick="navegar('aba_finalizados'); trocarAba('finalizados')"><span class="action-icon-wrap"><svg class="ui-icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="8.5"></circle><path d="M8.2 12.2L10.7 14.7L16 9.3"></path></svg></span><span>Veículos Finalizados</span></button>
           </div>
 
+          <!-- Aba Lista Geral: alimentada pelo Painel ADM -->
+          <div id="abaListaGeral" class="tab-content">
+            <div class="lista-geral-head">
+              <div>
+                <strong>LISTA GERAL DE SERVIÇOS</strong>
+                <span>Serviços publicados pelo Painel ADM. O primeiro mecânico que assumir recebe o serviço em sua lista operacional.</span>
+              </div>
+              <div id="listaGeralResumo" class="lista-geral-resumo">CARREGANDO...</div>
+            </div>
+            <div id="listaGeral" class="services-list"></div>
+          </div>
+
           <!-- Aba Lista de Serviços -->
           <div id="abaServicos" class="tab-content active">
             <div id="listaServicos" class="services-list"></div>
@@ -6368,6 +6900,72 @@
           <div id="abaConfig" class="tab-content config-tab-content">
             <div id="configTabMount"></div>
           </div>
+
+          <!-- Aba independente: Ficha Técnica de Óleo -->
+          <div id="abaFichaOleo" class="tab-content ficha-oleo-tab">
+            <div class="ficha-oleo-shell">
+              <header class="ficha-oleo-header">
+                <div class="ficha-oleo-title-wrap">
+                  <span class="ficha-oleo-title-icon" aria-hidden="true">
+                    <svg viewBox="0 0 24 24">
+                      <path d="M12 2.8C12 2.8 6.4 9.1 6.4 14.1A5.6 5.6 0 0 0 17.6 14.1C17.6 9.1 12 2.8 12 2.8Z"></path>
+                      <path d="M9.2 15.1C9.5 16.6 10.5 17.4 12 17.7"></path>
+                    </svg>
+                  </span>
+                  <div>
+                    <h2>Ficha Técnica de Óleo</h2>
+                    <p>Consulta por marca, modelo, ano e motor. Sem API, placa ou vínculo com o cadastro.</p>
+                  </div>
+                </div>
+                <span class="ficha-oleo-local-badge">LECAR ENGINE</span>
+              </header>
+
+              <section class="ficha-oleo-form" aria-label="Filtros da ficha técnica">
+                <div class="ficha-oleo-grid">
+                  <div class="ficha-oleo-field">
+                    <label for="fichaMarca">Marca</label>
+                    <select id="fichaMarca" onchange="fichaOleoSelecionarMarca()">
+                      <option value="">CARREGANDO...</option>
+                    </select>
+                  </div>
+                  <div class="ficha-oleo-field">
+                    <label for="fichaModelo">Modelo</label>
+                    <select id="fichaModelo" disabled onchange="fichaOleoSelecionarModelo()">
+                      <option value="">SELECIONE A MARCA</option>
+                    </select>
+                  </div>
+                  <div class="ficha-oleo-field">
+                    <label for="fichaAno">Ano</label>
+                    <select id="fichaAno" disabled onchange="fichaOleoSelecionarAno()">
+                      <option value="">SELECIONE O MODELO</option>
+                    </select>
+                  </div>
+                  <div class="ficha-oleo-field">
+                    <label for="fichaMotor">Motor</label>
+                    <select id="fichaMotor" disabled onchange="fichaOleoRenderizarResultado()">
+                      <option value="">SELECIONE O ANO</option>
+                    </select>
+                  </div>
+                </div>
+
+                <div id="fichaOleoStatus" class="ficha-oleo-status" role="status">
+                  Abra a consulta e selecione os dados do veículo.
+                </div>
+
+                <div class="ficha-oleo-actions">
+                  <button type="button" class="ficha-oleo-reset" onclick="fichaOleoNovaConsulta()">Nova consulta</button>
+                </div>
+              </section>
+
+              <section id="fichaOleoResultados" class="ficha-oleo-resultados" aria-live="polite">
+                <div class="ficha-resultado-vazio">O resultado técnico aparecerá aqui.</div>
+              </section>
+
+              <div id="fichaOleoAviso" class="ficha-oleo-aviso">
+                INFORMAÇÕES TÉCNICAS RETIRADAS DE FABRICANTES (SHELL, MOTUL, VALVOLINE E LUBRAX), CRUZADAS, CONFIRMADAS E VALIDADAS MANUALMENTE PELA EQUIPE LECAR.
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -6375,25 +6973,25 @@
 
     </div>
     <nav class="bottom-nav" aria-label="Navegação principal">
+      <button type="button" class="bottom-nav-item" data-nav="geral" onclick="navegar('nav_lista_geral'); trocarAba('geral')">
+        <svg class="bottom-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5H20"></path><path d="M4 12H20"></path><path d="M4 19H20"></path><circle cx="7" cy="5" r="1"></circle><circle cx="7" cy="12" r="1"></circle><circle cx="7" cy="19" r="1"></circle></svg>
+        <span>Lista Geral</span>
+      </button>
       <button type="button" class="bottom-nav-item active" data-nav="servicos" onclick="navegar('nav_servicos'); trocarAba('servicos')">
         <svg class="bottom-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 13L7 7.8C7.3 7 8.1 6.5 9 6.5H15C15.9 6.5 16.7 7 17 7.8L19 13"></path><path d="M4.5 13H19.5C20.3 13 21 13.7 21 14.5V18H3V14.5C3 13.7 3.7 13 4.5 13Z"></path><path d="M6 18V20"></path><path d="M18 18V20"></path><circle cx="7" cy="15.8" r="1.1"></circle><circle cx="17" cy="15.8" r="1.1"></circle></svg>
         <span>Serviços</span>
-      </button>
-      <button type="button" class="bottom-nav-item" data-nav="finalizados" onclick="navegar('nav_finalizados'); trocarAba('finalizados')">
-        <svg class="bottom-icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="8.5"></circle><path d="M8.2 12.2L10.7 14.7L16 9.3"></path></svg>
-        <span>Finalizados</span>
       </button>
       <button type="button" class="bottom-nav-item bottom-plus" data-nav="cadastrar" onclick="navegar('nav_cadastrar'); toggleCadastroCard()">
         <span class="plus-circle"><svg class="bottom-icon plus-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5V19"></path><path d="M5 12H19"></path></svg></span>
         <span>Cadastrar</span>
       </button>
+      <button type="button" class="bottom-nav-item" data-nav="finalizados" onclick="navegar('nav_finalizados'); trocarAba('finalizados')">
+        <svg class="bottom-icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="8.5"></circle><path d="M8.2 12.2L10.7 14.7L16 9.3"></path></svg>
+        <span>Finalizados</span>
+      </button>
       <button type="button" class="bottom-nav-item" data-nav="relatorio" onclick="navegar('abrir_confirmacao_relatorio'); abrirModalConfirmacaoRelatorio()">
         <svg class="bottom-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20H20"></path><path d="M7 17V10"></path><path d="M12 17V5"></path><path d="M17 17V8"></path></svg>
-        <span>Relatório</span>
-      </button>
-      <button type="button" class="bottom-nav-item" data-nav="config" onclick="navegar('nav_configuracoes'); abrirAbaConfig()">
-        <svg class="bottom-icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="3.2"></circle><path d="M19.4 15A7.8 7.8 0 0 0 19.7 13.9L21.3 12.7C21.6 12.5 21.7 12.1 21.5 11.8L20 9.2C19.8 8.9 19.4 8.8 19.1 8.9L17.2 9.7A7.2 7.2 0 0 0 15.3 8.6L15 6.6C14.9 6.3 14.6 6 14.2 6H11.8C11.4 6 11.1 6.3 11 6.6L10.7 8.6A7.2 7.2 0 0 0 8.8 9.7L6.9 8.9C6.6 8.8 6.2 8.9 6 9.2L4.5 11.8C4.3 12.1 4.4 12.5 4.7 12.7L6.3 13.9A7.8 7.8 0 0 0 6.6 15A7.8 7.8 0 0 0 6.3 16.1L4.7 17.3C4.4 17.5 4.3 17.9 4.5 18.2L6 20.8C6.2 21.1 6.6 21.2 6.9 21.1L8.8 20.3A7.2 7.2 0 0 0 10.7 21.4L11 23.4C11.1 23.7 11.4 24 11.8 24H14.2C14.6 24 14.9 23.7 15 23.4L15.3 21.4A7.2 7.2 0 0 0 17.2 20.3L19.1 21.1C19.4 21.2 19.8 21.1 20 20.8L21.5 18.2C21.7 17.9 21.6 17.5 21.3 17.3L19.7 16.1A7.8 7.8 0 0 0 19.4 15Z" transform="translate(-1 -3)"></path></svg>
-        <span>Configurações</span>
+        <span>Relatórios</span>
       </button>
     </nav>
 
@@ -6884,7 +7482,7 @@
             </div>
           </div>
 
-          <div class="config-section">
+          <div class="config-section" id="rankingDoDiaBox">
             <div class="ranking-header-premium">
               <div class="config-section-head" style="margin:0;">
                 <span class="config-icon gold">
@@ -6997,23 +7595,6 @@
         </div>
       </div>
     </div>
-
-
-
-    <!-- Tutorial inicial das novas funções -->
-    <div id="tutorialBalaoLeCar" class="tutorial-lecar-balao" role="dialog" aria-live="polite" aria-labelledby="tutorialLeCarTitulo">
-      <div class="tutorial-lecar-etiqueta">✨ NOVIDADE NO LECAR ✨</div>
-      <h3 id="tutorialLeCarTitulo">🚗 CONHEÇA AS NOVIDADES</h3>
-      <p id="tutorialLeCarTexto"></p>
-      <div class="tutorial-lecar-rodape">
-        <span id="tutorialLeCarProgresso" class="tutorial-lecar-progresso">1 DE 2</span>
-        <div class="tutorial-lecar-acoes">
-          <button type="button" class="tutorial-lecar-pular" onclick="pularTutorialLeCar()">PULAR ⏭️</button>
-          <button type="button" id="tutorialLeCarBtnAvancar" class="tutorial-lecar-avancar" onclick="avancarTutorialLeCar()">PRÓXIMO 👉</button>
-        </div>
-      </div>
-    </div>
-
     <script>
       /* ========= CONFIG FIREBASE ========= */
 const firebaseConfig = {
@@ -7029,7 +7610,7 @@ firebase.initializeApp(firebaseConfig);
 const db = firebase.firestore();
 
       // ========== SISTEMA DE AUTENTICAÇÃO ==========
-      const usuariosPermitidos = ["LEANDRO", "JUNINHO_DEL", "HARON", "ABRAÃO", "PEDRO", "MAICON", "DOUGLAS"];
+      const usuariosPermitidos = ["LEANDRO", "HARON", "ABRAÃO", "PEDRO", "MAICON", "DOUGLAS"];
       const senhaCorreta = "oficina26";
       let mostrarTodosFinalizados = false;
       let ordemFinalizados = "recentes";
@@ -7083,9 +7664,10 @@ async function reabrirParaServico() {
 }
 
 function verificarSessao() {
-  const usuarioLogado = localStorage.getItem("sessao_lecar");
+  const usuarioLogado = String(localStorage.getItem("sessao_lecar") || "").trim().toUpperCase();
 
-  if (!usuarioLogado) {
+  if (!usuarioLogado || !usuariosPermitidos.includes(usuarioLogado)) {
+    localStorage.removeItem("sessao_lecar");
     document.body.classList.remove("lecar-logado");
     document.getElementById("loginPage").style.display = "flex";
     document.getElementById("sistemaPrincipal").style.display = "none";
@@ -7101,7 +7683,6 @@ function verificarSessao() {
   iniciarSistemaNotificacoes();
 
   trocarAba("servicos");
-  iniciarTutorialNovasFuncoes();
 }
 
 function obterInicioHojeISO() {
@@ -7215,7 +7796,6 @@ setTimeout(() => {
 
   sincronizarFirebase();
   iniciarSistemaNotificacoes();
-  iniciarTutorialNovasFuncoes();
 
 }, 2000);
         } else {
@@ -7250,6 +7830,14 @@ setTimeout(() => {
 
         document.body.classList.remove("lecar-modal-open", "modal-open");
         trocarAba("config");
+      }
+
+      function abrirRankingDoDia() {
+        abrirAbaConfig();
+        window.setTimeout(() => {
+          const ranking = document.getElementById("rankingDoDiaBox");
+          if (ranking) ranking.scrollIntoView({ behavior: "smooth", block: "start" });
+        }, 80);
       }
 
       function abrirModalConfig() {
@@ -7634,6 +8222,7 @@ setTimeout(() => {
       }
 
       function toggleCadastroCard() {
+        if (typeof fecharFichaOleo === "function") fecharFichaOleo(false);
         const cadastroCard = document.getElementById("cadastroCard");
         const cadastroToggleIcon = document.getElementById("cadastroToggleIcon");
 
@@ -7686,6 +8275,7 @@ setTimeout(() => {
       const atm = document.getElementById("atm");
       const bolsao = document.getElementById("bolsao");
       const index = document.getElementById("index");
+      const listaGeralHTML = document.getElementById("listaGeral");
       const listaServicosHTML = document.getElementById("listaServicos");
       const listaFinalizadosHTML = document.getElementById("listaFinalizados");
       const buscaSidebar = document.getElementById("buscaSidebar");
@@ -7701,7 +8291,6 @@ setTimeout(() => {
       const oleoQuantidade = document.getElementById("oleoQuantidade");
       const oleoViscosidade = document.getElementById("oleoViscosidade");
       const pecaCategoria = document.getElementById("pecaCategoria");
-      const pecaLado = document.getElementById("pecaLado");
       const pecasCategoriaOpcoes = document.getElementById("pecasCategoriaOpcoes");
       const pecaCategoriaAviso = document.getElementById("pecaCategoriaAviso");
 
@@ -7711,6 +8300,10 @@ setTimeout(() => {
       const fornecedorTerceiroInput = document.getElementById("fornecedorTerceiroInput");
 
       let dados = [];
+      let dadosListaGeral = [];
+      let listaGeralCarregada = false;
+      let listaGeralUnsubscribe = null;
+      let assumindoServicoListaGeral = false;
       let dadosRanking = [];
       let dadosBuscaGlobal = [];
       let dadosBuscaGlobalCarregadosEm = 0;
@@ -7736,7 +8329,220 @@ setTimeout(() => {
       let historicosBuscaAtuais = [];
 
       // ========== FUNÇÕES DO SISTEMA DE ABAS ==========
+      function timestampServicoListaGeral(v) {
+        if (v?.criadoEm?.toMillis) return v.criadoEm.toMillis();
+        const valor = v?.criadoEmISO || v?.dataCriacaoISO || v?.dataCriacao || "";
+        const data = new Date(valor);
+        return Number.isNaN(data.getTime()) ? 0 : data.getTime();
+      }
+
+      function statusDistribuicaoListaGeral(v) {
+        const statusAtual = normalizarTextoBusca(v?.statusDistribuicao || v?.status_distribuicao || "DISPONIVEL");
+        return statusAtual === "ASSUMIDO" ? "ASSUMIDO" : "DISPONIVEL";
+      }
+
+      function formatarDataServicoListaGeral(v) {
+        const timestamp = timestampServicoListaGeral(v);
+        if (!timestamp) return { data: "-", hora: "-" };
+        const data = new Date(timestamp);
+        return {
+          data: data.toLocaleDateString("pt-BR"),
+          hora: data.toLocaleTimeString("pt-BR", { hour: "2-digit", minute: "2-digit" })
+        };
+      }
+
+      function renderizarServicoCardGeral(v) {
+        const modelo = normalizarTextoBusca(v.veiculo) || "VEÍCULO NÃO INFORMADO";
+        const dataHora = formatarDataServicoListaGeral(v);
+        const resumo = gerarResumoServico(v.descricao);
+        const distribuicao = statusDistribuicaoListaGeral(v);
+        const assumido = distribuicao === "ASSUMIDO";
+        const mecanico = normalizarTextoBusca(v.mecanicoResponsavel || v.mecanico_responsavel || "");
+        const usuarioAtual = usuarioSessaoLeCar();
+        const assumidoPeloUsuario = assumido && mecanico === usuarioAtual;
+        const prioridade = normalizarTextoBusca(v.prioridade || "NORMAL");
+        const statusOperacional = v.statusServico || "AGUARDANDO ORÇAMENTO";
+        const corClass = obterClasseStatusOperacional(statusOperacional);
+
+        const rodape = assumido
+          ? `<div class="lista-geral-distribuicao assumido">${assumidoPeloUsuario ? "ASSUMIDO POR VOCÊ" : `INDISPONÍVEL • ${escaparHTML(mecanico || "OUTRO MECÂNICO")}`}</div>`
+          : `<button type="button" class="lista-geral-acao" onclick="assumirServicoListaGeral('${escaparHTML(v.id)}', this)">ASSUMIR SERVIÇO</button>`;
+
+        return `
+          <article class="service-card service-card-geral ${assumido ? "lista-geral-assumido" : ""}">
+            <section class="vehicle-side vehicle-side-clean">
+              <div class="vehicle-info">
+                <div class="plate">${escaparHTML(v.placa || "-")}</div>
+                <div class="vehicle-model">${escaparHTML(modelo)}</div>
+                <div class="service-description-left" title="${escaparHTML(v.descricao || "")}">
+                  <span class="service-title-left">${escaparHTML(resumo)}</span>
+                </div>
+              </div>
+            </section>
+            <section class="service-side">
+              <div class="service-head status-only">
+                <span class="status-pill ${corClass}"><span class="status-dot"></span>${escaparHTML(obterStatusCurto(statusOperacional))}</span>
+                ${prioridade === "URGENTE" ? '<span class="lista-geral-prioridade">URGENTE</span>' : ""}
+              </div>
+              <div class="service-meta">
+                <div class="meta-row"><svg class="ui-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M21 10C21 16 12 22 12 22C12 22 3 16 3 10A9 9 0 0 1 21 10Z"></path><circle cx="12" cy="10" r="3"></circle></svg><span>${escaparHTML(v.origem || "-")}</span></div>
+                <div class="meta-row"><svg class="ui-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M16 2V6"></path><path d="M8 2V6"></path><path d="M3 10H21"></path><path d="M5 4H19C20.1 4 21 4.9 21 6V20C21 21.1 20.1 22 19 22H5C3.9 22 3 21.1 3 20V6C3 4.9 3.9 4 5 4Z"></path></svg><span>${escaparHTML(dataHora.data)} • ${escaparHTML(dataHora.hora)}</span></div>
+                <div class="meta-row"><svg class="ui-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5H20V19H4Z"></path><path d="M8 9H16"></path><path d="M8 13H14"></path></svg><span>PUBLICADO PELO PAINEL ADM</span></div>
+              </div>
+              ${rodape}
+            </section>
+          </article>`;
+      }
+
+      function atualizarResumoListaGeral() {
+        const resumo = document.getElementById("listaGeralResumo");
+        if (!resumo) return;
+        const disponiveis = dadosListaGeral.filter(v => statusDistribuicaoListaGeral(v) === "DISPONIVEL").length;
+        const assumidos = dadosListaGeral.filter(v => statusDistribuicaoListaGeral(v) === "ASSUMIDO").length;
+        resumo.textContent = `${disponiveis} DISPONÍVEIS • ${assumidos} ASSUMIDOS`;
+      }
+
+      function renderizarListaGeral() {
+        if (!listaGeralHTML) return;
+        const ordenados = [...dadosListaGeral].sort((a, b) => {
+          const aAssumido = statusDistribuicaoListaGeral(a) === "ASSUMIDO" ? 1 : 0;
+          const bAssumido = statusDistribuicaoListaGeral(b) === "ASSUMIDO" ? 1 : 0;
+          if (aAssumido !== bAssumido) return aAssumido - bAssumido;
+          const diferenca = timestampServicoListaGeral(b) - timestampServicoListaGeral(a);
+          return diferenca || String(a.placa || "").localeCompare(String(b.placa || ""));
+        });
+
+        atualizarResumoListaGeral();
+        listaGeralHTML.innerHTML = ordenados.length
+          ? ordenados.map(renderizarServicoCardGeral).join("")
+          : '<div class="empty-state">Nenhum serviço publicado pelo Painel ADM.</div>';
+      }
+
+      function iniciarListaGeral() {
+        if (listaGeralCarregada || typeof listaGeralUnsubscribe === "function") {
+          renderizarListaGeral();
+          return;
+        }
+
+        listaGeralCarregada = true;
+        if (listaGeralHTML) listaGeralHTML.innerHTML = '<div class="empty-state">Carregando Lista Geral...</div>';
+
+        listaGeralUnsubscribe = db.collection("servicos_lista_geral")
+          .where("ativo", "==", true)
+          .onSnapshot(
+            snapshot => {
+              dadosListaGeral = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+              renderizarListaGeral();
+            },
+            erro => {
+              console.error("Erro ao carregar Lista Geral:", erro);
+              listaGeralCarregada = false;
+              listaGeralUnsubscribe = null;
+              if (listaGeralHTML) listaGeralHTML.innerHTML = '<div class="empty-state">Não foi possível carregar a Lista Geral.</div>';
+              const resumo = document.getElementById("listaGeralResumo");
+              if (resumo) resumo.textContent = "ERRO AO CARREGAR";
+            }
+          );
+      }
+
+      async function assumirServicoListaGeral(servicoId, botao) {
+        const usuario = usuarioSessaoLeCar();
+        if (!usuario || !servicoId || assumindoServicoListaGeral) return;
+
+        const servicoLocal = dadosListaGeral.find(item => item.id === servicoId);
+        if (!servicoLocal || statusDistribuicaoListaGeral(servicoLocal) !== "DISPONIVEL") {
+          alert("ESTE SERVIÇO JÁ FOI ASSUMIDO POR OUTRO MECÂNICO.");
+          return;
+        }
+
+        const confirmar = confirm(`ASSUMIR O SERVIÇO DO VEÍCULO ${servicoLocal.veiculo || "-"} • ${servicoLocal.placa || "-"}?`);
+        if (!confirmar) return;
+
+        assumindoServicoListaGeral = true;
+        const textoOriginal = botao?.textContent || "ASSUMIR SERVIÇO";
+        if (botao) {
+          botao.disabled = true;
+          botao.textContent = "ASSUMINDO...";
+        }
+
+        const geralRef = db.collection("servicos_lista_geral").doc(servicoId);
+        const veiculoRef = db.collection("veiculos").doc();
+        const agora = new Date();
+
+        try {
+          await db.runTransaction(async transaction => {
+            const snapshot = await transaction.get(geralRef);
+            if (!snapshot.exists) throw new Error("SERVICO_NAO_ENCONTRADO");
+
+            const servico = snapshot.data();
+            const statusAtual = statusDistribuicaoListaGeral(servico);
+            if (servico.ativo === false || statusAtual !== "DISPONIVEL") {
+              const erro = new Error("SERVICO_JA_ASSUMIDO");
+              erro.code = "SERVICO_JA_ASSUMIDO";
+              throw erro;
+            }
+
+            const descricaoServico = normalizarTextoBusca(servico.descricao || "");
+            const payloadVeiculo = {
+              veiculo: normalizarTextoBusca(servico.veiculo || ""),
+              placa: normalizarTextoBusca(servico.placa || ""),
+              descricao: descricaoServico,
+              trocaOleo: descricaoEhTrocaOleo(descricaoServico),
+              kmAtualOleo: "",
+              origem: normalizarTextoBusca(servico.origem || "-"),
+              prioridade: normalizarTextoBusca(servico.prioridade || "NORMAL"),
+              dataEntrada: agora.toLocaleString("pt-BR"),
+              dataEntradaISO: agora.toISOString(),
+              status: obterStatusCurto(servico.statusServico || "AGUARDANDO ORÇAMENTO"),
+              pecas: [],
+              mecanico_responsavel: usuario,
+              ultima_modificacao: agora.toLocaleString("pt-BR"),
+              ultima_modificacao_iso: agora.toISOString(),
+              origem_lista_geral: true,
+              lista_geral_id: servicoId,
+              painel_adm_criado_por: normalizarTextoBusca(servico.criadoPor || "LEANDRO")
+            };
+
+            transaction.update(geralRef, {
+              statusDistribuicao: "ASSUMIDO",
+              mecanicoResponsavel: usuario,
+              mecanico_responsavel: usuario,
+              assumidoEm: firebase.firestore.FieldValue.serverTimestamp(),
+              assumidoEmISO: agora.toISOString(),
+              veiculoId: veiculoRef.id,
+              statusServico: obterStatusCurto(servico.statusServico || "AGUARDANDO ORÇAMENTO"),
+              ultimaAtualizacao: firebase.firestore.FieldValue.serverTimestamp(),
+              ultimaAtualizacaoISO: agora.toISOString()
+            });
+            transaction.set(veiculoRef, payloadVeiculo);
+          });
+
+          registrarAtividadeLeCar("SERVICO_LISTA_GERAL_ASSUMIDO", {
+            registroId: servicoId,
+            veiculo: servicoLocal.veiculo,
+            placa: servicoLocal.placa,
+            descricao: servicoLocal.descricao,
+            mecanico: usuario
+          });
+          alert("SERVIÇO ASSUMIDO. ELE JÁ ESTÁ DISPONÍVEL NA SUA ABA SERVIÇOS.");
+        } catch (erro) {
+          console.error("Erro ao assumir serviço da Lista Geral:", erro);
+          if (erro?.code === "SERVICO_JA_ASSUMIDO" || erro?.message === "SERVICO_JA_ASSUMIDO") {
+            alert("OUTRO MECÂNICO ASSUMIU ESTE SERVIÇO ANTES DE VOCÊ.");
+          } else {
+            alert("NÃO FOI POSSÍVEL ASSUMIR O SERVIÇO. TENTE NOVAMENTE.");
+          }
+        } finally {
+          assumindoServicoListaGeral = false;
+          if (botao && document.body.contains(botao)) {
+            botao.disabled = false;
+            botao.textContent = textoOriginal;
+          }
+        }
+      }
+
       function trocarAba(aba) {
+        if (typeof fecharFichaOleo === "function") fecharFichaOleo(false);
         abaAtiva = aba;
         fecharCadastroCard();
         setBottomActive(aba);
@@ -7749,7 +8555,12 @@ setTimeout(() => {
         document.querySelectorAll(".tab").forEach((tab) => tab.classList.remove("active"));
         document.querySelectorAll(".tab-content").forEach((content) => content.classList.remove("active"));
 
-        if (aba === "servicos") {
+        if (aba === "geral") {
+          const abaListaGeral = document.getElementById("abaListaGeral");
+          if (abaListaGeral) abaListaGeral.classList.add("active");
+          iniciarListaGeral();
+          window.scrollTo({ top: 0, behavior: "smooth" });
+        } else if (aba === "servicos") {
           document.querySelector(".tab:nth-child(1)").classList.add("active");
           document.getElementById("abaServicos").classList.add("active");
         } else if (aba === "finalizados") {
@@ -8237,13 +9048,13 @@ async function salvar() {
 
 
       function obterClasseLinhaStatus(statusTexto) {
-        const statusNormalizado = String(statusTexto || "").toUpperCase().trim();
+        const statusNormalizado = normalizarTextoBusca(statusTexto);
 
-        if (statusNormalizado === "AGUARDANDO ORÇAMENTO") return "status-row-orcamento";
-        if (statusNormalizado === "AGUARDANDO PEÇAS") return "status-row-pecas";
-        if (statusNormalizado === "AGUARDANDO SERVIÇO") return "status-row-servico";
-        if (statusNormalizado === "FORNECEDOR") return "status-row-fornecedor";
-        if (statusNormalizado === "VEÍCULO FINALIZADO") return "status-row-finalizado";
+        if (statusNormalizado === "AGUARDANDO ORCAMENTO") return "status-row-orcamento";
+        if (statusNormalizado === "AGUARDANDO PECAS") return "status-row-pecas";
+        if (statusNormalizado === "AGUARDANDO SERVICO") return "status-row-servico";
+        if (statusNormalizado === "FORNECEDOR" || statusNormalizado === "ENVIAR PARA TERCEIROS") return "status-row-fornecedor";
+        if (statusNormalizado === "VEICULO FINALIZADO") return "status-row-finalizado";
 
         return "";
       }
@@ -8286,7 +9097,7 @@ async function salvar() {
 
       function setBottomActive(aba) {
         document.querySelectorAll(".bottom-nav-item").forEach((item) => item.classList.remove("active"));
-        const alvo = aba === "finalizados" ? "finalizados" : aba === "cadastrar" ? "cadastrar" : aba === "config" ? "config" : "servicos";
+        const alvo = aba === "geral" ? "geral" : aba === "finalizados" ? "finalizados" : aba === "cadastrar" ? "cadastrar" : "servicos";
         const item = document.querySelector(`.bottom-nav-item[data-nav="${alvo}"]`);
         if (item) item.classList.add("active");
       }
@@ -8347,28 +9158,32 @@ async function salvar() {
         return { data, hora };
       }
 
+      function obterClasseStatusOperacional(status) {
+        const chave = normalizarTextoBusca(status);
+        if (chave === "AGUARDANDO ORCAMENTO") return "status-agendamento";
+        if (chave === "AGUARDANDO PECAS") return "status-pecas";
+        if (chave === "AGUARDANDO SERVICO") return "status-servico";
+        if (chave === "FORNECEDOR" || chave === "ENVIAR PARA TERCEIROS") return "status-fornecedor";
+        if (chave === "VEICULO FINALIZADO") return "status-finalizado";
+        return "status-servico";
+      }
+
       function obterStatusCurto(status) {
-        const texto = String(status || '-').toUpperCase().trim();
-        if (texto === 'AGUARDANDO ORÇAMENTO') return 'AGUARDANDO ORÇAMENTO';
-        if (texto === 'AGUARDANDO PEÇAS') return 'AGUARDANDO PEÇAS';
-        if (texto === 'AGUARDANDO SERVIÇO') return 'AGUARDANDO SERVIÇO';
-        if (texto === 'VEÍCULO FINALIZADO') return 'VEÍCULO FINALIZADO';
-        if (texto === 'ENVIAR PARA TERCEIROS') return 'ENVIAR PARA TERCEIROS';
-        if (texto === 'FORNECEDOR') return 'FORNECEDOR';
-        return texto || '-';
+        const chave = normalizarTextoBusca(status);
+        if (chave === "AGUARDANDO ORCAMENTO") return "AGUARDANDO ORÇAMENTO";
+        if (chave === "AGUARDANDO PECAS") return "AGUARDANDO PEÇAS";
+        if (chave === "AGUARDANDO SERVICO") return "AGUARDANDO SERVIÇO";
+        if (chave === "VEICULO FINALIZADO") return "VEÍCULO FINALIZADO";
+        if (chave === "ENVIAR PARA TERCEIROS") return "ENVIAR PARA TERCEIROS";
+        if (chave === "FORNECEDOR") return "FORNECEDOR";
+        return String(status || "-").toUpperCase().trim() || "-";
       }
 
       function renderizarServicoCard(v, finalizado = false) {
         const modelo = normalizarTextoBusca(v.veiculo) || "VEÍCULO CADASTRADO";
         const dataHora = obterPartesData(finalizado ? (v.dataFinalizacao || v.ultima_modificacao || v.dataEntrada) : (v.dataEntrada || v.ultima_modificacao || v.dataFinalizacao));
         const resumo = gerarResumoServico(v.descricao);
-        let corClass = "";
-        if (v.status === "AGUARDANDO ORÇAMENTO") corClass = "status-agendamento";
-        else if (v.status === "AGUARDANDO PEÇAS") corClass = "status-pecas";
-        else if (v.status === "AGUARDANDO SERVIÇO") corClass = "status-servico";
-        else if (v.status === "FORNECEDOR") corClass = "status-fornecedor";
-        else if (v.status === "VEÍCULO FINALIZADO") corClass = "status-finalizado";
-        else corClass = "status-servico";
+        const corClass = obterClasseStatusOperacional(v.status);
         const cardClick = finalizado ? `onclick="navegar('abrir_finalizado_${v.iOriginal}'); abrirModalFinalizado(${v.iOriginal})"` : "";
         const statusClick = finalizado
           ? `onclick="event.stopPropagation(); navegar('abrir_modal_status_finalizado_${v.iOriginal}'); abrirModalStatusFinalizados(${v.iOriginal})"`
@@ -9563,6 +10378,7 @@ async function confirmarEnvioTerceiro() {
           ...dados[indexLocal],
           ...payload
         };
+        await sincronizarStatusListaGeral(dados[indexLocal], payload.status);
       }
     }
 
@@ -9592,6 +10408,23 @@ async function confirmarEnvioTerceiro() {
   } catch (err) {
     console.error("[v0] Erro ao enviar para terceiro:", err);
     alert("Erro ao enviar para terceiro. Verifique sua conexão.");
+  }
+}
+
+async function sincronizarStatusListaGeral(veiculo, novoStatus) {
+  const listaGeralId = veiculo?.lista_geral_id;
+  if (!listaGeralId) return;
+
+  try {
+    const agora = new Date();
+    await db.collection("servicos_lista_geral").doc(listaGeralId).update({
+      statusServico: obterStatusCurto(novoStatus),
+      ultimaAtualizacao: firebase.firestore.FieldValue.serverTimestamp(),
+      ultimaAtualizacaoISO: agora.toISOString()
+    });
+  } catch (erro) {
+    // O status operacional do veículo não pode falhar por causa da sincronização visual.
+    console.warn("Não foi possível sincronizar o status com a Lista Geral:", erro);
   }
 }
 
@@ -9639,6 +10472,7 @@ async function salvarStatus() {
 
   try {
     await db.collection("veiculos").doc(idStatusAtual).update(payload);
+    await sincronizarStatusListaGeral(veiculoAntesStatus, novoStatus);
     registrarAtividadeLeCar("STATUS_ALTERADO", {
       registroId: idStatusAtual,
       veiculo: veiculoAntesStatus?.veiculo,
@@ -9943,13 +10777,9 @@ ${gerarLinhaRelatorioMecanicos(relatoriosPorMecanico, "pendentes")}`;
         const botaoMenu = document.getElementById("btnMenuHamburguer");
 
         if (admin) admin.classList.toggle("show", acessoLeandro);
-        if (botaoMenu) botaoMenu.classList.toggle("show", acessoLeandro);
+        if (botaoMenu) botaoMenu.classList.add("show");
         if (nome) nome.textContent = usuario || "USUÁRIO";
         if (perfil) perfil.textContent = acessoLeandro ? "ADMINISTRADOR" : "MECÂNICO";
-
-        if (!acessoLeandro && document.body.classList.contains("drawer-open")) {
-          fecharDrawerLateral();
-        }
       }
 
       function notificacoesAtivas() {
@@ -10233,11 +11063,6 @@ ${gerarLinhaRelatorioMecanicos(relatoriosPorMecanico, "pendentes")}`;
 
       /* ========== DRAWER LATERAL DO MENU HAMBÚRGUER ========== */
       function abrirDrawerLateral() {
-        if (!usuarioPodePublicarNotificacao()) {
-          fecharDrawerLateral();
-          return;
-        }
-
         const drawer = document.getElementById('drawerLateral');
         atualizarPermissoesMenuNotificacoes();
         document.body.classList.add('drawer-open');
@@ -10251,16 +11076,19 @@ ${gerarLinhaRelatorioMecanicos(relatoriosPorMecanico, "pendentes")}`;
       }
 
       function alternarDrawerLateral() {
-        if (!usuarioPodePublicarNotificacao()) {
-          fecharDrawerLateral();
-          return;
-        }
-
         if (document.body.classList.contains('drawer-open')) {
           fecharDrawerLateral();
         } else {
           abrirDrawerLateral();
         }
+      }
+
+      function abrirPainelAdminServicos() {
+        if (!usuarioPodePublicarNotificacao()) {
+          alert("APENAS LEANDRO PODE ACESSAR O PAINEL ADM.");
+          return;
+        }
+        window.open("painel_adm_lecar.html", "_blank", "noopener");
       }
 
       document.addEventListener('keydown', (event) => {
@@ -10390,13 +11218,21 @@ ${gerarLinhaRelatorioMecanicos(relatoriosPorMecanico, "pendentes")}`;
         const filtroTipo = document.getElementById("painelFiltroTipo");
         if (filtroUsuario) {
           const atual = filtroUsuario.value;
-          const usuarios = Array.from(new Set([...(usuariosPermitidos || []), ...atividadesLeCar.map(i => i.usuario).filter(Boolean)])).sort();
+          const usuariosBase = Array.isArray(usuariosPermitidos) ? usuariosPermitidos : [];
+          const usuarios = Array.from(new Set([
+            ...usuariosBase.map(usuario => String(usuario || "").trim().toUpperCase()).filter(Boolean),
+            ...atividadesLeCar.map(item => String(item?.usuario || "").trim().toUpperCase()).filter(Boolean)
+          ])).sort((a, b) => a.localeCompare(b, "pt-BR"));
           filtroUsuario.innerHTML = '<option value="">TODOS OS USUÁRIOS</option>' + usuarios.map(usuario => `<option value="${textoSeguroPainel(usuario)}">${textoSeguroPainel(usuario)}</option>`).join("");
           filtroUsuario.value = usuarios.includes(atual) ? atual : "";
         }
         if (filtroTipo) {
           const atual = filtroTipo.value;
-          const tipos = Array.from(new Set(atividadesLeCar.map(i => i.tipo).filter(Boolean))).sort();
+          const tipos = Array.from(new Set(
+            atividadesLeCar
+              .map(item => String(item?.tipo || "").trim().toUpperCase())
+              .filter(Boolean)
+          )).sort((a, b) => a.localeCompare(b, "pt-BR"));
           filtroTipo.innerHTML = '<option value="">TODAS AS AÇÕES</option>' + tipos.map(tipo => `<option value="${textoSeguroPainel(tipo)}">${textoSeguroPainel(tipo.replaceAll("_", " "))}</option>`).join("");
           filtroTipo.value = tipos.includes(atual) ? atual : "";
         }
@@ -10424,7 +11260,11 @@ ${gerarLinhaRelatorioMecanicos(relatoriosPorMecanico, "pendentes")}`;
 
         const usuariosLista = document.getElementById("painelUsuariosLista");
         if (usuariosLista) {
-          const usuarios = Array.from(new Set([...(usuariosPermitidos || []), ...atividadesLeCar.map(i => i.usuario).filter(Boolean)])).sort();
+          const usuariosBase = Array.isArray(usuariosPermitidos) ? usuariosPermitidos : [];
+          const usuarios = Array.from(new Set([
+            ...usuariosBase.map(usuario => String(usuario || "").trim().toUpperCase()).filter(Boolean),
+            ...atividadesLeCar.map(item => String(item?.usuario || "").trim().toUpperCase()).filter(Boolean)
+          ])).sort((a, b) => a.localeCompare(b, "pt-BR"));
           usuariosLista.innerHTML = usuarios.map(usuario => {
             const eventosUsuario = atividadesLeCar.filter(item => item.usuario === usuario);
             const acessosUsuario = eventosUsuario.filter(item => item.tipo === "ACESSO_SISTEMA");
@@ -10483,13 +11323,33 @@ ${gerarLinhaRelatorioMecanicos(relatoriosPorMecanico, "pendentes")}`;
           botao.textContent = "CARREGANDO...";
         }
 
+        const areasPainel = [
+          document.getElementById("painelUsuariosLista"),
+          document.getElementById("painelNotificacoesVisualizadas"),
+          document.getElementById("painelAtividadesLista")
+        ].filter(Boolean);
+        areasPainel.forEach(area => {
+          area.innerHTML = '<div class="painel-admin-vazio">CARREGANDO REGISTROS...</div>';
+        });
+
         try {
           // Consulta única: o painel não permanece consumindo leituras quando está fechado.
           const snapshot = await db.collection("auditoria_lecar")
             .orderBy("criadoEmISO", "desc")
             .limit(500)
             .get();
-          atividadesLeCar = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+          atividadesLeCar = snapshot.docs.map(doc => {
+            const dados = { id: doc.id, ...doc.data() };
+            const detalhesOriginais = dados.detalhes;
+            return {
+              ...dados,
+              usuario: String(dados.usuario || "").trim().toUpperCase(),
+              tipo: String(dados.tipo || "").trim().toUpperCase(),
+              detalhes: detalhesOriginais && typeof detalhesOriginais === "object"
+                ? detalhesOriginais
+                : { descricao: String(detalhesOriginais || "") }
+            };
+          });
           renderizarPainelAtividades();
         } catch (erro) {
           console.error("Erro ao carregar painel de atividades:", erro);
@@ -10527,185 +11387,6 @@ ${gerarLinhaRelatorioMecanicos(relatoriosPorMecanico, "pendentes")}`;
         await iniciarEscutaPainelAtividades();
       }
 
-
-
-      /* ========== TUTORIAL INICIAL: INFO + NOTIFICAÇÕES ========== */
-      const TUTORIAL_LECAR_VERSAO = "INFO_SINO_V2_PRETO_EMOJIS";
-      let tutorialLeCarPassos = [];
-      let tutorialLeCarIndice = -1;
-      let tutorialLeCarAlvoAtual = null;
-      let tutorialLeCarIntervalo = null;
-      let tutorialLeCarIniciado = false;
-
-      function obterChaveTutorialLeCar() {
-        const usuario = String(localStorage.getItem("sessao_lecar") || "USUARIO").trim().toUpperCase();
-        return `tutorial_lecar_${TUTORIAL_LECAR_VERSAO}_${usuario}`;
-      }
-
-      function tutorialLeCarJaConcluido() {
-        return localStorage.getItem(obterChaveTutorialLeCar()) === "CONCLUIDO";
-      }
-
-      function existeModalVisivelParaTutorial() {
-        const seletores = [
-          ".notificacao-modal-bg.show",
-          ".modal-bg",
-          ".status-modal-bg",
-          ".config-modal-bg"
-        ];
-
-        return seletores.some(seletor => Array.from(document.querySelectorAll(seletor)).some(elemento => {
-          if (elemento.id === "modalBusca") return false;
-          const estilo = window.getComputedStyle(elemento);
-          return estilo.display !== "none" && estilo.visibility !== "hidden" && estilo.opacity !== "0";
-        }));
-      }
-
-      function limparAlvoTutorialLeCar() {
-        if (tutorialLeCarAlvoAtual) {
-          tutorialLeCarAlvoAtual.classList.remove("tutorial-lecar-alvo");
-        }
-        tutorialLeCarAlvoAtual = null;
-      }
-
-      function posicionarBalaoTutorialLeCar() {
-        const balao = document.getElementById("tutorialBalaoLeCar");
-        const alvo = tutorialLeCarAlvoAtual;
-        if (!balao || !alvo || !document.body.contains(alvo)) return;
-
-        const margem = 10;
-        const distancia = 14;
-        const alvoRect = alvo.getBoundingClientRect();
-        const balaoRect = balao.getBoundingClientRect();
-        const largura = balaoRect.width;
-        const altura = balaoRect.height;
-        const centroAlvo = alvoRect.left + (alvoRect.width / 2);
-
-        let esquerda = centroAlvo - (largura / 2);
-        esquerda = Math.max(margem, Math.min(esquerda, window.innerWidth - largura - margem));
-
-        let topo = alvoRect.bottom + distancia;
-        let direcao = "abaixo";
-
-        if (topo + altura > window.innerHeight - margem) {
-          topo = alvoRect.top - altura - distancia;
-          direcao = "acima";
-        }
-
-        topo = Math.max(margem, Math.min(topo, window.innerHeight - altura - margem));
-        const seta = Math.max(24, Math.min(centroAlvo - esquerda, largura - 24));
-
-        balao.classList.remove("abaixo", "acima");
-        balao.classList.add(direcao);
-        balao.style.left = `${Math.round(esquerda)}px`;
-        balao.style.top = `${Math.round(topo)}px`;
-        balao.style.setProperty("--tutorial-arrow-left", `${Math.round(seta)}px`);
-      }
-
-      function mostrarPassoTutorialLeCar(indice) {
-        const passo = tutorialLeCarPassos[indice];
-        const balao = document.getElementById("tutorialBalaoLeCar");
-        if (!passo || !balao || !passo.alvo || !document.body.contains(passo.alvo)) {
-          concluirTutorialLeCar();
-          return;
-        }
-
-        limparAlvoTutorialLeCar();
-        tutorialLeCarIndice = indice;
-        tutorialLeCarAlvoAtual = passo.alvo;
-        tutorialLeCarAlvoAtual.classList.add("tutorial-lecar-alvo");
-
-        document.getElementById("tutorialLeCarTitulo").textContent = passo.titulo;
-        document.getElementById("tutorialLeCarTexto").textContent = passo.texto;
-        document.getElementById("tutorialLeCarProgresso").textContent = `${indice + 1} DE ${tutorialLeCarPassos.length}`;
-        document.getElementById("tutorialLeCarBtnAvancar").textContent = indice === tutorialLeCarPassos.length - 1 ? "ENTENDI ✅" : "PRÓXIMO 👉";
-
-        if (passo.tipo === "info") {
-          passo.alvo.scrollIntoView({ behavior: "smooth", block: "center", inline: "nearest" });
-        }
-
-        balao.classList.add("show");
-        setTimeout(posicionarBalaoTutorialLeCar, passo.tipo === "info" ? 380 : 40);
-      }
-
-      function avancarTutorialLeCar() {
-        const proximo = tutorialLeCarIndice + 1;
-        if (proximo >= tutorialLeCarPassos.length) {
-          concluirTutorialLeCar();
-          return;
-        }
-        mostrarPassoTutorialLeCar(proximo);
-      }
-
-      function concluirTutorialLeCar() {
-        localStorage.setItem(obterChaveTutorialLeCar(), "CONCLUIDO");
-        limparAlvoTutorialLeCar();
-        document.getElementById("tutorialBalaoLeCar")?.classList.remove("show", "abaixo", "acima");
-        tutorialLeCarIndice = -1;
-        if (tutorialLeCarIntervalo) {
-          clearInterval(tutorialLeCarIntervalo);
-          tutorialLeCarIntervalo = null;
-        }
-        window.removeEventListener("resize", posicionarBalaoTutorialLeCar);
-        window.removeEventListener("scroll", posicionarBalaoTutorialLeCar, true);
-      }
-
-      function pularTutorialLeCar() {
-        concluirTutorialLeCar();
-      }
-
-      function iniciarTutorialNovasFuncoes() {
-        if (tutorialLeCarIniciado || tutorialLeCarJaConcluido()) return;
-        tutorialLeCarIniciado = true;
-
-        const tentarIniciar = () => {
-          if (tutorialLeCarJaConcluido()) {
-            if (tutorialLeCarIntervalo) clearInterval(tutorialLeCarIntervalo);
-            tutorialLeCarIntervalo = null;
-            return;
-          }
-
-          const sistema = document.getElementById("sistemaPrincipal");
-          const sino = document.getElementById("btnSinoNotificacoes");
-          const info = document.querySelector(".card-action-btn.info");
-          const sistemaVisivel = sistema && window.getComputedStyle(sistema).display !== "none";
-
-          if (!sistemaVisivel || !sino || !info || existeModalVisivelParaTutorial()) return;
-
-          tutorialLeCarPassos = [
-            {
-              tipo: "info",
-              alvo: info,
-              titulo: "🚗🔧 HISTÓRICO DO VEÍCULO",
-              texto: "TOQUE NO BOTÃO ℹ️ INFO PARA VER TODAS AS MANUTENÇÕES 🔧, PEÇAS ⚙️ E MECÂNICOS 👨‍🔧 REGISTRADOS NESTE VEÍCULO."
-            },
-            {
-              tipo: "sino",
-              alvo: sino,
-              titulo: "🔔📢 CENTRAL DE NOTIFICAÇÕES",
-              texto: "TOQUE NO SININHO 🔔 PARA VER AVISOS 🚨, ATUALIZAÇÕES DO SISTEMA 🆕 E COMUNICADOS IMPORTANTES 📢 DO LECAR."
-            }
-          ];
-
-          if (tutorialLeCarIntervalo) clearInterval(tutorialLeCarIntervalo);
-          tutorialLeCarIntervalo = null;
-          window.addEventListener("resize", posicionarBalaoTutorialLeCar);
-          window.addEventListener("scroll", posicionarBalaoTutorialLeCar, true);
-          mostrarPassoTutorialLeCar(0);
-        };
-
-        setTimeout(tentarIniciar, 900);
-        tutorialLeCarIntervalo = setInterval(tentarIniciar, 900);
-
-        // Evita manter uma verificação permanente caso o usuário ainda não tenha cards.
-        setTimeout(() => {
-          if (tutorialLeCarIntervalo && tutorialLeCarIndice < 0) {
-            clearInterval(tutorialLeCarIntervalo);
-            tutorialLeCarIntervalo = null;
-            tutorialLeCarIniciado = false;
-          }
-        }, 120000);
-      }
 
 
       /* ========== CONTROLE AUTOMÁTICO: BUSCA SOME QUANDO MODAL ABRE ========== */
@@ -10833,5 +11514,457 @@ ${gerarLinhaRelatorioMecanicos(relatoriosPorMecanico, "pendentes")}`;
         verificarSessao();
       };
     </script>
+  
+<script id="lecar-ficha-oleo-script">
+(function () {
+  "use strict";
+
+  const fichaOleoEstado = {
+    aberta: false,
+    carregada: false,
+    carregando: null,
+    anterior: null,
+    veiculos: [],
+    lubrificantes: new Map(),
+    metadados: null
+  };
+
+  function fichaEl(id) {
+    return document.getElementById(id);
+  }
+
+  function fichaEscapar(valor) {
+    return String(valor ?? "")
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;")
+      .replace(/'/g, "&#039;");
+  }
+
+  function fichaOrdenar(lista) {
+    return [...lista].sort((a, b) =>
+      String(a).localeCompare(String(b), "pt-BR", { numeric: true, sensitivity: "base" })
+    );
+  }
+
+  function fichaUnicos(lista) {
+    return [...new Set(lista)];
+  }
+
+  function fichaPreencherSelect(select, valores, placeholder, habilitar = true) {
+    if (!select) return;
+    select.innerHTML = "";
+    const inicial = document.createElement("option");
+    inicial.value = "";
+    inicial.textContent = placeholder;
+    select.appendChild(inicial);
+
+    fichaOrdenar(valores).forEach((valor) => {
+      const option = document.createElement("option");
+      option.value = String(valor);
+      option.textContent = String(valor).toUpperCase();
+      select.appendChild(option);
+    });
+
+    select.disabled = !habilitar || valores.length === 0;
+  }
+
+  function fichaDefinirStatus(texto, tipo = "") {
+    const status = fichaEl("fichaOleoStatus");
+    if (!status) return;
+    status.textContent = texto;
+    status.className = "ficha-oleo-status" + (tipo ? " " + tipo : "");
+  }
+
+  function fichaResultadoVazio(texto = "O resultado técnico aparecerá aqui.") {
+    const resultado = fichaEl("fichaOleoResultados");
+    if (resultado) {
+      resultado.innerHTML = '<div class="ficha-resultado-vazio">' + fichaEscapar(texto) + "</div>";
+    }
+  }
+
+  async function carregarBaseFichaOleo() {
+    if (fichaOleoEstado.carregada) return;
+    if (fichaOleoEstado.carregando) return fichaOleoEstado.carregando;
+
+    fichaDefinirStatus("Carregando a base técnica local...");
+
+    fichaOleoEstado.carregando = Promise.all([
+      fetch("./veiculos-oleo.json", { cache: "no-cache" }),
+      fetch("./lubrificantes.json", { cache: "no-cache" })
+    ])
+      .then(async ([respostaVeiculos, respostaLubrificantes]) => {
+        if (!respostaVeiculos.ok || !respostaLubrificantes.ok) {
+          throw new Error("Arquivos JSON não encontrados.");
+        }
+
+        const [baseVeiculos, baseLubrificantes] = await Promise.all([
+          respostaVeiculos.json(),
+          respostaLubrificantes.json()
+        ]);
+
+        if (!Array.isArray(baseVeiculos.veiculos) || !Array.isArray(baseLubrificantes.lubrificantes)) {
+          throw new Error("Formato inválido da base técnica.");
+        }
+
+        fichaOleoEstado.veiculos = baseVeiculos.veiculos;
+        fichaOleoEstado.lubrificantes = new Map(
+          baseLubrificantes.lubrificantes.map((item) => [String(item.codigo), item])
+        );
+        fichaOleoEstado.metadados = baseVeiculos.cobertura || {};
+        fichaOleoEstado.carregada = true;
+
+        const marcas = fichaUnicos(fichaOleoEstado.veiculos.map((item) => item.marca));
+        fichaPreencherSelect(fichaEl("fichaMarca"), marcas, "SELECIONE A MARCA", true);
+        fichaPreencherSelect(fichaEl("fichaModelo"), [], "SELECIONE A MARCA", false);
+        fichaPreencherSelect(fichaEl("fichaAno"), [], "SELECIONE O MODELO", false);
+        fichaPreencherSelect(fichaEl("fichaMotor"), [], "SELECIONE O ANO", false);
+
+        const cobertura = fichaOleoEstado.metadados;
+        fichaDefinirStatus(
+          `${baseVeiculos.veiculos.length} FICHAS CARREGADAS • ${marcas.length} MARCAS • ANOS ${cobertura.anoMinimo || "-"} A ${cobertura.anoMaximo || "-"}. ESTAMOS TRABALHANDO PARA IMPLEMENTAR ANOS ANTERIORES E POSTERIORES.`,
+          "sucesso"
+        );
+
+        const aviso = fichaEl("fichaOleoAviso");
+        if (aviso) {
+          aviso.textContent = "INFORMAÇÕES TÉCNICAS RETIRADAS DE FABRICANTES (SHELL, MOTUL, VALVOLINE E LUBRAX), CRUZADAS, CONFIRMADAS E VALIDADAS MANUALMENTE PELA EQUIPE LECAR.";
+        }
+      })
+      .catch((erro) => {
+        console.error("Erro ao carregar Ficha de Óleo:", erro);
+        fichaDefinirStatus(
+          "Não foi possível carregar os arquivos veiculos-oleo.json e lubrificantes.json. Eles devem ficar na mesma pasta do index.html.",
+          "erro"
+        );
+        fichaResultadoVazio("Base técnica indisponível.");
+        throw erro;
+      })
+      .finally(() => {
+        fichaOleoEstado.carregando = null;
+      });
+
+    return fichaOleoEstado.carregando;
+  }
+
+  window.alternarFichaOleo = async function alternarFichaOleo() {
+    if (fichaOleoEstado.aberta) {
+      fecharFichaOleo(true);
+      return;
+    }
+
+    const sistema = fichaEl("sistemaPrincipal");
+    const abaFicha = fichaEl("abaFichaOleo");
+    const botao = fichaEl("btnFichaOleo");
+    if (!sistema || !abaFicha || !botao) return;
+
+    const cadastro = fichaEl("cadastroCard");
+    fichaOleoEstado.anterior = {
+      aba: typeof abaAtiva === "string" ? abaAtiva : "servicos",
+      cadastroAberto: Boolean(cadastro && cadastro.classList.contains("open")),
+      scrollY: window.scrollY
+    };
+
+    if (typeof fecharCadastroCard === "function") {
+      fecharCadastroCard();
+    }
+
+    document.querySelectorAll(".tab").forEach((tab) => tab.classList.remove("active"));
+    document.querySelectorAll(".tab-content").forEach((conteudo) => conteudo.classList.remove("active"));
+
+    sistema.classList.remove("config-focus", "cadastro-focus");
+    sistema.classList.add("ficha-oleo-focus");
+    abaFicha.classList.add("active");
+    botao.classList.add("active");
+    botao.setAttribute("aria-pressed", "true");
+    fichaOleoEstado.aberta = true;
+
+    window.scrollTo({ top: 0, behavior: "smooth" });
+
+    try {
+      await carregarBaseFichaOleo();
+    } catch (_) {
+      /* A mensagem de erro já foi exibida na própria aba. */
+    }
+  };
+
+  window.fecharFichaOleo = function fecharFichaOleo(restaurarAnterior = false) {
+    const sistema = fichaEl("sistemaPrincipal");
+    const abaFicha = fichaEl("abaFichaOleo");
+    const botao = fichaEl("btnFichaOleo");
+    const anterior = fichaOleoEstado.anterior;
+
+    if (sistema) sistema.classList.remove("ficha-oleo-focus");
+    if (abaFicha) abaFicha.classList.remove("active");
+    if (botao) {
+      botao.classList.remove("active");
+      botao.setAttribute("aria-pressed", "false");
+    }
+
+    const estavaAberta = fichaOleoEstado.aberta;
+    fichaOleoEstado.aberta = false;
+
+    if (restaurarAnterior && estavaAberta) {
+      const abaRetorno = anterior?.aba || "servicos";
+      if (typeof trocarAba === "function") {
+        trocarAba(abaRetorno);
+      }
+
+      if (anterior?.cadastroAberto && typeof abrirCadastroCard === "function") {
+        setTimeout(() => abrirCadastroCard(), 0);
+      } else if (Number.isFinite(anterior?.scrollY)) {
+        setTimeout(() => window.scrollTo({ top: anterior.scrollY, behavior: "auto" }), 0);
+      }
+    }
+  };
+
+  window.fichaOleoSelecionarMarca = function fichaOleoSelecionarMarca() {
+    const marca = fichaEl("fichaMarca")?.value || "";
+    const modelos = fichaUnicos(
+      fichaOleoEstado.veiculos
+        .filter((item) => item.marca === marca)
+        .map((item) => item.modelo)
+    );
+
+    fichaPreencherSelect(fichaEl("fichaModelo"), modelos, "SELECIONE O MODELO", Boolean(marca));
+    fichaPreencherSelect(fichaEl("fichaAno"), [], "SELECIONE O MODELO", false);
+    fichaPreencherSelect(fichaEl("fichaMotor"), [], "SELECIONE O ANO", false);
+    fichaResultadoVazio();
+
+    if (marca) {
+      fichaDefinirStatus(`${modelos.length} modelo(s) disponível(is) para ${marca}.`);
+    } else {
+      fichaDefinirStatus("Selecione uma marca.");
+    }
+  };
+
+  window.fichaOleoSelecionarModelo = function fichaOleoSelecionarModelo() {
+    const marca = fichaEl("fichaMarca")?.value || "";
+    const modelo = fichaEl("fichaModelo")?.value || "";
+    const registros = fichaOleoEstado.veiculos.filter(
+      (item) => item.marca === marca && item.modelo === modelo
+    );
+
+    const anos = [];
+    registros.forEach((item) => {
+      for (let ano = Number(item.anoInicio); ano <= Number(item.anoFim); ano += 1) {
+        anos.push(ano);
+      }
+    });
+
+    fichaPreencherSelect(fichaEl("fichaAno"), fichaUnicos(anos), "SELECIONE O ANO", Boolean(modelo));
+    fichaPreencherSelect(fichaEl("fichaMotor"), [], "SELECIONE O ANO", false);
+    fichaResultadoVazio();
+
+    if (modelo) {
+      fichaDefinirStatus("Selecione o ano do veículo.");
+    }
+  };
+
+  window.fichaOleoSelecionarAno = function fichaOleoSelecionarAno() {
+    const marca = fichaEl("fichaMarca")?.value || "";
+    const modelo = fichaEl("fichaModelo")?.value || "";
+    const ano = Number(fichaEl("fichaAno")?.value || 0);
+
+    const motores = fichaUnicos(
+      fichaOleoEstado.veiculos
+        .filter((item) =>
+          item.marca === marca &&
+          item.modelo === modelo &&
+          ano >= Number(item.anoInicio) &&
+          ano <= Number(item.anoFim)
+        )
+        .map((item) => item.motor)
+    );
+
+    fichaPreencherSelect(fichaEl("fichaMotor"), motores, "SELECIONE O MOTOR", Boolean(ano));
+    fichaResultadoVazio();
+
+    if (ano) {
+      fichaDefinirStatus(`${motores.length} motor(es) encontrado(s) para ${modelo} ${ano}.`);
+    }
+
+    if (motores.length === 1) {
+      fichaEl("fichaMotor").value = motores[0];
+      fichaOleoRenderizarResultado();
+    }
+  };
+
+  function fichaCombustivel(motor) {
+    const codigo = String(motor || "").match(/\(([^)]+)\)\s*$/)?.[1]?.toUpperCase() || "";
+    const mapa = {
+      F: "FLEX",
+      G: "GASOLINA",
+      D: "DIESEL",
+      "G/F": "GASOLINA / FLEX",
+      "F/G": "FLEX / GASOLINA"
+    };
+    return mapa[codigo] || codigo || "NÃO INFORMADO";
+  }
+
+  function fichaFormatarLitros(volume) {
+    return Number(volume).toLocaleString("pt-BR", {
+      minimumFractionDigits: 1,
+      maximumFractionDigits: 2
+    }) + " L";
+  }
+
+  function fichaTags(itens) {
+    if (!Array.isArray(itens) || itens.length === 0) {
+      return '<span class="ficha-tag">NÃO INFORMADO</span>';
+    }
+    return itens.map((item) => '<span class="ficha-tag">' + fichaEscapar(item) + "</span>").join("");
+  }
+
+  function fichaListaDetalhes(titulo, itens) {
+    if (!Array.isArray(itens) || itens.length === 0) return "";
+    return `
+      <details class="ficha-oleo-details">
+        <summary>${fichaEscapar(titulo)}</summary>
+        <ul>${itens.map((item) => `<li>${fichaEscapar(item)}</li>`).join("")}</ul>
+      </details>
+    `;
+  }
+
+  function fichaRenderizarOleo(codigo) {
+    const oleo = fichaOleoEstado.lubrificantes.get(String(codigo));
+    if (!oleo) {
+      return `
+        <article class="ficha-oleo-opcao">
+          <div class="ficha-oleo-opcao-head">
+            <div>
+              <div class="ficha-viscosidade">REFERÊNCIA NÃO ENCONTRADA</div>
+              <div class="ficha-categoria">Consulte a base técnica.</div>
+            </div>
+            <span class="ficha-codigo">CÓDIGO ${fichaEscapar(codigo)}</span>
+          </div>
+        </article>
+      `;
+    }
+
+    const recomendacoes = [
+      ...(oleo.aplicacao || []),
+      ...(oleo.aplicacoesRecomendadas || [])
+    ];
+
+    return `
+      <article class="ficha-oleo-opcao">
+        <div class="ficha-oleo-opcao-head">
+          <div>
+            <div class="ficha-viscosidade">SAE ${fichaEscapar(oleo.viscosidade)}</div>
+            <div class="ficha-categoria">${fichaEscapar(oleo.categoria || oleo.tipo || "NÃO INFORMADO")}</div>
+          </div>
+          <span class="ficha-codigo">REF. ${fichaEscapar(oleo.codigo)}</span>
+        </div>
+
+        <div class="ficha-tecnica-linha">
+          <div class="ficha-tecnica-label">Especificações</div>
+          <div class="ficha-tags">${fichaTags(oleo.especificacoes)}</div>
+        </div>
+
+        <div class="ficha-tecnica-linha">
+          <div class="ficha-tecnica-label">Aprovações / compatibilidade</div>
+          <div class="ficha-tags">${fichaTags([...(oleo.aprovacoes || []), ...(oleo.compatibilidade || [])])}</div>
+        </div>
+
+        ${fichaListaDetalhes("Aplicação técnica", recomendacoes)}
+        ${fichaListaDetalhes("Características", oleo.beneficios)}
+      </article>
+    `;
+  }
+
+  window.fichaOleoRenderizarResultado = function fichaOleoRenderizarResultado() {
+    const marca = fichaEl("fichaMarca")?.value || "";
+    const modelo = fichaEl("fichaModelo")?.value || "";
+    const ano = Number(fichaEl("fichaAno")?.value || 0);
+    const motor = fichaEl("fichaMotor")?.value || "";
+    const resultado = fichaEl("fichaOleoResultados");
+
+    if (!marca || !modelo || !ano || !motor || !resultado) {
+      fichaResultadoVazio();
+      return;
+    }
+
+    const encontrados = fichaOleoEstado.veiculos.filter((item) =>
+      item.marca === marca &&
+      item.modelo === modelo &&
+      item.motor === motor &&
+      ano >= Number(item.anoInicio) &&
+      ano <= Number(item.anoFim)
+    );
+
+    const unicos = [];
+    const chaves = new Set();
+    encontrados.forEach((item) => {
+      const chave = `${item.volumeLitros}|${(item.lubrificantes || []).join(",")}`;
+      if (!chaves.has(chave)) {
+        chaves.add(chave);
+        unicos.push(item);
+      }
+    });
+
+    if (unicos.length === 0) {
+      fichaResultadoVazio("Nenhuma ficha compatível foi encontrada.");
+      fichaDefinirStatus("Nenhum resultado para a combinação selecionada.", "erro");
+      return;
+    }
+
+    const avisoAmbiguidade = unicos.length > 1
+      ? `<div class="ficha-ambiguidade">Foram encontradas ${unicos.length} fichas para este mesmo veículo e motor. Verifique a versão exata e confirme no manual antes do serviço.</div>`
+      : "";
+
+    resultado.innerHTML = avisoAmbiguidade + unicos.map((item, indice) => `
+      <article class="ficha-resultado-card">
+        <div class="ficha-resultado-topo">
+          <div>
+            <div class="ficha-resultado-veiculo">${fichaEscapar(item.marca)} ${fichaEscapar(item.modelo)} • ${ano}</div>
+            <div class="ficha-resultado-motor">
+              ${fichaEscapar(item.motor)} • ${fichaEscapar(fichaCombustivel(item.motor))}
+              ${unicos.length > 1 ? ` • OPÇÃO ${indice + 1}` : ""}
+            </div>
+          </div>
+          <div class="ficha-volume">
+            <strong>${fichaEscapar(fichaFormatarLitros(item.volumeLitros))}</strong>
+            <span>Volume informado</span>
+          </div>
+        </div>
+        <div class="ficha-oleos-lista">
+          ${(item.lubrificantes || []).map(fichaRenderizarOleo).join("")}
+        </div>
+      </article>
+    `).join("");
+
+    fichaDefinirStatus(
+      unicos.length > 1
+        ? "Resultado com mais de uma alternativa técnica. Faça a conferência da versão."
+        : "Ficha técnica localizada.",
+      unicos.length > 1 ? "" : "sucesso"
+    );
+  };
+
+  window.fichaOleoNovaConsulta = function fichaOleoNovaConsulta() {
+    const marca = fichaEl("fichaMarca");
+    if (marca) marca.value = "";
+    fichaPreencherSelect(fichaEl("fichaModelo"), [], "SELECIONE A MARCA", false);
+    fichaPreencherSelect(fichaEl("fichaAno"), [], "SELECIONE O MODELO", false);
+    fichaPreencherSelect(fichaEl("fichaMotor"), [], "SELECIONE O ANO", false);
+    fichaResultadoVazio();
+    fichaDefinirStatus(
+      fichaOleoEstado.carregada
+        ? "Selecione a marca do veículo."
+        : "A base técnica será carregada ao abrir a consulta."
+    );
+    marca?.focus();
+  };
+
+  document.addEventListener("keydown", (event) => {
+    if (event.key === "Escape" && fichaOleoEstado.aberta) {
+      fecharFichaOleo(true);
+    }
+  });
+})();
+</script>
+
   </body>
 </html>
