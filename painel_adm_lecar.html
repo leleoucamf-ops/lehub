@@ -1,0 +1,2268 @@
+<!doctype html>
+<html lang="pt-BR" translate="no">
+<head>
+  <meta charset="UTF-8">
+  <meta name="google" content="notranslate">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>LECAR — PAINEL ADM DE SERVIÇOS</title>
+  <link rel="icon" type="image/x-icon" href="favicon.ico">
+  <link rel="apple-touch-icon" href="apple-touch-icon.png">
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+  <style>
+    :root {
+      --blue-900:#1e3a8a;
+      --blue-700:#1d4ed8;
+      --blue-600:#2563eb;
+      --blue-500:#3b82f6;
+      --bg:#eef2f7;
+      --card:#ffffff;
+      --text:#0f172a;
+      --muted:#64748b;
+      --border:#dbe3ef;
+      --safe-bottom:env(safe-area-inset-bottom, 0px);
+    }
+
+    * { box-sizing:border-box; margin:0; padding:0; font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+    body { min-height:100vh; background:var(--bg); color:var(--text); }
+    button, input, textarea, select { font:inherit; }
+    button { cursor:pointer; }
+
+    .login-page {
+      min-height:100vh;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      padding:24px;
+      background:linear-gradient(135deg,#0d47a1,#2196f3);
+    }
+
+    .login-card {
+      width:340px;
+      max-width:100%;
+      padding:30px;
+      border-radius:22px;
+      background:rgba(255,255,255,.10);
+      backdrop-filter:blur(12px);
+      box-shadow:0 18px 45px rgba(0,0,0,.28);
+      text-align:center;
+    }
+
+    .login-logo { width:250px; max-width:92%; filter:drop-shadow(0 8px 18px rgba(0,0,0,.42)); margin-bottom:22px; }
+    .login-card h1 { color:#fff; font-size:1.1rem; margin-bottom:16px; text-transform:uppercase; }
+    .login-card input {
+      width:100%; min-height:46px; margin:6px 0; padding:0 13px; border:1px solid rgba(255,255,255,.24);
+      border-radius:12px; outline:none; background:rgba(255,255,255,.14); color:#fff; text-transform:uppercase;
+    }
+    .login-card input::placeholder { color:rgba(255,255,255,.72); }
+    .login-card button { width:100%; min-height:46px; margin-top:10px; border:0; border-radius:12px; background:linear-gradient(90deg,#00c6ff,#0072ff); color:#fff; font-weight:900; text-transform:uppercase; }
+    .login-error { display:none; margin-top:12px; color:#fecaca; font-size:.78rem; font-weight:800; }
+
+    .app { display:none; min-height:100vh; padding-bottom:calc(28px + var(--safe-bottom)); }
+
+    .topbar {
+      position:fixed; top:0; left:0; right:0; z-index:100;
+      min-height:90px; padding:0 24px;
+      display:grid; grid-template-columns:auto minmax(220px,560px) auto; align-items:center; gap:20px;
+      color:#fff; background:linear-gradient(90deg,#1e3a8a,#2563eb,#3b82f6); background-size:200% 200%;
+      animation:gradientMove 6s ease infinite; box-shadow:0 5px 18px rgba(15,23,42,.24);
+      border-bottom-left-radius:14px; border-bottom-right-radius:14px;
+    }
+    @keyframes gradientMove { 0%{background-position:0 50%} 50%{background-position:100% 50%} 100%{background-position:0 50%} }
+    .topbar-logo { height:70px; width:auto; max-width:190px; object-fit:contain; filter:drop-shadow(0 5px 12px rgba(0,0,0,.38)); }
+    .topbar-search { position:relative; }
+    .topbar-search svg { position:absolute; width:21px; height:21px; left:14px; top:50%; transform:translateY(-50%); fill:none; stroke:#64748b; stroke-width:2.2; stroke-linecap:round; }
+    .topbar-search input { width:100%; min-height:46px; padding:0 14px 0 44px; border:0; border-radius:14px; outline:none; background:rgba(255,255,255,.94); color:#1e293b; font-size:.88rem; font-weight:850; text-transform:uppercase; box-shadow:0 7px 18px rgba(15,23,42,.12); }
+    .topbar-actions { display:flex; align-items:center; gap:10px; }
+    .topbar-user { text-align:right; }
+    .topbar-user strong { display:block; font-size:.82rem; }
+    .topbar-user span { display:block; margin-top:2px; color:#dbeafe; font-size:.62rem; font-weight:800; text-transform:uppercase; }
+    .topbar-btn { width:52px; height:52px; border:1px solid rgba(255,255,255,.42); border-radius:15px; background:rgba(255,255,255,.15); color:#fff; display:inline-flex; align-items:center; justify-content:center; }
+    .topbar-btn:hover { background:rgba(255,255,255,.25); }
+    .topbar-btn svg { width:27px; height:27px; fill:none; stroke:currentColor; stroke-width:2.3; stroke-linecap:round; stroke-linejoin:round; }
+
+    .main { width:min(1120px,calc(100% - 28px)); margin:0 auto; padding-top:116px; }
+    .page-head { margin-bottom:16px; }
+    .page-head h1 { color:#0f2748; font-size:1.5rem; letter-spacing:-.02em; text-transform:uppercase; }
+    .page-head p { margin-top:5px; color:var(--muted); font-size:.84rem; font-weight:650; }
+
+    .stats { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:12px; margin-bottom:16px; }
+    .stat-card { padding:16px; border:1px solid var(--border); border-radius:16px; background:#fff; box-shadow:0 7px 20px rgba(15,23,42,.055); }
+    .stat-card span { color:var(--muted); font-size:.68rem; font-weight:900; text-transform:uppercase; }
+    .stat-card strong { display:block; margin-top:7px; color:var(--blue-700); font-size:1.8rem; line-height:1; }
+
+    .layout { display:grid; grid-template-columns:380px minmax(0,1fr); gap:16px; align-items:start; }
+    .panel { border:1px solid var(--border); border-radius:18px; background:#fff; box-shadow:0 9px 24px rgba(15,23,42,.065); overflow:hidden; }
+    .panel-head { padding:16px 18px; border-bottom:1px solid #e2e8f0; background:linear-gradient(90deg,#f8fafc,#eef4ff); }
+    .panel-head h2 { color:#0f2748; font-size:.9rem; font-weight:950; text-transform:uppercase; }
+    .panel-head p { margin-top:4px; color:var(--muted); font-size:.72rem; font-weight:650; }
+    .panel-body { padding:16px; }
+
+    .field { margin-bottom:11px; }
+    .field label { display:block; margin-bottom:6px; color:#334155; font-size:.68rem; font-weight:900; text-transform:uppercase; }
+    .field input, .field textarea, .field select {
+      width:100%; padding:11px 12px; border:1px solid #cbd5e1; border-radius:11px; outline:none; background:#fff; color:#0f172a; text-transform:uppercase;
+    }
+    .field textarea { min-height:96px; resize:vertical; }
+    .field input:focus, .field textarea:focus, .field select:focus { border-color:#3b82f6; box-shadow:0 0 0 3px rgba(59,130,246,.12); }
+    .field-grid { display:grid; grid-template-columns:1fr 1fr; gap:10px; }
+    .submit-btn { width:100%; min-height:47px; border:0; border-radius:12px; background:linear-gradient(90deg,#1d4ed8,#2563eb); color:#fff; font-size:.78rem; font-weight:950; text-transform:uppercase; box-shadow:0 8px 18px rgba(37,99,235,.23); }
+    .submit-btn:disabled { cursor:not-allowed; opacity:.65; }
+    .form-note { margin-top:10px; color:#64748b; font-size:.67rem; font-weight:700; line-height:1.4; text-transform:uppercase; }
+
+    .services-list { display:grid; gap:10px; }
+    .service-row { padding:14px; border:1px solid #e2e8f0; border-radius:15px; background:#fff; box-shadow:0 4px 12px rgba(15,23,42,.04); }
+    .service-row.assumido { background:#f8fafc; opacity:.82; }
+    .service-top { display:flex; align-items:flex-start; justify-content:space-between; gap:10px; }
+    .service-plate { color:#0f2748; font-size:1.25rem; font-weight:950; letter-spacing:-.03em; }
+    .service-vehicle { margin-top:3px; color:#334155; font-size:.77rem; font-weight:900; text-transform:uppercase; }
+    .status-badge { min-height:27px; padding:0 9px; border-radius:999px; display:inline-flex; align-items:center; justify-content:center; font-size:.57rem; font-weight:950; text-transform:uppercase; white-space:nowrap; }
+    .status-badge.disponivel { background:#dcfce7; border:1px solid #86efac; color:#166534; }
+    .status-badge.assumido { background:#e2e8f0; border:1px solid #cbd5e1; color:#475569; }
+    .service-desc { margin-top:11px; color:#334155; font-size:.74rem; font-weight:700; line-height:1.45; text-transform:uppercase; }
+    .service-meta { display:flex; flex-wrap:wrap; gap:6px; margin-top:11px; }
+    .meta-chip { min-height:26px; padding:0 8px; display:inline-flex; align-items:center; border:1px solid #dbeafe; border-radius:8px; background:#eff6ff; color:#1e3a8a; font-size:.57rem; font-weight:900; text-transform:uppercase; }
+    .meta-chip.urgent { border-color:#fed7aa; background:#fff7ed; color:#c2410c; }
+    .service-actions { display:flex; justify-content:flex-end; margin-top:12px; }
+    .cancel-btn { min-height:34px; padding:0 11px; border:1px solid #fecaca; border-radius:10px; background:#fff1f2; color:#dc2626; font-size:.62rem; font-weight:950; text-transform:uppercase; }
+    .cancel-btn:disabled { cursor:not-allowed; border-color:#e2e8f0; background:#f1f5f9; color:#94a3b8; }
+    .empty { padding:34px 16px; border:1px dashed #cbd5e1; border-radius:15px; color:#64748b; text-align:center; font-size:.75rem; font-weight:800; text-transform:uppercase; }
+
+    .drawer-overlay { display:none; position:fixed; inset:0; z-index:180; background:rgba(15,23,42,.48); }
+    .drawer { position:fixed; top:0; right:-340px; z-index:190; width:320px; max-width:88vw; height:100dvh; padding:18px; background:#fff; box-shadow:-18px 0 40px rgba(15,23,42,.25); transition:right .23s ease; }
+    body.drawer-open .drawer-overlay { display:block; }
+    body.drawer-open .drawer { right:0; }
+    .drawer-head { display:flex; align-items:center; justify-content:space-between; padding-bottom:14px; border-bottom:1px solid #e2e8f0; }
+    .drawer-head strong { color:#0f2748; text-transform:uppercase; }
+    .drawer-close { width:38px; height:38px; border:1px solid #cbd5e1; border-radius:11px; background:#fff; color:#334155; font-size:1.2rem; }
+    .drawer-user { margin:14px 0; padding:13px; border:1px solid #dbeafe; border-radius:13px; background:#eff6ff; }
+    .drawer-user strong { color:#1e3a8a; font-size:.84rem; }
+    .drawer-user span { display:block; margin-top:3px; color:#64748b; font-size:.65rem; font-weight:800; text-transform:uppercase; }
+    .drawer-btn { width:100%; min-height:45px; margin-bottom:8px; padding:0 12px; border:1px solid #dbe3ef; border-radius:12px; background:#fff; color:#1e293b; font-size:.72rem; font-weight:900; text-align:left; text-transform:uppercase; }
+    .drawer-btn.danger { border-color:#fecdd3; background:#fff1f2; color:#dc2626; }
+
+    .toast { position:fixed; left:50%; bottom:calc(18px + var(--safe-bottom)); z-index:300; transform:translate(-50%,30px); padding:12px 15px; border-radius:12px; background:#0f172a; color:#fff; font-size:.72rem; font-weight:850; opacity:0; pointer-events:none; transition:.2s; text-transform:uppercase; box-shadow:0 10px 28px rgba(15,23,42,.28); }
+    .toast.show { opacity:1; transform:translate(-50%,0); }
+
+    @media (max-width:850px) {
+      .topbar { grid-template-columns:auto 1fr auto; padding:0 14px; gap:10px; }
+      .topbar-user { display:none; }
+      .layout { grid-template-columns:1fr; }
+      .form-panel { order:1; }
+      .list-panel { order:2; }
+    }
+
+    @media (max-width:600px) {
+      .topbar { min-height:90px; grid-template-columns:auto 1fr auto; }
+      .topbar-logo { height:66px; max-width:140px; }
+      .topbar-search input { min-height:42px; font-size:.68rem; padding-left:38px; }
+      .topbar-search svg { left:11px; width:19px; height:19px; }
+      .topbar-btn { width:48px; height:48px; }
+      .main { width:calc(100% - 18px); padding-top:108px; }
+      .page-head h1 { font-size:1.12rem; }
+      .page-head p { font-size:.72rem; }
+      .stats { gap:7px; }
+      .stat-card { padding:12px 10px; }
+      .stat-card span { font-size:.55rem; }
+      .stat-card strong { font-size:1.45rem; }
+      .field-grid { grid-template-columns:1fr; gap:0; }
+      .service-top { align-items:center; }
+      .service-plate { font-size:1.08rem; }
+    }
+  </style>
+
+  <style id="painel-adm-topbar-identica-lecar">
+    .topbar.app-topbar-clean {
+      position: fixed !important;
+      top: 0 !important;
+      left: 0 !important;
+      right: 0 !important;
+      z-index: 100 !important;
+      min-height: 54px !important;
+      height: 54px !important;
+      padding: 5px 18px !important;
+      display: flex !important;
+      grid-template-columns: none !important;
+      align-items: center !important;
+      justify-content: flex-start !important;
+      flex-wrap: nowrap !important;
+      gap: 12px !important;
+      overflow: visible !important;
+      color: #ffffff !important;
+      background: linear-gradient(90deg, #1e3a8a, #2563eb, #3b82f6) !important;
+      background-size: 200% 200% !important;
+      animation: gradientMove 6s ease infinite !important;
+      box-shadow: 0 4px 12px rgba(0,0,0,.15) !important;
+      border-bottom-left-radius: 10px !important;
+      border-bottom-right-radius: 10px !important;
+    }
+
+    .topbar.app-topbar-clean .logo-img {
+      height: 38px !important;
+      width: auto !important;
+      max-width: none !important;
+      display: block !important;
+      margin: 0 !important;
+      object-fit: contain !important;
+      filter: drop-shadow(0 4px 10px rgba(0,0,0,.8)) !important;
+      flex: 0 0 auto !important;
+    }
+
+    .topbar.app-topbar-clean .app-search-shell {
+      position: relative !important;
+      z-index: 5 !important;
+      margin: 0 0 0 auto !important;
+      width: 285px !important;
+      max-width: 285px !important;
+      flex: 0 0 285px !important;
+    }
+
+    .topbar.app-topbar-clean .app-search-card {
+      width: 100% !important;
+      height: 34px !important;
+      min-height: 34px !important;
+      padding: 0 10px !important;
+      display: flex !important;
+      align-items: center !important;
+      gap: 7px !important;
+      border-radius: 10px !important;
+      background: rgba(255,255,255,.10) !important;
+      border: 1px solid rgba(255,255,255,.24) !important;
+      box-shadow: none !important;
+      backdrop-filter: blur(5px) !important;
+      -webkit-backdrop-filter: blur(5px) !important;
+    }
+
+    .topbar.app-topbar-clean .app-search-icon {
+      width: 16px !important;
+      height: 16px !important;
+      min-width: 16px !important;
+      position: static !important;
+      transform: none !important;
+      fill: none !important;
+      stroke: rgba(255,255,255,.62) !important;
+      stroke-width: 2.1 !important;
+      stroke-linecap: round !important;
+      stroke-linejoin: round !important;
+      flex: 0 0 16px !important;
+    }
+
+    .topbar.app-topbar-clean .app-search-input,
+    .topbar.app-topbar-clean .app-search-input:focus {
+      width: 100% !important;
+      height: 32px !important;
+      min-height: 32px !important;
+      padding: 0 !important;
+      margin: 0 !important;
+      border: 0 !important;
+      border-radius: 0 !important;
+      outline: none !important;
+      background: transparent !important;
+      box-shadow: none !important;
+      color: rgba(255,255,255,.92) !important;
+      font-size: .72rem !important;
+      font-weight: 600 !important;
+      text-transform: uppercase !important;
+    }
+
+    .topbar.app-topbar-clean .app-search-input::placeholder {
+      color: rgba(255,255,255,.52) !important;
+      opacity: 1 !important;
+      text-transform: uppercase !important;
+    }
+
+    .topbar-tools {
+      display: flex !important;
+      align-items: center !important;
+      gap: 5px !important;
+      flex: 0 0 auto !important;
+      position: relative !important;
+      z-index: 6 !important;
+    }
+
+    .topbar-icon-btn,
+    .btn-menu-hamburguer.topbar-icon-btn {
+      width: 34px !important;
+      height: 34px !important;
+      min-width: 34px !important;
+      padding: 0 !important;
+      margin: 0 !important;
+      border: 1px solid rgba(255,255,255,.28) !important;
+      border-radius: 10px !important;
+      background: rgba(255,255,255,.12) !important;
+      color: #ffffff !important;
+      display: inline-flex !important;
+      align-items: center !important;
+      justify-content: center !important;
+      box-shadow: none !important;
+      position: relative !important;
+      cursor: pointer !important;
+      -webkit-tap-highlight-color: transparent !important;
+    }
+
+    .topbar-icon-btn:hover,
+    .btn-menu-hamburguer.topbar-icon-btn:hover {
+      opacity: 1 !important;
+      transform: none !important;
+      background: rgba(255,255,255,.22) !important;
+    }
+
+    .topbar-icon-btn svg,
+    .btn-menu-hamburguer.topbar-icon-btn svg {
+      width: 20px !important;
+      height: 20px !important;
+      fill: none !important;
+      stroke: currentColor !important;
+      stroke-width: 2.2 !important;
+      stroke-linecap: round !important;
+      stroke-linejoin: round !important;
+    }
+
+
+    .notificacao-badge-adm {
+      display: none;
+      position: absolute;
+      top: -5px;
+      right: -5px;
+      min-width: 18px;
+      height: 18px;
+      padding: 0 5px;
+      border-radius: 999px;
+      background: #ef4444;
+      color: #ffffff;
+      border: 2px solid #2563eb;
+      align-items: center;
+      justify-content: center;
+      font-size: .62rem;
+      font-weight: 950;
+      line-height: 1;
+    }
+
+    .notificacao-badge-adm.show { display: inline-flex; }
+
+    .notificacoes-adm-bg {
+      display: none;
+      position: fixed;
+      inset: 0;
+      z-index: 260;
+      padding: 18px;
+      align-items: center;
+      justify-content: center;
+      background: rgba(15,23,42,.52);
+      backdrop-filter: blur(5px);
+    }
+
+    .notificacoes-adm-bg.show { display: flex; }
+
+    .notificacoes-adm-modal {
+      width: 620px;
+      max-width: 96%;
+      max-height: 88vh;
+      overflow: hidden;
+      border: 1px solid #dbe3ef;
+      border-radius: 18px;
+      background: #ffffff;
+      box-shadow: 0 22px 60px rgba(15,23,42,.30);
+    }
+
+    .notificacoes-adm-head {
+      min-height: 68px;
+      padding: 15px 18px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      border-bottom: 1px solid #e2e8f0;
+      background: linear-gradient(90deg,#f8fafc,#eef4ff);
+    }
+
+    .notificacoes-adm-head h2 { color:#0f2748; font-size:1rem; text-transform:uppercase; }
+    .notificacoes-adm-head p { margin-top:3px; color:#64748b; font-size:.7rem; font-weight:700; text-transform:uppercase; }
+    .notificacoes-adm-close { width:38px; height:38px; padding:0; border:1px solid #cbd5e1; border-radius:11px; background:#fff; color:#334155; font-size:1.3rem; }
+    .notificacoes-adm-lista { max-height:calc(88vh - 68px); overflow-y:auto; padding:14px; display:grid; gap:10px; }
+    .notificacoes-adm-item { padding:13px; border:1px solid #dbe3ef; border-left:5px solid #3b82f6; border-radius:13px; background:#fff; }
+    .notificacoes-adm-item.tipo-urgente { border-left-color:#ef4444; background:#fff7f7; }
+    .notificacoes-adm-item.tipo-atualizacao { border-left-color:#f59e0b; background:#fffaf0; }
+    .notificacao-adm-tipo { display:inline-flex; min-height:23px; padding:0 8px; align-items:center; border-radius:999px; background:#dbeafe; color:#1e3a8a; font-size:.55rem; font-weight:950; }
+    .notificacoes-adm-item.tipo-urgente .notificacao-adm-tipo { background:#fee2e2; color:#991b1b; }
+    .notificacoes-adm-item.tipo-atualizacao .notificacao-adm-tipo { background:#fef3c7; color:#92400e; }
+    .notificacao-adm-item-head { margin-top:9px; display:flex; align-items:flex-start; justify-content:space-between; gap:10px; }
+    .notificacao-adm-item-head strong { color:#0f2748; font-size:.82rem; text-transform:uppercase; }
+    .notificacao-adm-item-head span { color:#64748b; font-size:.6rem; font-weight:750; white-space:nowrap; }
+    .notificacoes-adm-item p { margin-top:8px; color:#334155; font-size:.73rem; line-height:1.45; font-weight:650; white-space:pre-wrap; text-transform:uppercase; }
+    .notificacoes-adm-empty { padding:30px 14px; border:1px dashed #cbd5e1; border-radius:13px; color:#64748b; font-size:.72rem; font-weight:850; text-align:center; }
+
+    .main {
+      padding-top: 72px !important;
+    }
+
+    @media (max-width: 768px) {
+      .topbar.app-topbar-clean {
+        min-height: 50px !important;
+        height: 50px !important;
+        padding: 5px 10px !important;
+        gap: 8px !important;
+      }
+
+      .topbar.app-topbar-clean .logo-img {
+        height: 32px !important;
+      }
+
+      .topbar.app-topbar-clean .app-search-shell {
+        width: 170px !important;
+        max-width: 170px !important;
+        flex: 0 0 170px !important;
+      }
+
+      .topbar.app-topbar-clean .app-search-card {
+        height: 31px !important;
+        min-height: 31px !important;
+      }
+
+      .topbar.app-topbar-clean .app-search-input,
+      .topbar.app-topbar-clean .app-search-input:focus {
+        height: 29px !important;
+        min-height: 29px !important;
+        font-size: .66rem !important;
+      }
+
+      .main {
+        padding-top: 64px !important;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .topbar.app-topbar-clean {
+        min-height: 46px !important;
+        height: 46px !important;
+        padding: 4px 8px !important;
+      }
+
+      .topbar.app-topbar-clean .logo-img {
+        height: 29px !important;
+      }
+
+      .topbar.app-topbar-clean .app-search-shell {
+        width: 170px !important;
+        max-width: calc(100vw - 166px) !important;
+        flex: 0 1 170px !important;
+      }
+
+      .topbar.app-topbar-clean .app-search-card {
+        padding: 0 8px !important;
+      }
+
+      .topbar.app-topbar-clean .app-search-input,
+      .topbar.app-topbar-clean .app-search-input:focus {
+        font-size: .62rem !important;
+      }
+
+      .topbar-icon-btn,
+      .btn-menu-hamburguer.topbar-icon-btn {
+        width: 31px !important;
+        height: 31px !important;
+        min-width: 31px !important;
+      }
+
+      .topbar-icon-btn svg,
+      .btn-menu-hamburguer.topbar-icon-btn svg {
+        width: 18px !important;
+        height: 18px !important;
+      }
+
+      .main {
+        padding-top: 58px !important;
+      }
+    }
+
+  </style>
+
+  <style id="lpa-desktop-compacto">
+    /* LPA desktop: largura total com somente 15 px nas bordas. */
+    .main {
+      width: calc(100% - 30px) !important;
+      max-width: none !important;
+      margin: 0 15px !important;
+      padding-top: 66px !important;
+      padding-bottom: 14px !important;
+    }
+
+    .layout {
+      width: 100% !important;
+      grid-template-columns: 360px minmax(0, 1fr) !important;
+      gap: 12px !important;
+    }
+
+    /* ========== LPA DESKTOP COMPACTO / CADA ESPAÇO VALE OURO ========== */
+    .panel-head { padding:10px 14px; }
+    .panel-head h2 { font-size:.82rem; }
+    .panel-body { padding:12px; }
+    .field { margin-bottom:7px; }
+    .field label { margin-bottom:4px; font-size:.64rem; }
+    .field input,
+    .field select {
+      height:34px;
+      min-height:34px;
+      padding:4px 10px;
+      border-radius:9px;
+      font-size:.76rem;
+      font-weight:800;
+      text-transform:uppercase;
+    }
+    .field textarea {
+      min-height:96px;
+      padding:9px 10px;
+      border-radius:9px;
+      font-size:.76rem;
+      font-weight:800;
+      text-transform:uppercase;
+    }
+    .field-grid { gap:8px; }
+    .submit-btn { min-height:38px; height:38px; border-radius:9px; font-size:.72rem; }
+    .form-panel input::placeholder,
+    .form-panel textarea::placeholder { text-transform:uppercase; }
+
+    /* RÓTULOS EM NEGRITO; CONTEÚDO DOS CAMPOS COM PESO NORMAL */
+    .form-panel .field label {
+      font-weight: 900 !important;
+    }
+    .form-panel .field input,
+    .form-panel .field textarea,
+    .form-panel .field select {
+      font-weight: 400 !important;
+    }
+
+    /* ========== CADASTRO FLUTUANTE - LPA DESKTOP ========== */
+    .layout {
+      display: block !important;
+    }
+
+    .list-panel {
+      width: 100% !important;
+    }
+
+    .floating-add-btn {
+      position: fixed;
+      left: 50%;
+      bottom: 14px;
+      z-index: 1250;
+      width: 70px;
+      height: 70px;
+      min-width: 70px;
+      margin: 0;
+      padding: 0;
+      border: 4px solid rgba(255,255,255,.96);
+      border-radius: 50%;
+      transform: translateX(-50%);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      background: linear-gradient(145deg, #1e3a8a, #2563eb, #3b82f6);
+      color: #ffffff;
+      box-shadow: 0 14px 28px rgba(30, 58, 138, .42);
+      cursor: pointer;
+      overflow: hidden;
+    }
+
+    .floating-add-btn svg {
+      width: 36px;
+      height: 36px;
+      fill: none;
+      stroke: currentColor;
+      stroke-width: 2.6;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      pointer-events: none;
+    }
+
+    .floating-add-btn:hover {
+      transform: translateX(-50%) translateY(-2px);
+      box-shadow: 0 17px 34px rgba(30, 58, 138, .48);
+    }
+
+    .floating-add-btn:active {
+      transform: translateX(-50%) translateY(0) scale(.97);
+    }
+
+    .floating-add-btn:focus-visible {
+      outline: 3px solid rgba(59, 130, 246, .32);
+      outline-offset: 4px;
+    }
+
+    .cadastro-modal-bg {
+      display: none;
+      position: fixed;
+      inset: 0;
+      z-index: 1300;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+      background: rgba(15, 23, 42, .50);
+      backdrop-filter: blur(4px);
+    }
+
+    .cadastro-modal-bg.open {
+      display: flex;
+    }
+
+    .cadastro-modal {
+      width: 610px;
+      max-width: calc(100vw - 48px);
+      max-height: calc(100vh - 48px);
+      overflow-y: auto;
+      border-radius: 16px;
+      background: #ffffff;
+      border: 1px solid #dbe3ef;
+      box-shadow: 0 24px 70px rgba(15, 23, 42, .34);
+    }
+
+    .cadastro-modal .panel-head {
+      position: sticky;
+      top: 0;
+      z-index: 2;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: linear-gradient(90deg, #f8fafc, #eef4ff);
+      border-bottom: 1px solid #dbe3ef;
+    }
+
+    .cadastro-modal-close {
+      width: 32px;
+      height: 32px;
+      min-width: 32px;
+      margin: 0;
+      padding: 0;
+      border: 1px solid #cbd5e1;
+      border-radius: 9px;
+      background: #ffffff;
+      color: #334155;
+      font-size: 1.2rem;
+      line-height: 1;
+      cursor: pointer;
+    }
+
+    .cadastro-modal-close:hover {
+      background: #f8fafc;
+    }
+
+    body.cadastro-modal-open {
+      overflow: hidden;
+    }
+
+    .main {
+      padding-bottom: 86px !important;
+    }
+  </style>
+
+  <style id="lpa-servicos-cards">
+    /* EXIBIÇÃO DOS SERVIÇOS PUBLICADOS: SOMENTE CARDS */
+    .services-panel-head {
+      min-height: 48px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+    }
+
+    .services-panel-body {
+      padding: 10px !important;
+    }
+
+    /* CARDS QUADRADOS */
+    .services-list.view-cards {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(245px, 1fr));
+      gap: 10px;
+      align-items: stretch;
+    }
+
+    .services-list.view-cards .service-row {
+      aspect-ratio: 1 / 1;
+      min-width: 0;
+      padding: 12px;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      border-radius: 14px;
+    }
+
+    .services-list.view-cards .service-top {
+      min-height: 54px;
+    }
+
+    .services-list.view-cards .service-plate {
+      font-size: 1.18rem;
+    }
+
+    .services-list.view-cards .service-vehicle {
+      max-width: 150px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .services-list.view-cards .status-badge {
+      max-width: 112px;
+      min-height: 25px;
+      padding: 0 8px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .services-list.view-cards .service-desc {
+      margin-top: 9px;
+      display: -webkit-box;
+      -webkit-box-orient: vertical;
+      -webkit-line-clamp: 4;
+      overflow: hidden;
+      line-height: 1.35;
+    }
+
+    .services-list.view-cards .service-meta {
+      margin-top: 9px;
+      align-content: flex-start;
+    }
+
+    .services-list.view-cards .service-actions {
+      margin-top: auto;
+      padding-top: 10px;
+    }
+
+    .services-list.view-cards .cancel-btn {
+      width: 100%;
+      min-height: 32px;
+    }
+
+    .services-list.view-cards .empty {
+      grid-column: 1 / -1;
+    }
+
+  </style>
+
+
+  <style id="lpa-modelo-2-cards">
+    /* MODELO 2 — CARDS DE VEÍCULO. PRESERVA A IDENTIDADE VISUAL DO LPA. */
+    .services-panel-body {
+      overflow-x: auto;
+    }
+
+    .services-list.view-cards {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(215px, 230px));
+      gap: 10px;
+      align-items: start;
+      justify-content: start;
+    }
+
+
+    .services-list.view-cards .service-row {
+      position: relative;
+      width: 100%;
+      aspect-ratio: 1 / 1;
+      min-width: 0;
+      padding: 12px 13px;
+      display: flex;
+      flex-direction: column;
+      border: 1px solid #dbe3ef;
+      border-radius: 14px;
+      background: #ffffff;
+      box-shadow: 0 5px 14px rgba(15, 23, 42, .07);
+      overflow: hidden;
+      opacity: 1;
+    }
+
+    .services-list.view-cards .service-row:hover {
+      border-color: #93c5fd;
+      box-shadow: 0 8px 20px rgba(37, 99, 235, .12);
+    }
+
+    .services-list.view-cards .service-row.assumido {
+      background: #f8fafc;
+      border-color: #cbd5e1;
+      opacity: .82;
+    }
+
+    .service-card-head {
+      min-height: 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+    }
+
+    .service-date {
+      min-width: 0;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      color: #475569;
+      font-size: .58rem;
+      font-weight: 800;
+      white-space: nowrap;
+    }
+
+    .service-date svg,
+    .service-info-line svg {
+      width: 15px;
+      height: 15px;
+      min-width: 15px;
+      fill: none;
+      stroke: #2563eb;
+      stroke-width: 2;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    .service-bookmark {
+      width: 23px;
+      height: 23px;
+      min-width: 23px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      color: #2563eb;
+    }
+
+    .service-bookmark svg {
+      width: 18px;
+      height: 18px;
+      fill: currentColor;
+      stroke: currentColor;
+      stroke-width: 1.7;
+      stroke-linejoin: round;
+    }
+
+    .service-row.assumido .service-bookmark {
+      color: #94a3b8;
+    }
+
+    .services-list.view-cards .service-main {
+      margin-top: 12px;
+      min-width: 0;
+    }
+
+    .services-list.view-cards .service-plate {
+      color: #0f172a;
+      font-size: 1.25rem;
+      font-weight: 950;
+      line-height: 1;
+      letter-spacing: -.025em;
+    }
+
+    .services-list.view-cards .service-vehicle {
+      margin-top: 5px;
+      color: #334155;
+      font-size: .68rem;
+      font-weight: 750;
+      line-height: 1.2;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .services-list.view-cards .service-desc {
+      min-height: 35px;
+      margin-top: 10px;
+      color: #475569;
+      font-size: .64rem;
+      font-weight: 650;
+      line-height: 1.35;
+      display: -webkit-box;
+      -webkit-box-orient: vertical;
+      -webkit-line-clamp: 2;
+      overflow: hidden;
+    }
+
+    .services-list.view-cards .service-info {
+      margin-top: 9px;
+      display: grid;
+      gap: 5px;
+    }
+
+    .service-info-line {
+      min-width: 0;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      color: #475569;
+      font-size: .58rem;
+      font-weight: 700;
+      line-height: 1.15;
+      text-transform: uppercase;
+    }
+
+    .service-info-line span {
+      min-width: 0;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .service-info-line strong {
+      color: #0f172a;
+      font-weight: 850;
+    }
+
+    .services-list.view-cards .service-footer {
+      min-height: 30px;
+      margin-top: auto;
+      padding-top: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 7px;
+      border-top: 1px solid #e2e8f0;
+    }
+
+    .services-list.view-cards .status-badge {
+      min-width: 0;
+      max-width: 124px;
+      min-height: 23px;
+      padding: 0 7px;
+      font-size: .5rem;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .services-list.view-cards .service-actions {
+      margin: 0;
+      padding: 0;
+      flex: 0 0 auto;
+    }
+
+    .services-list.view-cards .cancel-btn {
+      width: auto;
+      min-width: 64px;
+      min-height: 25px;
+      padding: 0 7px;
+      border-radius: 8px;
+      font-size: .49rem;
+      white-space: nowrap;
+    }
+
+  </style>
+
+
+  <style id="lpa-prioridades-card">
+    /* PRIORIDADE VISUAL SUAVE — ORDEM: NORMAL, VENDIDO, RETORNO, ATRASADO, URGENTE */
+    .services-list.view-cards .service-row {
+      isolation: isolate;
+    }
+
+    .services-list.view-cards .service-row::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 4px;
+      z-index: 0;
+      background: transparent;
+    }
+
+    .services-list.view-cards .service-row > * {
+      position: relative;
+      z-index: 1;
+    }
+
+    .services-list.view-cards .service-row.prioridade-normal {
+      background: #ffffff !important;
+      border-color: #dbe3ef !important;
+    }
+
+    .services-list.view-cards .service-row.prioridade-vendido {
+      background: linear-gradient(180deg, #fff8f1 0%, #ffffff 58%) !important;
+      border-color: #fed7aa !important;
+    }
+    .services-list.view-cards .service-row.prioridade-vendido::before {
+      background: #fb923c;
+    }
+
+    .services-list.view-cards .service-row.prioridade-retorno {
+      background: linear-gradient(180deg, #faf6f1 0%, #ffffff 58%) !important;
+      border-color: #dec8b4 !important;
+    }
+    .services-list.view-cards .service-row.prioridade-retorno::before {
+      background: #95633f;
+    }
+
+    .services-list.view-cards .service-row.prioridade-atrasado {
+      background: linear-gradient(180deg, #fffceb 0%, #ffffff 58%) !important;
+      border-color: #fde68a !important;
+    }
+    .services-list.view-cards .service-row.prioridade-atrasado::before {
+      background: #eab308;
+    }
+
+    .services-list.view-cards .service-row.prioridade-urgente {
+      background: linear-gradient(180deg, #fff5f5 0%, #ffffff 58%) !important;
+      border-color: #fecaca !important;
+    }
+    .services-list.view-cards .service-row.prioridade-urgente::before {
+      background: #ef4444;
+    }
+
+    .services-list.view-cards .service-row.prioridade-vendido .service-bookmark { color:#ea580c; }
+    .services-list.view-cards .service-row.prioridade-retorno .service-bookmark { color:#7c4a2d; }
+    .services-list.view-cards .service-row.prioridade-atrasado .service-bookmark { color:#ca8a04; }
+    .services-list.view-cards .service-row.prioridade-urgente .service-bookmark { color:#dc2626; }
+    .services-list.view-cards .service-row.assumido { opacity:.84; }
+  </style>
+
+
+  <style id="lpa-barra-tarefas-desktop">
+    /* BARRA DE TAREFAS DESKTOP — PADRÃO VISUAL LECAR */
+    .main {
+      padding-bottom: 102px !important;
+    }
+
+    .lpa-taskbar {
+      position: fixed;
+      left: 50%;
+      bottom: 12px;
+      z-index: 1260;
+      width: min(820px, calc(100% - 30px));
+      height: 66px;
+      transform: translateX(-50%);
+      display: grid;
+      grid-template-columns: repeat(5, minmax(0, 1fr));
+      align-items: stretch;
+      padding: 6px 10px;
+      border: 1px solid rgba(203, 213, 225, .92);
+      border-radius: 20px;
+      background: rgba(255,255,255,.96);
+      box-shadow: 0 14px 38px rgba(15, 23, 42, .20);
+      backdrop-filter: blur(14px);
+    }
+
+    .lpa-taskbar-item {
+      position: relative;
+      min-width: 0;
+      height: 54px;
+      margin: 0;
+      padding: 5px 8px;
+      border: 0;
+      border-radius: 14px;
+      background: transparent;
+      color: #64748b;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 3px;
+      cursor: pointer;
+      transition: background .18s ease, color .18s ease, transform .18s ease;
+    }
+
+    .lpa-taskbar-item:hover {
+      background: #eef4ff;
+      color: #1e3a8a;
+      transform: translateY(-1px);
+    }
+
+    .lpa-taskbar-item.active {
+      background: linear-gradient(180deg, #eef4ff, #dbeafe);
+      color: #1d4ed8;
+      box-shadow: inset 0 0 0 1px #bfdbfe;
+    }
+
+    .lpa-taskbar-item svg {
+      width: 24px;
+      height: 24px;
+      fill: none;
+      stroke: currentColor;
+      stroke-width: 1.9;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      pointer-events: none;
+    }
+
+    .lpa-taskbar-label {
+      max-width: 100%;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      font-size: .58rem;
+      line-height: 1;
+      font-weight: 900;
+      letter-spacing: .045em;
+      text-transform: uppercase;
+    }
+
+    .lpa-taskbar-count {
+      position: absolute;
+      top: 4px;
+      right: 18px;
+      min-width: 18px;
+      height: 18px;
+      padding: 0 5px;
+      border-radius: 999px;
+      background: #e2e8f0;
+      color: #334155;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: .5rem;
+      font-weight: 950;
+      line-height: 1;
+      border: 2px solid #fff;
+    }
+
+    .lpa-taskbar-item.active .lpa-taskbar-count {
+      background: #2563eb;
+      color: #fff;
+    }
+
+    .lpa-taskbar-plus-wrap {
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .lpa-taskbar-plus {
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      width: 70px;
+      height: 70px;
+      min-width: 70px;
+      margin: 0;
+      padding: 0;
+      transform: translate(-50%, -58%);
+      border: 4px solid rgba(255,255,255,.98);
+      border-radius: 50%;
+      background: linear-gradient(145deg, #1e3a8a, #2563eb, #3b82f6);
+      color: #fff;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 12px 28px rgba(30,58,138,.42);
+      cursor: pointer;
+      transition: transform .18s ease, box-shadow .18s ease;
+    }
+
+    .lpa-taskbar-plus:hover {
+      transform: translate(-50%, -62%);
+      box-shadow: 0 16px 34px rgba(30,58,138,.48);
+    }
+
+    .lpa-taskbar-plus:active {
+      transform: translate(-50%, -58%) scale(.97);
+    }
+
+    .lpa-taskbar-plus svg {
+      width: 35px;
+      height: 35px;
+      fill: none;
+      stroke: currentColor;
+      stroke-width: 2.6;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    .services-panel-head {
+      min-height: 48px;
+    }
+
+    .services-view-summary {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      color: #64748b;
+      font-size: .64rem;
+      font-weight: 800;
+      text-transform: uppercase;
+    }
+
+    .services-view-summary strong {
+      min-width: 26px;
+      height: 24px;
+      padding: 0 8px;
+      border-radius: 999px;
+      background: #eaf2ff;
+      color: #1d4ed8;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: .62rem;
+      font-weight: 950;
+    }
+
+    .mechanics-grid {
+      grid-column: 1 / -1;
+      width: 100%;
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(245px, 1fr));
+      gap: 10px;
+    }
+
+    .mechanic-card {
+      min-height: 142px;
+      padding: 13px;
+      border: 1px solid #dbe3ef;
+      border-radius: 14px;
+      background: linear-gradient(180deg, #ffffff, #f8fafc);
+      box-shadow: 0 5px 14px rgba(15,23,42,.06);
+      display: grid;
+      grid-template-columns: 48px 1fr auto;
+      grid-template-rows: auto auto 1fr;
+      gap: 5px 10px;
+      align-items: center;
+    }
+
+    .mechanic-avatar {
+      grid-row: 1 / 3;
+      width: 48px;
+      height: 48px;
+      border-radius: 15px;
+      background: linear-gradient(145deg, #1e3a8a, #2563eb);
+      color: #fff;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: .78rem;
+      font-weight: 950;
+      box-shadow: 0 7px 15px rgba(37,99,235,.20);
+    }
+
+    .mechanic-name {
+      min-width: 0;
+      color: #0f172a;
+      font-size: .76rem;
+      font-weight: 950;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .mechanic-total {
+      color: #64748b;
+      font-size: .58rem;
+      font-weight: 800;
+      text-transform: uppercase;
+    }
+
+    .mechanic-number {
+      grid-row: 1 / 3;
+      grid-column: 3;
+      min-width: 42px;
+      height: 42px;
+      padding: 0 8px;
+      border-radius: 13px;
+      background: #eef4ff;
+      color: #1d4ed8;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1rem;
+      font-weight: 950;
+    }
+
+    .mechanic-services {
+      grid-column: 1 / -1;
+      min-height: 44px;
+      margin-top: 6px;
+      padding-top: 8px;
+      border-top: 1px solid #e2e8f0;
+      display: flex;
+      flex-wrap: wrap;
+      align-content: flex-start;
+      gap: 5px;
+    }
+
+    .mechanic-chip {
+      max-width: 100%;
+      height: 23px;
+      padding: 0 8px;
+      border-radius: 999px;
+      background: #f1f5f9;
+      color: #334155;
+      display: inline-flex;
+      align-items: center;
+      font-size: .52rem;
+      font-weight: 850;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .mechanic-chip.urgente {
+      background: #fee2e2;
+      color: #b91c1c;
+    }
+
+    .mechanic-empty {
+      color: #94a3b8;
+      font-size: .56rem;
+      font-weight: 750;
+      text-transform: uppercase;
+    }
+
+    .floating-add-btn { display: none !important; }
+
+    /* VEÍCULOS ATIVOS POR MECÂNICO */
+    .mechanics-grid {
+      grid-template-columns: repeat(auto-fill, minmax(330px, 1fr));
+      align-items: start;
+    }
+
+    .mechanic-card {
+      min-height: 150px;
+      align-self: start;
+    }
+
+    .mechanic-services {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 5px;
+      max-height: 270px;
+      overflow-y: auto;
+      overflow-x: hidden;
+      padding-right: 3px;
+      scrollbar-width: thin;
+      scrollbar-color: #bfdbfe transparent;
+    }
+
+    .mechanic-vehicle-row {
+      min-width: 0;
+      min-height: 31px;
+      padding: 5px 7px;
+      border: 1px solid #e2e8f0;
+      border-radius: 9px;
+      background: #ffffff;
+      display: grid;
+      grid-template-columns: 66px minmax(0, 1fr) auto;
+      align-items: center;
+      gap: 7px;
+    }
+
+    .mechanic-vehicle-plate {
+      color: #0f172a;
+      font-size: .58rem;
+      font-weight: 950;
+      letter-spacing: .02em;
+      white-space: nowrap;
+    }
+
+    .mechanic-vehicle-name {
+      min-width: 0;
+      color: #334155;
+      font-size: .56rem;
+      font-weight: 760;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .mechanic-vehicle-status {
+      max-width: 132px;
+      min-height: 20px;
+      padding: 0 7px;
+      border-radius: 999px;
+      background: #eef4ff;
+      color: #1d4ed8;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: .46rem;
+      font-weight: 900;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      border: 1px solid transparent;
+    }
+
+    .mechanic-vehicle-status.status-agendamento { background:#ffe3e7; border-color:#fecdd3; color:#dc2626; }
+    .mechanic-vehicle-status.status-pecas { background:#fef3c7; border-color:#fde68a; color:#92400e; }
+    .mechanic-vehicle-status.status-servico { background:#e2e8f0; border-color:#cbd5e1; color:#475569; }
+    .mechanic-vehicle-status.status-fornecedor { background:#dbeafe; border-color:#bfdbfe; color:#1d4ed8; }
+    .mechanic-vehicle-status.status-finalizado,
+    .mechanic-vehicle-status.status-execucao { background:#dcfce7; border-color:#bbf7d0; color:#15803d; }
+
+    .mechanic-vehicle-row.urgente {
+      border-color: #fecaca;
+      background: #fff7f7;
+    }
+
+  </style>
+
+</head>
+<body>
+  <section id="loginPage" class="login-page">
+    <form class="login-card" onsubmit="entrarAdmin(event)">
+      <img src="https://i.postimg.cc/zG9TvZGJ/logo.png" alt="LECAR" class="login-logo">
+      <h1>Painel ADM de Serviços</h1>
+      <input id="loginUsuario" type="text" placeholder="USUÁRIO" autocomplete="username" required>
+      <input id="loginSenha" type="password" placeholder="SENHA" autocomplete="current-password" required>
+      <button type="submit">Acessar painel</button>
+      <div id="loginErro" class="login-error">USUÁRIO OU SENHA INVÁLIDOS.</div>
+    </form>
+  </section>
+
+  <div id="app" class="app">
+    <header class="topbar app-topbar-clean">
+      <img src="logo.png" onerror="this.src='https://i.postimg.cc/zG9TvZGJ/logo.png'" alt="LECAR" class="logo-img">
+
+      <div class="app-search-shell">
+        <div class="app-search-card">
+          <svg class="app-search-icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5"></circle><path d="M15.5 15.5L21 21"></path></svg>
+          <input id="buscaAdmin" class="app-search-input" type="text" placeholder="BUSCAR" oninput="renderizarServicos()">
+        </div>
+      </div>
+
+      <div class="topbar-tools" aria-label="Ações rápidas">
+        <button type="button" class="topbar-icon-btn" title="Notificações" aria-label="Notificações" onclick="abrirNotificacoesPainel()">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M18 8A6 6 0 0 0 6 8C6 15 3 16 3 16H21C21 16 18 15 18 8Z"></path><path d="M10 20H14"></path></svg>
+          <span id="notificacaoBadgeAdm" class="notificacao-badge-adm">0</span>
+        </button>
+        <button type="button" class="btn-menu-hamburguer topbar-icon-btn" title="Menu do sistema" aria-label="Abrir menu do sistema" onclick="abrirDrawer()">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7H20"></path><path d="M4 12H20"></path><path d="M4 17H20"></path></svg>
+        </button>
+      </div>
+    </header>
+
+    <main class="main">
+      <div class="layout">
+        <section class="panel list-panel">
+          <div class="panel-head services-panel-head">
+            <h2 id="tituloVisaoPainel">AGUARDANDO</h2>
+            <div class="services-view-summary"><span id="textoResumoVisao">SERVIÇOS</span><strong id="totalVisaoPainel">0</strong></div>
+          </div>
+          <div class="panel-body services-panel-body">
+            <div id="listaServicosAdm" class="services-list view-cards"><div class="empty">Carregando serviços...</div></div>
+          </div>
+        </section>
+      </div>
+    </main>
+
+    <nav class="lpa-taskbar" aria-label="Barra de tarefas do painel">
+      <button id="navAguardando" type="button" class="lpa-taskbar-item active" onclick="selecionarVisaoPainel('AGUARDANDO')" title="Serviços aguardando mecânico">
+        <span id="countAguardando" class="lpa-taskbar-count">0</span>
+        <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="8.5"></circle><path d="M12 7.5V12L15.5 14"></path><path d="M8 3.8L6.2 2.5M16 3.8L17.8 2.5"></path></svg>
+        <span class="lpa-taskbar-label">Aguardando</span>
+      </button>
+
+      <button id="navAndamento" type="button" class="lpa-taskbar-item" onclick="selecionarVisaoPainel('ANDAMENTO')" title="Serviços em andamento">
+        <span id="countAndamento" class="lpa-taskbar-count">0</span>
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14.7 6.3A4 4 0 0 0 9.1 11.4L3.8 16.7A2.2 2.2 0 1 0 6.9 19.8L12.2 14.5A4 4 0 0 0 17.3 8.9L14.8 11.4L12.6 9.2Z"></path><path d="M15.5 15.5L20.5 20.5"></path></svg>
+        <span class="lpa-taskbar-label">Andamento</span>
+      </button>
+
+      <div class="lpa-taskbar-plus-wrap">
+        <button type="button" class="lpa-taskbar-plus" onclick="abrirCadastroServico()" title="Novo serviço (+)" aria-label="Abrir cadastro de novo serviço">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5V19"></path><path d="M5 12H19"></path></svg>
+        </button>
+      </div>
+
+      <button id="navUrgente" type="button" class="lpa-taskbar-item" onclick="selecionarVisaoPainel('URGENTE')" title="Serviços urgentes">
+        <span id="countUrgente" class="lpa-taskbar-count">0</span>
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M13.6 2.8C14.2 6.2 11 7.2 12.1 10.1C10.6 9.2 9.5 7.8 9.4 6C6.2 8.5 4.8 11.3 5.4 14.3C6.1 18 9.1 21 12.8 21C16.7 21 19.5 18.2 19.5 14.3C19.5 10.8 17.2 7.2 13.6 2.8Z"></path><path d="M12.7 12.2C14.2 14 14.5 15.2 14.1 16.4C13.8 17.5 12.9 18.2 11.8 18.2C10.5 18.2 9.5 17.2 9.5 15.9C9.5 14.8 10.2 13.7 11.4 12.6"></path></svg>
+        <span class="lpa-taskbar-label">Urgente</span>
+      </button>
+
+      <button id="navMecanicos" type="button" class="lpa-taskbar-item" onclick="selecionarVisaoPainel('MECANICOS')" title="Visão por mecânico">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8.5 11A3.5 3.5 0 1 0 8.5 4A3.5 3.5 0 0 0 8.5 11Z"></path><path d="M2.5 20V18.5A5.5 5.5 0 0 1 8 13H9A5.5 5.5 0 0 1 14.5 18.5V20"></path><path d="M16.5 9.5A2.7 2.7 0 1 0 16.5 4.1"></path><path d="M16 13.2A4.8 4.8 0 0 1 21.5 18V20"></path></svg>
+        <span class="lpa-taskbar-label">Mecânicos</span>
+      </button>
+    </nav>
+  </div>
+
+  <div id="modalCadastroServico" class="cadastro-modal-bg" onclick="fecharCadastroServico(event)">
+    <section class="cadastro-modal form-panel" role="dialog" aria-modal="true" aria-labelledby="tituloCadastroServico">
+      <div class="panel-head">
+        <h2 id="tituloCadastroServico">Novo serviço</h2>
+        <button type="button" class="cadastro-modal-close" aria-label="Fechar cadastro" onclick="fecharCadastroServico()">×</button>
+      </div>
+      <form id="formNovoServico" class="panel-body" onsubmit="publicarServico(event)">
+        <div class="field-grid">
+          <div class="field">
+            <label for="admVeiculo">Veículo</label>
+            <input id="admVeiculo" type="text" placeholder="EX: TOYOTA COROLLA" oninput="this.value=this.value.toUpperCase()" required>
+          </div>
+          <div class="field">
+            <label for="admPlaca">Placa</label>
+            <input id="admPlaca" type="text" maxlength="8" placeholder="ABC1D23" oninput="this.value=this.value.replace(/[^a-zA-Z0-9]/g,'').toUpperCase()" required>
+          </div>
+        </div>
+        <div class="field">
+          <label for="admDescricao">Descrição do serviço</label>
+          <textarea id="admDescricao" placeholder="DESCREVA O SERVIÇO NECESSÁRIO" oninput="this.value=this.value.toUpperCase()" required></textarea>
+        </div>
+        <div class="field-grid">
+          <div class="field">
+            <label for="admOrigem">Origem</label>
+            <select id="admOrigem">
+              <option value="-">NÃO INFORMADA</option>
+              <option value="ATM">ATM</option>
+              <option value="BOLSÃO">BOLSÃO</option>
+            </select>
+          </div>
+          <div class="field">
+            <label for="admPrioridade">Prioridade</label>
+            <select id="admPrioridade">
+              <option value="NORMAL">NORMAL</option>
+              <option value="VENDIDO">VENDIDO</option>
+              <option value="RETORNO">RETORNO</option>
+              <option value="ATRASADO">ATRASADO</option>
+              <option value="URGENTE">URGENTE</option>
+            </select>
+          </div>
+        </div>
+        <div class="field">
+          <label for="admMecanico">Atribuir serviço para mecânico</label>
+          <select id="admMecanico" onchange="atualizarAcaoCadastro()">
+            <option value="">LISTA GERAL — SEM ATRIBUIÇÃO</option>
+            <option value="LEANDRO">LEANDRO</option>
+            <option value="ABRAÃO">ABRAÃO</option>
+            <option value="PEDRO">PEDRO</option>
+            <option value="MAICON">MAICON</option>
+            <option value="DOUGLAS">DOUGLAS</option>
+            <option value="HARON">HARON</option>
+          </select>
+        </div>
+        <button id="btnPublicar" class="submit-btn" type="submit">Publicar na Lista Geral</button>
+      </form>
+    </section>
+  </div>
+
+  <div class="drawer-overlay" onclick="fecharDrawer()"></div>
+  <aside class="drawer" aria-label="Menu administrativo">
+    <div class="drawer-head"><strong>Menu ADM</strong><button type="button" class="drawer-close" onclick="fecharDrawer()">×</button></div>
+    <button id="btnVoltarLeCar" type="button" class="drawer-btn" onclick="voltarLeCar()">Voltar ao LeCar</button>
+    <button type="button" class="drawer-btn danger" onclick="sairAdmin()">Sair do painel</button>
+  </aside>
+
+
+  <div id="modalNotificacoesAdm" class="notificacoes-adm-bg" onclick="fecharNotificacoesPainel(event)">
+    <section class="notificacoes-adm-modal" role="dialog" aria-modal="true" aria-labelledby="tituloNotificacoesAdm">
+      <div class="notificacoes-adm-head">
+        <div>
+          <h2 id="tituloNotificacoesAdm">Notificações</h2>
+          <p>Avisos publicados no LeCar</p>
+        </div>
+        <button type="button" class="notificacoes-adm-close" aria-label="Fechar notificações" onclick="fecharNotificacoesPainel()">×</button>
+      </div>
+      <div id="listaNotificacoesAdm" class="notificacoes-adm-lista">
+        <div class="notificacoes-adm-empty">CARREGANDO NOTIFICAÇÕES...</div>
+      </div>
+    </section>
+  </div>
+
+  <div id="toast" class="toast"></div>
+
+  <script>
+    const firebaseConfig = {
+      apiKey: "AIzaSyDjMGX595VvyAj6Nk-I4Pj4VGlipJNovPw",
+      authDomain: "lehub-lecar.firebaseapp.com",
+      projectId: "lehub-lecar",
+      storageBucket: "lehub-lecar.firebasestorage.app",
+      messagingSenderId: "338216307290",
+      appId: "1:338216307290:web:bb31d3710098866094e663"
+    };
+
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.firestore();
+    const SENHA_PADRAO_LPA = "oficina26";
+    const USUARIOS_LPA = Object.freeze({
+      LEANDRO: { senha: SENHA_PADRAO_LPA, perfil: "ADMINISTRADOR" },
+      PREPARACAO: { senha: SENHA_PADRAO_LPA, perfil: "OPERADOR" }
+    });
+    let servicosAdm = [];
+    let veiculosAtivosAdm = [];
+    let unsubscribeServicos = null;
+    let unsubscribeVeiculosAtivos = null;
+    let unsubscribeNotificacoesAdm = null;
+    let notificacoesAdm = [];
+    let publicando = false;
+    let visaoPainelAtual = "AGUARDANDO";
+    const USUARIOS_BLOQUEADOS = Object.freeze(["JUNINHO", "JUNINHO_DEL", "ARON"]);
+
+    function normalizar(valor) {
+      return String(valor || "")
+        .toUpperCase()
+        .normalize("NFD")
+        .replace(/[\u0300-\u036f]/g, "")
+        .replace(/\s+/g, " ")
+        .trim();
+    }
+
+    function chaveUsuario(valor) {
+      return normalizar(valor).replace(/[\s-]+/g, "_");
+    }
+
+    function usuarioBloqueado(valor) {
+      return USUARIOS_BLOQUEADOS.includes(chaveUsuario(valor));
+    }
+
+    function registroBloqueado(item) {
+      return [
+        item?.mecanicoResponsavel,
+        item?.mecanico_responsavel,
+        item?.mecanico,
+        item?.usuario,
+        item?.criadoPor
+      ].some(usuarioBloqueado);
+    }
+
+    function veiculoEstaAtivo(item) {
+      return normalizar(item?.status) !== "VEICULO FINALIZADO";
+    }
+
+    function escapar(valor) {
+      return String(valor ?? "")
+        .replace(/&/g,"&amp;")
+        .replace(/</g,"&lt;")
+        .replace(/>/g,"&gt;")
+        .replace(/\"/g,"&quot;")
+        .replace(/'/g,"&#039;");
+    }
+
+    function usuarioPainelAtual() {
+      const usuarioSessao = normalizar(sessionStorage.getItem("sessao_lecar_admin"));
+      if (USUARIOS_LPA[usuarioSessao]) return usuarioSessao;
+
+      const usuarioLeCar = normalizar(localStorage.getItem("sessao_lecar"));
+      return usuarioLeCar === "LEANDRO" ? "LEANDRO" : "";
+    }
+
+    function perfilPainelAtual() {
+      const usuario = usuarioPainelAtual();
+      return USUARIOS_LPA[usuario]?.perfil || "";
+    }
+
+    function acessoAdminValido() {
+      return Boolean(USUARIOS_LPA[usuarioPainelAtual()]);
+    }
+
+    function entrarAdmin(event) {
+      event.preventDefault();
+      const usuario = normalizar(document.getElementById("loginUsuario").value);
+      const senha = document.getElementById("loginSenha").value;
+      const erro = document.getElementById("loginErro");
+      const cadastro = USUARIOS_LPA[usuario];
+
+      if (!cadastro || senha !== cadastro.senha) {
+        erro.style.display = "block";
+        return;
+      }
+
+      sessionStorage.setItem("sessao_lecar_admin", usuario);
+      sessionStorage.setItem("perfil_lecar_admin", cadastro.perfil);
+      erro.style.display = "none";
+      abrirAplicacao();
+    }
+
+    function verificarAcesso() {
+      if (acessoAdminValido()) abrirAplicacao();
+    }
+
+    function aplicarPermissoesInterface() {
+      const btnVoltar = document.getElementById("btnVoltarLeCar");
+      if (btnVoltar) btnVoltar.style.display = perfilPainelAtual() === "ADMINISTRADOR" ? "block" : "none";
+    }
+
+    function abrirAplicacao() {
+      document.getElementById("loginPage").style.display = "none";
+      document.getElementById("app").style.display = "block";
+      aplicarPermissoesInterface();
+      iniciarServicos();
+      iniciarVeiculosAtivos();
+      iniciarNotificacoesAdm();
+    }
+
+    function sairAdmin() {
+      sessionStorage.removeItem("sessao_lecar_admin");
+      sessionStorage.removeItem("perfil_lecar_admin");
+      if (typeof unsubscribeServicos === "function") unsubscribeServicos();
+      if (typeof unsubscribeVeiculosAtivos === "function") unsubscribeVeiculosAtivos();
+      if (typeof unsubscribeNotificacoesAdm === "function") unsubscribeNotificacoesAdm();
+      location.reload();
+    }
+
+    function usuarioNotificacoesAdm() {
+      return usuarioPainelAtual();
+    }
+
+    function idsNotificacoesLidasAdm() {
+      try {
+        const ids = JSON.parse(localStorage.getItem(`lecar_notificacoes_lidas_${usuarioNotificacoesAdm()}`) || "[]");
+        return Array.isArray(ids) ? ids : [];
+      } catch (erro) {
+        return [];
+      }
+    }
+
+    function notificacaoLidaAdm(item) {
+      const usuario = usuarioNotificacoesAdm();
+      const remotos = Array.isArray(item?.lidosPor) ? item.lidosPor.map(normalizar) : [];
+      return remotos.includes(usuario) || idsNotificacoesLidasAdm().includes(item.id);
+    }
+
+    function timestampNotificacaoAdm(item) {
+      if (item?.criadoEm?.toMillis) return item.criadoEm.toMillis();
+      const data = new Date(item?.criadoEmISO || item?.dataCriacao || "");
+      return Number.isNaN(data.getTime()) ? 0 : data.getTime();
+    }
+
+    function formatarNotificacaoAdm(item) {
+      const ms = timestampNotificacaoAdm(item);
+      if (!ms) return "AGORA";
+      return new Date(ms).toLocaleString("pt-BR", {
+        day:"2-digit", month:"2-digit", year:"numeric", hour:"2-digit", minute:"2-digit"
+      });
+    }
+
+    function tipoNotificacaoAdm(item) {
+      const tipo = String(item?.tipo || item?.categoria || "").trim().toLowerCase();
+      if (["urgente","atualizacao","informativa"].includes(tipo)) return tipo;
+      const antiga = String(item?.prioridade || "").trim().toLowerCase();
+      if (antiga === "urgente") return "urgente";
+      if (antiga === "atencao") return "atualizacao";
+      return "informativa";
+    }
+
+    function atualizarBadgeNotificacoesAdm() {
+      const badge = document.getElementById("notificacaoBadgeAdm");
+      if (!badge) return;
+      const total = notificacoesAdm.filter(item => item.ativo !== false && !notificacaoLidaAdm(item)).length;
+      badge.textContent = total > 99 ? "99+" : String(total);
+      badge.classList.toggle("show", total > 0);
+    }
+
+    function renderizarNotificacoesAdm() {
+      const lista = document.getElementById("listaNotificacoesAdm");
+      if (!lista) return;
+      const itens = notificacoesAdm.filter(item => item.ativo !== false);
+      if (!itens.length) {
+        lista.innerHTML = '<div class="notificacoes-adm-empty">NENHUMA NOTIFICAÇÃO PUBLICADA.</div>';
+        return;
+      }
+      lista.innerHTML = itens.map(item => {
+        const tipo = tipoNotificacaoAdm(item);
+        const rotulo = tipo === "urgente" ? "URGENTE" : tipo === "atualizacao" ? "ATUALIZAÇÃO" : "INFORMATIVA";
+        return `<article class="notificacao-adm-item tipo-${tipo}">
+          <div class="notificacao-adm-tipo">${escapar(rotulo)}</div>
+          <div class="notificacao-adm-item-head">
+            <strong>${escapar(item.titulo || "AVISO")}</strong>
+            <span>${escapar(formatarNotificacaoAdm(item))}</span>
+          </div>
+          <p>${escapar(item.mensagem || "")}</p>
+        </article>`;
+      }).join("");
+    }
+
+    async function marcarNotificacoesAdmComoLidas() {
+      const usuario = usuarioNotificacoesAdm();
+      const naoLidas = notificacoesAdm.filter(item => item.ativo !== false && !notificacaoLidaAdm(item));
+      if (!usuario || !naoLidas.length) return;
+      const atuais = new Set(idsNotificacoesLidasAdm());
+      naoLidas.forEach(item => atuais.add(item.id));
+      localStorage.setItem(`lecar_notificacoes_lidas_${usuario}`, JSON.stringify([...atuais]));
+      atualizarBadgeNotificacoesAdm();
+      try {
+        const lote = db.batch();
+        naoLidas.forEach(item => lote.set(db.collection("notificacoes_lecar").doc(item.id), {
+          lidosPor: firebase.firestore.FieldValue.arrayUnion(usuario)
+        }, { merge:true }));
+        await lote.commit();
+      } catch (erro) {
+        console.warn("Notificações marcadas apenas neste dispositivo:", erro);
+      }
+    }
+
+    async function abrirNotificacoesPainel() {
+      renderizarNotificacoesAdm();
+      document.getElementById("modalNotificacoesAdm")?.classList.add("show");
+      document.body.style.overflow = "hidden";
+      await marcarNotificacoesAdmComoLidas();
+    }
+
+    function fecharNotificacoesPainel(event) {
+      if (event && event.target !== event.currentTarget) return;
+      document.getElementById("modalNotificacoesAdm")?.classList.remove("show");
+      document.body.style.overflow = "";
+    }
+
+    function iniciarNotificacoesAdm() {
+      if (typeof unsubscribeNotificacoesAdm === "function") unsubscribeNotificacoesAdm();
+      unsubscribeNotificacoesAdm = db.collection("notificacoes_lecar")
+        .orderBy("criadoEm", "desc")
+        .onSnapshot(snapshot => {
+          notificacoesAdm = snapshot.docs
+            .map(doc => ({ id:doc.id, ...doc.data() }))
+            .filter(item => !registroBloqueado(item))
+            .sort((a,b) => timestampNotificacaoAdm(b) - timestampNotificacaoAdm(a));
+          atualizarBadgeNotificacoesAdm();
+          renderizarNotificacoesAdm();
+        }, erro => {
+          console.warn("Não foi possível carregar notificações:", erro);
+          notificacoesAdm = [];
+          atualizarBadgeNotificacoesAdm();
+          renderizarNotificacoesAdm();
+        });
+    }
+
+    function abrirDrawer() { document.body.classList.add("drawer-open"); }
+    function fecharDrawer() { document.body.classList.remove("drawer-open"); }
+    function voltarLeCar() { window.location.href = "LeCar_integrado_lista_geral.html"; }
+
+    function mostrarToast(texto) {
+      const toast = document.getElementById("toast");
+      toast.textContent = texto;
+      toast.classList.add("show");
+      clearTimeout(window.__toastTimer);
+      window.__toastTimer = setTimeout(() => toast.classList.remove("show"), 2600);
+    }
+
+    function timestampServico(item) {
+      if (item?.criadoEm?.toMillis) return item.criadoEm.toMillis();
+      const data = new Date(item?.criadoEmISO || "");
+      return Number.isNaN(data.getTime()) ? 0 : data.getTime();
+    }
+
+    function statusDistribuicao(item) {
+      return normalizar(item?.statusDistribuicao) === "ASSUMIDO" ? "ASSUMIDO" : "DISPONIVEL";
+    }
+
+    const ORDEM_PRIORIDADE = Object.freeze({ NORMAL:1, VENDIDO:2, RETORNO:3, ATRASADO:4, URGENTE:5 });
+    const MECANICOS_LECAR = Object.freeze({
+      LEANDRO:"LEANDRO",
+      ABRAAO:"ABRAÃO",
+      PEDRO:"PEDRO",
+      MAICON:"MAICON",
+      DOUGLAS:"DOUGLAS",
+      HARON:"HARON"
+    });
+
+    function prioridadeServico(item) {
+      const prioridade = normalizar(item?.prioridade || "NORMAL");
+      return Object.prototype.hasOwnProperty.call(ORDEM_PRIORIDADE, prioridade) ? prioridade : "NORMAL";
+    }
+
+    function classePrioridade(item) {
+      return `prioridade-${prioridadeServico(item).toLowerCase()}`;
+    }
+
+    function mecanicoCanonico(valor) {
+      const chave = chaveUsuario(valor);
+      if (!chave || usuarioBloqueado(chave)) return "";
+      return MECANICOS_LECAR[chave] || normalizar(valor).replaceAll("_", " ");
+    }
+
+    function descricaoEhTrocaOleoLPA(descricao) {
+      return normalizar(descricao).includes("TROCA DE OLEO");
+    }
+
+    function atualizarAcaoCadastro() {
+      const botao = document.getElementById("btnPublicar");
+      if (!botao || publicando) return;
+      const mecanico = mecanicoCanonico(document.getElementById("admMecanico")?.value || "");
+      botao.textContent = mecanico ? `ATRIBUIR PARA ${mecanico}` : "PUBLICAR NA LISTA GERAL";
+    }
+
+    function formatarData(item) {
+      const ms = timestampServico(item);
+      if (!ms) return "DATA NÃO INFORMADA";
+      return new Date(ms).toLocaleString("pt-BR", { day:"2-digit", month:"2-digit", year:"numeric", hour:"2-digit", minute:"2-digit" });
+    }
+
+    function atualizarBarraTarefas() {
+      const aguardando = servicosAdm.filter(item => statusDistribuicao(item) === "DISPONIVEL").length;
+      const andamento = servicosAdm.filter(item => statusDistribuicao(item) === "ASSUMIDO").length;
+      const urgente = servicosAdm.filter(item => prioridadeServico(item) === "URGENTE").length;
+
+      const contadores = {
+        countAguardando: aguardando,
+        countAndamento: andamento,
+        countUrgente: urgente
+      };
+      Object.entries(contadores).forEach(([id, total]) => {
+        const elemento = document.getElementById(id);
+        if (elemento) elemento.textContent = total > 99 ? "99+" : String(total);
+      });
+
+      const mapaIds = {
+        AGUARDANDO:"navAguardando",
+        ANDAMENTO:"navAndamento",
+        URGENTE:"navUrgente",
+        MECANICOS:"navMecanicos"
+      };
+      Object.values(mapaIds).forEach(id => document.getElementById(id)?.classList.remove("active"));
+      document.getElementById(mapaIds[visaoPainelAtual])?.classList.add("active");
+    }
+
+    function selecionarVisaoPainel(visao) {
+      const permitidas = ["AGUARDANDO","ANDAMENTO","URGENTE","MECANICOS"];
+      visaoPainelAtual = permitidas.includes(visao) ? visao : "AGUARDANDO";
+      renderizarServicos();
+    }
+
+    function iniciaisMecanico(nome) {
+      return normalizar(nome).split("_").join(" ").split(" ").filter(Boolean).slice(0,2).map(parte => parte[0]).join("") || "M";
+    }
+
+    function classeStatusOperacionalPainel(status) {
+      const chave = normalizar(status);
+      if (chave === "AGUARDANDO ORCAMENTO") return "status-agendamento";
+      if (chave === "AGUARDANDO PECAS") return "status-pecas";
+      if (chave === "AGUARDANDO SERVICO") return "status-servico";
+      if (chave === "FORNECEDOR" || chave === "ENVIAR PARA TERCEIROS") return "status-fornecedor";
+      if (chave === "VEICULO FINALIZADO") return "status-finalizado";
+      return "status-servico";
+    }
+
+    function rotuloStatusOperacionalPainel(status) {
+      const chave = normalizar(status);
+      if (chave === "AGUARDANDO ORCAMENTO") return "AGUARDANDO ORÇAMENTO";
+      if (chave === "AGUARDANDO PECAS") return "AGUARDANDO PEÇAS";
+      if (chave === "AGUARDANDO SERVICO") return "AGUARDANDO SERVIÇO";
+      if (chave === "VEICULO FINALIZADO") return "VEÍCULO FINALIZADO";
+      if (chave === "ENVIAR PARA TERCEIROS") return "ENVIAR PARA TERCEIROS";
+      if (chave === "FORNECEDOR") return "FORNECEDOR";
+      return String(status || "ATIVO").toUpperCase().trim();
+    }
+
+    function renderizarMecanicos(lista, busca) {
+      const mecanicosBase = Object.values(MECANICOS_LECAR).filter(nome => !usuarioBloqueado(nome));
+      const mecanicosComVeiculos = veiculosAtivosAdm
+        .map(item => mecanicoCanonico(item.mecanico_responsavel || item.mecanicoResponsavel || item.mecanico))
+        .filter(Boolean);
+      const mecanicos = [...new Set([...mecanicosBase, ...mecanicosComVeiculos])]
+        .sort((a,b) => a.localeCompare(b, "pt-BR"));
+
+      const veiculosDoMecanico = nome => veiculosAtivosAdm
+        .filter(item => mecanicoCanonico(item.mecanico_responsavel || item.mecanicoResponsavel || item.mecanico) === nome)
+        .sort((a,b) => {
+          const pa = ORDEM_PRIORIDADE[prioridadeServico(a)] || 1;
+          const pb = ORDEM_PRIORIDADE[prioridadeServico(b)] || 1;
+          return pb - pa || timestampServico(b) - timestampServico(a);
+        });
+
+      const filtrados = mecanicos.filter(nome => {
+        const veiculos = veiculosDoMecanico(nome);
+        const texto = normalizar([nome, ...veiculos.map(item => `${item.veiculo} ${item.placa} ${item.descricao} ${item.status}`)].join(" "));
+        return !busca || texto.includes(busca);
+      });
+
+      const totalAtivos = filtrados.reduce((total, nome) => total + veiculosDoMecanico(nome).length, 0);
+      document.getElementById("tituloVisaoPainel").textContent = "MECÂNICOS";
+      document.getElementById("textoResumoVisao").textContent = "VEÍCULOS ATIVOS";
+      document.getElementById("totalVisaoPainel").textContent = String(totalAtivos);
+
+      if (!filtrados.length) {
+        lista.innerHTML = '<div class="empty">NENHUM MECÂNICO ENCONTRADO.</div>';
+        return;
+      }
+
+      lista.innerHTML = `<div class="mechanics-grid">${filtrados.map(nome => {
+        const veiculos = veiculosDoMecanico(nome);
+        const urgentes = veiculos.filter(item => prioridadeServico(item) === "URGENTE").length;
+        const linhas = veiculos.map(item => {
+          const prioridade = prioridadeServico(item);
+          const status = item.status || "ATIVO";
+          const classeStatus = classeStatusOperacionalPainel(status);
+          const rotuloStatus = rotuloStatusOperacionalPainel(status);
+          return `<div class="mechanic-vehicle-row ${prioridade === "URGENTE" ? "urgente" : ""}" title="${escapar(item.descricao || "")}">
+            <span class="mechanic-vehicle-plate">${escapar(item.placa || "-")}</span>
+            <span class="mechanic-vehicle-name">${escapar(item.veiculo || "VEÍCULO")}</span>
+            <span class="mechanic-vehicle-status ${classeStatus}">${escapar(rotuloStatus)}</span>
+          </div>`;
+        }).join("");
+
+        return `<article class="mechanic-card">
+          <div class="mechanic-avatar">${escapar(iniciaisMecanico(nome))}</div>
+          <div class="mechanic-name">${escapar(nome.replaceAll("_"," "))}</div>
+          <div class="mechanic-total">${urgentes ? `${urgentes} URGENTE${urgentes > 1 ? "S" : ""}` : "SEM URGÊNCIA"}</div>
+          <div class="mechanic-number" title="VEÍCULOS ATIVOS">${veiculos.length}</div>
+          <div class="mechanic-services">${linhas || '<span class="mechanic-empty">SEM VEÍCULOS ATIVOS</span>'}</div>
+        </article>`;
+      }).join("")}</div>`;
+    }
+
+    function renderizarServicos() {
+      const lista = document.getElementById("listaServicosAdm");
+      const busca = normalizar(document.getElementById("buscaAdmin")?.value || "");
+      atualizarBarraTarefas();
+
+      if (visaoPainelAtual === "MECANICOS") {
+        renderizarMecanicos(lista, busca);
+        return;
+      }
+
+      const titulos = {
+        AGUARDANDO:"AGUARDANDO",
+        ANDAMENTO:"EM ANDAMENTO",
+        URGENTE:"URGENTES"
+      };
+
+      const filtrados = servicosAdm
+        .filter(item => !busca || normalizar([item.veiculo,item.placa,item.descricao,item.mecanicoResponsavel,item.origem,item.prioridade].join(" ")).includes(busca))
+        .filter(item => {
+          if (visaoPainelAtual === "AGUARDANDO") return statusDistribuicao(item) === "DISPONIVEL";
+          if (visaoPainelAtual === "ANDAMENTO") return statusDistribuicao(item) === "ASSUMIDO";
+          if (visaoPainelAtual === "URGENTE") return prioridadeServico(item) === "URGENTE";
+          return true;
+        })
+        .sort((a,b) => {
+          const sa = statusDistribuicao(a) === "ASSUMIDO" ? 1 : 0;
+          const sb = statusDistribuicao(b) === "ASSUMIDO" ? 1 : 0;
+          const pa = ORDEM_PRIORIDADE[prioridadeServico(a)] || 1;
+          const pb = ORDEM_PRIORIDADE[prioridadeServico(b)] || 1;
+          return sa - sb || pb - pa || timestampServico(b) - timestampServico(a);
+        });
+
+      document.getElementById("tituloVisaoPainel").textContent = titulos[visaoPainelAtual] || "SERVIÇOS";
+      document.getElementById("textoResumoVisao").textContent = "SERVIÇOS";
+      document.getElementById("totalVisaoPainel").textContent = String(filtrados.length);
+
+      if (!filtrados.length) {
+        lista.innerHTML = '<div class="empty">NENHUM SERVIÇO ENCONTRADO.</div>';
+        return;
+      }
+
+      lista.innerHTML = filtrados.map(item => {
+        const assumido = statusDistribuicao(item) === "ASSUMIDO";
+        const mecanico = normalizar(item.mecanicoResponsavel || item.mecanico_responsavel || "");
+        const prioridade = normalizar(item.prioridade || "NORMAL");
+        const origem = normalizar(item.origem || "-");
+        const statusTexto = assumido ? `ASSUMIDO • ${escapar(mecanico || "MECÂNICO")}` : "DISPONÍVEL";
+        const acaoTexto = assumido ? "BLOQUEADO" : "CANCELAR";
+
+        return `<article class="service-row ${classePrioridade(item)} ${assumido ? "assumido" : ""}">
+          <div class="service-card-head">
+            <span class="service-date">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="2"></rect><path d="M16 3V7M8 3V7M3 10H21"></path></svg>
+              ${escapar(formatarData(item))}
+            </span>
+            <span class="service-bookmark" title="PRIORIDADE: ${escapar(prioridade)}" aria-label="PRIORIDADE: ${escapar(prioridade)}">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 3H18V21L12 17L6 21Z"></path></svg>
+            </span>
+          </div>
+
+          <div class="service-main">
+            <div class="service-plate">${escapar(item.placa || "-")}</div>
+            <div class="service-vehicle">${escapar(item.veiculo || "VEÍCULO NÃO INFORMADO")}</div>
+          </div>
+
+          <div class="service-desc">${escapar(item.descricao || "SEM DESCRIÇÃO")}</div>
+
+          <div class="service-info">
+            <div class="service-info-line service-origin">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9L12 4L20 9V20H4Z"></path><path d="M9 20V13H15V20"></path></svg>
+              <span><span class="service-info-label">ORIGEM: </span><strong>${escapar(origem)}</strong></span>
+            </div>
+            <div class="service-info-line service-priority">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 21V4"></path><path d="M5 5H17L15 9L17 13H5"></path></svg>
+              <span><span class="service-info-label">PRIORIDADE: </span><strong>${escapar(prioridade)}</strong></span>
+            </div>
+          </div>
+
+          <div class="service-footer">
+            <span class="status-badge ${assumido ? "assumido" : "disponivel"}">${statusTexto}</span>
+            <div class="service-actions">
+              <button type="button" class="cancel-btn" ${assumido ? "disabled" : `onclick="cancelarServico('${escapar(item.id)}')"`}>${acaoTexto}</button>
+            </div>
+          </div>
+        </article>`;
+      }).join("");
+    }
+
+    function iniciarServicos() {
+      if (typeof unsubscribeServicos === "function") return;
+      unsubscribeServicos = db.collection("servicos_lista_geral")
+        .where("ativo","==",true)
+        .onSnapshot(snapshot => {
+          servicosAdm = snapshot.docs
+            .map(doc => ({ id:doc.id, ...doc.data() }))
+            .filter(item => !registroBloqueado(item));
+          renderizarServicos();
+        }, erro => {
+          console.error("Erro ao carregar serviços ADM:", erro);
+          document.getElementById("listaServicosAdm").innerHTML = '<div class="empty">Erro ao carregar serviços. Verifique a conexão e as permissões do Firebase.</div>';
+        });
+    }
+
+    function iniciarVeiculosAtivos() {
+      if (typeof unsubscribeVeiculosAtivos === "function") return;
+      unsubscribeVeiculosAtivos = db.collection("veiculos")
+        .where("status", "!=", "VEÍCULO FINALIZADO")
+        .onSnapshot(snapshot => {
+          veiculosAtivosAdm = snapshot.docs
+            .map(doc => ({ id:doc.id, ...doc.data() }))
+            .filter(item => veiculoEstaAtivo(item) && !registroBloqueado(item));
+          if (visaoPainelAtual === "MECANICOS") renderizarServicos();
+        }, erro => {
+          console.error("Erro ao carregar veículos ativos:", erro);
+          veiculosAtivosAdm = [];
+          if (visaoPainelAtual === "MECANICOS") {
+            document.getElementById("listaServicosAdm").innerHTML = '<div class="empty">NÃO FOI POSSÍVEL CARREGAR OS VEÍCULOS ATIVOS.</div>';
+          }
+        });
+    }
+
+    function abrirCadastroServico() {
+      if (!acessoAdminValido()) return;
+      const modal = document.getElementById("modalCadastroServico");
+      if (!modal) return;
+      modal.classList.add("open");
+      document.body.classList.add("cadastro-modal-open");
+      window.setTimeout(() => document.getElementById("admVeiculo")?.focus(), 40);
+    }
+
+    function fecharCadastroServico(event) {
+      const modal = document.getElementById("modalCadastroServico");
+      if (!modal) return;
+      if (event && event.target !== modal) return;
+      modal.classList.remove("open");
+      document.body.classList.remove("cadastro-modal-open");
+    }
+
+    function focoEmCampoEditavel(elemento) {
+      if (!elemento) return false;
+      const tag = String(elemento.tagName || "").toUpperCase();
+      return elemento.isContentEditable || ["INPUT", "TEXTAREA", "SELECT"].includes(tag);
+    }
+
+    async function publicarServico(event) {
+      event.preventDefault();
+      if (publicando || !acessoAdminValido()) return;
+
+      const veiculo = normalizar(document.getElementById("admVeiculo").value);
+      const placa = normalizar(document.getElementById("admPlaca").value).replace(/[^A-Z0-9]/g,"");
+      const descricao = normalizar(document.getElementById("admDescricao").value);
+      const origem = normalizar(document.getElementById("admOrigem").value || "-");
+      const prioridade = prioridadeServico({ prioridade:document.getElementById("admPrioridade").value || "NORMAL" });
+      const mecanicoAtribuido = mecanicoCanonico(document.getElementById("admMecanico")?.value || "");
+
+      if (usuarioBloqueado(document.getElementById("admMecanico")?.value || "")) {
+        alert("USUÁRIO BLOQUEADO PARA ATRIBUIÇÃO.");
+        return;
+      }
+
+      if (!veiculo || !placa || !descricao) {
+        alert("PREENCHA VEÍCULO, PLACA E DESCRIÇÃO.");
+        return;
+      }
+
+      publicando = true;
+      const botao = document.getElementById("btnPublicar");
+      botao.disabled = true;
+      botao.textContent = mecanicoAtribuido ? "ATRIBUINDO..." : "PUBLICANDO...";
+      const agora = new Date();
+      const geralRef = db.collection("servicos_lista_geral").doc();
+      const veiculoRef = mecanicoAtribuido ? db.collection("veiculos").doc() : null;
+
+      const payloadGeral = {
+        veiculo,
+        placa,
+        descricao,
+        origem,
+        prioridade,
+        statusServico:"AGUARDANDO ORÇAMENTO",
+        statusDistribuicao:mecanicoAtribuido ? "ASSUMIDO" : "DISPONIVEL",
+        mecanicoResponsavel:mecanicoAtribuido,
+        mecanico_responsavel:mecanicoAtribuido,
+        ativo:true,
+        criadoPor:usuarioPainelAtual(),
+        criadoEm:firebase.firestore.FieldValue.serverTimestamp(),
+        criadoEmISO:agora.toISOString(),
+        ultimaAtualizacao:firebase.firestore.FieldValue.serverTimestamp(),
+        ultimaAtualizacaoISO:agora.toISOString()
+      };
+
+      if (mecanicoAtribuido && veiculoRef) {
+        payloadGeral.assumidoEm = firebase.firestore.FieldValue.serverTimestamp();
+        payloadGeral.assumidoEmISO = agora.toISOString();
+        payloadGeral.veiculoId = veiculoRef.id;
+      }
+
+      try {
+        const lote = db.batch();
+        lote.set(geralRef, payloadGeral);
+
+        if (mecanicoAtribuido && veiculoRef) {
+          lote.set(veiculoRef, {
+            veiculo,
+            placa,
+            descricao,
+            trocaOleo:descricaoEhTrocaOleoLPA(descricao),
+            kmAtualOleo:"",
+            origem,
+            prioridade,
+            dataEntrada:agora.toLocaleString("pt-BR"),
+            dataEntradaISO:agora.toISOString(),
+            status:"AGUARDANDO ORÇAMENTO",
+            pecas:[],
+            mecanico_responsavel:mecanicoAtribuido,
+            ultima_modificacao:agora.toLocaleString("pt-BR"),
+            ultima_modificacao_iso:agora.toISOString(),
+            origem_lista_geral:true,
+            lista_geral_id:geralRef.id,
+            painel_adm_criado_por:usuarioPainelAtual()
+          });
+        }
+
+        await lote.commit();
+        document.getElementById("formNovoServico").reset();
+        document.getElementById("admPrioridade").value = "NORMAL";
+        document.getElementById("admMecanico").value = "";
+        mostrarToast(mecanicoAtribuido
+          ? `SERVIÇO ATRIBUÍDO PARA ${mecanicoAtribuido} E ENVIADO À ABA SERVIÇOS.`
+          : "SERVIÇO PUBLICADO NA LISTA GERAL.");
+        fecharCadastroServico();
+      } catch (erro) {
+        console.error("Erro ao publicar ou atribuir serviço:", erro);
+        alert(mecanicoAtribuido
+          ? "NÃO FOI POSSÍVEL ATRIBUIR O SERVIÇO AO MECÂNICO."
+          : "NÃO FOI POSSÍVEL PUBLICAR O SERVIÇO.");
+      } finally {
+        publicando = false;
+        botao.disabled = false;
+        atualizarAcaoCadastro();
+      }
+    }
+
+    async function cancelarServico(id) {
+      if (!id || !acessoAdminValido()) return;
+      const item = servicosAdm.find(servico => servico.id === id);
+      if (!item || statusDistribuicao(item) !== "DISPONIVEL") {
+        alert("SERVIÇOS JÁ ASSUMIDOS NÃO PODEM SER CANCELADOS POR ESTE PAINEL.");
+        return;
+      }
+      if (!confirm(`CANCELAR A PUBLICAÇÃO DE ${item.veiculo || "-"} • ${item.placa || "-"}?`)) return;
+      try {
+        await db.collection("servicos_lista_geral").doc(id).update({
+          ativo:false,
+          canceladoPor:usuarioPainelAtual(),
+          canceladoEm:firebase.firestore.FieldValue.serverTimestamp(),
+          canceladoEmISO:new Date().toISOString(),
+          ultimaAtualizacao:firebase.firestore.FieldValue.serverTimestamp(),
+          ultimaAtualizacaoISO:new Date().toISOString()
+        });
+        mostrarToast("PUBLICAÇÃO CANCELADA.");
+      } catch (erro) {
+        console.error("Erro ao cancelar serviço:", erro);
+        alert("NÃO FOI POSSÍVEL CANCELAR A PUBLICAÇÃO.");
+      }
+    }
+
+    document.addEventListener("keydown", event => {
+      if (event.key === "Escape") {
+        fecharDrawer();
+        fecharCadastroServico();
+        return;
+      }
+
+      const teclaMais = event.key === "+" || event.code === "NumpadAdd";
+      if (!teclaMais || event.ctrlKey || event.altKey || event.metaKey || focoEmCampoEditavel(event.target)) return;
+
+      event.preventDefault();
+      abrirCadastroServico();
+    });
+
+    verificarAcesso();
+  </script>
+</body>
+</html>
