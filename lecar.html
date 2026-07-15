@@ -8303,6 +8303,8 @@ setTimeout(() => {
       let dadosListaGeral = [];
       let listaGeralCarregada = false;
       let listaGeralUnsubscribe = null;
+      let listaGeralExpiracaoTimer = null;
+      const TEMPO_VISIVEL_ASSUMIDO_LISTA_GERAL = 60 * 60 * 1000;
       let assumindoServicoListaGeral = false;
       let dadosRanking = [];
       let dadosBuscaGlobal = [];
@@ -8339,6 +8341,25 @@ setTimeout(() => {
       function statusDistribuicaoListaGeral(v) {
         const statusAtual = normalizarTextoBusca(v?.statusDistribuicao || v?.status_distribuicao || "DISPONIVEL");
         return statusAtual === "ASSUMIDO" ? "ASSUMIDO" : "DISPONIVEL";
+      }
+
+      function timestampAssumidoListaGeral(v) {
+        if (v?.assumidoEm?.toMillis) return v.assumidoEm.toMillis();
+        const valor = v?.assumidoEmISO || v?.ultimaAtualizacaoISO || "";
+        const data = new Date(valor);
+        return Number.isNaN(data.getTime()) ? 0 : data.getTime();
+      }
+
+      function itemVisivelNaListaGeral(v, agora = Date.now()) {
+        if (statusDistribuicaoListaGeral(v) !== "ASSUMIDO") return true;
+        const assumidoEm = timestampAssumidoListaGeral(v);
+        if (!assumidoEm) return true;
+        return agora - assumidoEm < TEMPO_VISIVEL_ASSUMIDO_LISTA_GERAL;
+      }
+
+      function obterItensVisiveisListaGeral() {
+        const agora = Date.now();
+        return dadosListaGeral.filter(item => itemVisivelNaListaGeral(item, agora));
       }
 
       function formatarDataServicoListaGeral(v) {
@@ -8394,17 +8415,18 @@ setTimeout(() => {
           </article>`;
       }
 
-      function atualizarResumoListaGeral() {
+      function atualizarResumoListaGeral(itensVisiveis = obterItensVisiveisListaGeral()) {
         const resumo = document.getElementById("listaGeralResumo");
         if (!resumo) return;
-        const disponiveis = dadosListaGeral.filter(v => statusDistribuicaoListaGeral(v) === "DISPONIVEL").length;
-        const assumidos = dadosListaGeral.filter(v => statusDistribuicaoListaGeral(v) === "ASSUMIDO").length;
+        const disponiveis = itensVisiveis.filter(v => statusDistribuicaoListaGeral(v) === "DISPONIVEL").length;
+        const assumidos = itensVisiveis.filter(v => statusDistribuicaoListaGeral(v) === "ASSUMIDO").length;
         resumo.textContent = `${disponiveis} DISPONÍVEIS • ${assumidos} ASSUMIDOS`;
       }
 
       function renderizarListaGeral() {
         if (!listaGeralHTML) return;
-        const ordenados = [...dadosListaGeral].sort((a, b) => {
+        const itensVisiveis = obterItensVisiveisListaGeral();
+        const ordenados = [...itensVisiveis].sort((a, b) => {
           const aAssumido = statusDistribuicaoListaGeral(a) === "ASSUMIDO" ? 1 : 0;
           const bAssumido = statusDistribuicaoListaGeral(b) === "ASSUMIDO" ? 1 : 0;
           if (aAssumido !== bAssumido) return aAssumido - bAssumido;
@@ -8412,7 +8434,7 @@ setTimeout(() => {
           return diferenca || String(a.placa || "").localeCompare(String(b.placa || ""));
         });
 
-        atualizarResumoListaGeral();
+        atualizarResumoListaGeral(itensVisiveis);
         listaGeralHTML.innerHTML = ordenados.length
           ? ordenados.map(renderizarServicoCardGeral).join("")
           : '<div class="empty-state">Nenhum serviço publicado pelo Painel ADM.</div>';
@@ -8426,6 +8448,12 @@ setTimeout(() => {
 
         listaGeralCarregada = true;
         if (listaGeralHTML) listaGeralHTML.innerHTML = '<div class="empty-state">Carregando Lista Geral...</div>';
+
+        if (!listaGeralExpiracaoTimer) {
+          listaGeralExpiracaoTimer = window.setInterval(() => {
+            if (abaAtiva === "geral") renderizarListaGeral();
+          }, 30 * 1000);
+        }
 
         listaGeralUnsubscribe = db.collection("servicos_lista_geral")
           .where("ativo", "==", true)
