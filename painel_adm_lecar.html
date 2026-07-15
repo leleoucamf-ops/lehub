@@ -198,7 +198,7 @@
     }
 
     .topbar.app-topbar-clean .logo-img {
-      height: 38px !important;
+      height: 30px !important;
       width: auto !important;
       max-width: none !important;
       display: block !important;
@@ -904,6 +904,23 @@
       font-weight: 850;
     }
 
+    .service-info-line.service-mechanic {
+      align-items: flex-start;
+    }
+
+    .service-info-line.service-mechanic span {
+      white-space: normal;
+      overflow: visible;
+      text-overflow: clip;
+      line-height: 1.25;
+    }
+
+    .service-info-line.service-mechanic strong {
+      color: #1d4ed8;
+      font-weight: 950;
+      overflow-wrap: anywhere;
+    }
+
     .services-list.view-cards .service-footer {
       min-height: 30px;
       margin-top: auto;
@@ -1022,11 +1039,11 @@
       left: 50%;
       bottom: 12px;
       z-index: 1260;
-      width: min(820px, calc(100% - 30px));
+      width: min(1040px, calc(100% - 30px));
       height: 66px;
       transform: translateX(-50%);
       display: grid;
-      grid-template-columns: repeat(5, minmax(0, 1fr));
+      grid-template-columns: repeat(7, minmax(0, 1fr));
       align-items: stretch;
       padding: 6px 10px;
       border: 1px solid rgba(203, 213, 225, .92);
@@ -1386,6 +1403,60 @@
       background: #fff7f7;
     }
 
+    .service-row.historico-finalizado {
+      background: linear-gradient(180deg, #f0fdf4 0%, #ffffff 58%) !important;
+      border-color: #bbf7d0 !important;
+    }
+    .service-row.historico-finalizado::before { background:#22c55e !important; }
+    .service-row.historico-lixeira {
+      background: linear-gradient(180deg, #fff5f5 0%, #ffffff 58%) !important;
+      border-color: #fecaca !important;
+    }
+    .service-row.historico-lixeira::before { background:#ef4444 !important; }
+    .status-badge.finalizado { background:#dcfce7; border:1px solid #86efac; color:#166534; }
+    .status-badge.excluido { background:#fee2e2; border:1px solid #fecaca; color:#b91c1c; }
+    .status-badge.status-agendamento { background:#ffe3e7; border:1px solid #fecdd3; color:#dc2626; }
+    .status-badge.status-pecas { background:#fef3c7; border:1px solid #fde68a; color:#92400e; }
+    .status-badge.status-servico { background:#e2e8f0; border:1px solid #cbd5e1; color:#475569; }
+    .status-badge.status-fornecedor { background:#dbeafe; border:1px solid #bfdbfe; color:#1d4ed8; }
+    .status-badge.status-finalizado { background:#dcfce7; border:1px solid #bbf7d0; color:#15803d; }
+
+    .trash-empty-btn {
+      display:none;
+      min-height:30px;
+      padding:0 10px;
+      border:1px solid #fecaca;
+      border-radius:9px;
+      background:#fff1f2;
+      color:#b91c1c;
+      font-size:.56rem;
+      font-weight:950;
+      text-transform:uppercase;
+      white-space:nowrap;
+    }
+    .trash-empty-btn.show { display:inline-flex; align-items:center; justify-content:center; }
+    .trash-empty-btn:disabled { cursor:not-allowed; opacity:.55; }
+    .delete-btn { border-color:#fecaca !important; background:#fff1f2 !important; color:#dc2626 !important; }
+    .delete-btn:disabled { border-color:#e2e8f0 !important; background:#f1f5f9 !important; color:#94a3b8 !important; }
+    .mechanic-vehicle-row.has-delete { grid-template-columns:66px minmax(0,1fr) auto 25px; }
+    .mechanic-delete-btn {
+      width:25px;
+      height:25px;
+      min-width:25px;
+      padding:0;
+      border:1px solid #fecaca;
+      border-radius:7px;
+      background:#fff1f2;
+      color:#dc2626;
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      font-size:.72rem;
+      font-weight:950;
+      line-height:1;
+    }
+    .mechanic-delete-btn:hover { background:#ffe4e6; }
+
   </style>
 
 </head>
@@ -1429,6 +1500,7 @@
           <div class="panel-head services-panel-head">
             <h2 id="tituloVisaoPainel">AGUARDANDO</h2>
             <div class="services-view-summary"><span id="textoResumoVisao">SERVIÇOS</span><strong id="totalVisaoPainel">0</strong></div>
+            <button id="btnEsvaziarLixeira" type="button" class="trash-empty-btn" onclick="esvaziarLixeira()">ESVAZIAR LIXEIRA</button>
           </div>
           <div class="panel-body services-panel-body">
             <div id="listaServicosAdm" class="services-list view-cards"><div class="empty">Carregando serviços...</div></div>
@@ -1450,6 +1522,12 @@
         <span class="lpa-taskbar-label">Andamento</span>
       </button>
 
+      <button id="navFinalizados" type="button" class="lpa-taskbar-item" onclick="selecionarVisaoPainel('FINALIZADOS')" title="Veículos finalizados">
+        <span id="countFinalizados" class="lpa-taskbar-count">0</span>
+        <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"></circle><path d="M8 12.3L10.7 15L16.5 9"></path></svg>
+        <span class="lpa-taskbar-label">Finalizados</span>
+      </button>
+
       <div class="lpa-taskbar-plus-wrap">
         <button type="button" class="lpa-taskbar-plus" onclick="abrirCadastroServico()" title="Novo serviço (+)" aria-label="Abrir cadastro de novo serviço">
           <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5V19"></path><path d="M5 12H19"></path></svg>
@@ -1465,6 +1543,12 @@
       <button id="navMecanicos" type="button" class="lpa-taskbar-item" onclick="selecionarVisaoPainel('MECANICOS')" title="Visão por mecânico">
         <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8.5 11A3.5 3.5 0 1 0 8.5 4A3.5 3.5 0 0 0 8.5 11Z"></path><path d="M2.5 20V18.5A5.5 5.5 0 0 1 8 13H9A5.5 5.5 0 0 1 14.5 18.5V20"></path><path d="M16.5 9.5A2.7 2.7 0 1 0 16.5 4.1"></path><path d="M16 13.2A4.8 4.8 0 0 1 21.5 18V20"></path></svg>
         <span class="lpa-taskbar-label">Mecânicos</span>
+      </button>
+
+      <button id="navLixeira" type="button" class="lpa-taskbar-item" onclick="selecionarVisaoPainel('LIXEIRA')" title="Veículos excluídos pelos mecânicos">
+        <span id="countLixeira" class="lpa-taskbar-count">0</span>
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7H20"></path><path d="M7 7V20H17V7"></path><path d="M9 7V4H15V7"></path><path d="M10 11V17M14 11V17"></path></svg>
+        <span class="lpa-taskbar-label">Lixeira</span>
       </button>
     </nav>
   </div>
@@ -1570,8 +1654,12 @@
     });
     let servicosAdm = [];
     let veiculosAtivosAdm = [];
+    let veiculosFinalizadosAdm = [];
+    let lixeiraAdm = [];
     let unsubscribeServicos = null;
     let unsubscribeVeiculosAtivos = null;
+    let unsubscribeFinalizados = null;
+    let unsubscribeLixeira = null;
     let unsubscribeNotificacoesAdm = null;
     let notificacoesAdm = [];
     let publicando = false;
@@ -1634,6 +1722,18 @@
       return Boolean(USUARIOS_LPA[usuarioPainelAtual()]);
     }
 
+    function usuarioPodeExcluirTudo() {
+      return usuarioPainelAtual() === "LEANDRO";
+    }
+
+    function podeExcluirServicoLista(item) {
+      return usuarioPodeExcluirTudo() || statusDistribuicao(item) === "DISPONIVEL";
+    }
+
+    function podeExcluirHistorico(tipo) {
+      return tipo === "LIXEIRA" || usuarioPodeExcluirTudo();
+    }
+
     function entrarAdmin(event) {
       event.preventDefault();
       const usuario = normalizar(document.getElementById("loginUsuario").value);
@@ -1662,6 +1762,8 @@
       document.getElementById("app").style.display = "block";
       iniciarServicos();
       iniciarVeiculosAtivos();
+      iniciarFinalizados();
+      iniciarLixeira();
       iniciarNotificacoesAdm();
     }
 
@@ -1672,10 +1774,14 @@
 
       if (typeof unsubscribeServicos === "function") unsubscribeServicos();
       if (typeof unsubscribeVeiculosAtivos === "function") unsubscribeVeiculosAtivos();
+      if (typeof unsubscribeFinalizados === "function") unsubscribeFinalizados();
+      if (typeof unsubscribeLixeira === "function") unsubscribeLixeira();
       if (typeof unsubscribeNotificacoesAdm === "function") unsubscribeNotificacoesAdm();
 
       unsubscribeServicos = null;
       unsubscribeVeiculosAtivos = null;
+      unsubscribeFinalizados = null;
+      unsubscribeLixeira = null;
       unsubscribeNotificacoesAdm = null;
       fecharDrawer();
 
@@ -1822,7 +1928,12 @@
 
     function timestampServico(item) {
       if (item?.criadoEm?.toMillis) return item.criadoEm.toMillis();
-      const data = new Date(item?.criadoEmISO || "");
+      const valorData = item?.criadoEmISO
+        || item?.ultima_modificacao_iso
+        || item?.dataEntradaISO
+        || item?.dataFinalizacaoISO
+        || "";
+      const data = new Date(valorData);
       return Number.isNaN(data.getTime()) ? 0 : data.getTime();
     }
 
@@ -1855,6 +1966,24 @@
       return MECANICOS_LECAR[chave] || normalizar(valor).replaceAll("_", " ");
     }
 
+    function nomeMecanicoCard(item, fallback = "NÃO INFORMADO") {
+      const candidatos = [
+        item?.mecanicoResponsavel,
+        item?.mecanico_responsavel,
+        item?.mecanico,
+        item?.mecanicoNome,
+        item?.mecanico_nome,
+        item?.responsavel
+      ];
+
+      for (const valor of candidatos) {
+        const nome = mecanicoCanonico(valor);
+        if (nome) return nome;
+      }
+
+      return fallback;
+    }
+
     function descricaoEhTrocaOleoLPA(descricao) {
       return normalizar(descricao).includes("TROCA DE OLEO");
     }
@@ -1872,15 +2001,42 @@
       return new Date(ms).toLocaleString("pt-BR", { day:"2-digit", month:"2-digit", year:"numeric", hour:"2-digit", minute:"2-digit" });
     }
 
+    function prepararVeiculoAtivoPainel(item) {
+      return { ...item, __origemPainel:"VEICULO_ATIVO" };
+    }
+
+    function itensAguardandoAdm() {
+      return servicosAdm
+        .filter(item => statusDistribuicao(item) === "DISPONIVEL")
+        .map(item => ({ ...item, __origemPainel:"SERVICO_LISTA_GERAL" }));
+    }
+
+    function itensAndamentoAdm() {
+      // A coleção VEICULOS é a fonte operacional do LeCar. Assim, qualquer
+      // cadastro, mudança de status, finalização ou exclusão feita pelo mecânico
+      // aparece automaticamente no LPA sem duplicar o card da Lista Geral.
+      return veiculosAtivosAdm.map(prepararVeiculoAtivoPainel);
+    }
+
+    function itensUrgentesAdm() {
+      const aguardando = itensAguardandoAdm().filter(item => prioridadeServico(item) === "URGENTE");
+      const ativos = itensAndamentoAdm().filter(item => prioridadeServico(item) === "URGENTE");
+      return [...aguardando, ...ativos];
+    }
+
     function atualizarBarraTarefas() {
-      const aguardando = servicosAdm.filter(item => statusDistribuicao(item) === "DISPONIVEL").length;
-      const andamento = servicosAdm.filter(item => statusDistribuicao(item) === "ASSUMIDO").length;
-      const urgente = servicosAdm.filter(item => prioridadeServico(item) === "URGENTE").length;
+      const aguardando = itensAguardandoAdm().length;
+      const andamento = itensAndamentoAdm().length;
+      const urgente = itensUrgentesAdm().length;
+      const finalizados = veiculosFinalizadosAdm.length;
+      const lixeira = lixeiraAdm.length;
 
       const contadores = {
         countAguardando: aguardando,
         countAndamento: andamento,
-        countUrgente: urgente
+        countFinalizados: finalizados,
+        countUrgente: urgente,
+        countLixeira: lixeira
       };
       Object.entries(contadores).forEach(([id, total]) => {
         const elemento = document.getElementById(id);
@@ -1890,15 +2046,17 @@
       const mapaIds = {
         AGUARDANDO:"navAguardando",
         ANDAMENTO:"navAndamento",
+        FINALIZADOS:"navFinalizados",
         URGENTE:"navUrgente",
-        MECANICOS:"navMecanicos"
+        MECANICOS:"navMecanicos",
+        LIXEIRA:"navLixeira"
       };
       Object.values(mapaIds).forEach(id => document.getElementById(id)?.classList.remove("active"));
       document.getElementById(mapaIds[visaoPainelAtual])?.classList.add("active");
     }
 
     function selecionarVisaoPainel(visao) {
-      const permitidas = ["AGUARDANDO","ANDAMENTO","URGENTE","MECANICOS"];
+      const permitidas = ["AGUARDANDO","ANDAMENTO","FINALIZADOS","URGENTE","MECANICOS","LIXEIRA"];
       visaoPainelAtual = permitidas.includes(visao) ? visao : "AGUARDANDO";
       renderizarServicos();
     }
@@ -1968,10 +2126,14 @@
           const status = item.status || "ATIVO";
           const classeStatus = classeStatusOperacionalPainel(status);
           const rotuloStatus = rotuloStatusOperacionalPainel(status);
-          return `<div class="mechanic-vehicle-row ${prioridade === "URGENTE" ? "urgente" : ""}" title="${escapar(item.descricao || "")}">
+          const botaoExcluir = usuarioPodeExcluirTudo()
+            ? `<button type="button" class="mechanic-delete-btn" title="EXCLUIR VEÍCULO" aria-label="EXCLUIR VEÍCULO" onclick="excluirVeiculoAtivo('${escapar(item.id)}')">×</button>`
+            : "";
+          return `<div class="mechanic-vehicle-row ${prioridade === "URGENTE" ? "urgente" : ""} ${usuarioPodeExcluirTudo() ? "has-delete" : ""}" title="${escapar(item.descricao || "")}">
             <span class="mechanic-vehicle-plate">${escapar(item.placa || "-")}</span>
             <span class="mechanic-vehicle-name">${escapar(item.veiculo || "VEÍCULO")}</span>
             <span class="mechanic-vehicle-status ${classeStatus}">${escapar(rotuloStatus)}</span>
+            ${botaoExcluir}
           </div>`;
         }).join("");
 
@@ -1985,13 +2147,104 @@
       }).join("")}</div>`;
     }
 
+    function timestampFinalizado(item) {
+      if (item?.dataFinalizacaoISO) {
+        const data = new Date(item.dataFinalizacaoISO);
+        if (!Number.isNaN(data.getTime())) return data.getTime();
+      }
+      return timestampServico(item);
+    }
+
+    function timestampLixeira(item) {
+      if (item?.criadoEm?.toMillis) return item.criadoEm.toMillis();
+      const data = new Date(item?.criadoEmISO || item?.dataLocal || 0);
+      return Number.isNaN(data.getTime()) ? 0 : data.getTime();
+    }
+
+    function formatarDataTimestamp(ms) {
+      if (!ms) return "DATA NÃO INFORMADA";
+      return new Date(ms).toLocaleString("pt-BR", { day:"2-digit", month:"2-digit", year:"numeric", hour:"2-digit", minute:"2-digit" });
+    }
+
+    function renderizarHistorico(lista, busca, tipo) {
+      const finalizados = tipo === "FINALIZADOS";
+      const origem = finalizados ? veiculosFinalizadosAdm : lixeiraAdm;
+      const itens = origem.filter(item => {
+        const d = item?.detalhes || {};
+        const texto = normalizar(finalizados
+          ? [item.veiculo,item.placa,item.descricao,item.mecanico,item.mecanico_responsavel,item.origem,item.fornecedorTerceiro].join(" ")
+          : [d.veiculo,d.placa,d.descricao,d.statusAnterior,item.usuario].join(" "));
+        return !busca || texto.includes(busca);
+      }).sort((a,b) => (finalizados ? timestampFinalizado(b)-timestampFinalizado(a) : timestampLixeira(b)-timestampLixeira(a)));
+
+      document.getElementById("tituloVisaoPainel").textContent = finalizados ? "FINALIZADOS" : "LIXEIRA";
+      document.getElementById("textoResumoVisao").textContent = finalizados ? "VEÍCULOS" : "EXCLUSÕES";
+      document.getElementById("totalVisaoPainel").textContent = String(itens.length);
+
+      if (!itens.length) {
+        lista.innerHTML = `<div class="empty">${finalizados ? "NENHUM VEÍCULO FINALIZADO." : "NENHUMA EXCLUSÃO REGISTRADA."}</div>`;
+        return;
+      }
+
+      lista.innerHTML = itens.map(item => {
+        const d = item?.detalhes || {};
+        const veiculo = finalizados ? item.veiculo : d.veiculo;
+        const placa = finalizados ? item.placa : d.placa;
+        const descricao = finalizados ? item.descricao : d.descricao;
+        const mecanico = finalizados
+          ? nomeMecanicoCard(item)
+          : nomeMecanicoCard({ ...d, usuario:item.usuario });
+        const excluidoPor = normalizar(item.usuario || "NÃO INFORMADO");
+        const dataTexto = formatarDataTimestamp(finalizados ? timestampFinalizado(item) : timestampLixeira(item));
+        const detalheStatus = finalizados
+          ? (item.finalizacaoTipo === "TERCEIRO" || item.fornecedorTerceiro ? `TERCEIRO • ${item.fornecedorTerceiro || "FORNECEDOR"}` : "SERVIÇO CONCLUÍDO")
+          : `STATUS ANTERIOR: ${d.statusAnterior || "NÃO INFORMADO"}`;
+
+        return `<article class="service-row ${finalizados ? "historico-finalizado" : "historico-lixeira"}">
+          <div class="service-card-head">
+            <span class="service-date">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="2"></rect><path d="M16 3V7M8 3V7M3 10H21"></path></svg>
+              ${escapar(dataTexto)}
+            </span>
+            <span class="service-bookmark"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 3H18V21L12 17L6 21Z"></path></svg></span>
+          </div>
+          <div class="service-main">
+            <div class="service-plate">${escapar(placa || "-")}</div>
+            <div class="service-vehicle">${escapar(veiculo || "VEÍCULO NÃO INFORMADO")}</div>
+          </div>
+          <div class="service-desc">${escapar(descricao || "SEM DESCRIÇÃO REGISTRADA")}</div>
+          <div class="service-info">
+            <div class="service-info-line service-mechanic" title="${escapar(mecanico)}"><svg viewBox="0 0 24 24"><path d="M12 12A4 4 0 1 0 12 4A4 4 0 0 0 12 12Z"></path><path d="M4 21A8 8 0 0 1 20 21"></path></svg><span>${finalizados ? "MECÂNICO" : "MECÂNICO ORIGINAL"}: <strong>${escapar(mecanico)}</strong></span></div>
+            <div class="service-info-line"><svg viewBox="0 0 24 24"><path d="M5 21V4"></path><path d="M5 5H17L15 9L17 13H5"></path></svg><span>${escapar(detalheStatus)}</span></div>
+            ${finalizados ? "" : `<div class="service-info-line"><svg viewBox="0 0 24 24"><path d="M12 12A4 4 0 1 0 12 4A4 4 0 0 0 12 12Z"></path><path d="M4 21A8 8 0 0 1 20 21"></path></svg><span>EXCLUÍDO POR: <strong>${escapar(excluidoPor)}</strong></span></div>`}
+          </div>
+          <div class="service-footer">
+            <span class="status-badge ${finalizados ? "finalizado" : "excluido"}">${finalizados ? "FINALIZADO" : "EXCLUÍDO"}</span>
+            <div class="service-actions">
+              ${podeExcluirHistorico(tipo) ? `<button type="button" class="cancel-btn delete-btn" onclick="excluirHistorico('${escapar(item.id)}','${tipo}')">${finalizados ? "EXCLUIR" : "APAGAR"}</button>` : `<button type="button" class="cancel-btn delete-btn" disabled>PROTEGIDO</button>`}
+            </div>
+          </div>
+        </article>`;
+      }).join("");
+    }
+
     function renderizarServicos() {
       const lista = document.getElementById("listaServicosAdm");
       const busca = normalizar(document.getElementById("buscaAdmin")?.value || "");
+      const botaoEsvaziar = document.getElementById("btnEsvaziarLixeira");
+      if (botaoEsvaziar) {
+        botaoEsvaziar.classList.toggle("show", visaoPainelAtual === "LIXEIRA");
+        botaoEsvaziar.disabled = visaoPainelAtual !== "LIXEIRA" || lixeiraAdm.length === 0;
+      }
       atualizarBarraTarefas();
 
       if (visaoPainelAtual === "MECANICOS") {
         renderizarMecanicos(lista, busca);
+        return;
+      }
+
+      if (visaoPainelAtual === "FINALIZADOS" || visaoPainelAtual === "LIXEIRA") {
+        renderizarHistorico(lista, busca, visaoPainelAtual);
         return;
       }
 
@@ -2001,20 +2254,28 @@
         URGENTE:"URGENTES"
       };
 
-      const filtrados = servicosAdm
-        .filter(item => !busca || normalizar([item.veiculo,item.placa,item.descricao,item.mecanicoResponsavel,item.origem,item.prioridade].join(" ")).includes(busca))
-        .filter(item => {
-          if (visaoPainelAtual === "AGUARDANDO") return statusDistribuicao(item) === "DISPONIVEL";
-          if (visaoPainelAtual === "ANDAMENTO") return statusDistribuicao(item) === "ASSUMIDO";
-          if (visaoPainelAtual === "URGENTE") return prioridadeServico(item) === "URGENTE";
-          return true;
-        })
+      const origemVisao = visaoPainelAtual === "ANDAMENTO"
+        ? itensAndamentoAdm()
+        : visaoPainelAtual === "URGENTE"
+          ? itensUrgentesAdm()
+          : itensAguardandoAdm();
+
+      const filtrados = origemVisao
+        .filter(item => !busca || normalizar([
+          item.veiculo,
+          item.placa,
+          item.descricao,
+          item.mecanicoResponsavel,
+          item.mecanico_responsavel,
+          item.mecanico,
+          item.origem,
+          item.prioridade,
+          item.status
+        ].join(" ")).includes(busca))
         .sort((a,b) => {
-          const sa = statusDistribuicao(a) === "ASSUMIDO" ? 1 : 0;
-          const sb = statusDistribuicao(b) === "ASSUMIDO" ? 1 : 0;
           const pa = ORDEM_PRIORIDADE[prioridadeServico(a)] || 1;
           const pb = ORDEM_PRIORIDADE[prioridadeServico(b)] || 1;
-          return sa - sb || pb - pa || timestampServico(b) - timestampServico(a);
+          return pb - pa || timestampServico(b) - timestampServico(a);
         });
 
       document.getElementById("tituloVisaoPainel").textContent = titulos[visaoPainelAtual] || "SERVIÇOS";
@@ -2027,12 +2288,21 @@
       }
 
       lista.innerHTML = filtrados.map(item => {
-        const assumido = statusDistribuicao(item) === "ASSUMIDO";
-        const mecanico = normalizar(item.mecanicoResponsavel || item.mecanico_responsavel || "");
+        const veiculoAtivo = item.__origemPainel === "VEICULO_ATIVO";
+        const assumido = veiculoAtivo || statusDistribuicao(item) === "ASSUMIDO";
+        const mecanico = nomeMecanicoCard(item, assumido ? "NÃO INFORMADO" : "NÃO ASSUMIDO");
         const prioridade = normalizar(item.prioridade || "NORMAL");
         const origem = normalizar(item.origem || "-");
-        const statusTexto = assumido ? `ASSUMIDO • ${escapar(mecanico || "MECÂNICO")}` : "DISPONÍVEL";
-        const acaoTexto = assumido ? "BLOQUEADO" : "CANCELAR";
+        const statusOperacional = rotuloStatusOperacionalPainel(item.status || "ATIVO");
+        const classeStatus = veiculoAtivo ? classeStatusOperacionalPainel(item.status) : (assumido ? "assumido" : "disponivel");
+        const statusTexto = veiculoAtivo
+          ? escapar(statusOperacional)
+          : (assumido ? "ASSUMIDO" : "DISPONÍVEL");
+        const podeExcluir = veiculoAtivo ? usuarioPodeExcluirTudo() : podeExcluirServicoLista(item);
+        const acaoTexto = podeExcluir ? "EXCLUIR" : "PROTEGIDO";
+        const acaoExcluir = veiculoAtivo
+          ? `excluirVeiculoAtivo('${escapar(item.id)}')`
+          : `excluirServicoAdm('${escapar(item.id)}')`;
 
         return `<article class="service-row ${classePrioridade(item)} ${assumido ? "assumido" : ""}">
           <div class="service-card-head">
@@ -2053,20 +2323,20 @@
           <div class="service-desc">${escapar(item.descricao || "SEM DESCRIÇÃO")}</div>
 
           <div class="service-info">
-            <div class="service-info-line service-origin">
-              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9L12 4L20 9V20H4Z"></path><path d="M9 20V13H15V20"></path></svg>
-              <span><span class="service-info-label">ORIGEM: </span><strong>${escapar(origem)}</strong></span>
-            </div>
-            <div class="service-info-line service-priority">
+            <div class="service-info-line service-origin-priority">
               <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 21V4"></path><path d="M5 5H17L15 9L17 13H5"></path></svg>
-              <span><span class="service-info-label">PRIORIDADE: </span><strong>${escapar(prioridade)}</strong></span>
+              <span><span class="service-info-label">ORIGEM: </span><strong>${escapar(origem)}</strong> <span aria-hidden="true">•</span> <span class="service-info-label">PRIORIDADE: </span><strong>${escapar(prioridade)}</strong></span>
+            </div>
+            <div class="service-info-line service-mechanic" title="${escapar(mecanico)}">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 12A4 4 0 1 0 12 4A4 4 0 0 0 12 12Z"></path><path d="M4 21A8 8 0 0 1 20 21"></path></svg>
+              <span><span class="service-info-label">MECÂNICO: </span><strong>${escapar(mecanico)}</strong></span>
             </div>
           </div>
 
           <div class="service-footer">
-            <span class="status-badge ${assumido ? "assumido" : "disponivel"}">${statusTexto}</span>
+            <span class="status-badge ${classeStatus}" title="${statusTexto}">${statusTexto}</span>
             <div class="service-actions">
-              <button type="button" class="cancel-btn" ${assumido ? "disabled" : `onclick="cancelarServico('${escapar(item.id)}')"`}>${acaoTexto}</button>
+              <button type="button" class="cancel-btn delete-btn" ${podeExcluir ? `onclick="${acaoExcluir}"` : "disabled"}>${acaoTexto}</button>
             </div>
           </div>
         </article>`;
@@ -2081,7 +2351,8 @@
           servicosAdm = snapshot.docs
             .map(doc => ({ id:doc.id, ...doc.data() }))
             .filter(item => !registroBloqueado(item));
-          renderizarServicos();
+          atualizarBarraTarefas();
+          if (["AGUARDANDO","URGENTE"].includes(visaoPainelAtual)) renderizarServicos();
         }, erro => {
           console.error("Erro ao carregar serviços ADM:", erro);
           document.getElementById("listaServicosAdm").innerHTML = '<div class="empty">Erro ao carregar serviços. Verifique a conexão e as permissões do Firebase.</div>';
@@ -2096,13 +2367,49 @@
           veiculosAtivosAdm = snapshot.docs
             .map(doc => ({ id:doc.id, ...doc.data() }))
             .filter(item => veiculoEstaAtivo(item) && !registroBloqueado(item));
-          if (visaoPainelAtual === "MECANICOS") renderizarServicos();
+          atualizarBarraTarefas();
+          if (["ANDAMENTO","URGENTE","MECANICOS"].includes(visaoPainelAtual)) renderizarServicos();
         }, erro => {
           console.error("Erro ao carregar veículos ativos:", erro);
           veiculosAtivosAdm = [];
-          if (visaoPainelAtual === "MECANICOS") {
+          atualizarBarraTarefas();
+          if (["ANDAMENTO","URGENTE","MECANICOS"].includes(visaoPainelAtual)) {
             document.getElementById("listaServicosAdm").innerHTML = '<div class="empty">NÃO FOI POSSÍVEL CARREGAR OS VEÍCULOS ATIVOS.</div>';
           }
+        });
+    }
+
+    function iniciarFinalizados() {
+      if (typeof unsubscribeFinalizados === "function") return;
+      unsubscribeFinalizados = db.collection("veiculos")
+        .where("status", "==", "VEÍCULO FINALIZADO")
+        .onSnapshot(snapshot => {
+          veiculosFinalizadosAdm = snapshot.docs
+            .map(doc => ({ id:doc.id, ...doc.data() }))
+            .filter(item => !registroBloqueado(item));
+          atualizarBarraTarefas();
+          if (visaoPainelAtual === "FINALIZADOS") renderizarServicos();
+        }, erro => {
+          console.error("Erro ao carregar finalizados:", erro);
+          veiculosFinalizadosAdm = [];
+          if (visaoPainelAtual === "FINALIZADOS") document.getElementById("listaServicosAdm").innerHTML = '<div class="empty">NÃO FOI POSSÍVEL CARREGAR OS FINALIZADOS.</div>';
+        });
+    }
+
+    function iniciarLixeira() {
+      if (typeof unsubscribeLixeira === "function") return;
+      unsubscribeLixeira = db.collection("auditoria_lecar")
+        .where("tipo", "==", "VEICULO_EXCLUIDO")
+        .onSnapshot(snapshot => {
+          lixeiraAdm = snapshot.docs
+            .map(doc => ({ id:doc.id, ...doc.data() }))
+            .filter(item => !usuarioBloqueado(item.usuario));
+          atualizarBarraTarefas();
+          if (visaoPainelAtual === "LIXEIRA") renderizarServicos();
+        }, erro => {
+          console.error("Erro ao carregar lixeira:", erro);
+          lixeiraAdm = [];
+          if (visaoPainelAtual === "LIXEIRA") document.getElementById("listaServicosAdm").innerHTML = '<div class="empty">NÃO FOI POSSÍVEL CARREGAR A LIXEIRA.</div>';
         });
     }
 
@@ -2228,27 +2535,189 @@
       }
     }
 
-    async function cancelarServico(id) {
+    function dadosAuditoriaExclusao(item, origemRegistro, statusAnterior) {
+      return {
+        tipo:"VEICULO_EXCLUIDO",
+        usuario:usuarioPainelAtual(),
+        origem:"LPA",
+        detalhes:{
+          veiculo:item?.veiculo || "",
+          placa:item?.placa || "",
+          descricao:item?.descricao || "",
+          statusAnterior:statusAnterior || item?.status || item?.statusServico || item?.statusDistribuicao || "NÃO INFORMADO",
+          mecanico:item?.mecanico || item?.mecanico_responsavel || item?.mecanicoResponsavel || "",
+          origem:item?.origem || "",
+          prioridade:item?.prioridade || "",
+          origemRegistro,
+          registroId:item?.id || "",
+          listaGeralId:item?.lista_geral_id || item?.listaGeralId || "",
+          veiculoId:item?.veiculoId || ""
+        },
+        criadoEm:firebase.firestore.FieldValue.serverTimestamp(),
+        criadoEmISO:new Date().toISOString()
+      };
+    }
+
+    async function referenciasVeiculosLigadosAoServico(item) {
+      const refs = new Map();
+      const adicionar = ref => { if (ref?.path) refs.set(ref.path, ref); };
+      if (item?.veiculoId) adicionar(db.collection("veiculos").doc(item.veiculoId));
+
+      veiculosAtivosAdm
+        .filter(veiculo => veiculo.id === item?.veiculoId || veiculo.lista_geral_id === item?.id)
+        .forEach(veiculo => adicionar(db.collection("veiculos").doc(veiculo.id)));
+
+      if (!refs.size && item?.id) {
+        try {
+          const snapshot = await db.collection("veiculos").where("lista_geral_id", "==", item.id).get();
+          snapshot.docs.forEach(doc => adicionar(doc.ref));
+        } catch (erro) {
+          console.warn("Não foi possível localizar vínculos do serviço:", erro);
+        }
+      }
+      return [...refs.values()];
+    }
+
+    async function referenciasServicosLigadosAoVeiculo(item) {
+      const refs = new Map();
+      const adicionar = ref => { if (ref?.path) refs.set(ref.path, ref); };
+      const listaId = item?.lista_geral_id || item?.listaGeralId;
+      if (listaId) adicionar(db.collection("servicos_lista_geral").doc(listaId));
+
+      servicosAdm
+        .filter(servico => servico.id === listaId || servico.veiculoId === item?.id)
+        .forEach(servico => adicionar(db.collection("servicos_lista_geral").doc(servico.id)));
+
+      if (!refs.size && item?.id) {
+        try {
+          const snapshot = await db.collection("servicos_lista_geral").where("veiculoId", "==", item.id).get();
+          snapshot.docs.forEach(doc => adicionar(doc.ref));
+        } catch (erro) {
+          console.warn("Não foi possível localizar publicações vinculadas:", erro);
+        }
+      }
+      return [...refs.values()];
+    }
+
+    async function excluirServicoAdm(id) {
       if (!id || !acessoAdminValido()) return;
       const item = servicosAdm.find(servico => servico.id === id);
-      if (!item || statusDistribuicao(item) !== "DISPONIVEL") {
-        alert("SERVIÇOS JÁ ASSUMIDOS NÃO PODEM SER CANCELADOS POR ESTE PAINEL.");
+      if (!item) return;
+      if (!podeExcluirServicoLista(item)) {
+        alert("ESTE SERVIÇO JÁ FOI ASSUMIDO. SOMENTE LEANDRO PODE EXCLUÍ-LO.");
         return;
       }
-      if (!confirm(`CANCELAR A PUBLICAÇÃO DE ${item.veiculo || "-"} • ${item.placa || "-"}?`)) return;
+
+      const assumido = statusDistribuicao(item) === "ASSUMIDO";
+      const mensagem = assumido
+        ? `EXCLUIR DEFINITIVAMENTE O SERVIÇO ASSUMIDO ${item.veiculo || "-"} • ${item.placa || "-"} E ENVIAR O REGISTRO PARA A LIXEIRA?`
+        : `EXCLUIR ${item.veiculo || "-"} • ${item.placa || "-"} E ENVIAR PARA A LIXEIRA?`;
+      if (!confirm(mensagem)) return;
+
       try {
-        await db.collection("servicos_lista_geral").doc(id).update({
-          ativo:false,
-          canceladoPor:usuarioPainelAtual(),
-          canceladoEm:firebase.firestore.FieldValue.serverTimestamp(),
-          canceladoEmISO:new Date().toISOString(),
-          ultimaAtualizacao:firebase.firestore.FieldValue.serverTimestamp(),
-          ultimaAtualizacaoISO:new Date().toISOString()
-        });
-        mostrarToast("PUBLICAÇÃO CANCELADA.");
+        const veiculosLigados = assumido ? await referenciasVeiculosLigadosAoServico(item) : [];
+        const lote = db.batch();
+        lote.set(db.collection("auditoria_lecar").doc(), dadosAuditoriaExclusao(item, "SERVICO_LISTA_GERAL", assumido ? "ASSUMIDO" : "DISPONÍVEL"));
+        lote.delete(db.collection("servicos_lista_geral").doc(id));
+        veiculosLigados.forEach(ref => lote.delete(ref));
+        await lote.commit();
+        mostrarToast("SERVIÇO ENVIADO PARA A LIXEIRA.");
       } catch (erro) {
-        console.error("Erro ao cancelar serviço:", erro);
-        alert("NÃO FOI POSSÍVEL CANCELAR A PUBLICAÇÃO.");
+        console.error("Erro ao excluir serviço:", erro);
+        alert("NÃO FOI POSSÍVEL EXCLUIR O SERVIÇO.");
+      }
+    }
+
+    async function excluirVeiculoAtivo(id) {
+      if (!id || !acessoAdminValido()) return;
+      if (!usuarioPodeExcluirTudo()) {
+        alert("SOMENTE LEANDRO PODE EXCLUIR VEÍCULOS JÁ ASSUMIDOS.");
+        return;
+      }
+      const item = veiculosAtivosAdm.find(veiculo => veiculo.id === id);
+      if (!item) return;
+      if (!confirm(`EXCLUIR O VEÍCULO ATIVO ${item.veiculo || "-"} • ${item.placa || "-"} E ENVIAR PARA A LIXEIRA?`)) return;
+
+      try {
+        const servicosLigados = await referenciasServicosLigadosAoVeiculo(item);
+        const lote = db.batch();
+        lote.set(db.collection("auditoria_lecar").doc(), dadosAuditoriaExclusao(item, "VEICULO_ATIVO", item.status || "ATIVO"));
+        lote.delete(db.collection("veiculos").doc(id));
+        servicosLigados.forEach(ref => lote.delete(ref));
+        await lote.commit();
+        mostrarToast("VEÍCULO ATIVO ENVIADO PARA A LIXEIRA.");
+      } catch (erro) {
+        console.error("Erro ao excluir veículo ativo:", erro);
+        alert("NÃO FOI POSSÍVEL EXCLUIR O VEÍCULO ATIVO.");
+      }
+    }
+
+    async function excluirHistorico(id, tipo) {
+      if (!id || !acessoAdminValido()) return;
+      if (tipo === "LIXEIRA") {
+        const item = lixeiraAdm.find(registro => registro.id === id);
+        if (!item) return;
+        const d = item.detalhes || {};
+        if (!confirm(`APAGAR DEFINITIVAMENTE DA LIXEIRA ${d.veiculo || "-"} • ${d.placa || "-"}? ESTA AÇÃO NÃO PODE SER DESFEITA.`)) return;
+        try {
+          await db.collection("auditoria_lecar").doc(id).delete();
+          mostrarToast("REGISTRO APAGADO DEFINITIVAMENTE.");
+        } catch (erro) {
+          console.error("Erro ao apagar item da lixeira:", erro);
+          alert("NÃO FOI POSSÍVEL APAGAR O ITEM DA LIXEIRA.");
+        }
+        return;
+      }
+
+      if (tipo !== "FINALIZADOS" || !usuarioPodeExcluirTudo()) {
+        alert("SOMENTE LEANDRO PODE EXCLUIR VEÍCULOS FINALIZADOS.");
+        return;
+      }
+      const item = veiculosFinalizadosAdm.find(veiculo => veiculo.id === id);
+      if (!item) return;
+      if (!confirm(`EXCLUIR O FINALIZADO ${item.veiculo || "-"} • ${item.placa || "-"} E ENVIAR PARA A LIXEIRA?`)) return;
+
+      try {
+        const servicosLigados = await referenciasServicosLigadosAoVeiculo(item);
+        const lote = db.batch();
+        lote.set(db.collection("auditoria_lecar").doc(), dadosAuditoriaExclusao(item, "VEICULO_FINALIZADO", "VEÍCULO FINALIZADO"));
+        lote.delete(db.collection("veiculos").doc(id));
+        servicosLigados.forEach(ref => lote.delete(ref));
+        await lote.commit();
+        mostrarToast("FINALIZADO ENVIADO PARA A LIXEIRA.");
+      } catch (erro) {
+        console.error("Erro ao excluir finalizado:", erro);
+        alert("NÃO FOI POSSÍVEL EXCLUIR O VEÍCULO FINALIZADO.");
+      }
+    }
+
+    async function esvaziarLixeira() {
+      if (!acessoAdminValido()) return;
+      if (!confirm(`ESVAZIAR TODA A LIXEIRA (${lixeiraAdm.length} REGISTRO${lixeiraAdm.length === 1 ? "" : "S"})? ESTA AÇÃO É DEFINITIVA.`)) return;
+
+      const botao = document.getElementById("btnEsvaziarLixeira");
+      if (botao) {
+        botao.disabled = true;
+        botao.textContent = "ESVAZIANDO...";
+      }
+
+      try {
+        const snapshot = await db.collection("auditoria_lecar").where("tipo", "==", "VEICULO_EXCLUIDO").get();
+        const docs = snapshot.docs;
+        for (let inicio = 0; inicio < docs.length; inicio += 450) {
+          const lote = db.batch();
+          docs.slice(inicio, inicio + 450).forEach(doc => lote.delete(doc.ref));
+          await lote.commit();
+        }
+        mostrarToast("LIXEIRA ESVAZIADA.");
+      } catch (erro) {
+        console.error("Erro ao esvaziar lixeira:", erro);
+        alert("NÃO FOI POSSÍVEL ESVAZIAR A LIXEIRA.");
+      } finally {
+        if (botao) {
+          botao.textContent = "ESVAZIAR LIXEIRA";
+          botao.disabled = lixeiraAdm.length === 0;
+        }
       }
     }
 
