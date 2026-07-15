@@ -1,0 +1,5777 @@
+{
+  "versao": "1.0.0",
+  "geradoEm": "2026-07-14",
+  "descricao": "Base local para consulta independente da Ficha Técnica de Óleo do LeCar.",
+  "cobertura": {
+    "anoMinimo": 2014,
+    "anoMaximo": 2023,
+    "quantidadeMarcas": 14,
+    "quantidadeRegistros": 485
+  },
+  "aviso": "Base de referência. Confirme a especificação e o volume no manual do veículo antes do serviço.",
+  "veiculos": [
+    {
+      "marca": "AUDI",
+      "modelo": "A1",
+      "motor": "1.4 L4 TFSI/TB 16V (G)",
+      "anoInicio": 2014,
+      "anoFim": 2015,
+      "volumeLitros": 4.5,
+      "lubrificantes": [
+        "C",
+        "D",
+        "E",
+        "G",
+        "H"
+      ]
+    },
+    {
+      "marca": "AUDI",
+      "modelo": "A1",
+      "motor": "1.4 L4 TFSI/TB 16V (G)",
+      "anoInicio": 2016,
+      "anoFim": 2017,
+      "volumeLitros": 4.0,
+      "lubrificantes": [
+        "C",
+        "G",
+        "H"
+      ]
+    },
+    {
+      "marca": "AUDI",
+      "modelo": "A1",
+      "motor": "1.8 L4 TFSI/TB 16V (G)",
+      "anoInicio": 2016,
+      "anoFim": 2018,
+      "volumeLitros": 4.6,
+      "lubrificantes": [
+        "C",
+        "G",
+        "H"
+      ]
+    },
+    {
+      "marca": "AUDI",
+      "modelo": "A3",
+      "motor": "1.8 L4 TFSI/TB 16V (G)",
+      "anoInicio": 2014,
+      "anoFim": 2016,
+      "volumeLitros": 4.5,
+      "lubrificantes": [
+        "C",
+        "G",
+        "H"
+      ]
+    },
+    {
+      "marca": "AUDI",
+      "modelo": "A3",
+      "motor": "1.4 L4 TFSI/TB 16V (F)",
+      "anoInicio": 2014,
+      "anoFim": 2021,
+      "volumeLitros": 3.6,
+      "lubrificantes": [
+        "C",
+        "G",
+        "H"
+      ]
+    },
+    {
+      "marca": "AUDI",
+      "modelo": "A3",
+      "motor": "2.0 L4 TFSI/TB 16V (G)",
+      "anoInicio": 2017,
+      "anoFim": 2023,
+      "volumeLitros": 5.7,
+      "lubrificantes": [
+        "C",
+        "G",
+        "H"
+      ]
+    },
+    {
+      "marca": "AUDI",
+      "modelo": "A3 2.0 (HÍBRIDO)",
+      "motor": "2.0 L4 TFSI/TB 16V (G)",
+      "anoInicio": 2020,
+      "anoFim": 2023,
+      "volumeLitros": 5.7,
+      "lubrificantes": [
+        "A"
+      ]
+    },
+    {
+      "marca": "AUDI",
+      "modelo": "A3 8Y",
+      "motor": "1.4 L4 TFSI/TB 16V (G)",
+      "anoInicio": 2022,
+      "anoFim": 2023,
+      "volumeLitros": 4.3,
+      "lubrificantes": [
+        "C",
+        "H"
+      ]
+    },
+    {
+      "marca": "AUDI",
+      "modelo": "A3 8Y",
+      "motor": "2.0 L4 TFSI/TB 16V (G)",
+      "anoInicio": 2022,
+      "anoFim": 2023,
+      "volumeLitros": 5.7,
+      "lubrificantes": [
+        "C",
+        "H"
+      ]
+    },
+    {
+      "marca": "AUDI",
+      "modelo": "A4",
+      "motor": "1.8 L4 TFSI/TB 20V (G)",
+      "anoInicio": 2014,
+      "anoFim": 2016,
+      "volumeLitros": 4.6,
+      "lubrificantes": [
+        "C",
+        "G",
+        "H"
+      ]
+    },
+    {
+      "marca": "AUDI",
+      "modelo": "A4",
+      "motor": "2.0 L4 TFSI/TB 16V (G)",
+      "anoInicio": 2014,
+      "anoFim": 2023,
+      "volumeLitros": 4.6,
+      "lubrificantes": [
+        "C",
+        "G",
+        "H"
+      ]
+    },
+    {
+      "marca": "AUDI",
+      "modelo": "A5",
+      "motor": "2.0 L4 TFSI/TB 16V (G)",
+      "anoInicio": 2014,
+      "anoFim": 2023,
+      "volumeLitros": 4.6,
+      "lubrificantes": [
+        "H"
+      ]
+    },
+    {
+      "marca": "AUDI",
+      "modelo": "A5",
+      "motor": "1.8 L4 TFSI/TB 16V (G)",
+      "anoInicio": 2015,
+      "anoFim": 2017,
+      "volumeLitros": 4.6,
+      "lubrificantes": [
+        "C",
+        "G",
+        "H"
+      ]
+    },
+    {
+      "marca": "AUDI",
+      "modelo": "A6",
+      "motor": "3.0 V6 TFSI/TB 24V (G)",
+      "anoInicio": 2014,
+      "anoFim": 2015,
+      "volumeLitros": 6.6,
+      "lubrificantes": [
+        "C",
+        "D",
+        "E",
+        "G",
+        "H"
+      ]
+    },
+    {
+      "marca": "AUDI",
+      "modelo": "A6",
+      "motor": "2.0 L4 TFSI/TB 16V (G)",
+      "anoInicio": 2015,
+      "anoFim": 2018,
+      "volumeLitros": 4.6,
+      "lubrificantes": [
+        "C",
+        "G",
+        "H"
+      ]
+    },
+    {
+      "marca": "AUDI",
+      "modelo": "A6",
+      "motor": "3.0 V6 TFSI/TB 24V (G)",
+      "anoInicio": 2016,
+      "anoFim": 2023,
+      "volumeLitros": 6.8,
+      "lubrificantes": [
+        "C",
+        "G",
+        "H"
+      ]
+    },
+    {
+      "marca": "AUDI",
+      "modelo": "A7",
+      "motor": "3.0 V6 TFSI/TB 24V (G)",
+      "anoInicio": 2014,
+      "anoFim": 2018,
+      "volumeLitros": 6.6,
+      "lubrificantes": [
+        "C",
+        "G",
+        "H"
+      ]
+    },
+    {
+      "marca": "AUDI",
+      "modelo": "A7",
+      "motor": "2.0 L4 TFSI/TB 16V (G)",
+      "anoInicio": 2015,
+      "anoFim": 2016,
+      "volumeLitros": 4.6,
+      "lubrificantes": [
+        "C",
+        "G",
+        "H"
+      ]
+    },
+    {
+      "marca": "AUDI",
+      "modelo": "A7",
+      "motor": "3.0 V6 TFSI/TB 24V (G)",
+      "anoInicio": 2020,
+      "anoFim": 2023,
+      "volumeLitros": 6.8,
+      "lubrificantes": [
+        "C",
+        "G",
+        "H"
+      ]
+    },
+    {
+      "marca": "AUDI",
+      "modelo": "A8",
+      "motor": "4.0 V8 DFI/TB 24V (G)",
+      "anoInicio": 2014,
+      "anoFim": 2017,
+      "volumeLitros": 8.3,
+      "lubrificantes": [
+        "H"
+      ]
+    },
+    {
+      "marca": "AUDI",
+      "modelo": "A8",
+      "motor": "6.3 W12 FSI 48V (G)",
+      "anoInicio": 2014,
+      "anoFim": 2017,
+      "volumeLitros": 11.2,
+      "lubrificantes": [
+        "H"
+      ]
+    },
+    {
+      "marca": "AUDI",
+      "modelo": "A8",
+      "motor": "3.0 V6 TFSI/TB 24V (G)",
+      "anoInicio": 2015,
+      "anoFim": 2016,
+      "volumeLitros": 6.8,
+      "lubrificantes": [
+        "H"
+      ]
+    },
+    {
+      "marca": "AUDI",
+      "modelo": "Q3",
+      "motor": "2.0 L4 TFSI/TB 16V (G)",
+      "anoInicio": 2014,
+      "anoFim": 2018,
+      "volumeLitros": 4.6,
+      "lubrificantes": [
+        "C",
+        "G",
+        "H"
+      ]
+    },
+    {
+      "marca": "AUDI",
+      "modelo": "Q3",
+      "motor": "2.0 L4 TFSI/TB 16V (G)",
+      "anoInicio": 2014,
+      "anoFim": 2018,
+      "volumeLitros": 5.7,
+      "lubrificantes": [
+        "C",
+        "G",
+        "H"
+      ]
+    },
+    {
+      "marca": "AUDI",
+      "modelo": "Q3",
+      "motor": "1.4 L4 TFSI/TB 16V (F)",
+      "anoInicio": 2016,
+      "anoFim": 2023,
+      "volumeLitros": 4.0,
+      "lubrificantes": [
+        "C",
+        "G",
+        "H"
+      ]
+    },
+    {
+      "marca": "AUDI",
+      "modelo": "Q5",
+      "motor": "3.0 V6 TFSI/TB 24V (G)",
+      "anoInicio": 2014,
+      "anoFim": 2016,
+      "volumeLitros": 6.8,
+      "lubrificantes": [
+        "C",
+        "G",
+        "H"
+      ]
+    },
+    {
+      "marca": "AUDI",
+      "modelo": "Q5",
+      "motor": "2.0 L4 TFSI/TB 16V (G)",
+      "anoInicio": 2014,
+      "anoFim": 2017,
+      "volumeLitros": 4.6,
+      "lubrificantes": [
+        "C",
+        "G",
+        "H"
+      ]
+    },
+    {
+      "marca": "AUDI",
+      "modelo": "Q5",
+      "motor": "2.0 L4 TFSI/TB 16V (G)",
+      "anoInicio": 2018,
+      "anoFim": 2023,
+      "volumeLitros": 4.7,
+      "lubrificantes": [
+        "C",
+        "G",
+        "H"
+      ]
+    },
+    {
+      "marca": "AUDI",
+      "modelo": "Q5 2.0 (HÍBRIDO)",
+      "motor": "2.0 L4 TFSI/TB 16V (G)",
+      "anoInicio": 2023,
+      "anoFim": 2023,
+      "volumeLitros": 4.7,
+      "lubrificantes": [
+        "A"
+      ]
+    },
+    {
+      "marca": "AUDI",
+      "modelo": "Q7",
+      "motor": "3.0 V6 FSI/SC 24V (G)",
+      "anoInicio": 2014,
+      "anoFim": 2015,
+      "volumeLitros": 8.1,
+      "lubrificantes": [
+        "C",
+        "D",
+        "E",
+        "G",
+        "H"
+      ]
+    },
+    {
+      "marca": "AUDI",
+      "modelo": "Q7",
+      "motor": "3.0 V6 FSI/SC 24V (G)",
+      "anoInicio": 2016,
+      "anoFim": 2023,
+      "volumeLitros": 6.8,
+      "lubrificantes": [
+        "C",
+        "G",
+        "H"
+      ]
+    },
+    {
+      "marca": "AUDI",
+      "modelo": "Q7",
+      "motor": "3.0 V6 CRDI/TD 24V (D)",
+      "anoInicio": 2017,
+      "anoFim": 2019,
+      "volumeLitros": 8.0,
+      "lubrificantes": [
+        "D"
+      ]
+    },
+    {
+      "marca": "AUDI",
+      "modelo": "Q7 3.0 (HÍBRIDO)",
+      "motor": "3.0 V6 FSI/SC 24V (G)",
+      "anoInicio": 2014,
+      "anoFim": 2015,
+      "volumeLitros": 8.1,
+      "lubrificantes": [
+        "C"
+      ]
+    },
+    {
+      "marca": "AUDI",
+      "modelo": "Q7 3.0 (HÍBRIDO)",
+      "motor": "3.0 V6 FSI/SC 24V (G)",
+      "anoInicio": 2016,
+      "anoFim": 2023,
+      "volumeLitros": 6.8,
+      "lubrificantes": [
+        "A"
+      ]
+    },
+    {
+      "marca": "AUDI",
+      "modelo": "Q8",
+      "motor": "3.0 V6 TFSI/TB 24V (G)",
+      "anoInicio": 2019,
+      "anoFim": 2023,
+      "volumeLitros": 7.6,
+      "lubrificantes": [
+        "H"
+      ]
+    },
+    {
+      "marca": "AUDI",
+      "modelo": "Q8",
+      "motor": "4.0 V8 DFI/Bi-TB 32V (G)",
+      "anoInicio": 2021,
+      "anoFim": 2023,
+      "volumeLitros": 8.3,
+      "lubrificantes": [
+        "H"
+      ]
+    },
+    {
+      "marca": "AUDI",
+      "modelo": "R8",
+      "motor": "5.0 V10 FSI 40V (G)",
+      "anoInicio": 2014,
+      "anoFim": 2023,
+      "volumeLitros": 8.3,
+      "lubrificantes": [
+        "H"
+      ]
+    },
+    {
+      "marca": "AUDI",
+      "modelo": "RS 3",
+      "motor": "2.5 L5 TFSI/TB 20V (G)",
+      "anoInicio": 2014,
+      "anoFim": 2018,
+      "volumeLitros": 6.5,
+      "lubrificantes": [
+        "H"
+      ]
+    },
+    {
+      "marca": "AUDI",
+      "modelo": "RS 4",
+      "motor": "4.2 V8 FSI 32V (G)",
+      "anoInicio": 2014,
+      "anoFim": 2015,
+      "volumeLitros": 10.7,
+      "lubrificantes": [
+        "C",
+        "G",
+        "H"
+      ]
+    },
+    {
+      "marca": "AUDI",
+      "modelo": "RS 5",
+      "motor": "4.2 V8 FSI 32V (G)",
+      "anoInicio": 2014,
+      "anoFim": 2015,
+      "volumeLitros": 8.8,
+      "lubrificantes": [
+        "C",
+        "G",
+        "H"
+      ]
+    },
+    {
+      "marca": "AUDI",
+      "modelo": "RS Q3",
+      "motor": "2.5 L5 TFSI/TB 20V (G)",
+      "anoInicio": 2014,
+      "anoFim": 2023,
+      "volumeLitros": 6.5,
+      "lubrificantes": [
+        "H"
+      ]
+    },
+    {
+      "marca": "AUDI",
+      "modelo": "S3",
+      "motor": "2.0 L4 TFSI/TB 16V (G)",
+      "anoInicio": 2014,
+      "anoFim": 2016,
+      "volumeLitros": 5.7,
+      "lubrificantes": [
+        "C",
+        "G",
+        "H"
+      ]
+    },
+    {
+      "marca": "AUDI",
+      "modelo": "S4",
+      "motor": "3.0 V6 TFSI/TB 24V (G)",
+      "anoInicio": 2014,
+      "anoFim": 2014,
+      "volumeLitros": 6.8,
+      "lubrificantes": [
+        "C",
+        "D",
+        "E",
+        "G",
+        "H"
+      ]
+    },
+    {
+      "marca": "AUDI",
+      "modelo": "S5",
+      "motor": "3.0 V6 TFSI/TB 24V (G)",
+      "anoInicio": 2014,
+      "anoFim": 2015,
+      "volumeLitros": 6.8,
+      "lubrificantes": [
+        "C",
+        "D",
+        "E",
+        "G",
+        "H"
+      ]
+    },
+    {
+      "marca": "AUDI",
+      "modelo": "S6",
+      "motor": "4.0 V8 TFSI/Bi-TB 32V (G)",
+      "anoInicio": 2014,
+      "anoFim": 2016,
+      "volumeLitros": 8.3,
+      "lubrificantes": [
+        "C",
+        "G",
+        "H"
+      ]
+    },
+    {
+      "marca": "AUDI",
+      "modelo": "S7",
+      "motor": "4.0 V8 TFSI/Bi-TB 32V (G)",
+      "anoInicio": 2014,
+      "anoFim": 2016,
+      "volumeLitros": 8.3,
+      "lubrificantes": [
+        "C",
+        "G",
+        "H"
+      ]
+    },
+    {
+      "marca": "AUDI",
+      "modelo": "S8",
+      "motor": "4.0 V8 TFSI/Bi-TB 32V (G)",
+      "anoInicio": 2014,
+      "anoFim": 2017,
+      "volumeLitros": 8.3,
+      "lubrificantes": [
+        "C",
+        "G",
+        "H"
+      ]
+    },
+    {
+      "marca": "AUDI",
+      "modelo": "SQ5",
+      "motor": "3.0 V6 TFSI/TB 24V (G)",
+      "anoInicio": 2014,
+      "anoFim": 2020,
+      "volumeLitros": 6.8,
+      "lubrificantes": [
+        "C",
+        "G",
+        "H"
+      ]
+    },
+    {
+      "marca": "AUDI",
+      "modelo": "TT",
+      "motor": "2.0 L4 TFSI/TB 16V (G)",
+      "anoInicio": 2014,
+      "anoFim": 2018,
+      "volumeLitros": 4.6,
+      "lubrificantes": [
+        "C",
+        "G",
+        "H"
+      ]
+    },
+    {
+      "marca": "AUDI",
+      "modelo": "TT RS",
+      "motor": "2.5 L5 TFSI/TB 20V (G)",
+      "anoInicio": 2014,
+      "anoFim": 2018,
+      "volumeLitros": 6.5,
+      "lubrificantes": [
+        "C",
+        "G",
+        "H"
+      ]
+    },
+    {
+      "marca": "AUDI",
+      "modelo": "TT RS",
+      "motor": "2.5 L5 TFSI/TB 20V (G)",
+      "anoInicio": 2018,
+      "anoFim": 2023,
+      "volumeLitros": 7.1,
+      "lubrificantes": [
+        "C",
+        "G",
+        "H"
+      ]
+    },
+    {
+      "marca": "AUDI",
+      "modelo": "TT S",
+      "motor": "2.0 L4 TFSI/TB 16V (G)",
+      "anoInicio": 2014,
+      "anoFim": 2018,
+      "volumeLitros": 4.7,
+      "lubrificantes": [
+        "C",
+        "G",
+        "H"
+      ]
+    },
+    {
+      "marca": "AUDI",
+      "modelo": "TT S",
+      "motor": "2.0 L4 TFSI/TB 16V (G)",
+      "anoInicio": 2014,
+      "anoFim": 2018,
+      "volumeLitros": 5.7,
+      "lubrificantes": [
+        "C",
+        "G",
+        "H"
+      ]
+    },
+    {
+      "marca": "BMW",
+      "modelo": "116iA",
+      "motor": "1.6 L4 DFI/TB 16V (G)",
+      "anoInicio": 2014,
+      "anoFim": 2015,
+      "volumeLitros": 4.2,
+      "lubrificantes": [
+        "C",
+        "G",
+        "H"
+      ]
+    },
+    {
+      "marca": "BMW",
+      "modelo": "118i",
+      "motor": "1.6 L4 DFI/TB 16V (G)",
+      "anoInicio": 2014,
+      "anoFim": 2015,
+      "volumeLitros": 4.7,
+      "lubrificantes": [
+        "C",
+        "G",
+        "H"
+      ]
+    },
+    {
+      "marca": "BMW",
+      "modelo": "118i Sport",
+      "motor": "1.5 L3 DFI/TB 12V (G)",
+      "anoInicio": 2020,
+      "anoFim": 2023,
+      "volumeLitros": 4.3,
+      "lubrificantes": [
+        "A",
+        "B",
+        "C",
+        "F",
+        "G",
+        "H"
+      ]
+    },
+    {
+      "marca": "BMW",
+      "modelo": "120iA Sport",
+      "motor": "2.0 L4 DFI/TB 16V (F)",
+      "anoInicio": 2015,
+      "anoFim": 2019,
+      "volumeLitros": 5.3,
+      "lubrificantes": [
+        "A",
+        "B",
+        "C",
+        "F",
+        "G",
+        "H"
+      ]
+    },
+    {
+      "marca": "BMW",
+      "modelo": "125i M Sport",
+      "motor": "2.0 L4 DFI/TB 16V (G)",
+      "anoInicio": 2014,
+      "anoFim": 2014,
+      "volumeLitros": 5.3,
+      "lubrificantes": [
+        "A",
+        "B",
+        "C",
+        "F",
+        "G",
+        "H"
+      ]
+    },
+    {
+      "marca": "BMW",
+      "modelo": "125i M Sport",
+      "motor": "2.0 L4 DFI/TB 16V (F)",
+      "anoInicio": 2015,
+      "anoFim": 2019,
+      "volumeLitros": 5.3,
+      "lubrificantes": [
+        "A",
+        "B",
+        "C",
+        "F",
+        "G",
+        "H"
+      ]
+    },
+    {
+      "marca": "BMW",
+      "modelo": "218i Gran Coupé Sport GP",
+      "motor": "1.5 L3 DFI/TB 12V (G)",
+      "anoInicio": 2020,
+      "anoFim": 2023,
+      "volumeLitros": 4.3,
+      "lubrificantes": [
+        "A",
+        "B",
+        "C",
+        "F",
+        "G",
+        "H"
+      ]
+    },
+    {
+      "marca": "BMW",
+      "modelo": "220i Active Tourer",
+      "motor": "2.0 L4 DFI/Bi-TB 16V (F)",
+      "anoInicio": 2016,
+      "anoFim": 2018,
+      "volumeLitros": 5.3,
+      "lubrificantes": [
+        "A",
+        "B",
+        "C",
+        "F",
+        "G",
+        "H"
+      ]
+    },
+    {
+      "marca": "BMW",
+      "modelo": "225i Active Tourer Sport",
+      "motor": "2.0 L4 DFI/TB 16V (G)",
+      "anoInicio": 2015,
+      "anoFim": 2016,
+      "volumeLitros": 5.3,
+      "lubrificantes": [
+        "A",
+        "B",
+        "C",
+        "F",
+        "G",
+        "H"
+      ]
+    },
+    {
+      "marca": "BMW",
+      "modelo": "316i",
+      "motor": "1.6 L4 DFI/TB 16V (G)",
+      "anoInicio": 2014,
+      "anoFim": 2015,
+      "volumeLitros": 4.3,
+      "lubrificantes": [
+        "A",
+        "B",
+        "C",
+        "F",
+        "G",
+        "H"
+      ]
+    },
+    {
+      "marca": "BMW",
+      "modelo": "320iA",
+      "motor": "2.0 L4 DFI 16V (G)",
+      "anoInicio": 2014,
+      "anoFim": 2014,
+      "volumeLitros": 4.3,
+      "lubrificantes": [
+        "A",
+        "B",
+        "C",
+        "F",
+        "G",
+        "H"
+      ]
+    },
+    {
+      "marca": "BMW",
+      "modelo": "320iA",
+      "motor": "2.0 L4 DFI/TB 16V (F)",
+      "anoInicio": 2015,
+      "anoFim": 2023,
+      "volumeLitros": 5.0,
+      "lubrificantes": [
+        "A",
+        "B",
+        "C",
+        "F",
+        "G",
+        "H"
+      ]
+    },
+    {
+      "marca": "BMW",
+      "modelo": "328iA",
+      "motor": "2.0 L4 DFI/Bi-TB 16V (G)",
+      "anoInicio": 2014,
+      "anoFim": 2014,
+      "volumeLitros": 5.0,
+      "lubrificantes": [
+        "A",
+        "B",
+        "C",
+        "F",
+        "G",
+        "H"
+      ]
+    },
+    {
+      "marca": "BMW",
+      "modelo": "328iA",
+      "motor": "2.0 L4 DFI/TB 16V (F)",
+      "anoInicio": 2015,
+      "anoFim": 2018,
+      "volumeLitros": 5.0,
+      "lubrificantes": [
+        "A",
+        "B",
+        "C",
+        "F",
+        "G",
+        "H"
+      ]
+    },
+    {
+      "marca": "BMW",
+      "modelo": "330i M Sport",
+      "motor": "2.0 L4 DFI/Bi-TB 16V (G)",
+      "anoInicio": 2019,
+      "anoFim": 2023,
+      "volumeLitros": 5.3,
+      "lubrificantes": [
+        "A",
+        "B",
+        "C",
+        "F",
+        "G",
+        "H"
+      ]
+    },
+    {
+      "marca": "BMW",
+      "modelo": "335i ActiveHybrid 3",
+      "motor": "3.0 L6 DFI/Bi-TB 24V (G)",
+      "anoInicio": 2014,
+      "anoFim": 2014,
+      "volumeLitros": 6.5,
+      "lubrificantes": [
+        "C",
+        "D",
+        "E",
+        "G",
+        "H"
+      ]
+    },
+    {
+      "marca": "BMW",
+      "modelo": "335iA",
+      "motor": "3.0 L6 DFI/Bi-TB 24V (G)",
+      "anoInicio": 2014,
+      "anoFim": 2015,
+      "volumeLitros": 6.5,
+      "lubrificantes": [
+        "C",
+        "G",
+        "H"
+      ]
+    },
+    {
+      "marca": "BMW",
+      "modelo": "420i",
+      "motor": "2.0 L4 DFI/TB 16V (G)",
+      "anoInicio": 2015,
+      "anoFim": 2016,
+      "volumeLitros": 5.0,
+      "lubrificantes": [
+        "A",
+        "B",
+        "C",
+        "F",
+        "G",
+        "H"
+      ]
+    },
+    {
+      "marca": "BMW",
+      "modelo": "428i",
+      "motor": "2.0 L4 DFI/Bi-TB 16V (G)",
+      "anoInicio": 2014,
+      "anoFim": 2016,
+      "volumeLitros": 5.0,
+      "lubrificantes": [
+        "A",
+        "B",
+        "C",
+        "F",
+        "G",
+        "H"
+      ]
+    },
+    {
+      "marca": "BMW",
+      "modelo": "430i",
+      "motor": "2.0 L4 DFI/Bi-TB 16V (G)",
+      "anoInicio": 2017,
+      "anoFim": 2023,
+      "volumeLitros": 5.0,
+      "lubrificantes": [
+        "A",
+        "B",
+        "C",
+        "F",
+        "G",
+        "H"
+      ]
+    },
+    {
+      "marca": "BMW",
+      "modelo": "435iA",
+      "motor": "3.0 L6 DFI/Bi-TB 24V (G)",
+      "anoInicio": 2014,
+      "anoFim": 2015,
+      "volumeLitros": 6.5,
+      "lubrificantes": [
+        "C",
+        "G",
+        "H"
+      ]
+    },
+    {
+      "marca": "BMW",
+      "modelo": "528iA",
+      "motor": "2.0 L4 DFI/Bi-TB 16V (G)",
+      "anoInicio": 2014,
+      "anoFim": 2016,
+      "volumeLitros": 5.0,
+      "lubrificantes": [
+        "C",
+        "H"
+      ]
+    },
+    {
+      "marca": "BMW",
+      "modelo": "530e M Sport HYB",
+      "motor": "2.0 L4 DFI/Bi-TB 16V (G)",
+      "anoInicio": 2019,
+      "anoFim": 2023,
+      "volumeLitros": 5.3,
+      "lubrificantes": [
+        "A",
+        "B",
+        "C",
+        "G",
+        "H"
+      ]
+    },
+    {
+      "marca": "BMW",
+      "modelo": "530i M Sport",
+      "motor": "2.0 L4 DFI/Bi-TB 16V (G)",
+      "anoInicio": 2017,
+      "anoFim": 2019,
+      "volumeLitros": 5.0,
+      "lubrificantes": [
+        "C",
+        "H"
+      ]
+    },
+    {
+      "marca": "BMW",
+      "modelo": "535iA",
+      "motor": "3.0 L6 DFI/Bi-TB 24V (G)",
+      "anoInicio": 2014,
+      "anoFim": 2017,
+      "volumeLitros": 6.5,
+      "lubrificantes": [
+        "A",
+        "B",
+        "C",
+        "G",
+        "H"
+      ]
+    },
+    {
+      "marca": "BMW",
+      "modelo": "650iA/Ci",
+      "motor": "4.4 V8 DFI/Bi-TB 32V (G)",
+      "anoInicio": 2014,
+      "anoFim": 2016,
+      "volumeLitros": 9.5,
+      "lubrificantes": [
+        "C",
+        "G",
+        "H"
+      ]
+    },
+    {
+      "marca": "BMW",
+      "modelo": "750i/L M Sport",
+      "motor": "4.4 V8 DFI/Bi-TB 32V (G)",
+      "anoInicio": 2014,
+      "anoFim": 2019,
+      "volumeLitros": 9.0,
+      "lubrificantes": [
+        "C"
+      ]
+    },
+    {
+      "marca": "BMW",
+      "modelo": "750iA",
+      "motor": "4.4 V8 DFI/Bi-TB 32V (G)",
+      "anoInicio": 2014,
+      "anoFim": 2014,
+      "volumeLitros": 8.5,
+      "lubrificantes": [
+        "C"
+      ]
+    },
+    {
+      "marca": "BMW",
+      "modelo": "M135i",
+      "motor": "3.0 L6 DFI/Bi-TB 24V (G)",
+      "anoInicio": 2014,
+      "anoFim": 2016,
+      "volumeLitros": 6.5,
+      "lubrificantes": [
+        "C"
+      ]
+    },
+    {
+      "marca": "BMW",
+      "modelo": "M140i",
+      "motor": "3.0 L6 DFI/Bi-TB 24V (G)",
+      "anoInicio": 2017,
+      "anoFim": 2019,
+      "volumeLitros": 6.5,
+      "lubrificantes": [
+        "C"
+      ]
+    },
+    {
+      "marca": "BMW",
+      "modelo": "M2",
+      "motor": "3.0 L6 DFI/Bi-TB 24V (G)",
+      "anoInicio": 2016,
+      "anoFim": 2018,
+      "volumeLitros": 6.5,
+      "lubrificantes": [
+        "C",
+        "G",
+        "H"
+      ]
+    },
+    {
+      "marca": "BMW",
+      "modelo": "M2 Competition",
+      "motor": "3.0 L6 DFI/Bi-TB 24V (G)",
+      "anoInicio": 2019,
+      "anoFim": 2023,
+      "volumeLitros": 6.5,
+      "lubrificantes": [
+        "C"
+      ]
+    },
+    {
+      "marca": "BMW",
+      "modelo": "M235i",
+      "motor": "3.0 L6 DFI/Bi-TB 24V (G)",
+      "anoInicio": 2014,
+      "anoFim": 2016,
+      "volumeLitros": 6.5,
+      "lubrificantes": [
+        "C"
+      ]
+    },
+    {
+      "marca": "BMW",
+      "modelo": "M235i xDrive",
+      "motor": "2.0 L4 DFI/Bi-TB 16V (G)",
+      "anoInicio": 2020,
+      "anoFim": 2023,
+      "volumeLitros": 5.3,
+      "lubrificantes": [
+        "C"
+      ]
+    },
+    {
+      "marca": "BMW",
+      "modelo": "M240i",
+      "motor": "3.0 L6 DFI/Bi-TB 24V (G)",
+      "anoInicio": 2017,
+      "anoFim": 2018,
+      "volumeLitros": 6.5,
+      "lubrificantes": [
+        "C"
+      ]
+    },
+    {
+      "marca": "BMW",
+      "modelo": "M3",
+      "motor": "3.0 L6 DFI/Bi-TB 24V (G)",
+      "anoInicio": 2015,
+      "anoFim": 2018,
+      "volumeLitros": 6.5,
+      "lubrificantes": [
+        "C"
+      ]
+    },
+    {
+      "marca": "BMW",
+      "modelo": "M340i xDrive",
+      "motor": "3.0 L6 DFI/Bi-TB 24V (G)",
+      "anoInicio": 2020,
+      "anoFim": 2023,
+      "volumeLitros": 6.5,
+      "lubrificantes": [
+        "C"
+      ]
+    },
+    {
+      "marca": "BMW",
+      "modelo": "M4",
+      "motor": "3.0 L6 DFI/Bi-TB 24V (G)",
+      "anoInicio": 2015,
+      "anoFim": 2023,
+      "volumeLitros": 6.5,
+      "lubrificantes": [
+        "C"
+      ]
+    },
+    {
+      "marca": "BMW",
+      "modelo": "M5",
+      "motor": "4.4 V8 DFI/Bi-TB 32V (G)",
+      "anoInicio": 2014,
+      "anoFim": 2016,
+      "volumeLitros": 9.5,
+      "lubrificantes": [
+        "C"
+      ]
+    },
+    {
+      "marca": "BMW",
+      "modelo": "M5",
+      "motor": "4.4 V8 DFI/Bi-TB 32V (G)",
+      "anoInicio": 2017,
+      "anoFim": 2023,
+      "volumeLitros": 10.5,
+      "lubrificantes": [
+        "C"
+      ]
+    },
+    {
+      "marca": "BMW",
+      "modelo": "M6",
+      "motor": "4.4 V8 DFI/Bi-TB 32V (G)",
+      "anoInicio": 2014,
+      "anoFim": 2018,
+      "volumeLitros": 8.5,
+      "lubrificantes": [
+        "C"
+      ]
+    },
+    {
+      "marca": "BMW",
+      "modelo": "M8",
+      "motor": "4.4 V8 DFI/Bi-TB 32V (G)",
+      "anoInicio": 2020,
+      "anoFim": 2023,
+      "volumeLitros": 10.5,
+      "lubrificantes": [
+        "C"
+      ]
+    },
+    {
+      "marca": "BMW",
+      "modelo": "X1",
+      "motor": "2.0 L4 DFI/TB 16V (F)",
+      "anoInicio": 2015,
+      "anoFim": 2016,
+      "volumeLitros": 5.3,
+      "lubrificantes": [
+        "B",
+        "C",
+        "H"
+      ]
+    },
+    {
+      "marca": "BMW",
+      "modelo": "X1 sDrive 18i 2.0",
+      "motor": "2.0 L4 MPFI 16V (G)",
+      "anoInicio": 2014,
+      "anoFim": 2014,
+      "volumeLitros": 4.3,
+      "lubrificantes": [
+        "C",
+        "G",
+        "H"
+      ]
+    },
+    {
+      "marca": "BMW",
+      "modelo": "X1 sDrive 20i 2.0",
+      "motor": "2.0 L4 DFI/TB 16V (G)",
+      "anoInicio": 2014,
+      "anoFim": 2014,
+      "volumeLitros": 5.3,
+      "lubrificantes": [
+        "C",
+        "G",
+        "H"
+      ]
+    },
+    {
+      "marca": "BMW",
+      "modelo": "X1 sDrive 20i 2.0",
+      "motor": "2.0 L4 DFI/TB 16V (F)",
+      "anoInicio": 2015,
+      "anoFim": 2023,
+      "volumeLitros": 5.3,
+      "lubrificantes": [
+        "C"
+      ]
+    },
+    {
+      "marca": "BMW",
+      "modelo": "X1 xDrive 25i 2.0",
+      "motor": "2.0 L4 DFI/TB 16V (F)",
+      "anoInicio": 2016,
+      "anoFim": 2023,
+      "volumeLitros": 5.3,
+      "lubrificantes": [
+        "C"
+      ]
+    },
+    {
+      "marca": "BMW",
+      "modelo": "X1 xDrive 28i 2.0",
+      "motor": "2.0 L4 DFI/TB 16V (G)",
+      "anoInicio": 2014,
+      "anoFim": 2015,
+      "volumeLitros": 5.0,
+      "lubrificantes": [
+        "C"
+      ]
+    },
+    {
+      "marca": "BMW",
+      "modelo": "X1 xDrive 28i Sport 2.0",
+      "motor": "2.0 L4 DFI/TB 16V (F)",
+      "anoInicio": 2015,
+      "anoFim": 2015,
+      "volumeLitros": 5.0,
+      "lubrificantes": [
+        "C"
+      ]
+    },
+    {
+      "marca": "BMW",
+      "modelo": "X3 M Competition",
+      "motor": "3.0 L6 DFI/Bi-TB 24V (G)",
+      "anoInicio": 2020,
+      "anoFim": 2023,
+      "volumeLitros": 6.5,
+      "lubrificantes": [
+        "C"
+      ]
+    },
+    {
+      "marca": "BMW",
+      "modelo": "X3 xDrive 35i/M Sport",
+      "motor": "3.0 L6 DFI/Bi-TB 24V (G)",
+      "anoInicio": 2014,
+      "anoFim": 2017,
+      "volumeLitros": 6.5,
+      "lubrificantes": [
+        "C"
+      ]
+    },
+    {
+      "marca": "BMW",
+      "modelo": "X4 xDrive 28i X-Line",
+      "motor": "2.0 L4 DFI/TB 16V (G)",
+      "anoInicio": 2015,
+      "anoFim": 2018,
+      "volumeLitros": 5.3,
+      "lubrificantes": [
+        "C"
+      ]
+    },
+    {
+      "marca": "BMW",
+      "modelo": "X4 xDrive 35i M Sport",
+      "motor": "3.0 L6 DFI/Bi-TB 24V (G)",
+      "anoInicio": 2015,
+      "anoFim": 2017,
+      "volumeLitros": 6.5,
+      "lubrificantes": [
+        "C"
+      ]
+    },
+    {
+      "marca": "BMW",
+      "modelo": "X5 M",
+      "motor": "4.4 V8 DFI/TB 32V (G)",
+      "anoInicio": 2017,
+      "anoFim": 2018,
+      "volumeLitros": 10.0,
+      "lubrificantes": [
+        "C"
+      ]
+    },
+    {
+      "marca": "BMW",
+      "modelo": "X5 xDrive 30d",
+      "motor": "3.0 L6 CRDI/TD 24V (D)",
+      "anoInicio": 2015,
+      "anoFim": 2023,
+      "volumeLitros": 6.5,
+      "lubrificantes": [
+        "D"
+      ]
+    },
+    {
+      "marca": "BMW",
+      "modelo": "X5 xDrive 35i",
+      "motor": "3.0 L6 DFI/Bi-TB 24V (G)",
+      "anoInicio": 2014,
+      "anoFim": 2017,
+      "volumeLitros": 6.5,
+      "lubrificantes": [
+        "C"
+      ]
+    },
+    {
+      "marca": "BMW",
+      "modelo": "X5 xDrive 50i/M Sport",
+      "motor": "4.4 V8 MPFI/Bi-TB 32V (G)",
+      "anoInicio": 2014,
+      "anoFim": 2017,
+      "volumeLitros": 8.5,
+      "lubrificantes": [
+        "C"
+      ]
+    },
+    {
+      "marca": "BMW",
+      "modelo": "X5 xDrive M50d",
+      "motor": "3.0 L6 CRDI/TD 24V (D)",
+      "anoInicio": 2015,
+      "anoFim": 2023,
+      "volumeLitros": 6.5,
+      "lubrificantes": [
+        "D"
+      ]
+    },
+    {
+      "marca": "BMW",
+      "modelo": "X6 xDrive 35i",
+      "motor": "3.0 L6 DFI/Bi-TB 24V (G)",
+      "anoInicio": 2014,
+      "anoFim": 2019,
+      "volumeLitros": 6.5,
+      "lubrificantes": [
+        "C"
+      ]
+    },
+    {
+      "marca": "BMW",
+      "modelo": "X6 xDrive 50i/M Sport",
+      "motor": "4.4 V8 MPFI/Bi-TB 32V (G)",
+      "anoInicio": 2014,
+      "anoFim": 2016,
+      "volumeLitros": 9.0,
+      "lubrificantes": [
+        "C"
+      ]
+    },
+    {
+      "marca": "BMW",
+      "modelo": "Z4",
+      "motor": "3.0 L6 DFI/Bi-TB 24V (G)",
+      "anoInicio": 2014,
+      "anoFim": 2023,
+      "volumeLitros": 6.5,
+      "lubrificantes": [
+        "C"
+      ]
+    },
+    {
+      "marca": "BMW",
+      "modelo": "Z4 Roadster sDrive 35i 3.0",
+      "motor": "3.0 L6 DFI/Bi-TB 24V (G)",
+      "anoInicio": 2014,
+      "anoFim": 2014,
+      "volumeLitros": 6.5,
+      "lubrificantes": [
+        "C"
+      ]
+    },
+    {
+      "marca": "BMW",
+      "modelo": "Z4 sDrive 20i 2.0",
+      "motor": "2.0 L4 DFI/TB 16V (G)",
+      "anoInicio": 2014,
+      "anoFim": 2016,
+      "volumeLitros": 5.3,
+      "lubrificantes": [
+        "C"
+      ]
+    },
+    {
+      "marca": "BMW",
+      "modelo": "i3 Bev",
+      "motor": "650cc L2 MPI 8V (G)",
+      "anoInicio": 2015,
+      "anoFim": 2023,
+      "volumeLitros": 2.6,
+      "lubrificantes": [
+        "C"
+      ]
+    },
+    {
+      "marca": "BMW",
+      "modelo": "i3 Rex",
+      "motor": "650cc L2 MPI 8V (G)",
+      "anoInicio": 2015,
+      "anoFim": 2023,
+      "volumeLitros": 2.6,
+      "lubrificantes": [
+        "C"
+      ]
+    },
+    {
+      "marca": "CHERY",
+      "modelo": "ARRIZO 5",
+      "motor": "1.5 L4 MPFI/TB 16V (F)",
+      "anoInicio": 2019,
+      "anoFim": 2021,
+      "volumeLitros": 4.5,
+      "lubrificantes": [
+        "C",
+        "G"
+      ]
+    },
+    {
+      "marca": "CHERY",
+      "modelo": "ARRIZO 6 GSX",
+      "motor": "1.5 L4 MPFI/TB 16V (F)",
+      "anoInicio": 2020,
+      "anoFim": 2023,
+      "volumeLitros": 4.5,
+      "lubrificantes": [
+        "C",
+        "G"
+      ]
+    },
+    {
+      "marca": "CHERY",
+      "modelo": "ARRIZO 6 Pro (Híbrido)",
+      "motor": "1.5 L4 MPFI/TB 16V (F)",
+      "anoInicio": 2023,
+      "anoFim": 2023,
+      "volumeLitros": 4.5,
+      "lubrificantes": [
+        "C"
+      ]
+    },
+    {
+      "marca": "CHERY",
+      "modelo": "CELER",
+      "motor": "1.5 L4 MPFI 16V (F)",
+      "anoInicio": 2014,
+      "anoFim": 2018,
+      "volumeLitros": 4.0,
+      "lubrificantes": [
+        "M"
+      ]
+    },
+    {
+      "marca": "CHERY",
+      "modelo": "FACE",
+      "motor": "1.3 L4 MPFI 16V (G/F)",
+      "anoInicio": 2014,
+      "anoFim": 2015,
+      "volumeLitros": 4.0,
+      "lubrificantes": [
+        "M"
+      ]
+    },
+    {
+      "marca": "CHERY",
+      "modelo": "QQ",
+      "motor": "1.1 L4 MPFI 16V (G)",
+      "anoInicio": 2014,
+      "anoFim": 2015,
+      "volumeLitros": 4.0,
+      "lubrificantes": [
+        "M"
+      ]
+    },
+    {
+      "marca": "CHERY",
+      "modelo": "QQ",
+      "motor": "1.0 L3 MPFI 12V (G/F)",
+      "anoInicio": 2015,
+      "anoFim": 2020,
+      "volumeLitros": 3.0,
+      "lubrificantes": [
+        "C",
+        "G"
+      ]
+    },
+    {
+      "marca": "CHERY",
+      "modelo": "TIGGO",
+      "motor": "2.0 L4 MPFI 16V (G)",
+      "anoInicio": 2014,
+      "anoFim": 2015,
+      "volumeLitros": 4.5,
+      "lubrificantes": [
+        "M"
+      ]
+    },
+    {
+      "marca": "CHERY",
+      "modelo": "TIGGO 2",
+      "motor": "1.5 L4 MPFI 16V (F)",
+      "anoInicio": 2019,
+      "anoFim": 2023,
+      "volumeLitros": 4.0,
+      "lubrificantes": [
+        "C",
+        "G"
+      ]
+    },
+    {
+      "marca": "CHERY",
+      "modelo": "TIGGO 5X",
+      "motor": "1.5 L4 MPFI/TB 16V (F)",
+      "anoInicio": 2019,
+      "anoFim": 2023,
+      "volumeLitros": 4.9,
+      "lubrificantes": [
+        "C",
+        "G"
+      ]
+    },
+    {
+      "marca": "CHERY",
+      "modelo": "TIGGO 5X Pro (Híbrido)",
+      "motor": "1.5 L4 MPFI/TB 16V (F)",
+      "anoInicio": 2023,
+      "anoFim": 2023,
+      "volumeLitros": 4.9,
+      "lubrificantes": [
+        "C"
+      ]
+    },
+    {
+      "marca": "CHERY",
+      "modelo": "TIGGO 7",
+      "motor": "1.5 L4 MPFI/TB 16V (F)",
+      "anoInicio": 2019,
+      "anoFim": 2021,
+      "volumeLitros": 4.9,
+      "lubrificantes": [
+        "C",
+        "G"
+      ]
+    },
+    {
+      "marca": "CHERY",
+      "modelo": "TIGGO 7 Pro (Híbrido)",
+      "motor": "1.5 L4 MPFI/TB 16V (F)",
+      "anoInicio": 2023,
+      "anoFim": 2023,
+      "volumeLitros": 4.9,
+      "lubrificantes": [
+        "C"
+      ]
+    },
+    {
+      "marca": "CHERY",
+      "modelo": "TIGGO 8",
+      "motor": "1.6 L4 GDi/TB 16V (F)",
+      "anoInicio": 2021,
+      "anoFim": 2023,
+      "volumeLitros": 4.9,
+      "lubrificantes": [
+        "C",
+        "G"
+      ]
+    },
+    {
+      "marca": "CHERY",
+      "modelo": "TIGGO 8 (Híbrido)",
+      "motor": "1.5 L4 MPFI/TB 16V (F)",
+      "anoInicio": 2023,
+      "anoFim": 2023,
+      "volumeLitros": 4.9,
+      "lubrificantes": [
+        "C"
+      ]
+    },
+    {
+      "marca": "CHERY",
+      "modelo": "TIGGO 8 Pro",
+      "motor": "1.5 L4 MPFI/TB 16V (F)",
+      "anoInicio": 2023,
+      "anoFim": 2023,
+      "volumeLitros": 4.5,
+      "lubrificantes": [
+        "C"
+      ]
+    },
+    {
+      "marca": "CHEVROLET",
+      "modelo": "AGILE",
+      "motor": "1.4 L4 MPFI 8V (F)",
+      "anoInicio": 2014,
+      "anoFim": 2014,
+      "volumeLitros": 3.5,
+      "lubrificantes": [
+        "C",
+        "G"
+      ]
+    },
+    {
+      "marca": "CHEVROLET",
+      "modelo": "CAMARO",
+      "motor": "6.2 V8 SMPFI 16V (G)",
+      "anoInicio": 2014,
+      "anoFim": 2016,
+      "volumeLitros": 7.6,
+      "lubrificantes": [
+        "C",
+        "G"
+      ]
+    },
+    {
+      "marca": "CHEVROLET",
+      "modelo": "CAMARO",
+      "motor": "6.2 V8 SMPFI 16V (G)",
+      "anoInicio": 2016,
+      "anoFim": 2023,
+      "volumeLitros": 9.5,
+      "lubrificantes": [
+        "C",
+        "E",
+        "G"
+      ]
+    },
+    {
+      "marca": "CHEVROLET",
+      "modelo": "CAPTIVA",
+      "motor": "2.4 L4 DFI 16V (G)",
+      "anoInicio": 2014,
+      "anoFim": 2017,
+      "volumeLitros": 4.7,
+      "lubrificantes": [
+        "C",
+        "G"
+      ]
+    },
+    {
+      "marca": "CHEVROLET",
+      "modelo": "CELTA",
+      "motor": "1.0 L4 MPFI 8V (F)",
+      "anoInicio": 2014,
+      "anoFim": 2016,
+      "volumeLitros": 3.5,
+      "lubrificantes": [
+        "C",
+        "G"
+      ]
+    },
+    {
+      "marca": "CHEVROLET",
+      "modelo": "COBALT",
+      "motor": "1.4 L4 MPFI 8V (F)",
+      "anoInicio": 2014,
+      "anoFim": 2016,
+      "volumeLitros": 3.5,
+      "lubrificantes": [
+        "C",
+        "G"
+      ]
+    },
+    {
+      "marca": "CHEVROLET",
+      "modelo": "COBALT",
+      "motor": "1.8 L4 MPFI 8V (F)",
+      "anoInicio": 2014,
+      "anoFim": 2016,
+      "volumeLitros": 3.5,
+      "lubrificantes": [
+        "C",
+        "G"
+      ]
+    },
+    {
+      "marca": "CHEVROLET",
+      "modelo": "COBALT",
+      "motor": "1.4 L4 MPFI 8V (F)",
+      "anoInicio": 2017,
+      "anoFim": 2020,
+      "volumeLitros": 3.5,
+      "lubrificantes": [
+        "A",
+        "F"
+      ]
+    },
+    {
+      "marca": "CHEVROLET",
+      "modelo": "COBALT",
+      "motor": "1.8 L4 MPFI 8V (F)",
+      "anoInicio": 2017,
+      "anoFim": 2020,
+      "volumeLitros": 3.5,
+      "lubrificantes": [
+        "A",
+        "F"
+      ]
+    },
+    {
+      "marca": "CHEVROLET",
+      "modelo": "CORSA CLASSIC",
+      "motor": "1.0 L4 MPFI 8V (F)",
+      "anoInicio": 2014,
+      "anoFim": 2016,
+      "volumeLitros": 3.5,
+      "lubrificantes": [
+        "C",
+        "G"
+      ]
+    },
+    {
+      "marca": "CHEVROLET",
+      "modelo": "CORVETTE",
+      "motor": "6.2 V8 SMPFI/TB 16V (G)",
+      "anoInicio": 2014,
+      "anoFim": 2015,
+      "volumeLitros": 5.7,
+      "lubrificantes": [
+        "C"
+      ]
+    },
+    {
+      "marca": "CHEVROLET",
+      "modelo": "CRUZE",
+      "motor": "1.8 L4 MPFI 16V (F)",
+      "anoInicio": 2014,
+      "anoFim": 2016,
+      "volumeLitros": 4.5,
+      "lubrificantes": [
+        "C",
+        "G"
+      ]
+    },
+    {
+      "marca": "CHEVROLET",
+      "modelo": "CRUZE",
+      "motor": "1.4 L4 DFI/TB 16V (F)",
+      "anoInicio": 2017,
+      "anoFim": 2023,
+      "volumeLitros": 4.0,
+      "lubrificantes": [
+        "A",
+        "F"
+      ]
+    },
+    {
+      "marca": "CHEVROLET",
+      "modelo": "EQUINOX AWD",
+      "motor": "2.0 L4 DFI/TB 16V (G)",
+      "anoInicio": 2018,
+      "anoFim": 2021,
+      "volumeLitros": 5.7,
+      "lubrificantes": [
+        "C"
+      ]
+    },
+    {
+      "marca": "CHEVROLET",
+      "modelo": "EQUINOX AWD",
+      "motor": "1.5 L4 DFI/TB 16V (G)",
+      "anoInicio": 2020,
+      "anoFim": 2023,
+      "volumeLitros": 5.0,
+      "lubrificantes": [
+        "A",
+        "F"
+      ]
+    },
+    {
+      "marca": "CHEVROLET",
+      "modelo": "EQUINOX FWD",
+      "motor": "2.0 L4 DFI/TB 16V (G)",
+      "anoInicio": 2018,
+      "anoFim": 2021,
+      "volumeLitros": 4.7,
+      "lubrificantes": [
+        "C"
+      ]
+    },
+    {
+      "marca": "CHEVROLET",
+      "modelo": "EQUINOX FWD",
+      "motor": "1.5 L4 DFI/TB 16V (G)",
+      "anoInicio": 2020,
+      "anoFim": 2023,
+      "volumeLitros": 4.0,
+      "lubrificantes": [
+        "A",
+        "F"
+      ]
+    },
+    {
+      "marca": "CHEVROLET",
+      "modelo": "MONTANA",
+      "motor": "1.4 L4 MPFI 8V (F)",
+      "anoInicio": 2014,
+      "anoFim": 2016,
+      "volumeLitros": 3.5,
+      "lubrificantes": [
+        "C",
+        "G"
+      ]
+    },
+    {
+      "marca": "CHEVROLET",
+      "modelo": "MONTANA",
+      "motor": "1.4 L4 MPFI 8V (F)",
+      "anoInicio": 2017,
+      "anoFim": 2021,
+      "volumeLitros": 3.5,
+      "lubrificantes": [
+        "A",
+        "F"
+      ]
+    },
+    {
+      "marca": "CHEVROLET",
+      "modelo": "ONIX",
+      "motor": "1.0 L4 MPFI 8V (F)",
+      "anoInicio": 2014,
+      "anoFim": 2016,
+      "volumeLitros": 3.5,
+      "lubrificantes": [
+        "C"
+      ]
+    },
+    {
+      "marca": "CHEVROLET",
+      "modelo": "ONIX",
+      "motor": "1.4 L4 MPFI 8V (F)",
+      "anoInicio": 2014,
+      "anoFim": 2016,
+      "volumeLitros": 3.5,
+      "lubrificantes": [
+        "C"
+      ]
+    },
+    {
+      "marca": "CHEVROLET",
+      "modelo": "ONIX",
+      "motor": "1.4 L4 MPFI 8V (F)",
+      "anoInicio": 2016,
+      "anoFim": 2019,
+      "volumeLitros": 3.5,
+      "lubrificantes": [
+        "A",
+        "F"
+      ]
+    },
+    {
+      "marca": "CHEVROLET",
+      "modelo": "ONIX",
+      "motor": "1.4 L4 MPFI 8V (F)",
+      "anoInicio": 2020,
+      "anoFim": 2021,
+      "volumeLitros": 3.75,
+      "lubrificantes": [
+        "A",
+        "F"
+      ]
+    },
+    {
+      "marca": "CHEVROLET",
+      "modelo": "ONIX",
+      "motor": "1.0 L3 MPFI 12V (F)",
+      "anoInicio": 2020,
+      "anoFim": 2023,
+      "volumeLitros": 3.75,
+      "lubrificantes": [
+        "A",
+        "F"
+      ]
+    },
+    {
+      "marca": "CHEVROLET",
+      "modelo": "ONIX / ONIX JOY / JOY",
+      "motor": "1.0 L4 MPFI 8V (F)",
+      "anoInicio": 2016,
+      "anoFim": 2019,
+      "volumeLitros": 3.5,
+      "lubrificantes": [
+        "A",
+        "F"
+      ]
+    },
+    {
+      "marca": "CHEVROLET",
+      "modelo": "ONIX / ONIX PLUS",
+      "motor": "1.0 L3 MPFI/TB 12V (F)",
+      "anoInicio": 2020,
+      "anoFim": 2023,
+      "volumeLitros": 3.75,
+      "lubrificantes": [
+        "C"
+      ]
+    },
+    {
+      "marca": "CHEVROLET",
+      "modelo": "PRISMA",
+      "motor": "1.4 L4 MPFI 8V (F)",
+      "anoInicio": 2014,
+      "anoFim": 2016,
+      "volumeLitros": 3.5,
+      "lubrificantes": [
+        "C",
+        "G"
+      ]
+    },
+    {
+      "marca": "CHEVROLET",
+      "modelo": "PRISMA",
+      "motor": "1.4 L4 MPFI 8V (F)",
+      "anoInicio": 2016,
+      "anoFim": 2019,
+      "volumeLitros": 3.5,
+      "lubrificantes": [
+        "A",
+        "F"
+      ]
+    },
+    {
+      "marca": "CHEVROLET",
+      "modelo": "PRISMA / PRISMA JOY / JOY PLUS",
+      "motor": "1.0 L4 MPFI 8V (F)",
+      "anoInicio": 2014,
+      "anoFim": 2016,
+      "volumeLitros": 3.5,
+      "lubrificantes": [
+        "C"
+      ]
+    },
+    {
+      "marca": "CHEVROLET",
+      "modelo": "S10",
+      "motor": "2.4 L4 MPFI 8V (F)",
+      "anoInicio": 2014,
+      "anoFim": 2016,
+      "volumeLitros": 4.9,
+      "lubrificantes": [
+        "C",
+        "G"
+      ]
+    },
+    {
+      "marca": "CHEVROLET",
+      "modelo": "S10",
+      "motor": "2.5 L4 DFI 16V (F)",
+      "anoInicio": 2016,
+      "anoFim": 2022,
+      "volumeLitros": 5.0,
+      "lubrificantes": [
+        "A",
+        "B",
+        "F"
+      ]
+    },
+    {
+      "marca": "CHEVROLET",
+      "modelo": "S10 (4x2)",
+      "motor": "2.8 L4 D.Elet./TD 16V (D)",
+      "anoInicio": 2014,
+      "anoFim": 2014,
+      "volumeLitros": 5.4,
+      "lubrificantes": [
+        "O"
+      ]
+    },
+    {
+      "marca": "CHEVROLET",
+      "modelo": "S10 (4x4)",
+      "motor": "2.8 L4 D.Elet./TD 16V (D)",
+      "anoInicio": 2014,
+      "anoFim": 2014,
+      "volumeLitros": 5.7,
+      "lubrificantes": [
+        "O"
+      ]
+    },
+    {
+      "marca": "CHEVROLET",
+      "modelo": "S10 (4x4)",
+      "motor": "2.8 L4 D.Elet./TD 16V (D)",
+      "anoInicio": 2015,
+      "anoFim": 2023,
+      "volumeLitros": 5.6,
+      "lubrificantes": [
+        "D"
+      ]
+    },
+    {
+      "marca": "CHEVROLET",
+      "modelo": "SONIC",
+      "motor": "1.6 L4 MPFI 16V (F)",
+      "anoInicio": 2014,
+      "anoFim": 2014,
+      "volumeLitros": 4.5,
+      "lubrificantes": [
+        "C",
+        "G"
+      ]
+    },
+    {
+      "marca": "CHEVROLET",
+      "modelo": "SPIN",
+      "motor": "1.8 L4 MPFI 8V (F)",
+      "anoInicio": 2014,
+      "anoFim": 2016,
+      "volumeLitros": 3.5,
+      "lubrificantes": [
+        "C",
+        "G"
+      ]
+    },
+    {
+      "marca": "CHEVROLET",
+      "modelo": "SPIN",
+      "motor": "1.8 L4 MPFI 8V (F)",
+      "anoInicio": 2017,
+      "anoFim": 2023,
+      "volumeLitros": 3.5,
+      "lubrificantes": [
+        "A",
+        "F"
+      ]
+    },
+    {
+      "marca": "CHEVROLET",
+      "modelo": "SUBURBAN",
+      "motor": "5.3 V8 SFI 16V (G)",
+      "anoInicio": 2014,
+      "anoFim": 2015,
+      "volumeLitros": 5.7,
+      "lubrificantes": [
+        "C",
+        "G"
+      ]
+    },
+    {
+      "marca": "CHEVROLET",
+      "modelo": "TRACKER",
+      "motor": "1.8 L4 MPFI 16V (F)",
+      "anoInicio": 2014,
+      "anoFim": 2016,
+      "volumeLitros": 4.8,
+      "lubrificantes": [
+        "C"
+      ]
+    },
+    {
+      "marca": "CHEVROLET",
+      "modelo": "TRACKER",
+      "motor": "1.4 L4 DFI/TB 16V (F)",
+      "anoInicio": 2017,
+      "anoFim": 2019,
+      "volumeLitros": 4.0,
+      "lubrificantes": [
+        "A",
+        "F"
+      ]
+    },
+    {
+      "marca": "CHEVROLET",
+      "modelo": "TRACKER",
+      "motor": "1.0 L3 MPFI/TB 12V (F)",
+      "anoInicio": 2020,
+      "anoFim": 2023,
+      "volumeLitros": 3.75,
+      "lubrificantes": [
+        "C"
+      ]
+    },
+    {
+      "marca": "CHEVROLET",
+      "modelo": "TRACKER",
+      "motor": "1.2 L3 MPFI/TB 12V (F)",
+      "anoInicio": 2020,
+      "anoFim": 2023,
+      "volumeLitros": 3.75,
+      "lubrificantes": [
+        "C"
+      ]
+    },
+    {
+      "marca": "CHEVROLET",
+      "modelo": "TRAILBLAZER",
+      "motor": "3.6 V6 MPI 24V (G)",
+      "anoInicio": 2014,
+      "anoFim": 2014,
+      "volumeLitros": 5.2,
+      "lubrificantes": [
+        "C",
+        "G"
+      ]
+    },
+    {
+      "marca": "CHEVROLET",
+      "modelo": "TRAILBLAZER",
+      "motor": "2.8 L4 D.Eletr./TD 16V (D)",
+      "anoInicio": 2014,
+      "anoFim": 2015,
+      "volumeLitros": 5.4,
+      "lubrificantes": [
+        "O"
+      ]
+    },
+    {
+      "marca": "CHEVROLET",
+      "modelo": "TRAILBLAZER",
+      "motor": "3.6 V6 DFI 24V (G)",
+      "anoInicio": 2015,
+      "anoFim": 2020,
+      "volumeLitros": 5.7,
+      "lubrificantes": [
+        "C"
+      ]
+    },
+    {
+      "marca": "CHEVROLET",
+      "modelo": "TRAILBLAZER",
+      "motor": "2.8 L4 D.Elet./TD 16V (D)",
+      "anoInicio": 2016,
+      "anoFim": 2023,
+      "volumeLitros": 5.6,
+      "lubrificantes": [
+        "D"
+      ]
+    },
+    {
+      "marca": "CITROËN",
+      "modelo": "AIRCROSS",
+      "motor": "1.6 L4 MPFI 16V (F)",
+      "anoInicio": 2014,
+      "anoFim": 2016,
+      "volumeLitros": 3.3,
+      "lubrificantes": [
+        "C",
+        "H"
+      ]
+    },
+    {
+      "marca": "CITROËN",
+      "modelo": "AIRCROSS",
+      "motor": "1.5 L4 MPFI 8V (G)",
+      "anoInicio": 2016,
+      "anoFim": 2018,
+      "volumeLitros": 3.3,
+      "lubrificantes": [
+        "C",
+        "H"
+      ]
+    },
+    {
+      "marca": "CITROËN",
+      "modelo": "BERLINGO",
+      "motor": "1.6 L4 MPFI 16V (F)",
+      "anoInicio": 2018,
+      "anoFim": 2019,
+      "volumeLitros": 3.3,
+      "lubrificantes": [
+        "H"
+      ]
+    },
+    {
+      "marca": "CITROËN",
+      "modelo": "C3",
+      "motor": "1.6 L4 MPFI 16V (F)",
+      "anoInicio": 2014,
+      "anoFim": 2016,
+      "volumeLitros": 3.3,
+      "lubrificantes": [
+        "C",
+        "H"
+      ]
+    },
+    {
+      "marca": "CITROËN",
+      "modelo": "C3",
+      "motor": "1.5 L4 MPFI 8V (F)",
+      "anoInicio": 2014,
+      "anoFim": 2017,
+      "volumeLitros": 3.3,
+      "lubrificantes": [
+        "C",
+        "H"
+      ]
+    },
+    {
+      "marca": "CITROËN",
+      "modelo": "C3",
+      "motor": "1.2 L3 MPFI 12V (F)",
+      "anoInicio": 2016,
+      "anoFim": 2016,
+      "volumeLitros": 3.3,
+      "lubrificantes": [
+        "C",
+        "H"
+      ]
+    },
+    {
+      "marca": "CITROËN",
+      "modelo": "C4",
+      "motor": "2.0 L4 MPFI 16V (F)",
+      "anoInicio": 2014,
+      "anoFim": 2014,
+      "volumeLitros": 5.0,
+      "lubrificantes": [
+        "C",
+        "H"
+      ]
+    },
+    {
+      "marca": "CITROËN",
+      "modelo": "C4 LOUNGE",
+      "motor": "1.6 L4 DFI/TB 16V (G/F)",
+      "anoInicio": 2014,
+      "anoFim": 2016,
+      "volumeLitros": 4.3,
+      "lubrificantes": [
+        "C"
+      ]
+    },
+    {
+      "marca": "CITROËN",
+      "modelo": "C4 LOUNGE",
+      "motor": "2.0 L4 MPFI 16V (F)",
+      "anoInicio": 2014,
+      "anoFim": 2016,
+      "volumeLitros": 5.0,
+      "lubrificantes": [
+        "C",
+        "H"
+      ]
+    },
+    {
+      "marca": "CITROËN",
+      "modelo": "C4 PICASSO",
+      "motor": "1.6 L4 MPFI 16V (F)",
+      "anoInicio": 2014,
+      "anoFim": 2014,
+      "volumeLitros": 3.3,
+      "lubrificantes": [
+        "C",
+        "H"
+      ]
+    },
+    {
+      "marca": "CITROËN",
+      "modelo": "C4 PICASSO",
+      "motor": "2.0 L4 MPFI 16V (G)",
+      "anoInicio": 2014,
+      "anoFim": 2014,
+      "volumeLitros": 5.0,
+      "lubrificantes": [
+        "C",
+        "H"
+      ]
+    },
+    {
+      "marca": "CITROËN",
+      "modelo": "C4 PICASSO",
+      "motor": "1.6 L4 MPFI/TB 16V (G)",
+      "anoInicio": 2016,
+      "anoFim": 2016,
+      "volumeLitros": 4.3,
+      "lubrificantes": [
+        "C"
+      ]
+    },
+    {
+      "marca": "CITROËN",
+      "modelo": "DS3",
+      "motor": "1.6 L4 DFI/TB 16V (G)",
+      "anoInicio": 2014,
+      "anoFim": 2014,
+      "volumeLitros": 4.25,
+      "lubrificantes": [
+        "C"
+      ]
+    },
+    {
+      "marca": "CITROËN",
+      "modelo": "DS4",
+      "motor": "1.6 L4 DFI/TB 16V (G)",
+      "anoInicio": 2014,
+      "anoFim": 2014,
+      "volumeLitros": 4.25,
+      "lubrificantes": [
+        "C"
+      ]
+    },
+    {
+      "marca": "CITROËN",
+      "modelo": "DS5",
+      "motor": "1.6 L4 DFI/TB 16V (G)",
+      "anoInicio": 2014,
+      "anoFim": 2014,
+      "volumeLitros": 4.25,
+      "lubrificantes": [
+        "C"
+      ]
+    },
+    {
+      "marca": "CITROËN",
+      "modelo": "GRAND C4 PICASSO",
+      "motor": "2.0 L4 MPFI 16V (G)",
+      "anoInicio": 2014,
+      "anoFim": 2014,
+      "volumeLitros": 5.0,
+      "lubrificantes": [
+        "C",
+        "H"
+      ]
+    },
+    {
+      "marca": "CITROËN",
+      "modelo": "GRAND C4 PICASSO",
+      "motor": "1.6 L4 DFI/TB 16V (G)",
+      "anoInicio": 2016,
+      "anoFim": 2016,
+      "volumeLitros": 4.25,
+      "lubrificantes": [
+        "C"
+      ]
+    },
+    {
+      "marca": "CITROËN",
+      "modelo": "JUMPER",
+      "motor": "2.3 L4 CRDI/TD 16V (D)",
+      "anoInicio": 2014,
+      "anoFim": 2017,
+      "volumeLitros": 6.1,
+      "lubrificantes": [
+        "D"
+      ]
+    },
+    {
+      "marca": "FIAT",
+      "modelo": "ARGO",
+      "motor": "1.8 L4 MPFI 16V (F)",
+      "anoInicio": 2018,
+      "anoFim": 2021,
+      "volumeLitros": 4.7,
+      "lubrificantes": [
+        "C",
+        "G"
+      ]
+    },
+    {
+      "marca": "FIAT",
+      "modelo": "ARGO",
+      "motor": "1.0 L3 MPFI 6V (F)",
+      "anoInicio": 2018,
+      "anoFim": 2023,
+      "volumeLitros": 2.54,
+      "lubrificantes": [
+        "A",
+        "F"
+      ]
+    },
+    {
+      "marca": "FIAT",
+      "modelo": "ARGO",
+      "motor": "1.3 L4 MPFI 8V (F)",
+      "anoInicio": 2018,
+      "anoFim": 2023,
+      "volumeLitros": 3.36,
+      "lubrificantes": [
+        "A",
+        "F"
+      ]
+    },
+    {
+      "marca": "FIAT",
+      "modelo": "BRAVO",
+      "motor": "1.4 L4 SMPFI/TB 16V (G)",
+      "anoInicio": 2014,
+      "anoFim": 2014,
+      "volumeLitros": 3.15,
+      "lubrificantes": [
+        "M"
+      ]
+    },
+    {
+      "marca": "FIAT",
+      "modelo": "BRAVO",
+      "motor": "1.8 L4 MPI 16V (F)",
+      "anoInicio": 2014,
+      "anoFim": 2014,
+      "volumeLitros": 4.3,
+      "lubrificantes": [
+        "C",
+        "D",
+        "G"
+      ]
+    },
+    {
+      "marca": "FIAT",
+      "modelo": "BRAVO",
+      "motor": "1.4 L4 SMPFI/TB 16V (G)",
+      "anoInicio": 2015,
+      "anoFim": 2016,
+      "volumeLitros": 3.5,
+      "lubrificantes": [
+        "M"
+      ]
+    },
+    {
+      "marca": "FIAT",
+      "modelo": "BRAVO",
+      "motor": "1.8 L4 MPI 16V (F)",
+      "anoInicio": 2015,
+      "anoFim": 2016,
+      "volumeLitros": 4.0,
+      "lubrificantes": [
+        "C",
+        "G"
+      ]
+    },
+    {
+      "marca": "FIAT",
+      "modelo": "CRONOS",
+      "motor": "1.8 L4 MPFI 16V (F)",
+      "anoInicio": 2018,
+      "anoFim": 2021,
+      "volumeLitros": 4.7,
+      "lubrificantes": [
+        "C",
+        "G"
+      ]
+    },
+    {
+      "marca": "FIAT",
+      "modelo": "CRONOS",
+      "motor": "1.3 L4 MPFI 8V (F)",
+      "anoInicio": 2018,
+      "anoFim": 2023,
+      "volumeLitros": 3.36,
+      "lubrificantes": [
+        "A",
+        "F"
+      ]
+    },
+    {
+      "marca": "FIAT",
+      "modelo": "DOBLÒ",
+      "motor": "1.4 L4 MPFI 8V (F)",
+      "anoInicio": 2014,
+      "anoFim": 2016,
+      "volumeLitros": 2.7,
+      "lubrificantes": [
+        "C",
+        "G"
+      ]
+    },
+    {
+      "marca": "FIAT",
+      "modelo": "DOBLÒ",
+      "motor": "1.8 L4 MPFI 16V (F)",
+      "anoInicio": 2014,
+      "anoFim": 2021,
+      "volumeLitros": 4.3,
+      "lubrificantes": [
+        "C",
+        "G"
+      ]
+    },
+    {
+      "marca": "FIAT",
+      "modelo": "DUCATO",
+      "motor": "2.3 L4 CRDI/TD 16V (D)",
+      "anoInicio": 2014,
+      "anoFim": 2017,
+      "volumeLitros": 5.9,
+      "lubrificantes": [
+        "D"
+      ]
+    },
+    {
+      "marca": "FIAT",
+      "modelo": "DUCATO",
+      "motor": "2.3 L4 CRDI/TD 16V (D)",
+      "anoInicio": 2018,
+      "anoFim": 2021,
+      "volumeLitros": 5.6,
+      "lubrificantes": [
+        "D"
+      ]
+    },
+    {
+      "marca": "FIAT",
+      "modelo": "FIAT 500",
+      "motor": "1.4 L4 MPFI 16V (G/F)",
+      "anoInicio": 2014,
+      "anoFim": 2015,
+      "volumeLitros": 3.7,
+      "lubrificantes": [
+        "C",
+        "G"
+      ]
+    },
+    {
+      "marca": "FIAT",
+      "modelo": "FIAT 500",
+      "motor": "1.4 L4 SMPFI/TB 16V (G)",
+      "anoInicio": 2014,
+      "anoFim": 2015,
+      "volumeLitros": 3.8,
+      "lubrificantes": [
+        "E",
+        "H"
+      ]
+    },
+    {
+      "marca": "FIAT",
+      "modelo": "FIAT 500",
+      "motor": "1.4 L4 MPFI 8V (F)",
+      "anoInicio": 2014,
+      "anoFim": 2017,
+      "volumeLitros": 2.7,
+      "lubrificantes": [
+        "M"
+      ]
+    },
+    {
+      "marca": "FIAT",
+      "modelo": "FIORINO",
+      "motor": "1.4 L4 MPFI 8V (F)",
+      "anoInicio": 2014,
+      "anoFim": 2016,
+      "volumeLitros": 2.7,
+      "lubrificantes": [
+        "M"
+      ]
+    },
+    {
+      "marca": "FIAT",
+      "modelo": "FIORINO",
+      "motor": "1.4 L4 MPFI 8V (F)",
+      "anoInicio": 2017,
+      "anoFim": 2018,
+      "volumeLitros": 2.7,
+      "lubrificantes": [
+        "H"
+      ]
+    },
+    {
+      "marca": "FIAT",
+      "modelo": "FIORINO",
+      "motor": "1.4 L4 MPFI 8V (F)",
+      "anoInicio": 2019,
+      "anoFim": 2021,
+      "volumeLitros": 2.7,
+      "lubrificantes": [
+        "C",
+        "G"
+      ]
+    },
+    {
+      "marca": "FIAT",
+      "modelo": "FREEMONT",
+      "motor": "2.4 L4 MPFI 16V (G)",
+      "anoInicio": 2014,
+      "anoFim": 2016,
+      "volumeLitros": 4.3,
+      "lubrificantes": [
+        "C",
+        "G"
+      ]
+    },
+    {
+      "marca": "FIAT",
+      "modelo": "GRAND SIENA",
+      "motor": "1.4 L4 MPFI 8V (F)",
+      "anoInicio": 2014,
+      "anoFim": 2015,
+      "volumeLitros": 2.7,
+      "lubrificantes": [
+        "M"
+      ]
+    },
+    {
+      "marca": "FIAT",
+      "modelo": "GRAND SIENA",
+      "motor": "1.6 L4 MPFI 16V (F)",
+      "anoInicio": 2014,
+      "anoFim": 2018,
+      "volumeLitros": 4.3,
+      "lubrificantes": [
+        "C",
+        "G",
+        "I"
+      ]
+    },
+    {
+      "marca": "FIAT",
+      "modelo": "GRAND SIENA",
+      "motor": "1.4 L4 MPFI 8V (F)",
+      "anoInicio": 2016,
+      "anoFim": 2021,
+      "volumeLitros": 2.7,
+      "lubrificantes": [
+        "H"
+      ]
+    },
+    {
+      "marca": "FIAT",
+      "modelo": "GRAND SIENA",
+      "motor": "1.0 L4 MPFI 8V (F)",
+      "anoInicio": 2017,
+      "anoFim": 2021,
+      "volumeLitros": 2.7,
+      "lubrificantes": [
+        "C",
+        "G"
+      ]
+    },
+    {
+      "marca": "FIAT",
+      "modelo": "IDEA",
+      "motor": "1.4 L4 MPFI 8V (F)",
+      "anoInicio": 2014,
+      "anoFim": 2016,
+      "volumeLitros": 2.9,
+      "lubrificantes": [
+        "C",
+        "G",
+        "I"
+      ]
+    },
+    {
+      "marca": "FIAT",
+      "modelo": "IDEA",
+      "motor": "1.6 L4 MPFI 16V (F)",
+      "anoInicio": 2014,
+      "anoFim": 2017,
+      "volumeLitros": 4.3,
+      "lubrificantes": [
+        "C",
+        "G",
+        "I"
+      ]
+    },
+    {
+      "marca": "FIAT",
+      "modelo": "IDEA ADVENTURE",
+      "motor": "1.8 L4 MPFI 16V (F)",
+      "anoInicio": 2014,
+      "anoFim": 2016,
+      "volumeLitros": 4.3,
+      "lubrificantes": [
+        "C",
+        "G",
+        "I"
+      ]
+    },
+    {
+      "marca": "FIAT",
+      "modelo": "LINEA",
+      "motor": "1.8 L4 MPFI 16V (F)",
+      "anoInicio": 2014,
+      "anoFim": 2016,
+      "volumeLitros": 4.3,
+      "lubrificantes": [
+        "C",
+        "G",
+        "I"
+      ]
+    },
+    {
+      "marca": "FIAT",
+      "modelo": "MOBI",
+      "motor": "1.0 L3 MPFI 6V (F)",
+      "anoInicio": 2017,
+      "anoFim": 2020,
+      "volumeLitros": 2.5,
+      "lubrificantes": [
+        "A",
+        "F"
+      ]
+    },
+    {
+      "marca": "FIAT",
+      "modelo": "MOBI",
+      "motor": "1.0 L4 MPFI 8V (F)",
+      "anoInicio": 2017,
+      "anoFim": 2023,
+      "volumeLitros": 2.7,
+      "lubrificantes": [
+        "C",
+        "G"
+      ]
+    },
+    {
+      "marca": "FIAT",
+      "modelo": "PALIO",
+      "motor": "1.0 L4 MPFI 8V (F)",
+      "anoInicio": 2014,
+      "anoFim": 2017,
+      "volumeLitros": 2.7,
+      "lubrificantes": [
+        "C",
+        "G"
+      ]
+    },
+    {
+      "marca": "FIAT",
+      "modelo": "PALIO - NOVO PALIO",
+      "motor": "1.4 L4 MPFI 8V (F)",
+      "anoInicio": 2014,
+      "anoFim": 2017,
+      "volumeLitros": 2.7,
+      "lubrificantes": [
+        "M"
+      ]
+    },
+    {
+      "marca": "FIAT",
+      "modelo": "PALIO - NOVO PALIO",
+      "motor": "1.6 L4 MPFI 16V (F)",
+      "anoInicio": 2014,
+      "anoFim": 2017,
+      "volumeLitros": 4.3,
+      "lubrificantes": [
+        "C",
+        "G",
+        "I"
+      ]
+    },
+    {
+      "marca": "FIAT",
+      "modelo": "PALIO ADVENTURE",
+      "motor": "1.8 L4 MPFI 16V (F)",
+      "anoInicio": 2014,
+      "anoFim": 2021,
+      "volumeLitros": 4.3,
+      "lubrificantes": [
+        "C",
+        "G",
+        "I"
+      ]
+    },
+    {
+      "marca": "FIAT",
+      "modelo": "PALIO WEEKEND",
+      "motor": "1.6 L4 MPFI 16V (F)",
+      "anoInicio": 2014,
+      "anoFim": 2016,
+      "volumeLitros": 4.3,
+      "lubrificantes": [
+        "C",
+        "G",
+        "I"
+      ]
+    },
+    {
+      "marca": "FIAT",
+      "modelo": "PALIO WEEKEND",
+      "motor": "1.8 L4 MPFI 16V (F)",
+      "anoInicio": 2014,
+      "anoFim": 2017,
+      "volumeLitros": 4.3,
+      "lubrificantes": [
+        "C",
+        "G",
+        "I"
+      ]
+    },
+    {
+      "marca": "FIAT",
+      "modelo": "PALIO WEEKEND",
+      "motor": "1.4 L4 MPFI 8V (F)",
+      "anoInicio": 2014,
+      "anoFim": 2020,
+      "volumeLitros": 2.7,
+      "lubrificantes": [
+        "C",
+        "G",
+        "I"
+      ]
+    },
+    {
+      "marca": "FIAT",
+      "modelo": "PULSE",
+      "motor": "1.3 L4 SMPFI 8V (F)",
+      "anoInicio": 2021,
+      "anoFim": 2023,
+      "volumeLitros": 3.35,
+      "lubrificantes": [
+        "A",
+        "F"
+      ]
+    },
+    {
+      "marca": "FIAT",
+      "modelo": "PUNTO",
+      "motor": "1.4 L4 MPFI 8V (F)",
+      "anoInicio": 2014,
+      "anoFim": 2016,
+      "volumeLitros": 2.7,
+      "lubrificantes": [
+        "M"
+      ]
+    },
+    {
+      "marca": "FIAT",
+      "modelo": "PUNTO",
+      "motor": "1.6 L4 MPFI 16V (F)",
+      "anoInicio": 2014,
+      "anoFim": 2017,
+      "volumeLitros": 4.3,
+      "lubrificantes": [
+        "C",
+        "G"
+      ]
+    },
+    {
+      "marca": "FIAT",
+      "modelo": "PUNTO",
+      "motor": "1.8 L4 MPFI 16V (F)",
+      "anoInicio": 2014,
+      "anoFim": 2017,
+      "volumeLitros": 4.3,
+      "lubrificantes": [
+        "C",
+        "G"
+      ]
+    },
+    {
+      "marca": "FIAT",
+      "modelo": "PUNTO",
+      "motor": "1.4 L4 MPFI 8V (F)",
+      "anoInicio": 2017,
+      "anoFim": 2017,
+      "volumeLitros": 2.7,
+      "lubrificantes": [
+        "H"
+      ]
+    },
+    {
+      "marca": "FIAT",
+      "modelo": "SIENA",
+      "motor": "1.0 L4 MPFI 8V (F)",
+      "anoInicio": 2014,
+      "anoFim": 2016,
+      "volumeLitros": 2.7,
+      "lubrificantes": [
+        "C",
+        "G"
+      ]
+    },
+    {
+      "marca": "FIAT",
+      "modelo": "SIENA",
+      "motor": "1.4 L4 MPFI 8V (F)",
+      "anoInicio": 2014,
+      "anoFim": 2016,
+      "volumeLitros": 2.7,
+      "lubrificantes": [
+        "C",
+        "G"
+      ]
+    },
+    {
+      "marca": "FIAT",
+      "modelo": "SIENA",
+      "motor": "1.8 L4 MPFI 16V (F)",
+      "anoInicio": 2014,
+      "anoFim": 2016,
+      "volumeLitros": 4.3,
+      "lubrificantes": [
+        "C",
+        "G"
+      ]
+    },
+    {
+      "marca": "FIAT",
+      "modelo": "STRADA ADVENTURE",
+      "motor": "1.8 L4 MPFI 16V (F)",
+      "anoInicio": 2014,
+      "anoFim": 2021,
+      "volumeLitros": 4.3,
+      "lubrificantes": [
+        "C",
+        "G"
+      ]
+    },
+    {
+      "marca": "FIAT",
+      "modelo": "STRADA PICK UP",
+      "motor": "1.4 L4 MPFI 8V (F)",
+      "anoInicio": 2014,
+      "anoFim": 2016,
+      "volumeLitros": 2.7,
+      "lubrificantes": [
+        "C",
+        "G"
+      ]
+    },
+    {
+      "marca": "FIAT",
+      "modelo": "STRADA PICK UP",
+      "motor": "1.6 L4 MPFI 16V (F)",
+      "anoInicio": 2014,
+      "anoFim": 2016,
+      "volumeLitros": 4.3,
+      "lubrificantes": [
+        "C",
+        "G"
+      ]
+    },
+    {
+      "marca": "FIAT",
+      "modelo": "STRADA PICK UP",
+      "motor": "1.4 L4 MPFI 8V (F)",
+      "anoInicio": 2017,
+      "anoFim": 2018,
+      "volumeLitros": 2.7,
+      "lubrificantes": [
+        "H"
+      ]
+    },
+    {
+      "marca": "FIAT",
+      "modelo": "STRADA PICK UP",
+      "motor": "1.4 L4 MPFI 8V (F)",
+      "anoInicio": 2019,
+      "anoFim": 2023,
+      "volumeLitros": 2.7,
+      "lubrificantes": [
+        "C",
+        "G"
+      ]
+    },
+    {
+      "marca": "FIAT",
+      "modelo": "STRADA PICK UP - FREEDOM/VOLCANO",
+      "motor": "1.3 L4 MPFI 8V (F)",
+      "anoInicio": 2020,
+      "anoFim": 2023,
+      "volumeLitros": 3.36,
+      "lubrificantes": [
+        "A",
+        "F"
+      ]
+    },
+    {
+      "marca": "FIAT",
+      "modelo": "TORO",
+      "motor": "1.8 L4 MPFI 16V (F)",
+      "anoInicio": 2016,
+      "anoFim": 2017,
+      "volumeLitros": 4.3,
+      "lubrificantes": [
+        "C",
+        "G"
+      ]
+    },
+    {
+      "marca": "FIAT",
+      "modelo": "TORO",
+      "motor": "2.0 L4 CRDI/TD 16V (D)",
+      "anoInicio": 2016,
+      "anoFim": 2017,
+      "volumeLitros": 4.2,
+      "lubrificantes": [
+        "D"
+      ]
+    },
+    {
+      "marca": "FIAT",
+      "modelo": "TORO",
+      "motor": "2.4 L4 SMPFI 16V (F)",
+      "anoInicio": 2017,
+      "anoFim": 2021,
+      "volumeLitros": 5.2,
+      "lubrificantes": [
+        "C",
+        "G"
+      ]
+    },
+    {
+      "marca": "FIAT",
+      "modelo": "TORO",
+      "motor": "2.0 L4 CRDI/TD 16V (D)",
+      "anoInicio": 2018,
+      "anoFim": 2019,
+      "volumeLitros": 4.0,
+      "lubrificantes": [
+        "D"
+      ]
+    },
+    {
+      "marca": "FIAT",
+      "modelo": "TORO",
+      "motor": "1.8 L4 MPFI 16V (F)",
+      "anoInicio": 2018,
+      "anoFim": 2022,
+      "volumeLitros": 4.7,
+      "lubrificantes": [
+        "C",
+        "G"
+      ]
+    },
+    {
+      "marca": "FIAT",
+      "modelo": "TORO",
+      "motor": "2.0 L4 CRDI/TD 16V (D)",
+      "anoInicio": 2020,
+      "anoFim": 2023,
+      "volumeLitros": 4.8,
+      "lubrificantes": [
+        "D"
+      ]
+    },
+    {
+      "marca": "FIAT",
+      "modelo": "UNO - NOVO UNO",
+      "motor": "1.0 L4 MPFI 8V (F)",
+      "anoInicio": 2014,
+      "anoFim": 2016,
+      "volumeLitros": 2.7,
+      "lubrificantes": [
+        "C",
+        "G"
+      ]
+    },
+    {
+      "marca": "FIAT",
+      "modelo": "UNO - NOVO UNO",
+      "motor": "1.4 L4 MPFI 8V (F)",
+      "anoInicio": 2014,
+      "anoFim": 2016,
+      "volumeLitros": 2.7,
+      "lubrificantes": [
+        "M"
+      ]
+    },
+    {
+      "marca": "FIAT",
+      "modelo": "UNO - NOVO UNO",
+      "motor": "1.0 L3 MPFI 6V (F)",
+      "anoInicio": 2017,
+      "anoFim": 2021,
+      "volumeLitros": 2.54,
+      "lubrificantes": [
+        "A",
+        "F"
+      ]
+    },
+    {
+      "marca": "FIAT",
+      "modelo": "UNO - NOVO UNO",
+      "motor": "1.3 L4 MPFI 8V (F)",
+      "anoInicio": 2017,
+      "anoFim": 2021,
+      "volumeLitros": 3.36,
+      "lubrificantes": [
+        "A",
+        "F"
+      ]
+    },
+    {
+      "marca": "FORD",
+      "modelo": "BRONCO SPORT",
+      "motor": "2.0 L4 DFI/TB 16V (G)",
+      "anoInicio": 2021,
+      "anoFim": 2023,
+      "volumeLitros": 5.2,
+      "lubrificantes": [
+        "C",
+        "G"
+      ]
+    },
+    {
+      "marca": "FORD",
+      "modelo": "ECOSPORT",
+      "motor": "1.6 L4 MPFI 16V (F)",
+      "anoInicio": 2014,
+      "anoFim": 2017,
+      "volumeLitros": 4.1,
+      "lubrificantes": [
+        "C",
+        "G"
+      ]
+    },
+    {
+      "marca": "FORD",
+      "modelo": "ECOSPORT",
+      "motor": "2.0 L4 MPFI 16V (F)",
+      "anoInicio": 2014,
+      "anoFim": 2017,
+      "volumeLitros": 4.3,
+      "lubrificantes": [
+        "C",
+        "G"
+      ]
+    },
+    {
+      "marca": "FORD",
+      "modelo": "ECOSPORT",
+      "motor": "1.5 L3 MPFI 12V (F)",
+      "anoInicio": 2018,
+      "anoFim": 2021,
+      "volumeLitros": 3.65,
+      "lubrificantes": [
+        "B"
+      ]
+    },
+    {
+      "marca": "FORD",
+      "modelo": "ECOSPORT",
+      "motor": "2.0 L4 DFI 16V (F)",
+      "anoInicio": 2018,
+      "anoFim": 2021,
+      "volumeLitros": 4.3,
+      "lubrificantes": [
+        "B"
+      ]
+    },
+    {
+      "marca": "FORD",
+      "modelo": "EDGE",
+      "motor": "3.5 V6 SMPFI 24V (G)",
+      "anoInicio": 2014,
+      "anoFim": 2014,
+      "volumeLitros": 5.2,
+      "lubrificantes": [
+        "B"
+      ]
+    },
+    {
+      "marca": "FORD",
+      "modelo": "EDGE",
+      "motor": "3.5 V6 SMPFI 24V (G)",
+      "anoInicio": 2015,
+      "anoFim": 2018,
+      "volumeLitros": 5.7,
+      "lubrificantes": [
+        "B"
+      ]
+    },
+    {
+      "marca": "FORD",
+      "modelo": "EDGE",
+      "motor": "2.7 V6 DFI/TB 24V (G)",
+      "anoInicio": 2019,
+      "anoFim": 2020,
+      "volumeLitros": 5.7,
+      "lubrificantes": [
+        "C",
+        "G"
+      ]
+    },
+    {
+      "marca": "FORD",
+      "modelo": "FIESTA - NEW FIESTA HATCH",
+      "motor": "1.0 L3 DFI/TB 12V (G)",
+      "anoInicio": 2016,
+      "anoFim": 2019,
+      "volumeLitros": 4.6,
+      "lubrificantes": [
+        "B"
+      ]
+    },
+    {
+      "marca": "FORD",
+      "modelo": "FIESTA - NEW FIESTA HATCH / SEDAN",
+      "motor": "1.5 L4 MPFI 16V (F)",
+      "anoInicio": 2014,
+      "anoFim": 2016,
+      "volumeLitros": 4.0,
+      "lubrificantes": [
+        "C",
+        "G"
+      ]
+    },
+    {
+      "marca": "FORD",
+      "modelo": "FIESTA - NEW FIESTA HATCH / SEDAN",
+      "motor": "1.6 L4 MPFI 16V (F)",
+      "anoInicio": 2014,
+      "anoFim": 2019,
+      "volumeLitros": 4.0,
+      "lubrificantes": [
+        "B"
+      ]
+    },
+    {
+      "marca": "FORD",
+      "modelo": "FOCUS",
+      "motor": "1.6 L4 MPFI 16V (F)",
+      "anoInicio": 2014,
+      "anoFim": 2014,
+      "volumeLitros": 4.1,
+      "lubrificantes": [
+        "C",
+        "D",
+        "G"
+      ]
+    },
+    {
+      "marca": "FORD",
+      "modelo": "FOCUS",
+      "motor": "2.0 L4 SMPFI 16V (F)",
+      "anoInicio": 2014,
+      "anoFim": 2014,
+      "volumeLitros": 4.3,
+      "lubrificantes": [
+        "D",
+        "E",
+        "G"
+      ]
+    },
+    {
+      "marca": "FORD",
+      "modelo": "FOCUS - NOVO FOCUS HATCH",
+      "motor": "1.6 L4 MPFI 16V (F)",
+      "anoInicio": 2015,
+      "anoFim": 2019,
+      "volumeLitros": 4.0,
+      "lubrificantes": [
+        "B",
+        "C",
+        "G"
+      ]
+    },
+    {
+      "marca": "FORD",
+      "modelo": "FOCUS - NOVO FOCUS HATCH",
+      "motor": "2.0 L4 DFI 16V (F)",
+      "anoInicio": 2015,
+      "anoFim": 2019,
+      "volumeLitros": 4.3,
+      "lubrificantes": [
+        "B",
+        "C",
+        "G"
+      ]
+    },
+    {
+      "marca": "FORD",
+      "modelo": "FUSION",
+      "motor": "2.0 L4 DFI/TB 16V (G)",
+      "anoInicio": 2014,
+      "anoFim": 2018,
+      "volumeLitros": 5.4,
+      "lubrificantes": [
+        "C",
+        "G"
+      ]
+    },
+    {
+      "marca": "FORD",
+      "modelo": "FUSION",
+      "motor": "2.5 L4 MPFI 16V (F)",
+      "anoInicio": 2014,
+      "anoFim": 2018,
+      "volumeLitros": 5.4,
+      "lubrificantes": [
+        "B",
+        "C",
+        "G"
+      ]
+    },
+    {
+      "marca": "FORD",
+      "modelo": "FUSION HÍBRIDO",
+      "motor": "2.0 L4 MPFI 16V (G)",
+      "anoInicio": 2014,
+      "anoFim": 2018,
+      "volumeLitros": 4.3,
+      "lubrificantes": [
+        "B"
+      ]
+    },
+    {
+      "marca": "FORD",
+      "modelo": "KA - NEW KA",
+      "motor": "1.0 L3 MPFI 12V (F)",
+      "anoInicio": 2014,
+      "anoFim": 2021,
+      "volumeLitros": 4.0,
+      "lubrificantes": [
+        "B"
+      ]
+    },
+    {
+      "marca": "FORD",
+      "modelo": "KA - NEW KA",
+      "motor": "1.5 L4 MPFI 16V (F)",
+      "anoInicio": 2015,
+      "anoFim": 2018,
+      "volumeLitros": 4.0,
+      "lubrificantes": [
+        "B"
+      ]
+    },
+    {
+      "marca": "FORD",
+      "modelo": "KA - NEW KA",
+      "motor": "1.5 L3 MPFI 12V (F)",
+      "anoInicio": 2018,
+      "anoFim": 2021,
+      "volumeLitros": 3.65,
+      "lubrificantes": [
+        "B"
+      ]
+    },
+    {
+      "marca": "FORD",
+      "modelo": "MAVERICK LARIAT",
+      "motor": "2.0 L4 DFI/TB 16V (G)",
+      "anoInicio": 2022,
+      "anoFim": 2023,
+      "volumeLitros": 5.5,
+      "lubrificantes": [
+        "C",
+        "G"
+      ]
+    },
+    {
+      "marca": "FORD",
+      "modelo": "MUSTANG GT",
+      "motor": "4.6 V8 SMPFI 24V (G)",
+      "anoInicio": 2014,
+      "anoFim": 2017,
+      "volumeLitros": 5.7,
+      "lubrificantes": [
+        "B"
+      ]
+    },
+    {
+      "marca": "FORD",
+      "modelo": "MUSTANG GT",
+      "motor": "5.0 V8 SMPFI 32V (G)",
+      "anoInicio": 2018,
+      "anoFim": 2017,
+      "volumeLitros": 9.5,
+      "lubrificantes": [
+        "B",
+        "C",
+        "G"
+      ]
+    },
+    {
+      "marca": "FORD",
+      "modelo": "MUSTANG GT PRE./BLACK SHADOW",
+      "motor": "5.0 V8 DFI 32V (G)",
+      "anoInicio": 2018,
+      "anoFim": 2023,
+      "volumeLitros": 9.5,
+      "lubrificantes": [
+        "B",
+        "C",
+        "G"
+      ]
+    },
+    {
+      "marca": "FORD",
+      "modelo": "RANGER",
+      "motor": "2.5 L4 SMPFI 16V (F)",
+      "anoInicio": 2014,
+      "anoFim": 2015,
+      "volumeLitros": 6.7,
+      "lubrificantes": [
+        "B"
+      ]
+    },
+    {
+      "marca": "FORD",
+      "modelo": "RANGER",
+      "motor": "2.2 L4 CRDI/TD 16V (D)",
+      "anoInicio": 2014,
+      "anoFim": 2023,
+      "volumeLitros": 8.6,
+      "lubrificantes": [
+        "D"
+      ]
+    },
+    {
+      "marca": "FORD",
+      "modelo": "RANGER",
+      "motor": "3.2 L5 CRDI/TD 20V (D)",
+      "anoInicio": 2014,
+      "anoFim": 2023,
+      "volumeLitros": 9.8,
+      "lubrificantes": [
+        "D"
+      ]
+    },
+    {
+      "marca": "FORD",
+      "modelo": "RANGER",
+      "motor": "2.5 L4 SMPFI 16V (F)",
+      "anoInicio": 2016,
+      "anoFim": 2019,
+      "volumeLitros": 6.4,
+      "lubrificantes": [
+        "B"
+      ]
+    },
+    {
+      "marca": "FORD",
+      "modelo": "TERRITORY",
+      "motor": "1.5 L4 DFI/TB 16V (G)",
+      "anoInicio": 2020,
+      "anoFim": 2023,
+      "volumeLitros": 4.4,
+      "lubrificantes": [
+        "C",
+        "G"
+      ]
+    },
+    {
+      "marca": "FORD",
+      "modelo": "TRANSIT",
+      "motor": "2.0 L4 CRDI-E/TD 16V (D)",
+      "anoInicio": 2022,
+      "anoFim": 2023,
+      "volumeLitros": 6.5,
+      "lubrificantes": [
+        "D"
+      ]
+    },
+    {
+      "marca": "FORD",
+      "modelo": "TRANSIT (Tração traseira)",
+      "motor": "2.2 L4 D.Electronic/TD 16V (D)",
+      "anoInicio": 2014,
+      "anoFim": 2014,
+      "volumeLitros": 10.1,
+      "lubrificantes": [
+        "D"
+      ]
+    },
+    {
+      "marca": "HONDA",
+      "modelo": "ACCORD",
+      "motor": "2.4 L4 PGM-FI 16V (G)",
+      "anoInicio": 2014,
+      "anoFim": 2014,
+      "volumeLitros": 4.2,
+      "lubrificantes": [
+        "A",
+        "F"
+      ]
+    },
+    {
+      "marca": "HONDA",
+      "modelo": "ACCORD",
+      "motor": "3.5 V6 PGM-FI 24V (G)",
+      "anoInicio": 2014,
+      "anoFim": 2017,
+      "volumeLitros": 4.3,
+      "lubrificantes": [
+        "A",
+        "F"
+      ]
+    },
+    {
+      "marca": "HONDA",
+      "modelo": "ACCORD",
+      "motor": "2.0 L4 DFI/TB 16V (G)",
+      "anoInicio": 2018,
+      "anoFim": 2021,
+      "volumeLitros": 4.8,
+      "lubrificantes": [
+        "A",
+        "F"
+      ]
+    },
+    {
+      "marca": "HONDA",
+      "modelo": "ACCORD",
+      "motor": "2.0 L4 DFI/TB 16V (G)",
+      "anoInicio": 2021,
+      "anoFim": 2021,
+      "volumeLitros": 3.8,
+      "lubrificantes": [
+        "A"
+      ]
+    },
+    {
+      "marca": "HONDA",
+      "modelo": "ACCORD HYBRID",
+      "motor": "2.0 L4 PGM-DSFI/TB 16V (G)",
+      "anoInicio": 2022,
+      "anoFim": 2023,
+      "volumeLitros": 3.8,
+      "lubrificantes": [
+        "A",
+        "F"
+      ]
+    },
+    {
+      "marca": "HONDA",
+      "modelo": "CITY",
+      "motor": "1.5 L4 PGM-FI 16V (F)",
+      "anoInicio": 2014,
+      "anoFim": 2023,
+      "volumeLitros": 3.6,
+      "lubrificantes": [
+        "A",
+        "F"
+      ]
+    },
+    {
+      "marca": "HONDA",
+      "modelo": "CITY",
+      "motor": "1.5 L4 PGM-DSFI 16V (F)",
+      "anoInicio": 2022,
+      "anoFim": 2023,
+      "volumeLitros": 3.6,
+      "lubrificantes": [
+        "A",
+        "F"
+      ]
+    },
+    {
+      "marca": "HONDA",
+      "modelo": "CITY HATCHBACK",
+      "motor": "1.5 L4 PGM-DSFI 16V (F)",
+      "anoInicio": 2022,
+      "anoFim": 2023,
+      "volumeLitros": 3.6,
+      "lubrificantes": [
+        "A",
+        "F"
+      ]
+    },
+    {
+      "marca": "HONDA",
+      "modelo": "CIVIC",
+      "motor": "1.8 L4 PGM-FI 16V (F)",
+      "anoInicio": 2014,
+      "anoFim": 2016,
+      "volumeLitros": 3.7,
+      "lubrificantes": [
+        "A",
+        "F"
+      ]
+    },
+    {
+      "marca": "HONDA",
+      "modelo": "CIVIC",
+      "motor": "2.0 L4 PGM-FI 16V (F)",
+      "anoInicio": 2014,
+      "anoFim": 2021,
+      "volumeLitros": 4.2,
+      "lubrificantes": [
+        "A",
+        "F"
+      ]
+    },
+    {
+      "marca": "HONDA",
+      "modelo": "CIVIC HÍBRIDO",
+      "motor": "2.0 L4 PGM-FI/TB 16V (G)",
+      "anoInicio": 2023,
+      "anoFim": 2023,
+      "volumeLitros": 3.8,
+      "lubrificantes": [
+        "A"
+      ]
+    },
+    {
+      "marca": "HONDA",
+      "modelo": "CIVIC Si",
+      "motor": "2.4 L4 PGM-FI 16V (G)",
+      "anoInicio": 2014,
+      "anoFim": 2015,
+      "volumeLitros": 4.2,
+      "lubrificantes": [
+        "A",
+        "F"
+      ]
+    },
+    {
+      "marca": "HONDA",
+      "modelo": "CIVIC Si",
+      "motor": "1.5 L4 DFI/TB 16V (G)",
+      "anoInicio": 2018,
+      "anoFim": 2020,
+      "volumeLitros": 3.5,
+      "lubrificantes": [
+        "A",
+        "F"
+      ]
+    },
+    {
+      "marca": "HONDA",
+      "modelo": "CR-V",
+      "motor": "2.0 L4 PGM-FI 16V (G/F)",
+      "anoInicio": 2014,
+      "anoFim": 2016,
+      "volumeLitros": 3.7,
+      "lubrificantes": [
+        "A",
+        "F"
+      ]
+    },
+    {
+      "marca": "HONDA",
+      "modelo": "CR-V",
+      "motor": "1.5 L4 DFI/TB 16V (G)",
+      "anoInicio": 2018,
+      "anoFim": 2021,
+      "volumeLitros": 3.5,
+      "lubrificantes": [
+        "A",
+        "F"
+      ]
+    },
+    {
+      "marca": "HONDA",
+      "modelo": "FIT",
+      "motor": "1.4 L4 PGM-FI 16V (F)",
+      "anoInicio": 2014,
+      "anoFim": 2014,
+      "volumeLitros": 3.6,
+      "lubrificantes": [
+        "A",
+        "F"
+      ]
+    },
+    {
+      "marca": "HONDA",
+      "modelo": "FIT",
+      "motor": "1.5 L4 PGM-FI 16V (F)",
+      "anoInicio": 2014,
+      "anoFim": 2021,
+      "volumeLitros": 3.6,
+      "lubrificantes": [
+        "A",
+        "F"
+      ]
+    },
+    {
+      "marca": "HONDA",
+      "modelo": "HR-V",
+      "motor": "1.8 L4 PGM-FI 16V (F)",
+      "anoInicio": 2016,
+      "anoFim": 2021,
+      "volumeLitros": 3.7,
+      "lubrificantes": [
+        "A",
+        "F"
+      ]
+    },
+    {
+      "marca": "HONDA",
+      "modelo": "HR-V",
+      "motor": "1.5 L4 DFI/TB 16V (G)",
+      "anoInicio": 2020,
+      "anoFim": 2023,
+      "volumeLitros": 3.5,
+      "lubrificantes": [
+        "A",
+        "F"
+      ]
+    },
+    {
+      "marca": "HONDA",
+      "modelo": "HR-V",
+      "motor": "1.5 L4 PGM-DSFI 16V (F)",
+      "anoInicio": 2022,
+      "anoFim": 2023,
+      "volumeLitros": 3.3,
+      "lubrificantes": [
+        "A",
+        "F"
+      ]
+    },
+    {
+      "marca": "HONDA",
+      "modelo": "HR-V",
+      "motor": "1.5 L4 PGM-DSFI/TB 16V (F)",
+      "anoInicio": 2022,
+      "anoFim": 2023,
+      "volumeLitros": 3.5,
+      "lubrificantes": [
+        "A",
+        "F"
+      ]
+    },
+    {
+      "marca": "HONDA",
+      "modelo": "WR-V",
+      "motor": "1.5 L4 PGM-FI 16V (F)",
+      "anoInicio": 2018,
+      "anoFim": 2021,
+      "volumeLitros": 3.6,
+      "lubrificantes": [
+        "A",
+        "F"
+      ]
+    },
+    {
+      "marca": "HYUNDAI",
+      "modelo": "AZERA",
+      "motor": "3.0 V6 MPI 24V (G)",
+      "anoInicio": 2014,
+      "anoFim": 2018,
+      "volumeLitros": 5.2,
+      "lubrificantes": [
+        "C",
+        "G"
+      ]
+    },
+    {
+      "marca": "HYUNDAI",
+      "modelo": "AZERA",
+      "motor": "3.0 V6 GDI 24V (G)",
+      "anoInicio": 2019,
+      "anoFim": 2020,
+      "volumeLitros": 5.2,
+      "lubrificantes": [
+        "C",
+        "G"
+      ]
+    },
+    {
+      "marca": "HYUNDAI",
+      "modelo": "CRETA",
+      "motor": "1.6 L4 MPI 16V (F)",
+      "anoInicio": 2017,
+      "anoFim": 2023,
+      "volumeLitros": 3.6,
+      "lubrificantes": [
+        "C"
+      ]
+    },
+    {
+      "marca": "HYUNDAI",
+      "modelo": "CRETA",
+      "motor": "2.0 L4 MPI 16V (F)",
+      "anoInicio": 2017,
+      "anoFim": 2023,
+      "volumeLitros": 4.0,
+      "lubrificantes": [
+        "C"
+      ]
+    },
+    {
+      "marca": "HYUNDAI",
+      "modelo": "CRETA",
+      "motor": "1.0 L3 DFI/TB 12V (F)",
+      "anoInicio": 2022,
+      "anoFim": 2023,
+      "volumeLitros": 3.6,
+      "lubrificantes": [
+        "C"
+      ]
+    },
+    {
+      "marca": "HYUNDAI",
+      "modelo": "ELANTRA",
+      "motor": "2.0 L4 MPI 16V (F)",
+      "anoInicio": 2014,
+      "anoFim": 2018,
+      "volumeLitros": 4.5,
+      "lubrificantes": [
+        "C",
+        "G"
+      ]
+    },
+    {
+      "marca": "HYUNDAI",
+      "modelo": "GRAND SANTA FE",
+      "motor": "3.3 V6 MPI 24V (G)",
+      "anoInicio": 2014,
+      "anoFim": 2016,
+      "volumeLitros": 5.2,
+      "lubrificantes": [
+        "C",
+        "G"
+      ]
+    },
+    {
+      "marca": "HYUNDAI",
+      "modelo": "HB20",
+      "motor": "1.0 L3 MPI 12V (F)",
+      "anoInicio": 2014,
+      "anoFim": 2023,
+      "volumeLitros": 3.2,
+      "lubrificantes": [
+        "C"
+      ]
+    },
+    {
+      "marca": "HYUNDAI",
+      "modelo": "HB20",
+      "motor": "1.6 L4 MPI 16V (F)",
+      "anoInicio": 2014,
+      "anoFim": 2023,
+      "volumeLitros": 3.6,
+      "lubrificantes": [
+        "C"
+      ]
+    },
+    {
+      "marca": "HYUNDAI",
+      "modelo": "HB20",
+      "motor": "1.0 L3 DFI/TB 12V (F)",
+      "anoInicio": 2016,
+      "anoFim": 2023,
+      "volumeLitros": 3.5,
+      "lubrificantes": [
+        "C"
+      ]
+    },
+    {
+      "marca": "HYUNDAI",
+      "modelo": "SANTA FE",
+      "motor": "3.3 V6 MPI 24V (G)",
+      "anoInicio": 2014,
+      "anoFim": 2019,
+      "volumeLitros": 5.2,
+      "lubrificantes": [
+        "C",
+        "G"
+      ]
+    },
+    {
+      "marca": "HYUNDAI",
+      "modelo": "SANTA FE",
+      "motor": "3.5 V6 MPI 24V (G)",
+      "anoInicio": 2020,
+      "anoFim": 2021,
+      "volumeLitros": 6.5,
+      "lubrificantes": [
+        "C",
+        "G"
+      ]
+    },
+    {
+      "marca": "HYUNDAI",
+      "modelo": "SONATA",
+      "motor": "2.4 L4 MPI 16V (G)",
+      "anoInicio": 2014,
+      "anoFim": 2014,
+      "volumeLitros": 4.5,
+      "lubrificantes": [
+        "C",
+        "G"
+      ]
+    },
+    {
+      "marca": "HYUNDAI",
+      "modelo": "TUCSON",
+      "motor": "2.0 L4 MPI 16V (G/F)",
+      "anoInicio": 2014,
+      "anoFim": 2019,
+      "volumeLitros": 4.0,
+      "lubrificantes": [
+        "C",
+        "G"
+      ]
+    },
+    {
+      "marca": "HYUNDAI",
+      "modelo": "TUCSON",
+      "motor": "1.6 L4 GDI/TB 16V (G)",
+      "anoInicio": 2017,
+      "anoFim": 2023,
+      "volumeLitros": 4.5,
+      "lubrificantes": [
+        "C"
+      ]
+    },
+    {
+      "marca": "HYUNDAI",
+      "modelo": "i30",
+      "motor": "1.6 L4 MPI 16V (F)",
+      "anoInicio": 2014,
+      "anoFim": 2014,
+      "volumeLitros": 3.6,
+      "lubrificantes": [
+        "C",
+        "G"
+      ]
+    },
+    {
+      "marca": "HYUNDAI",
+      "modelo": "i30",
+      "motor": "1.8 L4 MPI 16V (G)",
+      "anoInicio": 2014,
+      "anoFim": 2016,
+      "volumeLitros": 4.0,
+      "lubrificantes": [
+        "C",
+        "G"
+      ]
+    },
+    {
+      "marca": "HYUNDAI",
+      "modelo": "iX35",
+      "motor": "2.0 L4 MPFI 16V (G/F)",
+      "anoInicio": 2014,
+      "anoFim": 2021,
+      "volumeLitros": 4.1,
+      "lubrificantes": [
+        "C",
+        "G"
+      ]
+    },
+    {
+      "marca": "JEEP",
+      "modelo": "CHEROKEE",
+      "motor": "3.2 V6 SMPFI 12V (G)",
+      "anoInicio": 2014,
+      "anoFim": 2015,
+      "volumeLitros": 5.6,
+      "lubrificantes": [
+        "B"
+      ]
+    },
+    {
+      "marca": "JEEP",
+      "modelo": "COMMANDER",
+      "motor": "2.0 L4 CRDI-E/TD 16V (D)",
+      "anoInicio": 2021,
+      "anoFim": 2023,
+      "volumeLitros": 4.2,
+      "lubrificantes": [
+        "D"
+      ]
+    },
+    {
+      "marca": "JEEP",
+      "modelo": "COMPASS",
+      "motor": "2.0 L4 SMPFI 16V (G)",
+      "anoInicio": 2014,
+      "anoFim": 2015,
+      "volumeLitros": 4.26,
+      "lubrificantes": [
+        "C",
+        "D",
+        "G"
+      ]
+    },
+    {
+      "marca": "JEEP",
+      "modelo": "COMPASS",
+      "motor": "2.0 L4 SMPFI 16V (F)",
+      "anoInicio": 2016,
+      "anoFim": 2021,
+      "volumeLitros": 4.3,
+      "lubrificantes": [
+        "C",
+        "G"
+      ]
+    },
+    {
+      "marca": "JEEP",
+      "modelo": "COMPASS",
+      "motor": "2.0 L4 CRDI/TD 16V (D)",
+      "anoInicio": 2016,
+      "anoFim": 2023,
+      "volumeLitros": 4.7,
+      "lubrificantes": [
+        "D"
+      ]
+    },
+    {
+      "marca": "JEEP",
+      "modelo": "GRAND CHEROKEE",
+      "motor": "3.6 V6 GASOLINA 24V (G)",
+      "anoInicio": 2014,
+      "anoFim": 2016,
+      "volumeLitros": 5.6,
+      "lubrificantes": [
+        "C",
+        "G"
+      ]
+    },
+    {
+      "marca": "JEEP",
+      "modelo": "GRAND CHEROKEE",
+      "motor": "3.0 L6 CRDI/TD 24V (D)",
+      "anoInicio": 2014,
+      "anoFim": 2021,
+      "volumeLitros": 8.0,
+      "lubrificantes": [
+        "D"
+      ]
+    },
+    {
+      "marca": "JEEP",
+      "modelo": "GRAND CHEROKEE",
+      "motor": "3.6 V6 GASOLINA 24V (G)",
+      "anoInicio": 2017,
+      "anoFim": 2021,
+      "volumeLitros": 5.6,
+      "lubrificantes": [
+        "A",
+        "F"
+      ]
+    },
+    {
+      "marca": "JEEP",
+      "modelo": "RENEGADE",
+      "motor": "1.8 L4 SMPFI 16V (F)",
+      "anoInicio": 2015,
+      "anoFim": 2015,
+      "volumeLitros": 4.3,
+      "lubrificantes": [
+        "C",
+        "D",
+        "G"
+      ]
+    },
+    {
+      "marca": "JEEP",
+      "modelo": "RENEGADE",
+      "motor": "1.8 L4 SMPFI 16V (F)",
+      "anoInicio": 2016,
+      "anoFim": 2016,
+      "volumeLitros": 4.7,
+      "lubrificantes": [
+        "C",
+        "G"
+      ]
+    },
+    {
+      "marca": "JEEP",
+      "modelo": "RENEGADE",
+      "motor": "2.0 L4 CRDI/TD 16V (D)",
+      "anoInicio": 2016,
+      "anoFim": 2023,
+      "volumeLitros": 4.2,
+      "lubrificantes": [
+        "D"
+      ]
+    },
+    {
+      "marca": "JEEP",
+      "modelo": "RENEGADE",
+      "motor": "1.8 L4 SMPFI 16V (F)",
+      "anoInicio": 2017,
+      "anoFim": 2017,
+      "volumeLitros": 4.7,
+      "lubrificantes": [
+        "C",
+        "G"
+      ]
+    },
+    {
+      "marca": "JEEP",
+      "modelo": "RENEGADE",
+      "motor": "1.8 L4 SMPFI 16V (F)",
+      "anoInicio": 2018,
+      "anoFim": 2018,
+      "volumeLitros": 4.3,
+      "lubrificantes": [
+        "C",
+        "G"
+      ]
+    },
+    {
+      "marca": "JEEP",
+      "modelo": "RENEGADE",
+      "motor": "1.8 L4 SMPFI 16V (F)",
+      "anoInicio": 2019,
+      "anoFim": 2021,
+      "volumeLitros": 4.7,
+      "lubrificantes": [
+        "C",
+        "G"
+      ]
+    },
+    {
+      "marca": "JEEP",
+      "modelo": "WRANGLER",
+      "motor": "3.6 V6 SMPFI 24V (G)",
+      "anoInicio": 2014,
+      "anoFim": 2018,
+      "volumeLitros": 5.6,
+      "lubrificantes": [
+        "B"
+      ]
+    },
+    {
+      "marca": "JEEP",
+      "modelo": "WRANGLER",
+      "motor": "2.0 L4 DFI/TB 16V (G)",
+      "anoInicio": 2018,
+      "anoFim": 2023,
+      "volumeLitros": 4.7,
+      "lubrificantes": [
+        "C",
+        "G"
+      ]
+    },
+    {
+      "marca": "NISSAN",
+      "modelo": "370 Z",
+      "motor": "3.7 V6 SMPFI 24V (G)",
+      "anoInicio": 2014,
+      "anoFim": 2014,
+      "volumeLitros": 4.9,
+      "lubrificantes": [
+        "C",
+        "G"
+      ]
+    },
+    {
+      "marca": "NISSAN",
+      "modelo": "ALTIMA",
+      "motor": "2.5 L4 SMPFI 16V (G)",
+      "anoInicio": 2014,
+      "anoFim": 2014,
+      "volumeLitros": 4.6,
+      "lubrificantes": [
+        "C",
+        "G"
+      ]
+    },
+    {
+      "marca": "NISSAN",
+      "modelo": "FRONTIER",
+      "motor": "2.5 L4 CRDI/TD 16V (D)",
+      "anoInicio": 2014,
+      "anoFim": 2016,
+      "volumeLitros": 6.9,
+      "lubrificantes": [
+        "D"
+      ]
+    },
+    {
+      "marca": "NISSAN",
+      "modelo": "FRONTIER",
+      "motor": "2.3 L4 CRDI/Bi-TD 16V (D)",
+      "anoInicio": 2017,
+      "anoFim": 2023,
+      "volumeLitros": 6.3,
+      "lubrificantes": [
+        "D"
+      ]
+    },
+    {
+      "marca": "NISSAN",
+      "modelo": "GRAND LIVINA",
+      "motor": "1.6 L4 SMPFI 16V (F)",
+      "anoInicio": 2014,
+      "anoFim": 2014,
+      "volumeLitros": 4.8,
+      "lubrificantes": [
+        "C",
+        "G"
+      ]
+    },
+    {
+      "marca": "NISSAN",
+      "modelo": "GRAND LIVINA",
+      "motor": "1.8 L4 SMPFI 16V (F)",
+      "anoInicio": 2014,
+      "anoFim": 2014,
+      "volumeLitros": 4.4,
+      "lubrificantes": [
+        "C",
+        "G"
+      ]
+    },
+    {
+      "marca": "NISSAN",
+      "modelo": "GT-R",
+      "motor": "3.8 V6 DFI/Bi-TB 24V (G)",
+      "anoInicio": 2016,
+      "anoFim": 2019,
+      "volumeLitros": 5.0,
+      "lubrificantes": [
+        "H"
+      ]
+    },
+    {
+      "marca": "NISSAN",
+      "modelo": "KICKS",
+      "motor": "1.6 L4 SMPFI 16V (F)",
+      "anoInicio": 2017,
+      "anoFim": 2017,
+      "volumeLitros": 4.8,
+      "lubrificantes": [
+        "C",
+        "G"
+      ]
+    },
+    {
+      "marca": "NISSAN",
+      "modelo": "KICKS",
+      "motor": "1.6 L4 SMPFI 16V (F)",
+      "anoInicio": 2018,
+      "anoFim": 2023,
+      "volumeLitros": 4.3,
+      "lubrificantes": [
+        "C",
+        "G"
+      ]
+    },
+    {
+      "marca": "NISSAN",
+      "modelo": "LIVINA",
+      "motor": "1.6 L4 SMPFI 16V (F)",
+      "anoInicio": 2014,
+      "anoFim": 2014,
+      "volumeLitros": 4.8,
+      "lubrificantes": [
+        "C",
+        "G"
+      ]
+    },
+    {
+      "marca": "NISSAN",
+      "modelo": "LIVINA",
+      "motor": "1.8 L4 SMPFI 16V (F)",
+      "anoInicio": 2014,
+      "anoFim": 2014,
+      "volumeLitros": 4.4,
+      "lubrificantes": [
+        "C",
+        "G"
+      ]
+    },
+    {
+      "marca": "NISSAN",
+      "modelo": "MARCH",
+      "motor": "1.6 L4 SMPFI 16V (F)",
+      "anoInicio": 2014,
+      "anoFim": 2014,
+      "volumeLitros": 4.3,
+      "lubrificantes": [
+        "C",
+        "G"
+      ]
+    },
+    {
+      "marca": "NISSAN",
+      "modelo": "MARCH",
+      "motor": "1.0 L4 SMPFI 16V (F)",
+      "anoInicio": 2014,
+      "anoFim": 2015,
+      "volumeLitros": 4.2,
+      "lubrificantes": [
+        "C",
+        "G"
+      ]
+    },
+    {
+      "marca": "NISSAN",
+      "modelo": "MARCH",
+      "motor": "1.0 L3 SMPFI 12V (F)",
+      "anoInicio": 2015,
+      "anoFim": 2021,
+      "volumeLitros": 3.4,
+      "lubrificantes": [
+        "C",
+        "G"
+      ]
+    },
+    {
+      "marca": "NISSAN",
+      "modelo": "MARCH",
+      "motor": "1.6 L4 SMPFI 16V (F)",
+      "anoInicio": 2015,
+      "anoFim": 2021,
+      "volumeLitros": 4.3,
+      "lubrificantes": [
+        "C",
+        "G"
+      ]
+    },
+    {
+      "marca": "NISSAN",
+      "modelo": "SENTRA",
+      "motor": "2.0 L4 SMPFI 16V (F)",
+      "anoInicio": 2014,
+      "anoFim": 2016,
+      "volumeLitros": 4.4,
+      "lubrificantes": [
+        "C",
+        "G"
+      ]
+    },
+    {
+      "marca": "NISSAN",
+      "modelo": "SENTRA",
+      "motor": "2.0 L4 SMPFI 16V (F)",
+      "anoInicio": 2017,
+      "anoFim": 2021,
+      "volumeLitros": 4.6,
+      "lubrificantes": [
+        "C",
+        "G"
+      ]
+    },
+    {
+      "marca": "NISSAN",
+      "modelo": "VERSA",
+      "motor": "1.6 L4 SMPFI 16V (F)",
+      "anoInicio": 2014,
+      "anoFim": 2014,
+      "volumeLitros": 4.3,
+      "lubrificantes": [
+        "C",
+        "G"
+      ]
+    },
+    {
+      "marca": "NISSAN",
+      "modelo": "VERSA",
+      "motor": "1.6 L4 SMPFI 16V (F)",
+      "anoInicio": 2015,
+      "anoFim": 2021,
+      "volumeLitros": 4.3,
+      "lubrificantes": [
+        "C",
+        "G"
+      ]
+    },
+    {
+      "marca": "NISSAN",
+      "modelo": "VERSA",
+      "motor": "1.0 L3 SMPFI 12V (F)",
+      "anoInicio": 2016,
+      "anoFim": 2021,
+      "volumeLitros": 3.4,
+      "lubrificantes": [
+        "C",
+        "G"
+      ]
+    },
+    {
+      "marca": "NISSAN",
+      "modelo": "VERSA",
+      "motor": "1.6 L4 SMPFI 16V (F)",
+      "anoInicio": 2022,
+      "anoFim": 2023,
+      "volumeLitros": 4.4,
+      "lubrificantes": [
+        "C",
+        "G"
+      ]
+    },
+    {
+      "marca": "PEUGEOT",
+      "modelo": "2008",
+      "motor": "1.6 L4 DFI/TB 16V (F)",
+      "anoInicio": 2015,
+      "anoFim": 2016,
+      "volumeLitros": 4.25,
+      "lubrificantes": [
+        "C"
+      ]
+    },
+    {
+      "marca": "PEUGEOT",
+      "modelo": "2008",
+      "motor": "1.6 L4 MPFI 16V (F)",
+      "anoInicio": 2015,
+      "anoFim": 2016,
+      "volumeLitros": 3.25,
+      "lubrificantes": [
+        "C"
+      ]
+    },
+    {
+      "marca": "PEUGEOT",
+      "modelo": "207",
+      "motor": "1.4 L4 MPFI 8V (F)",
+      "anoInicio": 2014,
+      "anoFim": 2015,
+      "volumeLitros": 3.0,
+      "lubrificantes": [
+        "C",
+        "E",
+        "H"
+      ]
+    },
+    {
+      "marca": "PEUGEOT",
+      "modelo": "208",
+      "motor": "1.5 L4 MPFI 8V (F)",
+      "anoInicio": 2014,
+      "anoFim": 2016,
+      "volumeLitros": 3.25,
+      "lubrificantes": [
+        "C",
+        "H"
+      ]
+    },
+    {
+      "marca": "PEUGEOT",
+      "modelo": "208",
+      "motor": "1.6 L4 MPFI 16V (F)",
+      "anoInicio": 2014,
+      "anoFim": 2016,
+      "volumeLitros": 3.25,
+      "lubrificantes": [
+        "C"
+      ]
+    },
+    {
+      "marca": "PEUGEOT",
+      "modelo": "208",
+      "motor": "1.2 L3 MPFI 12V (F)",
+      "anoInicio": 2016,
+      "anoFim": 2016,
+      "volumeLitros": 3.1,
+      "lubrificantes": [
+        "C"
+      ]
+    },
+    {
+      "marca": "PEUGEOT",
+      "modelo": "208",
+      "motor": "1.0 L3 SMPFI 6V (F)",
+      "anoInicio": 2022,
+      "anoFim": 2023,
+      "volumeLitros": 2.54,
+      "lubrificantes": [
+        "A",
+        "F"
+      ]
+    },
+    {
+      "marca": "PEUGEOT",
+      "modelo": "208 GT",
+      "motor": "1.6 L4 DFI/TB 16V (F)",
+      "anoInicio": 2016,
+      "anoFim": 2016,
+      "volumeLitros": 4.25,
+      "lubrificantes": [
+        "C"
+      ]
+    },
+    {
+      "marca": "PEUGEOT",
+      "modelo": "3008",
+      "motor": "1.6 L4 DFI/TB 16V (G)",
+      "anoInicio": 2014,
+      "anoFim": 2016,
+      "volumeLitros": 4.25,
+      "lubrificantes": [
+        "C"
+      ]
+    },
+    {
+      "marca": "PEUGEOT",
+      "modelo": "307",
+      "motor": "1.6 L4 MPFI 16V (F)",
+      "anoInicio": 2014,
+      "anoFim": 2015,
+      "volumeLitros": 3.25,
+      "lubrificantes": [
+        "C",
+        "H"
+      ]
+    },
+    {
+      "marca": "PEUGEOT",
+      "modelo": "308",
+      "motor": "1.6 L4 DFI/TB 16V (G/F)",
+      "anoInicio": 2014,
+      "anoFim": 2016,
+      "volumeLitros": 4.25,
+      "lubrificantes": [
+        "C"
+      ]
+    },
+    {
+      "marca": "PEUGEOT",
+      "modelo": "308",
+      "motor": "1.6 L4 MPFI 16V (F)",
+      "anoInicio": 2014,
+      "anoFim": 2016,
+      "volumeLitros": 3.25,
+      "lubrificantes": [
+        "C",
+        "H"
+      ]
+    },
+    {
+      "marca": "PEUGEOT",
+      "modelo": "308",
+      "motor": "2.0 L4 MPFI 16V (F)",
+      "anoInicio": 2014,
+      "anoFim": 2016,
+      "volumeLitros": 4.25,
+      "lubrificantes": [
+        "C",
+        "H"
+      ]
+    },
+    {
+      "marca": "PEUGEOT",
+      "modelo": "408",
+      "motor": "1.6 L4 DFI/TB 16V (G/F)",
+      "anoInicio": 2014,
+      "anoFim": 2016,
+      "volumeLitros": 4.25,
+      "lubrificantes": [
+        "C"
+      ]
+    },
+    {
+      "marca": "PEUGEOT",
+      "modelo": "408",
+      "motor": "2.0 L4 MPFI 16V (F)",
+      "anoInicio": 2014,
+      "anoFim": 2016,
+      "volumeLitros": 4.7,
+      "lubrificantes": [
+        "C",
+        "H"
+      ]
+    },
+    {
+      "marca": "PEUGEOT",
+      "modelo": "508",
+      "motor": "1.6 L4 DFI/TB 16V (G)",
+      "anoInicio": 2014,
+      "anoFim": 2014,
+      "volumeLitros": 4.25,
+      "lubrificantes": [
+        "C"
+      ]
+    },
+    {
+      "marca": "PEUGEOT",
+      "modelo": "HOGGAR",
+      "motor": "1.4 L4 MPFI 8V (F)",
+      "anoInicio": 2014,
+      "anoFim": 2014,
+      "volumeLitros": 3.0,
+      "lubrificantes": [
+        "C",
+        "H"
+      ]
+    },
+    {
+      "marca": "PEUGEOT",
+      "modelo": "HOGGAR",
+      "motor": "1.6 L4 MPFI 16V (F)",
+      "anoInicio": 2014,
+      "anoFim": 2014,
+      "volumeLitros": 3.25,
+      "lubrificantes": [
+        "C",
+        "H"
+      ]
+    },
+    {
+      "marca": "PEUGEOT",
+      "modelo": "RCZ",
+      "motor": "1.6 L4 DFI/TB 16V (G)",
+      "anoInicio": 2014,
+      "anoFim": 2015,
+      "volumeLitros": 4.25,
+      "lubrificantes": [
+        "C"
+      ]
+    },
+    {
+      "marca": "RENAULT",
+      "modelo": "CAPTUR",
+      "motor": "2.0 L4 MPFI 16V (F)",
+      "anoInicio": 2017,
+      "anoFim": 2021,
+      "volumeLitros": 5.4,
+      "lubrificantes": [
+        "H"
+      ]
+    },
+    {
+      "marca": "RENAULT",
+      "modelo": "CAPTUR",
+      "motor": "1.6 L4 MPFI 16V (F)",
+      "anoInicio": 2017,
+      "anoFim": 2022,
+      "volumeLitros": 4.8,
+      "lubrificantes": [
+        "H"
+      ]
+    },
+    {
+      "marca": "RENAULT",
+      "modelo": "CAPTUR",
+      "motor": "1.3 L4 DFI/TB 16V (F)",
+      "anoInicio": 2021,
+      "anoFim": 2023,
+      "volumeLitros": 4.8,
+      "lubrificantes": [
+        "H"
+      ]
+    },
+    {
+      "marca": "RENAULT",
+      "modelo": "CLIO",
+      "motor": "1.0 L4 MPFI 16V (F)",
+      "anoInicio": 2014,
+      "anoFim": 2016,
+      "volumeLitros": 4.0,
+      "lubrificantes": [
+        "H",
+        "L"
+      ]
+    },
+    {
+      "marca": "RENAULT",
+      "modelo": "DUSTER",
+      "motor": "2.0 L4 MPFI 16V (F)",
+      "anoInicio": 2014,
+      "anoFim": 2021,
+      "volumeLitros": 5.4,
+      "lubrificantes": [
+        "H"
+      ]
+    },
+    {
+      "marca": "RENAULT",
+      "modelo": "DUSTER",
+      "motor": "1.6 L4 MPFI 16V (F)",
+      "anoInicio": 2014,
+      "anoFim": 2023,
+      "volumeLitros": 4.8,
+      "lubrificantes": [
+        "H"
+      ]
+    },
+    {
+      "marca": "RENAULT",
+      "modelo": "DUSTER",
+      "motor": "1.3 L4 DFI/TB 16V (F)",
+      "anoInicio": 2022,
+      "anoFim": 2023,
+      "volumeLitros": 4.8,
+      "lubrificantes": [
+        "H"
+      ]
+    },
+    {
+      "marca": "RENAULT",
+      "modelo": "DUSTER OROCH",
+      "motor": "2.0 L4 MPFI 16V (F)",
+      "anoInicio": 2015,
+      "anoFim": 2022,
+      "volumeLitros": 5.4,
+      "lubrificantes": [
+        "H"
+      ]
+    },
+    {
+      "marca": "RENAULT",
+      "modelo": "DUSTER OROCH",
+      "motor": "1.6 L4 MPFI 16V (F)",
+      "anoInicio": 2015,
+      "anoFim": 2023,
+      "volumeLitros": 4.8,
+      "lubrificantes": [
+        "H"
+      ]
+    },
+    {
+      "marca": "RENAULT",
+      "modelo": "DUSTER OROCH",
+      "motor": "1.3 L4 DFI/TB 16V (F)",
+      "anoInicio": 2022,
+      "anoFim": 2023,
+      "volumeLitros": 4.8,
+      "lubrificantes": [
+        "H"
+      ]
+    },
+    {
+      "marca": "RENAULT",
+      "modelo": "FLUENCE",
+      "motor": "1.6 L4 MPFI 16V (F)",
+      "anoInicio": 2014,
+      "anoFim": 2014,
+      "volumeLitros": 4.8,
+      "lubrificantes": [
+        "E",
+        "H",
+        "L"
+      ]
+    },
+    {
+      "marca": "RENAULT",
+      "modelo": "FLUENCE",
+      "motor": "2.0 L4 SMPFI 16V (F)",
+      "anoInicio": 2014,
+      "anoFim": 2018,
+      "volumeLitros": 4.2,
+      "lubrificantes": [
+        "H"
+      ]
+    },
+    {
+      "marca": "RENAULT",
+      "modelo": "FLUENCE GT",
+      "motor": "2.0 L4 MPFI/TB 16V (G)",
+      "anoInicio": 2014,
+      "anoFim": 2016,
+      "volumeLitros": 4.2,
+      "lubrificantes": [
+        "H",
+        "L"
+      ]
+    },
+    {
+      "marca": "RENAULT",
+      "modelo": "KANGOO",
+      "motor": "1.6 L4 MPFI 16V (F)",
+      "anoInicio": 2014,
+      "anoFim": 2018,
+      "volumeLitros": 4.9,
+      "lubrificantes": [
+        "H"
+      ]
+    },
+    {
+      "marca": "RENAULT",
+      "modelo": "KWID",
+      "motor": "1.0 L3 MPFI 12V (F)",
+      "anoInicio": 2018,
+      "anoFim": 2023,
+      "volumeLitros": 3.0,
+      "lubrificantes": [
+        "H"
+      ]
+    },
+    {
+      "marca": "RENAULT",
+      "modelo": "LOGAN",
+      "motor": "1.0 L4 MPFI 12V (F)",
+      "anoInicio": 2014,
+      "anoFim": 2017,
+      "volumeLitros": 4.0,
+      "lubrificantes": [
+        "H",
+        "L"
+      ]
+    },
+    {
+      "marca": "RENAULT",
+      "modelo": "LOGAN",
+      "motor": "1.6 L4 MPFI 8V (F)",
+      "anoInicio": 2014,
+      "anoFim": 2017,
+      "volumeLitros": 3.3,
+      "lubrificantes": [
+        "H",
+        "L"
+      ]
+    },
+    {
+      "marca": "RENAULT",
+      "modelo": "LOGAN",
+      "motor": "1.6 L4 MPFI 16V (F)",
+      "anoInicio": 2016,
+      "anoFim": 2021,
+      "volumeLitros": 4.3,
+      "lubrificantes": [
+        "H"
+      ]
+    },
+    {
+      "marca": "RENAULT",
+      "modelo": "LOGAN",
+      "motor": "1.0 L3 MPFI 12V (F)",
+      "anoInicio": 2017,
+      "anoFim": 2023,
+      "volumeLitros": 3.0,
+      "lubrificantes": [
+        "H"
+      ]
+    },
+    {
+      "marca": "RENAULT",
+      "modelo": "MASTER",
+      "motor": "2.3 L4 CRDI/TD 16V (D)",
+      "anoInicio": 2014,
+      "anoFim": 2023,
+      "volumeLitros": 8.9,
+      "lubrificantes": [
+        "D",
+        "H"
+      ]
+    },
+    {
+      "marca": "RENAULT",
+      "modelo": "SANDERO",
+      "motor": "1.6 L4 MPFI 16V (F)",
+      "anoInicio": 2014,
+      "anoFim": 2014,
+      "volumeLitros": 4.8,
+      "lubrificantes": [
+        "E",
+        "H",
+        "L"
+      ]
+    },
+    {
+      "marca": "RENAULT",
+      "modelo": "SANDERO",
+      "motor": "1.0 L4 MPFI 16V (F)",
+      "anoInicio": 2014,
+      "anoFim": 2017,
+      "volumeLitros": 4.0,
+      "lubrificantes": [
+        "H",
+        "L"
+      ]
+    },
+    {
+      "marca": "RENAULT",
+      "modelo": "SANDERO",
+      "motor": "1.6 L4 MPFI 8V (F)",
+      "anoInicio": 2014,
+      "anoFim": 2017,
+      "volumeLitros": 3.3,
+      "lubrificantes": [
+        "H",
+        "L"
+      ]
+    },
+    {
+      "marca": "RENAULT",
+      "modelo": "SANDERO",
+      "motor": "1.6 L4 MPFI 16V (F)",
+      "anoInicio": 2017,
+      "anoFim": 2022,
+      "volumeLitros": 4.3,
+      "lubrificantes": [
+        "H"
+      ]
+    },
+    {
+      "marca": "RENAULT",
+      "modelo": "SANDERO",
+      "motor": "1.0 L3 MPFI 12V (F)",
+      "anoInicio": 2017,
+      "anoFim": 2023,
+      "volumeLitros": 3.0,
+      "lubrificantes": [
+        "H"
+      ]
+    },
+    {
+      "marca": "RENAULT",
+      "modelo": "SANDERO RS",
+      "motor": "2.0 L4 SMPFI 16V (F)",
+      "anoInicio": 2015,
+      "anoFim": 2022,
+      "volumeLitros": 5.4,
+      "lubrificantes": [
+        "H"
+      ]
+    },
+    {
+      "marca": "RENAULT",
+      "modelo": "STEPWAY",
+      "motor": "1.6 L4 MPFI 16V (F)",
+      "anoInicio": 2020,
+      "anoFim": 2023,
+      "volumeLitros": 4.3,
+      "lubrificantes": [
+        "H"
+      ]
+    },
+    {
+      "marca": "VOLKSWAGEN",
+      "modelo": "CROSSFOX",
+      "motor": "1.6 L4 MI 8V (F)",
+      "anoInicio": 2014,
+      "anoFim": 2015,
+      "volumeLitros": 4.0,
+      "lubrificantes": [
+        "E",
+        "H",
+        "J"
+      ]
+    },
+    {
+      "marca": "VOLKSWAGEN",
+      "modelo": "CROSSFOX",
+      "motor": "1.6 L4 MSI 16V (F)",
+      "anoInicio": 2015,
+      "anoFim": 2018,
+      "volumeLitros": 4.5,
+      "lubrificantes": [
+        "H"
+      ]
+    },
+    {
+      "marca": "VOLKSWAGEN",
+      "modelo": "FOX",
+      "motor": "1.0 L4 MPI 8V (F)",
+      "anoInicio": 2014,
+      "anoFim": 2015,
+      "volumeLitros": 3.3,
+      "lubrificantes": [
+        "E",
+        "H",
+        "J"
+      ]
+    },
+    {
+      "marca": "VOLKSWAGEN",
+      "modelo": "FOX",
+      "motor": "1.0 L3 MPI 12V (F)",
+      "anoInicio": 2014,
+      "anoFim": 2018,
+      "volumeLitros": 3.3,
+      "lubrificantes": [
+        "H"
+      ]
+    },
+    {
+      "marca": "VOLKSWAGEN",
+      "modelo": "FOX",
+      "motor": "1.6 L4 MPI 8V (F)",
+      "anoInicio": 2014,
+      "anoFim": 2018,
+      "volumeLitros": 4.0,
+      "lubrificantes": [
+        "H"
+      ]
+    },
+    {
+      "marca": "VOLKSWAGEN",
+      "modelo": "FOX",
+      "motor": "1.6 L4 MSI 16V (F)",
+      "anoInicio": 2015,
+      "anoFim": 2021,
+      "volumeLitros": 4.0,
+      "lubrificantes": [
+        "H"
+      ]
+    },
+    {
+      "marca": "VOLKSWAGEN",
+      "modelo": "FUSCA (NOVO - TSi)",
+      "motor": "2.0 L4 TFSI/TB 16V (G)",
+      "anoInicio": 2014,
+      "anoFim": 2016,
+      "volumeLitros": 5.7,
+      "lubrificantes": [
+        "H"
+      ]
+    },
+    {
+      "marca": "VOLKSWAGEN",
+      "modelo": "GOL IV",
+      "motor": "1.0 L4 MPI 8V (F)",
+      "anoInicio": 2014,
+      "anoFim": 2015,
+      "volumeLitros": 3.3,
+      "lubrificantes": [
+        "E",
+        "H",
+        "J"
+      ]
+    },
+    {
+      "marca": "VOLKSWAGEN",
+      "modelo": "GOL VI",
+      "motor": "1.6 L4 MPI 8V (F)",
+      "anoInicio": 2014,
+      "anoFim": 2014,
+      "volumeLitros": 4.0,
+      "lubrificantes": [
+        "E",
+        "H",
+        "J"
+      ]
+    },
+    {
+      "marca": "VOLKSWAGEN",
+      "modelo": "GOL VI",
+      "motor": "1.0 L4 MSI 8V (F)",
+      "anoInicio": 2014,
+      "anoFim": 2016,
+      "volumeLitros": 3.3,
+      "lubrificantes": [
+        "H"
+      ]
+    },
+    {
+      "marca": "VOLKSWAGEN",
+      "modelo": "GOL VI",
+      "motor": "1.6 L4 MSI 16V (F)",
+      "anoInicio": 2015,
+      "anoFim": 2016,
+      "volumeLitros": 4.0,
+      "lubrificantes": [
+        "H"
+      ]
+    },
+    {
+      "marca": "VOLKSWAGEN",
+      "modelo": "GOL VI",
+      "motor": "1.6 L4 MSI 8V (F)",
+      "anoInicio": 2015,
+      "anoFim": 2016,
+      "volumeLitros": 4.0,
+      "lubrificantes": [
+        "H"
+      ]
+    },
+    {
+      "marca": "VOLKSWAGEN",
+      "modelo": "GOL VII",
+      "motor": "1.0 L3 MSI 12V (F)",
+      "anoInicio": 2017,
+      "anoFim": 2023,
+      "volumeLitros": 3.3,
+      "lubrificantes": [
+        "H"
+      ]
+    },
+    {
+      "marca": "VOLKSWAGEN",
+      "modelo": "GOL VII",
+      "motor": "1.6 L4 MSI 16V (F)",
+      "anoInicio": 2017,
+      "anoFim": 2023,
+      "volumeLitros": 4.0,
+      "lubrificantes": [
+        "H"
+      ]
+    },
+    {
+      "marca": "VOLKSWAGEN",
+      "modelo": "GOL VII",
+      "motor": "1.6 L4 MSI 8V (F)",
+      "anoInicio": 2017,
+      "anoFim": 2023,
+      "volumeLitros": 4.0,
+      "lubrificantes": [
+        "H"
+      ]
+    },
+    {
+      "marca": "VOLKSWAGEN",
+      "modelo": "GOLF",
+      "motor": "1.6 L4 MPI 16V (F)",
+      "anoInicio": 2014,
+      "anoFim": 2014,
+      "volumeLitros": 4.0,
+      "lubrificantes": [
+        "E",
+        "H",
+        "J"
+      ]
+    },
+    {
+      "marca": "VOLKSWAGEN",
+      "modelo": "GOLF",
+      "motor": "1.6 L4 MPI 8V (F)",
+      "anoInicio": 2014,
+      "anoFim": 2014,
+      "volumeLitros": 4.0,
+      "lubrificantes": [
+        "E",
+        "H",
+        "J"
+      ]
+    },
+    {
+      "marca": "VOLKSWAGEN",
+      "modelo": "GOLF",
+      "motor": "1.4 L4 TFSI/TB 16V (G)",
+      "anoInicio": 2014,
+      "anoFim": 2016,
+      "volumeLitros": 4.0,
+      "lubrificantes": [
+        "H"
+      ]
+    },
+    {
+      "marca": "VOLKSWAGEN",
+      "modelo": "GOLF",
+      "motor": "1.6 L4 MSI 16V (F)",
+      "anoInicio": 2016,
+      "anoFim": 2016,
+      "volumeLitros": 4.0,
+      "lubrificantes": [
+        "H"
+      ]
+    },
+    {
+      "marca": "VOLKSWAGEN",
+      "modelo": "GOLF",
+      "motor": "1.0 L3 TFSI/TB 12V (F)",
+      "anoInicio": 2017,
+      "anoFim": 2017,
+      "volumeLitros": 4.0,
+      "lubrificantes": [
+        "H"
+      ]
+    },
+    {
+      "marca": "VOLKSWAGEN",
+      "modelo": "GOLF",
+      "motor": "1.4 L4 TFSI/TB 16V (F)",
+      "anoInicio": 2017,
+      "anoFim": 2019,
+      "volumeLitros": 4.0,
+      "lubrificantes": [
+        "H"
+      ]
+    },
+    {
+      "marca": "VOLKSWAGEN",
+      "modelo": "GOLF GTE HYBRID",
+      "motor": "1.4 L4 TFSI/TB 16V (F)",
+      "anoInicio": 2020,
+      "anoFim": 2020,
+      "volumeLitros": 4.0,
+      "lubrificantes": [
+        "H"
+      ]
+    },
+    {
+      "marca": "VOLKSWAGEN",
+      "modelo": "GOLF GTI",
+      "motor": "2.0 L4 TFSI/TB 16V (G)",
+      "anoInicio": 2014,
+      "anoFim": 2017,
+      "volumeLitros": 5.7,
+      "lubrificantes": [
+        "H"
+      ]
+    },
+    {
+      "marca": "VOLKSWAGEN",
+      "modelo": "GOLF GTI",
+      "motor": "2.0 L4 TFSI/TB 16V (G)",
+      "anoInicio": 2018,
+      "anoFim": 2019,
+      "volumeLitros": 5.7,
+      "lubrificantes": [
+        "H"
+      ]
+    },
+    {
+      "marca": "VOLKSWAGEN",
+      "modelo": "GOLF VARIANT",
+      "motor": "1.4 L4 TFSI/TB 16V (G)",
+      "anoInicio": 2015,
+      "anoFim": 2016,
+      "volumeLitros": 4.0,
+      "lubrificantes": [
+        "H"
+      ]
+    },
+    {
+      "marca": "VOLKSWAGEN",
+      "modelo": "GOLF VARIANT",
+      "motor": "1.4 L4 TFSI/TB 16V (F)",
+      "anoInicio": 2017,
+      "anoFim": 2019,
+      "volumeLitros": 4.0,
+      "lubrificantes": [
+        "H"
+      ]
+    },
+    {
+      "marca": "VOLKSWAGEN",
+      "modelo": "GOLF/GT",
+      "motor": "2.0 L4 SMPFI 8V (F)",
+      "anoInicio": 2014,
+      "anoFim": 2014,
+      "volumeLitros": 4.0,
+      "lubrificantes": [
+        "E",
+        "H",
+        "J"
+      ]
+    },
+    {
+      "marca": "VOLKSWAGEN",
+      "modelo": "JETTA",
+      "motor": "2.0 L4 SMPFI 8V (F)",
+      "anoInicio": 2014,
+      "anoFim": 2016,
+      "volumeLitros": 4.5,
+      "lubrificantes": [
+        "H"
+      ]
+    },
+    {
+      "marca": "VOLKSWAGEN",
+      "modelo": "JETTA",
+      "motor": "2.0 L4 TFSI/TB 16V (G)",
+      "anoInicio": 2014,
+      "anoFim": 2018,
+      "volumeLitros": 5.7,
+      "lubrificantes": [
+        "H"
+      ]
+    },
+    {
+      "marca": "VOLKSWAGEN",
+      "modelo": "JETTA",
+      "motor": "1.4 L4 TFSI/TB 16V (G/F)",
+      "anoInicio": 2016,
+      "anoFim": 2020,
+      "volumeLitros": 4.0,
+      "lubrificantes": [
+        "H"
+      ]
+    },
+    {
+      "marca": "VOLKSWAGEN",
+      "modelo": "JETTA GLi",
+      "motor": "2.0 L4 TFSI/TB 16V (G)",
+      "anoInicio": 2019,
+      "anoFim": 2023,
+      "volumeLitros": 5.7,
+      "lubrificantes": [
+        "H"
+      ]
+    },
+    {
+      "marca": "VOLKSWAGEN",
+      "modelo": "KOMBI",
+      "motor": "1.4 L4 MI 8V (F)",
+      "anoInicio": 2014,
+      "anoFim": 2014,
+      "volumeLitros": 3.3,
+      "lubrificantes": [
+        "E",
+        "H",
+        "J"
+      ]
+    },
+    {
+      "marca": "VOLKSWAGEN",
+      "modelo": "NIVUS",
+      "motor": "1.0 L3 TFSI/TB 12V (F)",
+      "anoInicio": 2020,
+      "anoFim": 2023,
+      "volumeLitros": 4.0,
+      "lubrificantes": [
+        "H"
+      ]
+    },
+    {
+      "marca": "VOLKSWAGEN",
+      "modelo": "NOVO POLO",
+      "motor": "1.0 L3 MPI 12V (F)",
+      "anoInicio": 2018,
+      "anoFim": 2023,
+      "volumeLitros": 3.3,
+      "lubrificantes": [
+        "H"
+      ]
+    },
+    {
+      "marca": "VOLKSWAGEN",
+      "modelo": "NOVO POLO",
+      "motor": "1.0 L3 TFSI/TB 12V (F)",
+      "anoInicio": 2018,
+      "anoFim": 2023,
+      "volumeLitros": 4.0,
+      "lubrificantes": [
+        "H"
+      ]
+    },
+    {
+      "marca": "VOLKSWAGEN",
+      "modelo": "NOVO POLO",
+      "motor": "1.4 L4 TFSI/TB 16V (F)",
+      "anoInicio": 2018,
+      "anoFim": 2023,
+      "volumeLitros": 4.5,
+      "lubrificantes": [
+        "H"
+      ]
+    },
+    {
+      "marca": "VOLKSWAGEN",
+      "modelo": "NOVO POLO/GTS",
+      "motor": "1.6 L4 MSI 16V (F)",
+      "anoInicio": 2019,
+      "anoFim": 2023,
+      "volumeLitros": 4.0,
+      "lubrificantes": [
+        "H"
+      ]
+    },
+    {
+      "marca": "VOLKSWAGEN",
+      "modelo": "PASSAT / PASSAT CC",
+      "motor": "2.0 L4 TFSI/TB 16V (G)",
+      "anoInicio": 2014,
+      "anoFim": 2016,
+      "volumeLitros": 4.7,
+      "lubrificantes": [
+        "H"
+      ]
+    },
+    {
+      "marca": "VOLKSWAGEN",
+      "modelo": "PASSAT / PASSAT CC",
+      "motor": "2.0 L4 TFSI/TB 16V (G)",
+      "anoInicio": 2016,
+      "anoFim": 2019,
+      "volumeLitros": 5.7,
+      "lubrificantes": [
+        "H"
+      ]
+    },
+    {
+      "marca": "VOLKSWAGEN",
+      "modelo": "PASSAT CC",
+      "motor": "3.6 V6 FSI 24V (G)",
+      "anoInicio": 2014,
+      "anoFim": 2014,
+      "volumeLitros": 5.5,
+      "lubrificantes": [
+        "E",
+        "H"
+      ]
+    },
+    {
+      "marca": "VOLKSWAGEN",
+      "modelo": "PASSAT VARIANT",
+      "motor": "2.0 L4 TFSI/TB 16V (G)",
+      "anoInicio": 2014,
+      "anoFim": 2015,
+      "volumeLitros": 4.7,
+      "lubrificantes": [
+        "E",
+        "H"
+      ]
+    },
+    {
+      "marca": "VOLKSWAGEN",
+      "modelo": "POLO IV",
+      "motor": "1.6 L4 MPI 8V (F)",
+      "anoInicio": 2014,
+      "anoFim": 2015,
+      "volumeLitros": 4.0,
+      "lubrificantes": [
+        "E",
+        "H"
+      ]
+    },
+    {
+      "marca": "VOLKSWAGEN",
+      "modelo": "POLO IV/GT",
+      "motor": "2.0 L4 SMPFI 8V (F)",
+      "anoInicio": 2014,
+      "anoFim": 2015,
+      "volumeLitros": 4.0,
+      "lubrificantes": [
+        "E",
+        "H"
+      ]
+    },
+    {
+      "marca": "VOLKSWAGEN",
+      "modelo": "POLO VI",
+      "motor": "1.0 L3 TSI/TB 12V (F)",
+      "anoInicio": 2022,
+      "anoFim": 2023,
+      "volumeLitros": 4.0,
+      "lubrificantes": [
+        "H"
+      ]
+    },
+    {
+      "marca": "VOLKSWAGEN",
+      "modelo": "SAVEIRO",
+      "motor": "1.6 L4 MPI 8V (F)",
+      "anoInicio": 2014,
+      "anoFim": 2015,
+      "volumeLitros": 4.0,
+      "lubrificantes": [
+        "E",
+        "H"
+      ]
+    },
+    {
+      "marca": "VOLKSWAGEN",
+      "modelo": "SAVEIRO",
+      "motor": "1.6 L4 MSI 16V (F)",
+      "anoInicio": 2015,
+      "anoFim": 2023,
+      "volumeLitros": 4.0,
+      "lubrificantes": [
+        "H"
+      ]
+    },
+    {
+      "marca": "VOLKSWAGEN",
+      "modelo": "SAVEIRO",
+      "motor": "1.6 L4 MSI 8V (F)",
+      "anoInicio": 2015,
+      "anoFim": 2023,
+      "volumeLitros": 4.0,
+      "lubrificantes": [
+        "H"
+      ]
+    },
+    {
+      "marca": "VOLKSWAGEN",
+      "modelo": "SPACECROSS",
+      "motor": "1.6 L4 MPI 8V (F)",
+      "anoInicio": 2014,
+      "anoFim": 2015,
+      "volumeLitros": 4.0,
+      "lubrificantes": [
+        "E",
+        "H"
+      ]
+    },
+    {
+      "marca": "VOLKSWAGEN",
+      "modelo": "SPACECROSS",
+      "motor": "1.6 L4 MSI 16V (F)",
+      "anoInicio": 2015,
+      "anoFim": 2017,
+      "volumeLitros": 4.0,
+      "lubrificantes": [
+        "H"
+      ]
+    },
+    {
+      "marca": "VOLKSWAGEN",
+      "modelo": "SPACEFOX",
+      "motor": "1.6 L4 MPI 8V (F)",
+      "anoInicio": 2014,
+      "anoFim": 2019,
+      "volumeLitros": 4.0,
+      "lubrificantes": [
+        "H"
+      ]
+    },
+    {
+      "marca": "VOLKSWAGEN",
+      "modelo": "SPACEFOX",
+      "motor": "1.6 L4 MSI 16V (F)",
+      "anoInicio": 2015,
+      "anoFim": 2018,
+      "volumeLitros": 4.0,
+      "lubrificantes": [
+        "H"
+      ]
+    },
+    {
+      "marca": "VOLKSWAGEN",
+      "modelo": "T-CROSS",
+      "motor": "1.0 L3 TFSI/TB 12V (F)",
+      "anoInicio": 2020,
+      "anoFim": 2023,
+      "volumeLitros": 4.0,
+      "lubrificantes": [
+        "H"
+      ]
+    },
+    {
+      "marca": "VOLKSWAGEN",
+      "modelo": "T-CROSS",
+      "motor": "1.4 L4 TFSI/TB 16V (F)",
+      "anoInicio": 2020,
+      "anoFim": 2023,
+      "volumeLitros": 4.0,
+      "lubrificantes": [
+        "H"
+      ]
+    },
+    {
+      "marca": "VOLKSWAGEN",
+      "modelo": "TAOS",
+      "motor": "1.4 L4 TFSI/TB 16V (F)",
+      "anoInicio": 2021,
+      "anoFim": 2023,
+      "volumeLitros": 4.0,
+      "lubrificantes": [
+        "H"
+      ]
+    },
+    {
+      "marca": "VOLKSWAGEN",
+      "modelo": "TIGUAN",
+      "motor": "2.0 L4 TFSI/TB 16V (G)",
+      "anoInicio": 2014,
+      "anoFim": 2016,
+      "volumeLitros": 4.7,
+      "lubrificantes": [
+        "H"
+      ]
+    },
+    {
+      "marca": "VOLKSWAGEN",
+      "modelo": "TIGUAN",
+      "motor": "1.4 L4 TFSI/TB 16V (G)",
+      "anoInicio": 2017,
+      "anoFim": 2017,
+      "volumeLitros": 4.3,
+      "lubrificantes": [
+        "H"
+      ]
+    },
+    {
+      "marca": "VOLKSWAGEN",
+      "modelo": "TIGUAN",
+      "motor": "1.4 L4 TFSI/TB 16V (F)",
+      "anoInicio": 2017,
+      "anoFim": 2020,
+      "volumeLitros": 4.3,
+      "lubrificantes": [
+        "H"
+      ]
+    },
+    {
+      "marca": "VOLKSWAGEN",
+      "modelo": "TIGUAN",
+      "motor": "2.0 L4 TFSI/TB 16V (G)",
+      "anoInicio": 2018,
+      "anoFim": 2021,
+      "volumeLitros": 4.7,
+      "lubrificantes": [
+        "H"
+      ]
+    },
+    {
+      "marca": "VOLKSWAGEN",
+      "modelo": "TOUAREG",
+      "motor": "3.6 V6 FSI 24V (G)",
+      "anoInicio": 2014,
+      "anoFim": 2017,
+      "volumeLitros": 6.9,
+      "lubrificantes": [
+        "H"
+      ]
+    },
+    {
+      "marca": "VOLKSWAGEN",
+      "modelo": "TOUAREG",
+      "motor": "4.2 V8 FSI 32V (G)",
+      "anoInicio": 2014,
+      "anoFim": 2017,
+      "volumeLitros": 8.4,
+      "lubrificantes": [
+        "H"
+      ]
+    },
+    {
+      "marca": "VOLKSWAGEN",
+      "modelo": "TOUAREG",
+      "motor": "3.6 V6 FSI 24V (G)",
+      "anoInicio": 2018,
+      "anoFim": 2021,
+      "volumeLitros": 6.9,
+      "lubrificantes": [
+        "H"
+      ]
+    },
+    {
+      "marca": "VOLKSWAGEN",
+      "modelo": "TOUAREG",
+      "motor": "4.2 V8 FSI 32V (G)",
+      "anoInicio": 2018,
+      "anoFim": 2021,
+      "volumeLitros": 8.4,
+      "lubrificantes": [
+        "H"
+      ]
+    },
+    {
+      "marca": "VOLKSWAGEN",
+      "modelo": "UP",
+      "motor": "1.0 L3 MPI 12V (F)",
+      "anoInicio": 2014,
+      "anoFim": 2021,
+      "volumeLitros": 3.3,
+      "lubrificantes": [
+        "H"
+      ]
+    },
+    {
+      "marca": "VOLKSWAGEN",
+      "modelo": "UP",
+      "motor": "1.0 L3 TFSI/TB 12V (F)",
+      "anoInicio": 2016,
+      "anoFim": 2021,
+      "volumeLitros": 4.0,
+      "lubrificantes": [
+        "H"
+      ]
+    },
+    {
+      "marca": "VOLKSWAGEN",
+      "modelo": "VIRTUS",
+      "motor": "1.0 L3 TFSI/TB 12V (F)",
+      "anoInicio": 2018,
+      "anoFim": 2023,
+      "volumeLitros": 4.0,
+      "lubrificantes": [
+        "H"
+      ]
+    },
+    {
+      "marca": "VOLKSWAGEN",
+      "modelo": "VIRTUS",
+      "motor": "1.6 L4 MSI 16V (F)",
+      "anoInicio": 2019,
+      "anoFim": 2023,
+      "volumeLitros": 4.5,
+      "lubrificantes": [
+        "H"
+      ]
+    },
+    {
+      "marca": "VOLKSWAGEN",
+      "modelo": "VIRTUS",
+      "motor": "1.4 L4 TFSI/TB 16V (F)",
+      "anoInicio": 2020,
+      "anoFim": 2023,
+      "volumeLitros": 4.0,
+      "lubrificantes": [
+        "H"
+      ]
+    },
+    {
+      "marca": "VOLKSWAGEN",
+      "modelo": "VOYAGE",
+      "motor": "1.0 L4 MPI 8V (F)",
+      "anoInicio": 2014,
+      "anoFim": 2016,
+      "volumeLitros": 3.3,
+      "lubrificantes": [
+        "H"
+      ]
+    },
+    {
+      "marca": "VOLKSWAGEN",
+      "modelo": "VOYAGE",
+      "motor": "1.6 L4 MPI 8V (F)",
+      "anoInicio": 2014,
+      "anoFim": 2023,
+      "volumeLitros": 4.0,
+      "lubrificantes": [
+        "H"
+      ]
+    },
+    {
+      "marca": "VOLKSWAGEN",
+      "modelo": "VOYAGE",
+      "motor": "1.0 L3 MSI 12V (F)",
+      "anoInicio": 2017,
+      "anoFim": 2023,
+      "volumeLitros": 3.3,
+      "lubrificantes": [
+        "H"
+      ]
+    },
+    {
+      "marca": "VOLKSWAGEN",
+      "modelo": "VOYAGE",
+      "motor": "1.6 L4 MSI 16V (F)",
+      "anoInicio": 2019,
+      "anoFim": 2023,
+      "volumeLitros": 4.0,
+      "lubrificantes": [
+        "H"
+      ]
+    }
+  ]
+}

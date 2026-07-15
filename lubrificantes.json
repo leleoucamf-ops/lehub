@@ -1,0 +1,503 @@
+{
+  "versao": "1.0.0",
+  "geradoEm": "2026-07-14",
+  "descricao": "Referências técnicas de lubrificantes sem marca comercial.",
+  "aviso": "A indicação deve ser confirmada com o manual do fabricante do veículo.",
+  "lubrificantes": [
+    {
+      "codigo": "A",
+      "viscosidade": "0W-20",
+      "tipo": "Sintético",
+      "categoria": "100% Sintético",
+      "aplicacao": [
+        "Motores modernos a gasolina, etanol, flex, GNV e híbridos.",
+        "Indicado para motores aspirados, turbo e de injeção direta."
+      ],
+      "beneficios": [
+        "Proteção contra LSPI (pré-ignição em baixa rotação).",
+        "Excelente economia de combustível.",
+        "Controle de depósitos e borra.",
+        "Alta estabilidade térmica.",
+        "Excelente proteção contra desgaste.",
+        "Indicado para motores com correia banhada em óleo.",
+        "Excelente partida a frio.",
+        "Intervalos prolongados de troca conforme fabricante."
+      ],
+      "especificacoes": [
+        "API SP",
+        "API SN PLUS",
+        "API Resource Conserving",
+        "ILSAC GF-6"
+      ],
+      "aprovacoes": [
+        "GM dexos1 Gen3",
+        "Ford WSS-M2C947-A",
+        "Ford WSS-M2C962-A1",
+        "Chrysler MS-6395",
+        "GM 6094A"
+      ],
+      "compatibilidade": [],
+      "aplicacoesRecomendadas": []
+    },
+    {
+      "codigo": "B",
+      "viscosidade": "5W-20",
+      "tipo": "Sintético",
+      "categoria": "100% Sintético",
+      "aplicacao": [
+        "Motores a gasolina, etanol, flex, GNV e híbridos."
+      ],
+      "beneficios": [
+        "Proteção contra LSPI.",
+        "Excelente limpeza interna do motor.",
+        "Redução do desgaste.",
+        "Economia de combustível.",
+        "Alta resistência à oxidação.",
+        "Excelente desempenho em partidas a frio.",
+        "Proteção para motores turbo.",
+        "Compatível com motores de injeção direta."
+      ],
+      "especificacoes": [
+        "API SP",
+        "API SN PLUS",
+        "API Resource Conserving",
+        "ILSAC GF-6"
+      ],
+      "aprovacoes": [
+        "GM dexos1 Gen3",
+        "Ford WSS-M2C945-A",
+        "Ford WSS-M2C960-A1",
+        "Chrysler MS-6395",
+        "GM 6094A"
+      ],
+      "compatibilidade": [],
+      "aplicacoesRecomendadas": []
+    },
+    {
+      "codigo": "C",
+      "viscosidade": "5W-30",
+      "tipo": "Sintético",
+      "categoria": "100% Sintético",
+      "aplicacao": [
+        "Motores a gasolina, etanol, flex, GNV e híbridos.",
+        "Indicado para motores aspirados e turbo."
+      ],
+      "beneficios": [
+        "Proteção contra LSPI.",
+        "Excelente limpeza do motor.",
+        "Redução de depósitos.",
+        "Economia de combustível.",
+        "Elevada proteção contra desgaste.",
+        "Alta estabilidade térmica.",
+        "Recomendado para motores com correia banhada em óleo.",
+        "Excelente desempenho em altas temperaturas."
+      ],
+      "especificacoes": [
+        "API SP",
+        "API SN PLUS",
+        "API Resource Conserving",
+        "ILSAC GF-6"
+      ],
+      "aprovacoes": [
+        "GM dexos1 Gen3",
+        "Ford WSS-M2C946-A",
+        "Ford WSS-M2C961-A1",
+        "Chrysler MS-6395",
+        "GM 6094A"
+      ],
+      "compatibilidade": [],
+      "aplicacoesRecomendadas": []
+    },
+    {
+      "codigo": "D",
+      "viscosidade": "5W-30",
+      "tipo": "Sintético",
+      "categoria": "100% Sintético Low SAPS (Mid SAPS)",
+      "aplicacao": [
+        "Motores a gasolina e diesel leve equipados com filtro de partículas (DPF).",
+        "Compatível com diversos veículos europeus."
+      ],
+      "beneficios": [
+        "Protege motores equipados com DPF.",
+        "Baixa formação de cinzas sulfatadas.",
+        "Menor evaporação.",
+        "Excelente estabilidade térmica.",
+        "Alta proteção contra desgaste.",
+        "Redução de depósitos.",
+        "Economia de combustível.",
+        "Longa vida útil do óleo."
+      ],
+      "especificacoes": [
+        "API SP",
+        "ACEA C2",
+        "ACEA C3"
+      ],
+      "aprovacoes": [
+        "Mercedes-Benz MB 229.31",
+        "Mercedes-Benz MB 229.51",
+        "Mercedes-Benz MB 229.52",
+        "BMW Longlife-04",
+        "VW 505.00",
+        "VW 505.01",
+        "Opel/Vauxhall OV0401547-G30",
+        "Opel/Vauxhall OV0401547-D30",
+        "Fiat 9.55535-S3 (recomendado)"
+      ],
+      "compatibilidade": [],
+      "aplicacoesRecomendadas": []
+    },
+    {
+      "codigo": "E",
+      "viscosidade": "5W-40",
+      "tipo": "Sintético",
+      "categoria": "100% Sintético Low SAPS",
+      "aplicacao": [
+        "Motores a gasolina e diesel leve equipados com DPF.",
+        "Especialmente indicado para veículos europeus."
+      ],
+      "beneficios": [
+        "Excelente proteção em altas temperaturas.",
+        "Alta estabilidade à oxidação.",
+        "Redução do consumo de óleo.",
+        "Proteção do filtro DPF.",
+        "Controle de depósitos.",
+        "Excelente proteção contra desgaste.",
+        "Intervalos prolongados de troca conforme fabricante."
+      ],
+      "especificacoes": [
+        "API SN",
+        "API SM",
+        "ACEA C3"
+      ],
+      "aprovacoes": [
+        "BMW Longlife-04",
+        "Mercedes-Benz MB 229.31",
+        "Mercedes-Benz MB 229.51",
+        "Porsche A40",
+        "VW 502.00",
+        "VW 505.00",
+        "Renault RN0700",
+        "Renault RN0710",
+        "GM dexos2"
+      ],
+      "compatibilidade": [],
+      "aplicacoesRecomendadas": []
+    },
+    {
+      "codigo": "F",
+      "viscosidade": "0W-20",
+      "tipo": "Sintético",
+      "categoria": "100% Sintético",
+      "aplicacao": [
+        "Motores modernos a gasolina, etanol, flex, GNV e híbridos.",
+        "Recomendado para motores com sistema Start-Stop, turbo e injeção direta."
+      ],
+      "beneficios": [
+        "Máxima proteção contra desgaste.",
+        "Proteção contra LSPI.",
+        "Excelente economia de combustível.",
+        "Elevada resistência à oxidação.",
+        "Excelente limpeza interna do motor.",
+        "Alta proteção em partidas a frio.",
+        "Excelente estabilidade térmica.",
+        "Intervalos de troca conforme fabricante."
+      ],
+      "especificacoes": [
+        "API SP",
+        "API SN PLUS",
+        "API SN",
+        "ILSAC GF-6",
+        "ILSAC GF-5"
+      ],
+      "aprovacoes": [
+        "Ford WSS-M2C947-A",
+        "Ford WSS-M2C962-A1",
+        "Chrysler MS-6395",
+        "GM 6094A",
+        "GM 4718M",
+        "Fiat 9.55535-CR1"
+      ],
+      "compatibilidade": [],
+      "aplicacoesRecomendadas": []
+    },
+    {
+      "codigo": "G",
+      "viscosidade": "5W-30",
+      "tipo": "Sintético",
+      "categoria": "100% Sintético",
+      "aplicacao": [
+        "Motores modernos a gasolina, etanol, flex, GNV e híbridos.",
+        "Indicado para veículos com sistema Start-Stop."
+      ],
+      "beneficios": [
+        "Excelente proteção contra desgaste.",
+        "Economia de combustível.",
+        "Proteção contra LSPI.",
+        "Controle de depósitos.",
+        "Excelente resistência à oxidação.",
+        "Elevada proteção em altas temperaturas.",
+        "Excelente desempenho em partidas a frio."
+      ],
+      "especificacoes": [
+        "API SP",
+        "API SN PLUS",
+        "API SN",
+        "ILSAC GF-6",
+        "ILSAC GF-5"
+      ],
+      "aprovacoes": [
+        "Ford WSS-M2C946-A",
+        "Ford WSS-M2C961-A",
+        "Chrysler MS-6395",
+        "GM 6094A",
+        "GM 4718M",
+        "Fiat 9.55535-CR1"
+      ],
+      "compatibilidade": [],
+      "aplicacoesRecomendadas": []
+    },
+    {
+      "codigo": "H",
+      "viscosidade": "5W-40",
+      "tipo": "Sintético",
+      "categoria": "100% Sintético",
+      "aplicacao": [
+        "Motores a gasolina, etanol, flex e GNV.",
+        "Indicado para motores modernos aspirados e turbo."
+      ],
+      "beneficios": [
+        "Excelente proteção contra desgaste.",
+        "Alta estabilidade térmica.",
+        "Excelente resistência à oxidação.",
+        "Proteção em altas temperaturas.",
+        "Redução da formação de depósitos.",
+        "Excelente proteção na partida a frio.",
+        "Longa vida útil do óleo."
+      ],
+      "especificacoes": [
+        "API SN PLUS",
+        "API SN",
+        "API SM"
+      ],
+      "aprovacoes": [
+        "Atende às especificações API SN PLUS / SN / SM."
+      ],
+      "compatibilidade": [],
+      "aplicacoesRecomendadas": []
+    },
+    {
+      "codigo": "I",
+      "viscosidade": "5W-30",
+      "tipo": "Semissintético",
+      "categoria": "Semissintético",
+      "aplicacao": [
+        "Veículos de passeio, SUV, caminhonetes e vans com motores a gasolina, etanol, flex e GNV."
+      ],
+      "beneficios": [
+        "Excelente proteção contra desgaste.",
+        "Proteção contra corrosão.",
+        "Alta resistência à oxidação.",
+        "Excelente partida a frio.",
+        "Mantém o motor limpo.",
+        "Intervalo de troca conforme fabricante."
+      ],
+      "especificacoes": [
+        "API SL"
+      ],
+      "aprovacoes": [],
+      "compatibilidade": [],
+      "aplicacoesRecomendadas": [
+        "Fiat",
+        "Ford",
+        "Honda",
+        "Hyundai",
+        "Toyota",
+        "GM",
+        "e demais fabricantes que recomendem API SL SAE 5W-30."
+      ]
+    },
+    {
+      "codigo": "J",
+      "viscosidade": "5W-40",
+      "tipo": "Semissintético",
+      "categoria": "Semissintético",
+      "aplicacao": [
+        "Veículos de passeio, SUV, caminhonetes e vans com motores a gasolina, etanol, flex e GNV."
+      ],
+      "beneficios": [
+        "Excelente proteção contra desgaste.",
+        "Proteção contra corrosão.",
+        "Alta estabilidade térmica.",
+        "Excelente desempenho em partidas a frio.",
+        "Redução da oxidação.",
+        "Maior durabilidade do lubrificante."
+      ],
+      "especificacoes": [
+        "API SL"
+      ],
+      "aprovacoes": [],
+      "compatibilidade": [],
+      "aplicacoesRecomendadas": [
+        "Fiat",
+        "Ford",
+        "Honda",
+        "Hyundai",
+        "Toyota",
+        "GM",
+        "e demais fabricantes que recomendem API SL SAE 5W-40."
+      ]
+    },
+    {
+      "codigo": "K",
+      "viscosidade": "10W-30",
+      "tipo": "Semissintético",
+      "categoria": "Semissintético",
+      "aplicacao": [
+        "Veículos de passeio, SUV, caminhonetes e vans com motores a gasolina, etanol, flex e GNV."
+      ],
+      "beneficios": [
+        "Proteção durante todo o intervalo de troca recomendado pelo fabricante.",
+        "Excelente proteção contra desgaste.",
+        "Alta resistência à oxidação.",
+        "Proteção contra corrosão.",
+        "Alto desempenho na partida a frio.",
+        "Reduz a deterioração química do óleo.",
+        "Compatível com lubrificantes da mesma especificação."
+      ],
+      "especificacoes": [
+        "API SL"
+      ],
+      "aprovacoes": [],
+      "compatibilidade": [],
+      "aplicacoesRecomendadas": [
+        "Ford",
+        "Honda",
+        "Fiat",
+        "Hyundai",
+        "Toyota",
+        "GM",
+        "e demais fabricantes que recomendem API SL SAE 10W-30."
+      ]
+    },
+    {
+      "codigo": "L",
+      "viscosidade": "10W-40",
+      "tipo": "Semissintético",
+      "categoria": "Semissintético",
+      "aplicacao": [
+        "Veículos de passeio, SUV, caminhonetes e vans com motores a gasolina, etanol, flex e GNV."
+      ],
+      "beneficios": [
+        "Excelente proteção contra desgaste.",
+        "Proteção contra corrosão.",
+        "Alta estabilidade térmica.",
+        "Excelente limpeza do motor.",
+        "Elevada resistência à oxidação.",
+        "Alto desempenho na partida a frio.",
+        "Compatível com lubrificantes da mesma especificação."
+      ],
+      "especificacoes": [
+        "API SL"
+      ],
+      "aprovacoes": [],
+      "compatibilidade": [],
+      "aplicacoesRecomendadas": [
+        "Chevrolet",
+        "Citroën",
+        "Peugeot",
+        "Ford",
+        "Renault",
+        "Subaru",
+        "e demais fabricantes que recomendem API SL SAE 10W-40."
+      ]
+    },
+    {
+      "codigo": "M",
+      "viscosidade": "15W-40",
+      "tipo": "Semissintético",
+      "categoria": "Semissintético",
+      "aplicacao": [
+        "Veículos de passeio, SUV, caminhonetes e vans com motores a gasolina, etanol, flex e GNV."
+      ],
+      "beneficios": [
+        "Excelente proteção contra desgaste.",
+        "Elevada resistência à oxidação.",
+        "Proteção contra corrosão.",
+        "Mantém o motor limpo.",
+        "Excelente estabilidade térmica.",
+        "Excelente desempenho em serviço severo.",
+        "Compatível com lubrificantes da mesma especificação."
+      ],
+      "especificacoes": [
+        "API SL"
+      ],
+      "aprovacoes": [],
+      "compatibilidade": [],
+      "aplicacoesRecomendadas": [
+        "Fiat",
+        "Ford",
+        "Honda",
+        "Hyundai",
+        "Toyota",
+        "GM",
+        "e demais fabricantes que recomendem API SL SAE 15W-40."
+      ]
+    },
+    {
+      "codigo": "N",
+      "viscosidade": "20W-50",
+      "tipo": "Mineral",
+      "categoria": "Mineral",
+      "aplicacao": [
+        "Veículos de passeio, utilitários, SUV, caminhonetes e vans com motores a gasolina, etanol, flex e GNV.",
+        "Especialmente indicado para motores de maior quilometragem ou que utilizem viscosidade SAE 20W-50."
+      ],
+      "beneficios": [
+        "Boa proteção contra desgaste.",
+        "Excelente proteção contra corrosão.",
+        "Controle da formação de depósitos.",
+        "Boa estabilidade térmica.",
+        "Excelente lubrificação em temperaturas elevadas.",
+        "Mantém o motor limpo.",
+        "Excelente custo-benefício."
+      ],
+      "especificacoes": [
+        "API SL"
+      ],
+      "aprovacoes": [],
+      "compatibilidade": [],
+      "aplicacoesRecomendadas": [
+        "Veículos que especificam óleo mineral SAE 20W-50 API SL ou inferior."
+      ]
+    },
+    {
+      "codigo": "O",
+      "viscosidade": "15W-40",
+      "tipo": "Mineral",
+      "categoria": "Mineral",
+      "aplicacao": [
+        "Motores diesel aspirados, turboalimentados e superalimentados.",
+        "Indicado para caminhões, ônibus, utilitários, máquinas agrícolas e equipamentos de construção.",
+        "Compatível com motores Euro V equipados com EGR e SCR."
+      ],
+      "beneficios": [
+        "Excelente lubrificação.",
+        "Filme lubrificante altamente resistente.",
+        "Alta estabilidade ao cisalhamento.",
+        "Excelente proteção contra desgaste.",
+        "Redução da formação de borras.",
+        "Controle de depósitos.",
+        "Controle da formação de espuma.",
+        "Excelente desempenho em serviço severo."
+      ],
+      "especificacoes": [
+        "API CI-4"
+      ],
+      "aprovacoes": [],
+      "compatibilidade": [],
+      "aplicacoesRecomendadas": [
+        "Motores diesel que exijam lubrificante SAE 15W-40 API CI-4, conforme especificação do fabricante."
+      ]
+    }
+  ]
+}
