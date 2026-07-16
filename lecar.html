@@ -6690,6 +6690,269 @@
 }
 </style>
 
+
+
+<style id="lecar-etiquetas-gradiente-info">
+  /* Etiquetas do LPA aplicadas à metade esquerda dos cards do LeCar. */
+  .service-card.tem-etiqueta::before {
+    background: linear-gradient(180deg, var(--etiqueta-cor), var(--etiqueta-cor-escura)) !important;
+  }
+
+  .service-card.tem-etiqueta .vehicle-side,
+  .service-card.tem-etiqueta .vehicle-side-clean {
+    background: linear-gradient(
+      90deg,
+      var(--etiqueta-suave-forte) 0%,
+      var(--etiqueta-suave) 58%,
+      rgba(255,255,255,.98) 100%
+    ) !important;
+    border-right-color: var(--etiqueta-borda) !important;
+  }
+
+  .vehicle-etiqueta-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    max-width: 100%;
+    min-height: 24px;
+    margin-top: 10px;
+    padding: 0 9px;
+    border: 1px solid var(--etiqueta-borda, #bfdbfe);
+    border-radius: 999px;
+    background: rgba(255,255,255,.78);
+    color: var(--etiqueta-cor-escura, #1d4ed8);
+    font-size: .54rem;
+    font-weight: 950;
+    letter-spacing: .025em;
+    line-height: 1;
+    text-transform: uppercase;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    box-shadow: 0 3px 9px rgba(15,23,42,.07);
+  }
+
+  .lista-geral-acoes {
+    display: grid;
+    grid-template-columns: 42px minmax(0, 1fr);
+    gap: 8px;
+    align-items: stretch;
+    margin-left: 44px;
+  }
+
+  .lista-geral-info-btn {
+    width: 42px !important;
+    min-width: 42px !important;
+    min-height: 36px !important;
+    height: 36px !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    border: 1px solid #bfdbfe !important;
+    border-radius: 11px !important;
+    background: #eff6ff !important;
+    color: #1d4ed8 !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    box-shadow: 0 4px 11px rgba(37,99,235,.10) !important;
+    transform: none !important;
+  }
+
+  .lista-geral-info-btn:hover {
+    opacity: 1 !important;
+    background: #dbeafe !important;
+    border-color: #93c5fd !important;
+  }
+
+  .lista-geral-info-btn .ui-icon {
+    width: 20px !important;
+    height: 20px !important;
+    stroke-width: 2.3 !important;
+  }
+
+  .lista-geral-acoes .lista-geral-acao,
+  .lista-geral-acoes .lista-geral-distribuicao {
+    width: 100%;
+    min-width: 0;
+    margin-left: 0 !important;
+  }
+
+  .info-defeito-bg {
+    display: none;
+    position: fixed;
+    inset: 0;
+    z-index: 9400 !important;
+    padding: 18px;
+    align-items: center;
+    justify-content: center;
+    background: rgba(15,23,42,.54);
+    backdrop-filter: blur(5px);
+  }
+
+  .info-defeito-bg.open { display: flex; }
+
+  .info-defeito-modal {
+    width: min(620px, calc(100vw - 28px)) !important;
+    max-width: 100% !important;
+    max-height: 88vh !important;
+    padding: 0 !important;
+    overflow: hidden !important;
+    border: 1px solid #dbe3ef !important;
+    border-radius: 18px !important;
+    background: #ffffff !important;
+    box-shadow: 0 24px 68px rgba(15,23,42,.34) !important;
+  }
+
+  .info-defeito-head {
+    min-height: 66px;
+    padding: 14px 16px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    border-bottom: 1px solid #e2e8f0;
+    background: linear-gradient(90deg,#f8fafc,#eef4ff);
+  }
+
+  .info-defeito-head h3 {
+    margin: 0 !important;
+    color: #0f2748;
+    font-size: .95rem;
+    font-weight: 950;
+    text-transform: uppercase;
+  }
+
+  .info-defeito-head p {
+    margin: 4px 0 0;
+    color: #64748b;
+    font-size: .66rem;
+    font-weight: 800;
+    text-transform: uppercase;
+  }
+
+  .info-defeito-close {
+    width: 36px !important;
+    height: 36px !important;
+    min-width: 36px !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    border: 1px solid #cbd5e1 !important;
+    border-radius: 10px !important;
+    background: #ffffff !important;
+    color: #334155 !important;
+    font-size: 1.2rem !important;
+    line-height: 1 !important;
+    transform: none !important;
+  }
+
+  .info-defeito-body {
+    max-height: calc(88vh - 66px);
+    overflow-y: auto;
+    padding: 16px;
+  }
+
+  .info-defeito-veiculo {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 10px;
+    align-items: center;
+    padding: 12px 13px;
+    border: 1px solid #dbeafe;
+    border-radius: 13px;
+    background: #f8fbff;
+  }
+
+  .info-defeito-veiculo strong {
+    display: block;
+    color: #0f172a;
+    font-size: 1rem;
+    font-weight: 950;
+    text-transform: uppercase;
+  }
+
+  .info-defeito-veiculo span {
+    display: block;
+    margin-top: 4px;
+    color: #475569;
+    font-size: .72rem;
+    font-weight: 800;
+    text-transform: uppercase;
+  }
+
+  .info-defeito-etiqueta {
+    display: none;
+    min-height: 27px;
+    max-width: 180px;
+    padding: 0 9px;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid #bfdbfe;
+    border-radius: 999px;
+    background: #eff6ff;
+    color: #1d4ed8;
+    font-size: .56rem;
+    font-weight: 950;
+    text-transform: uppercase;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .info-defeito-etiqueta.show { display: inline-flex; }
+
+  .info-defeito-section-title {
+    margin: 15px 0 7px;
+    color: #334155;
+    font-size: .67rem;
+    font-weight: 950;
+    text-transform: uppercase;
+  }
+
+  .info-defeito-texto {
+    min-height: 120px;
+    padding: 14px;
+    border: 1px solid #dbe3ef;
+    border-left: 5px solid #2563eb;
+    border-radius: 13px;
+    background: #ffffff;
+    color: #0f172a;
+    font-size: .86rem;
+    font-weight: 700;
+    line-height: 1.55;
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
+    text-transform: uppercase;
+  }
+
+  @media (max-width: 600px) {
+    .vehicle-etiqueta-badge {
+      min-height: 21px;
+      margin-top: 8px;
+      padding: 0 7px;
+      font-size: .46rem;
+    }
+
+    .lista-geral-acoes {
+      grid-template-columns: 36px minmax(0, 1fr);
+      gap: 6px;
+      margin-left: 36px;
+    }
+
+    .lista-geral-info-btn {
+      width: 36px !important;
+      min-width: 36px !important;
+      height: 33px !important;
+      min-height: 33px !important;
+    }
+
+    .info-defeito-bg { padding: 12px; }
+    .info-defeito-body { padding: 13px; }
+    .info-defeito-veiculo { grid-template-columns: 1fr; }
+    .info-defeito-etiqueta { max-width: 100%; width: fit-content; }
+    .info-defeito-texto { font-size: .78rem; }
+  }
+</style>
+
 </head>
   <body translate="no">
 
@@ -7595,6 +7858,31 @@
         </div>
       </div>
     </div>
+
+
+    <div id="modalInfoListaGeral" class="info-defeito-bg" onclick="fecharInformacoesListaGeral(event)">
+      <section class="modal info-defeito-modal" role="dialog" aria-modal="true" aria-labelledby="infoDefeitoTitulo" onclick="event.stopPropagation()">
+        <header class="info-defeito-head">
+          <div>
+            <h3 id="infoDefeitoTitulo">Informações do serviço</h3>
+            <p>Descrição completa publicada pelo Painel ADM</p>
+          </div>
+          <button type="button" class="info-defeito-close" aria-label="Fechar" onclick="fecharInformacoesListaGeral()">×</button>
+        </header>
+        <div class="info-defeito-body">
+          <div class="info-defeito-veiculo">
+            <div>
+              <strong id="infoDefeitoPlaca">-</strong>
+              <span id="infoDefeitoVeiculo">-</span>
+            </div>
+            <span id="infoDefeitoEtiqueta" class="info-defeito-etiqueta"></span>
+          </div>
+          <div class="info-defeito-section-title">Defeito / serviço solicitado</div>
+          <div id="infoDefeitoDescricao" class="info-defeito-texto">-</div>
+        </div>
+      </section>
+    </div>
+
     <script>
       /* ========= CONFIG FIREBASE ========= */
 const firebaseConfig = {
@@ -7608,6 +7896,150 @@ const firebaseConfig = {
 
 firebase.initializeApp(firebaseConfig);
 const db = firebase.firestore();
+
+/* ========== ETIQUETAS LPA + INFORMAÇÕES DA LISTA GERAL ========== */
+const ETIQUETAS_PADRAO_LECAR = Object.freeze([
+  { id:"normal", nome:"NORMAL", cor:"#64748B", ordem:10, ativa:true },
+  { id:"sem-urgencia", nome:"SEM URGÊNCIA", cor:"#16A34A", ordem:15, ativa:true },
+  { id:"estoque", nome:"ESTOQUE", cor:"#22C55E", ordem:25, ativa:true },
+  { id:"vendido", nome:"VENDIDO", cor:"#F97316", ordem:30, ativa:true },
+  { id:"retorno", nome:"RETORNO", cor:"#8B5E3C", ordem:40, ativa:true },
+  { id:"atrasado", nome:"ATRASADO", cor:"#D97706", ordem:70, ativa:true },
+  { id:"faltando-somente-isso", nome:"FALTANDO SOMENTE ISSO", cor:"#EAB308", ordem:80, ativa:true },
+  { id:"urgente", nome:"URGENTE", cor:"#DC2626", ordem:100, ativa:true }
+]);
+
+let etiquetasLeCar = ETIQUETAS_PADRAO_LECAR.map(item => ({ ...item }));
+let etiquetasLeCarUnsubscribe = null;
+
+function normalizarCorEtiquetaLeCar(valor, fallback = "#2563EB") {
+  const cor = String(valor || "").trim().toUpperCase();
+  return /^#[0-9A-F]{6}$/.test(cor) ? cor : fallback;
+}
+
+function rgbaEtiquetaLeCar(hex, alpha) {
+  const cor = normalizarCorEtiquetaLeCar(hex).slice(1);
+  const r = parseInt(cor.slice(0, 2), 16);
+  const g = parseInt(cor.slice(2, 4), 16);
+  const b = parseInt(cor.slice(4, 6), 16);
+  return `rgba(${r},${g},${b},${alpha})`;
+}
+
+function escurecerEtiquetaLeCar(hex, percentual = 22) {
+  const cor = normalizarCorEtiquetaLeCar(hex).slice(1);
+  const fator = Math.max(0, Math.min(1, 1 - percentual / 100));
+  const canal = inicio => Math.round(parseInt(cor.slice(inicio, inicio + 2), 16) * fator).toString(16).padStart(2, "0");
+  return `#${canal(0)}${canal(2)}${canal(4)}`.toUpperCase();
+}
+
+function etiquetasAtivasLeCar() {
+  const base = etiquetasLeCar.length ? etiquetasLeCar : ETIQUETAS_PADRAO_LECAR;
+  return base
+    .filter(item => item?.ativa !== false)
+    .map(item => ({
+      ...item,
+      id:String(item.id || "").trim(),
+      nome:String(item.nome || "ETIQUETA").trim().toUpperCase(),
+      cor:normalizarCorEtiquetaLeCar(item.cor, "#64748B"),
+      aliases:Array.isArray(item.aliases) ? item.aliases.map(alias => normalizarTextoBusca(alias)) : []
+    }));
+}
+
+function resolverEtiquetaServicoLeCar(item = {}) {
+  const todas = etiquetasAtivasLeCar();
+  const id = String(item.etiquetaId || item.etiqueta_id || "").trim();
+  const nomeRegistro = String(item.etiquetaNome || item.etiqueta || item.prioridade || "NORMAL").trim().toUpperCase();
+  const chaveNome = normalizarTextoBusca(nomeRegistro);
+  const porId = id ? todas.find(etiqueta => etiqueta.id === id) : null;
+  const porNome = todas.find(etiqueta => normalizarTextoBusca(etiqueta.nome) === chaveNome || etiqueta.aliases.includes(chaveNome));
+  const base = porId || porNome || ETIQUETAS_PADRAO_LECAR[0];
+  const corRegistro = item.etiquetaCor || item.etiqueta_cor || "";
+  const cor = normalizarCorEtiquetaLeCar(porId?.cor || corRegistro || base.cor, base.cor);
+  const nome = String((porId || porNome)?.nome || nomeRegistro || base.nome).trim().toUpperCase();
+  const etiquetaId = String((porId || porNome)?.id || id || base.id).trim();
+  const temEtiqueta = etiquetaId !== "normal" && normalizarTextoBusca(nome) !== "NORMAL";
+  return { id:etiquetaId, nome, cor, temEtiqueta };
+}
+
+function visualEtiquetaCardLeCar(item = {}) {
+  const etiqueta = resolverEtiquetaServicoLeCar(item);
+  if (!etiqueta.temEtiqueta) return { classe:"", estilo:"", badge:"", etiqueta };
+  const corEscura = escurecerEtiquetaLeCar(etiqueta.cor, 24);
+  const estilo = [
+    `--etiqueta-cor:${etiqueta.cor}`,
+    `--etiqueta-cor-escura:${corEscura}`,
+    `--etiqueta-borda:${rgbaEtiquetaLeCar(etiqueta.cor, .42)}`,
+    `--etiqueta-suave:${rgbaEtiquetaLeCar(etiqueta.cor, .08)}`,
+    `--etiqueta-suave-forte:${rgbaEtiquetaLeCar(etiqueta.cor, .20)}`
+  ].join(";");
+  const badge = `<span class="vehicle-etiqueta-badge" title="ETIQUETA: ${escaparHTML(etiqueta.nome)}">${escaparHTML(etiqueta.nome)}</span>`;
+  return { classe:"tem-etiqueta", estilo, badge, etiqueta };
+}
+
+function iniciarSincronizacaoEtiquetasLeCar() {
+  if (typeof etiquetasLeCarUnsubscribe === "function") return;
+  etiquetasLeCarUnsubscribe = db.collection("etiquetas_lpa").onSnapshot(
+    snapshot => {
+      etiquetasLeCar = snapshot.empty
+        ? ETIQUETAS_PADRAO_LECAR.map(item => ({ ...item }))
+        : snapshot.docs.map(doc => ({ id:doc.id, ...doc.data() }));
+      if (typeof atualizarTabela === "function") atualizarTabela();
+      if (typeof renderizarListaGeral === "function") renderizarListaGeral();
+    },
+    erro => {
+      console.warn("Etiquetas do LPA indisponíveis no LeCar; usando padrão local:", erro);
+      etiquetasLeCar = ETIQUETAS_PADRAO_LECAR.map(item => ({ ...item }));
+      if (typeof atualizarTabela === "function") atualizarTabela();
+      if (typeof renderizarListaGeral === "function") renderizarListaGeral();
+    }
+  );
+}
+
+function abrirInformacoesListaGeral(servicoIdCodificado) {
+  const servicoId = decodeURIComponent(String(servicoIdCodificado || ""));
+  const item = dadosListaGeral.find(registro => String(registro.id) === servicoId);
+  if (!item) {
+    alert("NÃO FOI POSSÍVEL LOCALIZAR AS INFORMAÇÕES DESTE SERVIÇO.");
+    return;
+  }
+
+  const modal = document.getElementById("modalInfoListaGeral");
+  const placa = document.getElementById("infoDefeitoPlaca");
+  const veiculo = document.getElementById("infoDefeitoVeiculo");
+  const descricao = document.getElementById("infoDefeitoDescricao");
+  const badge = document.getElementById("infoDefeitoEtiqueta");
+  const etiqueta = resolverEtiquetaServicoLeCar(item);
+
+  if (placa) placa.textContent = String(item.placa || "-").toUpperCase();
+  if (veiculo) veiculo.textContent = String(item.veiculo || "VEÍCULO NÃO INFORMADO").toUpperCase();
+  if (descricao) descricao.textContent = String(item.descricao || "DESCRIÇÃO NÃO INFORMADA").toUpperCase();
+  if (badge) {
+    badge.textContent = etiqueta.nome;
+    badge.classList.toggle("show", etiqueta.temEtiqueta);
+    badge.style.borderColor = rgbaEtiquetaLeCar(etiqueta.cor, .45);
+    badge.style.background = rgbaEtiquetaLeCar(etiqueta.cor, .12);
+    badge.style.color = escurecerEtiquetaLeCar(etiqueta.cor, 28);
+  }
+
+  if (modal) {
+    modal.classList.add("open");
+    document.body.classList.add("lecar-modal-open");
+  }
+}
+
+function fecharInformacoesListaGeral(evento) {
+  if (evento && evento.target !== evento.currentTarget) return;
+  const modal = document.getElementById("modalInfoListaGeral");
+  if (modal) modal.classList.remove("open");
+  document.body.classList.remove("lecar-modal-open");
+}
+
+document.addEventListener("keydown", evento => {
+  if (evento.key === "Escape" && document.getElementById("modalInfoListaGeral")?.classList.contains("open")) {
+    fecharInformacoesListaGeral();
+  }
+});
+
 
       // ========== SISTEMA DE AUTENTICAÇÃO ==========
       const usuariosPermitidos = ["LEANDRO", "HARON", "ABRAÃO", "PEDRO", "MAICON", "DOUGLAS"];
@@ -7746,6 +8178,7 @@ function iniciarEscutaRankingDiario(forcar = false) {
 }
 
 function sincronizarFirebase() {
+  iniciarSincronizacaoEtiquetasLeCar();
   const usuario = localStorage.getItem("sessao_lecar");
   if (!usuario) return;
 
@@ -8384,13 +8817,23 @@ setTimeout(() => {
         const prioridade = normalizarTextoBusca(v.prioridade || "NORMAL");
         const statusOperacional = v.statusServico || "AGUARDANDO ORÇAMENTO";
         const corClass = obterClasseStatusOperacional(statusOperacional);
+        const visualEtiqueta = visualEtiquetaCardLeCar(v);
+        const servicoIdSeguro = encodeURIComponent(String(v.id || ""));
 
-        const rodape = assumido
+        const acaoPrincipal = assumido
           ? `<div class="lista-geral-distribuicao assumido">${assumidoPeloUsuario ? "ASSUMIDO POR VOCÊ" : `INDISPONÍVEL • ${escaparHTML(mecanico || "OUTRO MECÂNICO")}`}</div>`
           : `<button type="button" class="lista-geral-acao" onclick="assumirServicoListaGeral('${escaparHTML(v.id)}', this)">ASSUMIR SERVIÇO</button>`;
 
+        const rodape = `
+          <div class="lista-geral-acoes">
+            <button type="button" class="lista-geral-info-btn" title="VER DESCRIÇÃO COMPLETA" aria-label="Ver descrição completa do serviço" onclick="abrirInformacoesListaGeral('${servicoIdSeguro}')">
+              <svg class="ui-icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"></circle><path d="M12 11V17"></path><path d="M12 7H12.01"></path></svg>
+            </button>
+            ${acaoPrincipal}
+          </div>`;
+
         return `
-          <article class="service-card service-card-geral ${assumido ? "lista-geral-assumido" : ""}">
+          <article class="service-card service-card-geral ${assumido ? "lista-geral-assumido" : ""} ${visualEtiqueta.classe}" ${visualEtiqueta.estilo ? `style="${visualEtiqueta.estilo}"` : ""}>
             <section class="vehicle-side vehicle-side-clean">
               <div class="vehicle-info">
                 <div class="plate">${escaparHTML(v.placa || "-")}</div>
@@ -8398,6 +8841,7 @@ setTimeout(() => {
                 <div class="service-description-left" title="${escaparHTML(v.descricao || "")}">
                   <span class="service-title-left">${escaparHTML(resumo)}</span>
                 </div>
+                ${visualEtiqueta.badge}
               </div>
             </section>
             <section class="service-side">
@@ -8511,6 +8955,7 @@ setTimeout(() => {
             }
 
             const descricaoServico = normalizarTextoBusca(servico.descricao || "");
+            const etiquetaServico = resolverEtiquetaServicoLeCar(servico);
             const payloadVeiculo = {
               veiculo: normalizarTextoBusca(servico.veiculo || ""),
               placa: normalizarTextoBusca(servico.placa || ""),
@@ -8518,7 +8963,10 @@ setTimeout(() => {
               trocaOleo: descricaoEhTrocaOleo(descricaoServico),
               kmAtualOleo: "",
               origem: normalizarTextoBusca(servico.origem || "-"),
-              prioridade: normalizarTextoBusca(servico.prioridade || "NORMAL"),
+              prioridade: normalizarTextoBusca(servico.prioridade || etiquetaServico.nome || "NORMAL"),
+              etiquetaId: String(servico.etiquetaId || servico.etiqueta_id || etiquetaServico.id || "").trim(),
+              etiquetaNome: etiquetaServico.nome,
+              etiquetaCor: etiquetaServico.cor,
               dataEntrada: agora.toLocaleString("pt-BR"),
               dataEntradaISO: agora.toISOString(),
               status: obterStatusCurto(servico.statusServico || "AGUARDANDO ORÇAMENTO"),
@@ -9212,12 +9660,13 @@ async function salvar() {
         const dataHora = obterPartesData(finalizado ? (v.dataFinalizacao || v.ultima_modificacao || v.dataEntrada) : (v.dataEntrada || v.ultima_modificacao || v.dataFinalizacao));
         const resumo = gerarResumoServico(v.descricao);
         const corClass = obterClasseStatusOperacional(v.status);
+        const visualEtiqueta = visualEtiquetaCardLeCar(v);
         const cardClick = finalizado ? `onclick="navegar('abrir_finalizado_${v.iOriginal}'); abrirModalFinalizado(${v.iOriginal})"` : "";
         const statusClick = finalizado
           ? `onclick="event.stopPropagation(); navegar('abrir_modal_status_finalizado_${v.iOriginal}'); abrirModalStatusFinalizados(${v.iOriginal})"`
           : `onclick="event.stopPropagation(); abrirModalStatus('${v.id}')"`;
         return `
-          <article class="service-card" ${cardClick}>
+          <article class="service-card ${visualEtiqueta.classe}" ${visualEtiqueta.estilo ? `style="${visualEtiqueta.estilo}"` : ""} ${cardClick}>
             <section class="vehicle-side vehicle-side-clean">
               <div class="vehicle-info">
                 <div class="plate">${escaparHTML(v.placa || "-")}</div>
@@ -9225,6 +9674,7 @@ async function salvar() {
                 <div class="service-description-left" title="${escaparHTML(v.descricao || '')}" onclick="abrirModalPecasPeloBadge(event, ${v.iOriginal})">
                   <span class="service-title-left">${escaparHTML(resumo)}</span>
                 </div>
+                ${visualEtiqueta.badge}
               </div>
             </section>
             <section class="service-side">
