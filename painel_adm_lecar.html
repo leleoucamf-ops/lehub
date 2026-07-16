@@ -199,7 +199,7 @@
     }
 
     .topbar.app-topbar-clean .logo-img {
-      height: 30px !important;
+      height: 25px !important;
       width: auto !important;
       max-width: none !important;
       display: block !important;
@@ -437,7 +437,7 @@
       }
 
       .topbar.app-topbar-clean .logo-img {
-        height: 32px !important;
+        height: 27px !important;
       }
 
       .topbar.app-topbar-clean .app-search-shell {
@@ -471,7 +471,7 @@
       }
 
       .topbar.app-topbar-clean .logo-img {
-        height: 29px !important;
+        height: 24px !important;
       }
 
       .topbar.app-topbar-clean .app-search-shell {
@@ -2559,12 +2559,12 @@
     }
 
     .lpa-taskbar-count {
-      top: 2px !important;
-      right: max(8px, calc(50% - 27px)) !important;
-      min-width: 17px !important;
-      height: 17px !important;
-      padding: 0 4px !important;
-      font-size: .47rem !important;
+      top: 0 !important;
+      right: max(7px, calc(50% - 30px)) !important;
+      min-width: 23px !important;
+      height: 23px !important;
+      padding: 0 5px !important;
+      font-size: .60rem !important;
     }
 
     .lpa-taskbar-plus {
@@ -3340,6 +3340,7 @@
     let chaveHistoricoVeiculoAtual = "";
     let timerBuscaGlobal = null;
     let ultimaPlacaAutoAberta = "";
+    const PREFIXO_CACHE_BUSCA_LPA = "lpa_busca_fixa_v1";
     let registroAtribuicaoHistoricoAtual = null;
     let executandoAcaoHistorico = false;
     let itensImportacaoPlanilha = [];
@@ -3387,6 +3388,29 @@
       const botao = document.getElementById("limparBuscaAdmin");
       if (!campo || !botao) return;
       botao.classList.toggle("show", Boolean(campo.value.trim()));
+    }
+
+    function chaveCacheBuscaAdmin() {
+      const usuario = usuarioPainelAtual() || "PADRAO";
+      return `${PREFIXO_CACHE_BUSCA_LPA}_${usuario}`;
+    }
+
+    function salvarCacheBuscaAdmin() {
+      const campo = document.getElementById("buscaAdmin");
+      if (!campo) return;
+      const valor = campo.value;
+      const chave = chaveCacheBuscaAdmin();
+      if (valor.trim()) localStorage.setItem(chave, valor);
+      else localStorage.removeItem(chave);
+    }
+
+    function restaurarCacheBuscaAdmin() {
+      const campo = document.getElementById("buscaAdmin");
+      if (!campo) return;
+      campo.value = localStorage.getItem(chaveCacheBuscaAdmin()) || "";
+      atualizarEstadoBuscaAdmin();
+      if (campo.value.trim()) renderizarResultadosBuscaGlobal();
+      else fecharResultadosBuscaGlobal();
     }
 
     function chaveVeiculoHistorico(placa, veiculo = "") {
@@ -3533,6 +3557,7 @@
 
     function aoDigitarBuscaAdmin() {
       atualizarEstadoBuscaAdmin();
+      salvarCacheBuscaAdmin();
       renderizarResultadosBuscaGlobal();
     }
 
@@ -3555,6 +3580,7 @@
       campo.value = "";
       resultadosBuscaGlobalAtual = [];
       ultimaPlacaAutoAberta = "";
+      localStorage.removeItem(chaveCacheBuscaAdmin());
       atualizarEstadoBuscaAdmin();
       fecharResultadosBuscaGlobal();
       campo.focus();
@@ -4138,6 +4164,7 @@
     function abrirAplicacao() {
       document.getElementById("loginPage").style.display = "none";
       document.getElementById("app").style.display = "block";
+      restaurarCacheBuscaAdmin();
       iniciarEtiquetasLPA();
       iniciarServicos();
       iniciarVeiculosAtivos();
