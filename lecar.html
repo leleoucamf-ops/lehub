@@ -6953,6 +6953,19 @@
   }
 </style>
 
+
+<style id="lecar-busca-bloqueada-temporariamente">
+  #buscaSidebar:disabled {
+    cursor: not-allowed !important;
+    opacity: 0.72 !important;
+    color: rgba(255,255,255,0.75) !important;
+    -webkit-text-fill-color: rgba(255,255,255,0.75) !important;
+  }
+  #buscaSidebar:disabled::placeholder {
+    color: rgba(255,255,255,0.72) !important;
+    opacity: 1 !important;
+  }
+</style>
 </head>
   <body translate="no">
 
@@ -6998,7 +7011,10 @@
             type="text"
             id="buscaSidebar"
             class="app-search-input"
-            placeholder="BUSCAR"
+            placeholder="BUSCA BLOQUEADA TEMPORARIAMENTE"
+            disabled
+            aria-disabled="true"
+            title="BUSCA TEMPORARIAMENTE BLOQUEADA PARA REDUZIR LEITURAS NO FIREBASE"
             onfocus="buscaDeveManterFoco = true"
             onblur="limparCampoBuscaMantendoResultados()"
             onkeydown="limparBuscaAoEnter(event)"
@@ -8963,10 +8979,9 @@ setTimeout(() => {
               trocaOleo: descricaoEhTrocaOleo(descricaoServico),
               kmAtualOleo: "",
               origem: normalizarTextoBusca(servico.origem || "-"),
-              prioridade: normalizarTextoBusca(servico.prioridade || etiquetaServico.nome || "NORMAL"),
-              etiquetaId: String(servico.etiquetaId || servico.etiqueta_id || etiquetaServico.id || "").trim(),
-              etiquetaNome: etiquetaServico.nome,
-              etiquetaCor: etiquetaServico.cor,
+              // A etiqueta é preservada pelo nome da prioridade dentro da transação.
+              // Os metadados extras são gravados depois, sem bloquear o ato de assumir.
+              prioridade: normalizarTextoBusca(etiquetaServico.nome || servico.prioridade || "NORMAL"),
               dataEntrada: agora.toLocaleString("pt-BR"),
               dataEntradaISO: agora.toISOString(),
               status: obterStatusCurto(servico.statusServico || "AGUARDANDO ORÇAMENTO"),
@@ -8991,6 +9006,17 @@ setTimeout(() => {
               ultimaAtualizacaoISO: agora.toISOString()
             });
             transaction.set(veiculoRef, payloadVeiculo);
+          });
+
+          // Gravação complementar: se as regras atuais do Firestore ainda não
+          // aceitarem os campos novos de etiqueta, o serviço continua assumido.
+          const etiquetaLocal = resolverEtiquetaServicoLeCar(servicoLocal);
+          veiculoRef.set({
+            etiquetaId: String(servicoLocal.etiquetaId || servicoLocal.etiqueta_id || etiquetaLocal.id || "").trim(),
+            etiquetaNome: etiquetaLocal.nome,
+            etiquetaCor: etiquetaLocal.cor
+          }, { merge:true }).catch(erroEtiqueta => {
+            console.warn("Serviço assumido; metadados extras da etiqueta não foram gravados:", erroEtiqueta);
           });
 
           registrarAtividadeLeCar("SERVICO_LISTA_GERAL_ASSUMIDO", {
@@ -10035,6 +10061,13 @@ async function salvar() {
 
       function filtrarBusca() {
         const campoBusca = document.getElementById("buscaSidebar");
+
+        // BLOQUEIO TEMPORÁRIO: impede qualquer consulta da busca ao Firebase.
+        if (!campoBusca || campoBusca.disabled) {
+          fecharModalBusca(false);
+          return;
+        }
+
         buscaDeveManterFoco = true;
 
         if (existeModalOperacionalAberto()) {
