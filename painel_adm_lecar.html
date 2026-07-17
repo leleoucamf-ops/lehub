@@ -2172,6 +2172,100 @@
     .global-search-badge.finalizado { background:#dcfce7; border-color:#bbf7d0; color:#15803d; }
     .global-search-badge.excluido { background:#fee2e2; border-color:#fecaca; color:#b91c1c; }
 
+    /* Resultado da busca com ações independentes: histórico ou edição. */
+    .global-search-item {
+      display:block;
+      min-height:0;
+      padding:0;
+      overflow:hidden;
+    }
+    .global-search-open {
+      width:100%;
+      min-height:72px;
+      padding:10px 11px 8px;
+      border:0;
+      border-radius:0;
+      background:transparent;
+      color:#0f172a;
+      display:grid;
+      grid-template-columns:minmax(0,1fr) auto;
+      gap:7px 10px;
+      text-align:left;
+    }
+    .global-search-open:hover,
+    .global-search-open:focus-visible { background:#f8fbff; }
+    .global-search-actions {
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:7px;
+      padding:0 9px 9px;
+    }
+    .global-search-action-btn {
+      min-height:34px;
+      padding:0 9px;
+      border:1px solid #bfdbfe;
+      border-radius:9px;
+      background:#eff6ff;
+      color:#1e3a8a;
+      font-size:.54rem;
+      font-weight:950;
+      text-transform:uppercase;
+    }
+    .global-search-action-btn.edit {
+      border-color:#bbf7d0;
+      background:#ecfdf5;
+      color:#166534;
+    }
+    .global-search-action-btn:hover,
+    .global-search-action-btn:focus-visible { filter:brightness(.97); }
+    .global-search-action-btn:disabled {
+      border-color:#e2e8f0;
+      background:#f8fafc;
+      color:#94a3b8;
+      cursor:not-allowed;
+    }
+    .global-search-action-btn.edit:not(:disabled) {
+      min-height:40px;
+      border-width:2px;
+      background:#16a34a;
+      border-color:#15803d;
+      color:#ffffff;
+      box-shadow:0 4px 10px rgba(22,163,74,.20);
+    }
+    .vehicle-history-head-actions {
+      display:flex;
+      align-items:center;
+      justify-content:flex-end;
+      gap:8px;
+      flex:0 0 auto;
+    }
+    .vehicle-history-edit-btn {
+      min-height:38px;
+      padding:0 14px;
+      border:1px solid #15803d;
+      border-radius:10px;
+      background:#16a34a;
+      color:#ffffff;
+      font-size:.58rem;
+      font-weight:950;
+      letter-spacing:.02em;
+      text-transform:uppercase;
+      box-shadow:0 5px 12px rgba(22,163,74,.20);
+    }
+    .vehicle-history-edit-btn:hover,
+    .vehicle-history-edit-btn:focus-visible { filter:brightness(.96); }
+    .history-action-btn.edit-vehicle {
+      border-color:#86efac;
+      background:#dcfce7;
+      color:#166534;
+    }
+    @media (max-width:640px) {
+      .global-search-actions { grid-template-columns:1fr; }
+      .vehicle-history-head { align-items:flex-start; }
+      .vehicle-history-head-actions { flex-direction:column-reverse; align-items:flex-end; }
+      .vehicle-history-edit-btn { min-height:34px; padding:0 10px; font-size:.52rem; }
+    }
+
     .global-search-empty {
       padding: 24px 12px;
       color: #64748b;
@@ -2722,6 +2816,73 @@
   </style>
 
 
+  <style id="lpa-filtro-origem-abas">
+    .services-panel-head {
+      flex-wrap: wrap;
+    }
+
+    .operation-filter-shell {
+      display: none;
+      min-height: 34px;
+      margin-left: auto;
+      padding: 3px 4px 3px 9px;
+      align-items: center;
+      gap: 7px;
+      border: 1px solid #bfdbfe;
+      border-radius: 10px;
+      background: #eff6ff;
+      color: #1e3a8a;
+    }
+
+    .operation-filter-shell.show {
+      display: inline-flex;
+    }
+
+    .operation-filter-shell label {
+      font-size: .55rem;
+      font-weight: 950;
+      letter-spacing: .035em;
+      text-transform: uppercase;
+      white-space: nowrap;
+    }
+
+    .operation-filter-shell select {
+      height: 27px;
+      min-width: 96px;
+      padding: 0 27px 0 9px;
+      border: 1px solid #93c5fd;
+      border-radius: 8px;
+      outline: none;
+      background: #ffffff;
+      color: #0f2748;
+      font-size: .61rem;
+      font-weight: 900;
+      text-transform: uppercase;
+      cursor: pointer;
+    }
+
+    .operation-filter-shell select:focus {
+      border-color: #2563eb;
+      box-shadow: 0 0 0 3px rgba(37, 99, 235, .12);
+    }
+
+    @media (max-width: 700px) {
+      .services-panel-head {
+        gap: 8px;
+      }
+
+      .operation-filter-shell {
+        order: 3;
+        margin-left: 0;
+      }
+
+      .import-planilha-btn,
+      .trash-empty-btn {
+        order: 4;
+      }
+    }
+  </style>
+
   <style id="lpa-importacao-planilha">
     .import-planilha-btn {
       display:none;
@@ -2854,8 +3015,9 @@
 
 
   <style id="lpa-mecanicos-altura-fixa-6-veiculos">
-    /* ABA MECÂNICOS: CARDS IGUAIS, 6 VEÍCULOS VISÍVEIS E ROLAGEM INTERNA */
+    /* ABA MECÂNICOS: ALTERAÇÃO ISOLADA — CARDS DE 310PX, 6 VEÍCULOS E SCROLL */
     .mechanics-grid {
+      grid-template-columns: minmax(0, 1fr) !important;
       align-items: stretch !important;
     }
 
@@ -2871,15 +3033,150 @@
       height: 220px !important;
       min-height: 220px !important;
       max-height: 220px !important;
+      display: grid !important;
+      grid-template-columns: 1fr !important;
+      grid-auto-rows: 31px !important;
+      gap: 5px !important;
       overflow-y: auto !important;
       overflow-x: hidden !important;
       align-content: start !important;
+      overscroll-behavior: contain;
     }
 
     .mechanic-vehicle-row {
+      width: 100% !important;
+      min-width: 0 !important;
       height: 31px !important;
       min-height: 31px !important;
       max-height: 31px !important;
+      padding: 3px 6px !important;
+      display: grid !important;
+      grid-template-columns: 78px 145px minmax(210px,1fr) 105px 105px 135px 145px 145px 25px !important;
+      gap: 6px !important;
+      align-items: center !important;
+    }
+
+    .mechanic-vehicle-row:not(.has-delete) {
+      grid-template-columns: 78px 145px minmax(210px,1fr) 105px 105px 135px 145px 145px !important;
+    }
+
+    .mechanic-vehicle-field {
+      min-width: 0;
+      height: 25px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      overflow: hidden;
+    }
+
+    .mechanic-vehicle-field::before {
+      content: attr(data-label);
+      color: #94a3b8;
+      font-size: .39rem;
+      font-weight: 900;
+      line-height: 1;
+      letter-spacing: .03em;
+      text-transform: uppercase;
+      white-space: nowrap;
+    }
+
+    .mechanic-vehicle-value {
+      min-width: 0;
+      margin-top: 2px;
+      color: #334155;
+      font-size: .51rem;
+      font-weight: 780;
+      line-height: 1;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      text-transform: uppercase;
+    }
+
+    .mechanic-vehicle-field.plate .mechanic-vehicle-value {
+      color: #0f172a;
+      font-size: .56rem;
+      font-weight: 950;
+      letter-spacing: .02em;
+    }
+
+    .mechanic-vehicle-field.status .mechanic-vehicle-status {
+      width: 100%;
+      max-width: 100%;
+      min-height: 14px;
+      height: 14px;
+      margin-top: 1px;
+      padding: 0 5px;
+      font-size: .39rem;
+    }
+
+    .mechanic-vehicle-row.finalizado {
+      border-color: #bbf7d0;
+      background: #f0fdf4;
+    }
+
+    .mechanic-vehicle-row.has-delete {
+      position: relative !important;
+      grid-template-columns: 78px 145px minmax(210px,1fr) 105px 105px 135px 145px 145px !important;
+    }
+
+    .mechanic-vehicle-row.has-delete .mechanic-vehicle-field:last-of-type {
+      padding-right: 34px;
+    }
+
+    .mechanic-delete-btn {
+      position: absolute !important;
+      top: 50% !important;
+      right: 20px !important;
+      align-self: auto;
+      justify-self: auto;
+      transform: translateY(-50%) !important;
+    }
+
+    .mecanicos-filter-bar {
+      display: none;
+    }
+
+    .mecanicos-filter-bar.show {
+      display: flex;
+      align-items: end;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    @media (max-width: 760px) {
+      .mechanic-card {
+        padding-left: 10px !important;
+        padding-right: 10px !important;
+      }
+    }
+  </style>
+
+  <style id="lpa-mecanicos-colunas-fontes-ajustadas">
+    /* AJUSTE ISOLADO: PLACA E VEÍCULO COM A MESMA LARGURA; SERVIÇO PRESERVADO. */
+    .mechanic-vehicle-row,
+    .mechanic-vehicle-row.has-delete,
+    .mechanic-vehicle-row:not(.has-delete) {
+      grid-template-columns: 145px 145px minmax(210px, 1fr) 105px 105px 135px 145px 145px !important;
+    }
+
+    /* FONTES NO PADRÃO VISUAL DO SISTEMA EM TODAS AS COLUNAS. */
+    .mechanic-vehicle-field::before {
+      font-size: .48rem !important;
+      line-height: 1 !important;
+    }
+
+    .mechanic-vehicle-value {
+      font-size: .62rem !important;
+      line-height: 1.05 !important;
+    }
+
+    .mechanic-vehicle-field.plate .mechanic-vehicle-value {
+      font-size: .68rem !important;
+    }
+
+    .mechanic-vehicle-field.status .mechanic-vehicle-status {
+      font-size: .50rem !important;
     }
   </style>
 
@@ -2922,10 +3219,14 @@
           <div class="panel-head services-panel-head">
             <h2 id="tituloVisaoPainel">AGUARDANDO</h2>
             <div class="services-view-summary"><span id="textoResumoVisao">SERVIÇOS</span><strong id="totalVisaoPainel">0</strong></div>
-            <button id="btnImportarPlanilha" type="button" class="import-planilha-btn" onclick="abrirImportacaoPlanilha()" title="Importar planilha com pré-análise">
-              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3V15"></path><path d="M7.5 8L12 3L16.5 8"></path><path d="M5 13V20H19V13"></path></svg>
-              IMPORTAR PLANILHA
-            </button>
+            <div id="filtroOrigemPainel" class="operation-filter-shell" aria-label="Filtro por operação">
+              <label for="selectFiltroOrigemPainel">OPERAÇÃO</label>
+              <select id="selectFiltroOrigemPainel" onchange="alterarFiltroOrigemPainel(this.value)">
+                <option value="TODOS" selected>TODOS</option>
+                <option value="ATM">ATM</option>
+                <option value="BOLSAO">BOLSÃO</option>
+              </select>
+            </div>
             <button id="btnEsvaziarLixeira" type="button" class="trash-empty-btn" onclick="esvaziarLixeira()">ESVAZIAR LIXEIRA</button>
           </div>
           <div class="panel-body services-panel-body">
@@ -2960,6 +3261,38 @@
               </div>
 
               <div id="resumoFiltroFinalizados" class="finalizados-filter-info">EXIBINDO: <strong>HOJE</strong></div>
+            </div>
+            <div id="filtroMecanicosBar" class="finalizados-filter-bar mecanicos-filter-bar" aria-label="Filtro da aba mecânicos">
+              <div class="finalizados-filter-field">
+                <label for="modoFiltroMecanicos">Visualizar</label>
+                <select id="modoFiltroMecanicos" onchange="alterarModoFiltroMecanicos(this.value)">
+                  <option value="HOJE">HOJE</option>
+                  <option value="DATA">DATA ESPECÍFICA</option>
+                  <option value="PERIODO">PERÍODO</option>
+                </select>
+              </div>
+
+              <div id="grupoFiltroMecanicosData" class="finalizados-filter-field" style="display:none">
+                <label for="dataFiltroMecanicos">Data</label>
+                <input id="dataFiltroMecanicos" type="date">
+              </div>
+
+              <div id="grupoFiltroMecanicosInicio" class="finalizados-filter-field periodo" style="display:none">
+                <label for="inicioFiltroMecanicos">De</label>
+                <input id="inicioFiltroMecanicos" type="date">
+              </div>
+
+              <div id="grupoFiltroMecanicosFim" class="finalizados-filter-field periodo" style="display:none">
+                <label for="fimFiltroMecanicos">Até</label>
+                <input id="fimFiltroMecanicos" type="date">
+              </div>
+
+              <div class="finalizados-filter-actions">
+                <button type="button" class="finalizados-filter-btn primary" onclick="aplicarFiltroMecanicos()">APLICAR</button>
+                <button type="button" class="finalizados-filter-btn" onclick="mostrarMecanicosHoje()">HOJE</button>
+              </div>
+
+              <div id="resumoFiltroMecanicos" class="finalizados-filter-info">EXIBINDO: <strong>HOJE</strong></div>
             </div>
             <div id="listaServicosAdm" class="services-list view-cards"><div class="empty">Carregando serviços...</div></div>
           </div>
@@ -3163,7 +3496,10 @@
           <h2 id="tituloHistoricoVeiculo">Histórico do veículo</h2>
           <p id="subtituloHistoricoVeiculo">CARREGANDO REGISTROS...</p>
         </div>
-        <button type="button" class="vehicle-history-close" aria-label="Fechar histórico" onclick="fecharHistoricoVeiculo()">×</button>
+        <div class="vehicle-history-head-actions">
+          <button id="btnEditarVeiculoHistorico" type="button" class="vehicle-history-edit-btn" onclick="abrirEdicaoVeiculoHistoricoAtual()" hidden>Editar veículo</button>
+          <button type="button" class="vehicle-history-close" aria-label="Fechar histórico" onclick="fecharHistoricoVeiculo()">×</button>
+        </div>
       </div>
       <div id="conteudoHistoricoVeiculo" class="vehicle-history-body">
         <div class="global-search-empty">CARREGANDO HISTÓRICO...</div>
@@ -3363,10 +3699,23 @@
     let edicaoServicoAtualId = "";
     let edicaoServicoAtualOrigem = "";
     let visaoPainelAtual = "AGUARDANDO";
+    const VISOES_COM_FILTRO_ORIGEM = Object.freeze(["AGUARDANDO","ANDAMENTO","URGENTE","FINALIZADOS","MECANICOS","LIXEIRA"]);
+    const filtrosOrigemPorVisao = {
+      AGUARDANDO:"TODOS",
+      ANDAMENTO:"TODOS",
+      URGENTE:"TODOS",
+      FINALIZADOS:"TODOS",
+      MECANICOS:"TODOS",
+      LIXEIRA:"TODOS"
+    };
     let filtroFinalizadosModo = "HOJE";
     let filtroFinalizadosData = "";
     let filtroFinalizadosInicio = "";
     let filtroFinalizadosFim = "";
+    let filtroMecanicosModo = "HOJE";
+    let filtroMecanicosData = "";
+    let filtroMecanicosInicio = "";
+    let filtroMecanicosFim = "";
     let resultadosBuscaGlobalAtual = [];
     let chaveHistoricoVeiculoAtual = "";
     let timerBuscaGlobal = null;
@@ -3530,6 +3879,7 @@
         grupo.finalizados = grupo.registros.filter(item => item.tipo === "FINALIZADO").length;
         grupo.excluidos = grupo.registros.filter(item => item.tipo === "LIXEIRA").length;
         grupo.ultimo = grupo.registros[0] || null;
+        grupo.editavel = grupo.registros.find(item => item.tipo === "ANDAMENTO" || item.tipo === "AGUARDANDO") || null;
         return grupo;
       }).sort((a,b) => (b.ultimo?.timestamp || 0) - (a.ultimo?.timestamp || 0));
     }
@@ -3558,32 +3908,30 @@
         return;
       }
 
-      painel.innerHTML = `<div class="global-search-summary">${resultadosBuscaGlobalAtual.length} VEÍCULO${resultadosBuscaGlobalAtual.length === 1 ? "" : "S"} ENCONTRADO${resultadosBuscaGlobalAtual.length === 1 ? "" : "S"} • CLIQUE PARA ABRIR O HISTÓRICO</div>${resultadosBuscaGlobalAtual.map((grupo, indice) => {
+      painel.innerHTML = `<div class="global-search-summary">${resultadosBuscaGlobalAtual.length} VEÍCULO${resultadosBuscaGlobalAtual.length === 1 ? "" : "S"} ENCONTRADO${resultadosBuscaGlobalAtual.length === 1 ? "" : "S"} • ESCOLHA HISTÓRICO OU EDITAR VEÍCULO</div>${resultadosBuscaGlobalAtual.map((grupo, indice) => {
         const ultimo = grupo.ultimo;
-        return `<button type="button" class="global-search-item" role="option" onclick="abrirHistoricoVeiculoPorIndice(${indice})">
-          <span class="global-search-main">
-            <span class="global-search-plate">${escapar(grupo.placa)}</span>
-            <span class="global-search-vehicle">${escapar(grupo.veiculo)}</span>
-          </span>
-          <span class="global-search-badges">
-            ${grupo.abertos ? `<span class="global-search-badge aberto">${grupo.abertos} ABERTO${grupo.abertos === 1 ? "" : "S"}</span>` : ""}
-            ${grupo.finalizados ? `<span class="global-search-badge finalizado">${grupo.finalizados} FINALIZADO${grupo.finalizados === 1 ? "" : "S"}</span>` : ""}
-            ${grupo.excluidos ? `<span class="global-search-badge excluido">${grupo.excluidos} LIXEIRA</span>` : ""}
-          </span>
-          <span class="global-search-last">ÚLTIMO REGISTRO: ${escapar(ultimo?.status || "NÃO INFORMADO")} • ${escapar(formatarDataTimestamp(ultimo?.timestamp || 0))}</span>
-        </button>`;
+        const podeEditar = Boolean(grupo.editavel);
+        return `<div class="global-search-item" role="option">
+          <button type="button" class="global-search-open" onclick="abrirHistoricoVeiculoPorIndice(${indice})" aria-label="Abrir histórico de ${escaparAtributo(grupo.placa)}">
+            <span class="global-search-main">
+              <span class="global-search-plate">${escapar(grupo.placa)}</span>
+              <span class="global-search-vehicle">${escapar(grupo.veiculo)}</span>
+            </span>
+            <span class="global-search-badges">
+              ${grupo.abertos ? `<span class="global-search-badge aberto">${grupo.abertos} ABERTO${grupo.abertos === 1 ? "" : "S"}</span>` : ""}
+              ${grupo.finalizados ? `<span class="global-search-badge finalizado">${grupo.finalizados} FINALIZADO${grupo.finalizados === 1 ? "" : "S"}</span>` : ""}
+              ${grupo.excluidos ? `<span class="global-search-badge excluido">${grupo.excluidos} LIXEIRA</span>` : ""}
+            </span>
+            <span class="global-search-last">ÚLTIMO REGISTRO: ${escapar(ultimo?.status || "NÃO INFORMADO")} • ${escapar(formatarDataTimestamp(ultimo?.timestamp || 0))}</span>
+          </button>
+          <div class="global-search-actions">
+            <button type="button" class="global-search-action-btn" onclick="abrirHistoricoVeiculoPorIndice(${indice})">Abrir histórico</button>
+            <button type="button" class="global-search-action-btn edit" onclick="abrirEdicaoVeiculoBuscaPorIndice(${indice})" ${podeEditar ? "" : "disabled"}>${podeEditar ? "Abrir para editar" : "Sem serviço aberto"}</button>
+          </div>
+        </div>`;
       }).join("")}`;
       painel.classList.add("show");
-
       clearTimeout(timerBuscaGlobal);
-      const placaDigitada = textoCompactoBusca(consulta);
-      const exato = resultadosBuscaGlobalAtual.filter(grupo => textoCompactoBusca(grupo.placa) === placaDigitada);
-      if (placaDigitada.length >= 7 && exato.length === 1 && ultimaPlacaAutoAberta !== exato[0].chave) {
-        timerBuscaGlobal = setTimeout(() => {
-          ultimaPlacaAutoAberta = exato[0].chave;
-          abrirHistoricoVeiculo(exato[0].chave);
-        }, 320);
-      }
     }
 
     function aoDigitarBuscaAdmin() {
@@ -3620,6 +3968,41 @@
     function abrirHistoricoVeiculoPorIndice(indice) {
       const grupo = resultadosBuscaGlobalAtual[Number(indice)];
       if (grupo) abrirHistoricoVeiculo(grupo.chave);
+    }
+
+    function abrirEdicaoVeiculoBuscaPorIndice(indice) {
+      const grupo = resultadosBuscaGlobalAtual[Number(indice)];
+      const registro = grupo?.editavel;
+      if (!registro) {
+        mostrarToast("NÃO HÁ SERVIÇO ABERTO PARA EDIÇÃO.");
+        return;
+      }
+      fecharResultadosBuscaGlobal();
+      const origem = registro.tipo === "AGUARDANDO" ? "SERVICO_LISTA_GERAL" : "VEICULO_ATIVO";
+      abrirEdicaoServico(registro.id, origem);
+    }
+
+    function abrirEdicaoVeiculoHistoricoPorIndice(indice) {
+      const registro = registroHistoricoAtualPorIndice(indice);
+      if (!registro || !["AGUARDANDO", "ANDAMENTO"].includes(registro.tipo)) {
+        mostrarToast("NÃO HÁ SERVIÇO ABERTO PARA EDIÇÃO.");
+        return;
+      }
+      const origem = registro.tipo === "AGUARDANDO" ? "SERVICO_LISTA_GERAL" : "VEICULO_ATIVO";
+      const id = registro.id;
+      fecharHistoricoVeiculo();
+      abrirEdicaoServico(id, origem);
+    }
+
+    function abrirEdicaoVeiculoHistoricoAtual() {
+      const grupo = grupoHistoricoPorChave(chaveHistoricoVeiculoAtual);
+      const registro = grupo?.registros?.find(item => item.tipo === "ANDAMENTO" || item.tipo === "AGUARDANDO");
+      if (!registro) {
+        mostrarToast("NÃO HÁ SERVIÇO ABERTO PARA EDIÇÃO.");
+        return;
+      }
+      const indice = grupo.registros.indexOf(registro);
+      abrirEdicaoVeiculoHistoricoPorIndice(indice);
     }
 
     function rotuloTipoHistorico(tipo) {
@@ -3690,6 +4073,12 @@
 
     function renderizarAcoesHistoricoRegistro(registro, indice, grupo) {
       const botoes = [];
+      if (registro.tipo === "AGUARDANDO" || registro.tipo === "ANDAMENTO") {
+        botoes.push(`<button type="button" class="history-action-btn edit-vehicle" onclick="abrirEdicaoVeiculoHistoricoPorIndice(${indice})">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20H8L19 9L15 5L4 16V20Z"></path><path d="M13.5 6.5L17.5 10.5"></path></svg>
+          Editar veículo
+        </button>`);
+      }
       if (registro.tipo === "AGUARDANDO") {
         botoes.push(`<button type="button" class="history-action-btn assign" onclick="abrirAtribuicaoHistorico(${indice})">
           <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 11A4 4 0 1 0 9 3A4 4 0 0 0 9 11Z"></path><path d="M2.5 21V19A6.5 6.5 0 0 1 9 12.5A6.5 6.5 0 0 1 15.5 19V21"></path><path d="M18 8V14M15 11H21"></path></svg>
@@ -3813,6 +4202,7 @@
           };
 
           const lote = db.batch();
+          const mecanicoAnterior = mecanicoCanonico(nomeMecanicoCard(item, ""));
           let idsLista = refsLista.map(ref => ref.id);
           if (refsLista.length) {
             refsLista.forEach(ref => lote.update(ref, atualizacaoLista));
@@ -3843,11 +4233,27 @@
             idsLista = [novaRef.id];
           }
           lote.delete(db.collection("veiculos").doc(item.id));
+          const notificacaoRetorno = adicionarNotificacaoMecanicoAoLote(lote, {
+            mecanico:mecanicoAnterior,
+            titulo:"SERVIÇO ENVIADO PARA AGUARDANDO",
+            acao:"A ATRIBUIÇÃO FOI REMOVIDA E O SERVIÇO VOLTOU PARA AGUARDANDO.",
+            evento:"SERVICO_RETORNADO_AGUARDANDO",
+            contexto:"RETORNO_HISTORICO_LPA",
+            veiculo:item.veiculo || veiculo,
+            placa:item.placa || placa,
+            descricao:item.descricao || descricao,
+            origem:item.origem || "-",
+            status:"AGUARDANDO",
+            veiculoId:item.id,
+            listaGeralIds:idsLista,
+            agora
+          });
           lote.set(db.collection("auditoria_lecar").doc(), {
             tipo:"SERVICO_RETORNADO_AGUARDANDO_HISTORICO_LPA",
             usuario:usuarioPainelAtual(),
             veiculoId:item.id,
             listaGeralIds:idsLista,
+            notificacaoId:notificacaoRetorno?.ref.id || "",
             criadoEm:firebase.firestore.FieldValue.serverTimestamp(),
             criadoEmISO:agora.toISOString(),
             antes:copiarRegistroParaAuditoria(item),
@@ -3949,6 +4355,21 @@
           const veiculoRef = db.collection("veiculos").doc();
           const status = statusCanonicoEdicao(item.statusServico || "AGUARDANDO ORÇAMENTO");
           const lote = db.batch();
+          const notificacaoAtribuicao = adicionarNotificacaoMecanicoAoLote(lote, {
+            mecanico,
+            titulo:"NOVO SERVIÇO ATRIBUÍDO",
+            acao:"O SERVIÇO FOI ATRIBUÍDO PARA VOCÊ.",
+            evento:"SERVICO_ATRIBUIDO",
+            contexto:"ATRIBUICAO_HISTORICO_LPA",
+            veiculo:item.veiculo,
+            placa:item.placa,
+            descricao:item.descricao,
+            origem:item.origem,
+            status,
+            veiculoId:veiculoRef.id,
+            listaGeralId:item.id,
+            agora
+          });
           lote.update(db.collection("servicos_lista_geral").doc(item.id), {
             statusDistribuicao:"ASSUMIDO",
             statusServico:status,
@@ -3989,6 +4410,7 @@
             mecanico,
             servicoListaGeralId:item.id,
             veiculoId:veiculoRef.id,
+            notificacaoId:notificacaoAtribuicao?.ref.id || "",
             criadoEm:firebase.firestore.FieldValue.serverTimestamp(),
             criadoEmISO:agora.toISOString(),
             dados:{ veiculo:item.veiculo || "", placa:item.placa || "", descricao:item.descricao || "" }
@@ -4010,6 +4432,38 @@
 
         const refsLista = await referenciasListaGeralParaEdicao(item);
         const lote = db.batch();
+        const notificacaoNovoMecanico = adicionarNotificacaoMecanicoAoLote(lote, {
+          mecanico,
+          titulo:"SERVIÇO REATRIBUÍDO PARA VOCÊ",
+          acao:`O SERVIÇO FOI REATRIBUÍDO DE ${atual || "OUTRO RESPONSÁVEL"} PARA VOCÊ.`,
+          evento:"SERVICO_REATRIBUIDO_NOVO_MECANICO",
+          contexto:"REATRIBUICAO_HISTORICO_LPA",
+          veiculo:item.veiculo,
+          placa:item.placa,
+          descricao:item.descricao,
+          origem:item.origem,
+          status:item.status,
+          veiculoId:item.id,
+          listaGeralIds:refsLista.map(ref => ref.id),
+          agora
+        });
+        const notificacaoMecanicoAnterior = atual && atual !== mecanico
+          ? adicionarNotificacaoMecanicoAoLote(lote, {
+              mecanico:atual,
+              titulo:"SERVIÇO REATRIBUÍDO",
+              acao:`O SERVIÇO FOI RETIRADO DA SUA LISTA E ATRIBUÍDO PARA ${mecanico}.`,
+              evento:"SERVICO_REATRIBUIDO_MECANICO_ANTERIOR",
+              contexto:"REATRIBUICAO_HISTORICO_LPA",
+              veiculo:item.veiculo,
+              placa:item.placa,
+              descricao:item.descricao,
+              origem:item.origem,
+              status:item.status,
+              veiculoId:item.id,
+              listaGeralIds:refsLista.map(ref => ref.id),
+              agora
+            })
+          : null;
         lote.update(db.collection("veiculos").doc(item.id), {
           mecanico_responsavel:mecanico,
           mecanicoResponsavel:mecanico,
@@ -4032,6 +4486,8 @@
           mecanicoNovo:mecanico,
           veiculoId:item.id,
           listaGeralIds:refsLista.map(ref => ref.id),
+          notificacaoNovoMecanicoId:notificacaoNovoMecanico?.ref.id || "",
+          notificacaoMecanicoAnteriorId:notificacaoMecanicoAnterior?.ref.id || "",
           criadoEm:firebase.firestore.FieldValue.serverTimestamp(),
           criadoEmISO:agora.toISOString(),
           dados:{ veiculo:item.veiculo || "", placa:item.placa || "", descricao:item.descricao || "" }
@@ -4057,10 +4513,13 @@
       const grupo = grupoHistoricoPorChave(chaveHistoricoVeiculoAtual);
       const conteudo = document.getElementById("conteudoHistoricoVeiculo");
       if (!conteudo) return;
+      const botaoEditarHistorico = document.getElementById("btnEditarVeiculoHistorico");
       if (!grupo) {
+        if (botaoEditarHistorico) botaoEditarHistorico.hidden = true;
         conteudo.innerHTML = '<div class="global-search-empty">NENHUM REGISTRO DISPONÍVEL PARA ESTE VEÍCULO.</div>';
         return;
       }
+      if (botaoEditarHistorico) botaoEditarHistorico.hidden = grupo.abertos === 0;
 
       document.getElementById("tituloHistoricoVeiculo").textContent = `${grupo.placa} • ${grupo.veiculo}`;
       document.getElementById("subtituloHistoricoVeiculo").textContent = "HISTÓRICO COMPLETO — ABERTOS, FINALIZADOS E LIXEIRA";
@@ -4274,10 +4733,14 @@
       return "informativa";
     }
 
+    function notificacaoVisivelNoPainelAdm(item) {
+      return item?.exibirNoPainelAdm !== false;
+    }
+
     function atualizarBadgeNotificacoesAdm() {
       const badge = document.getElementById("notificacaoBadgeAdm");
       if (!badge) return;
-      const total = notificacoesAdm.filter(item => item.ativo !== false && !notificacaoLidaAdm(item)).length;
+      const total = notificacoesAdm.filter(item => item.ativo !== false && notificacaoVisivelNoPainelAdm(item) && !notificacaoLidaAdm(item)).length;
       badge.textContent = total > 99 ? "99+" : String(total);
       badge.classList.toggle("show", total > 0);
     }
@@ -4285,7 +4748,7 @@
     function renderizarNotificacoesAdm() {
       const lista = document.getElementById("listaNotificacoesAdm");
       if (!lista) return;
-      const itens = notificacoesAdm.filter(item => item.ativo !== false);
+      const itens = notificacoesAdm.filter(item => item.ativo !== false && notificacaoVisivelNoPainelAdm(item));
       if (!itens.length) {
         lista.innerHTML = '<div class="notificacoes-adm-empty">NENHUMA NOTIFICAÇÃO PUBLICADA.</div>';
         return;
@@ -4309,7 +4772,7 @@
 
     async function marcarNotificacoesAdmComoLidas() {
       const usuario = usuarioNotificacoesAdm();
-      const naoLidas = notificacoesAdm.filter(item => item.ativo !== false && !notificacaoLidaAdm(item));
+      const naoLidas = notificacoesAdm.filter(item => item.ativo !== false && notificacaoVisivelNoPainelAdm(item) && !notificacaoLidaAdm(item));
       if (!usuario || !naoLidas.length) return;
       const atuais = new Set(idsNotificacoesLidasAdm());
       naoLidas.forEach(item => atuais.add(item.id));
@@ -4422,7 +4885,7 @@
         .onSnapshot(snapshot => {
           notificacoesAdm = snapshot.docs
             .map(doc => ({ id:doc.id, ...doc.data() }))
-            .filter(item => !registroBloqueado(item))
+            .filter(item => !registroBloqueado(item) && notificacaoVisivelNoPainelAdm(item))
             .sort((a,b) => timestampNotificacaoAdm(b) - timestampNotificacaoAdm(a));
           atualizarBadgeNotificacoesAdm();
           renderizarNotificacoesAdm();
@@ -4799,6 +5262,88 @@
       renderizarServicos();
     }
 
+    function descricaoFiltroMecanicos() {
+      if (filtroMecanicosModo === "DATA") {
+        return filtroMecanicosData ? formatarDataISOParaBR(filtroMecanicosData) : "DATA NÃO DEFINIDA";
+      }
+      if (filtroMecanicosModo === "PERIODO") {
+        if (!filtroMecanicosInicio || !filtroMecanicosFim) return "PERÍODO NÃO DEFINIDO";
+        return `${formatarDataISOParaBR(filtroMecanicosInicio)} ATÉ ${formatarDataISOParaBR(filtroMecanicosFim)}`;
+      }
+      return "HOJE";
+    }
+
+    function atualizarInterfaceFiltroMecanicos() {
+      const barra = document.getElementById("filtroMecanicosBar");
+      const modo = document.getElementById("modoFiltroMecanicos");
+      const grupoData = document.getElementById("grupoFiltroMecanicosData");
+      const grupoInicio = document.getElementById("grupoFiltroMecanicosInicio");
+      const grupoFim = document.getElementById("grupoFiltroMecanicosFim");
+      const campoData = document.getElementById("dataFiltroMecanicos");
+      const campoInicio = document.getElementById("inicioFiltroMecanicos");
+      const campoFim = document.getElementById("fimFiltroMecanicos");
+      const resumo = document.getElementById("resumoFiltroMecanicos");
+
+      barra?.classList.toggle("show", visaoPainelAtual === "MECANICOS");
+      if (modo) modo.value = filtroMecanicosModo;
+      if (grupoData) grupoData.style.display = filtroMecanicosModo === "DATA" ? "grid" : "none";
+      if (grupoInicio) grupoInicio.style.display = filtroMecanicosModo === "PERIODO" ? "grid" : "none";
+      if (grupoFim) grupoFim.style.display = filtroMecanicosModo === "PERIODO" ? "grid" : "none";
+      if (campoData) campoData.value = filtroMecanicosData || hojeLocalISO();
+      if (campoInicio) campoInicio.value = filtroMecanicosInicio || hojeLocalISO();
+      if (campoFim) campoFim.value = filtroMecanicosFim || hojeLocalISO();
+      if (resumo) resumo.innerHTML = `EXIBINDO: <strong>${escapar(descricaoFiltroMecanicos())}</strong>`;
+    }
+
+    function alterarModoFiltroMecanicos(modo) {
+      filtroMecanicosModo = ["HOJE", "DATA", "PERIODO"].includes(modo) ? modo : "HOJE";
+      if (filtroMecanicosModo === "HOJE") {
+        mostrarMecanicosHoje();
+        return;
+      }
+      atualizarInterfaceFiltroMecanicos();
+    }
+
+    function aplicarFiltroMecanicos() {
+      const modo = document.getElementById("modoFiltroMecanicos")?.value || "HOJE";
+      filtroMecanicosModo = ["HOJE", "DATA", "PERIODO"].includes(modo) ? modo : "HOJE";
+
+      if (filtroMecanicosModo === "DATA") {
+        const valor = document.getElementById("dataFiltroMecanicos")?.value || "";
+        if (!valor) {
+          mostrarToast("INFORME A DATA DO FILTRO.");
+          return;
+        }
+        filtroMecanicosData = valor;
+      }
+
+      if (filtroMecanicosModo === "PERIODO") {
+        const inicio = document.getElementById("inicioFiltroMecanicos")?.value || "";
+        const fim = document.getElementById("fimFiltroMecanicos")?.value || "";
+        if (!inicio || !fim) {
+          mostrarToast("INFORME A DATA INICIAL E FINAL.");
+          return;
+        }
+        if (inicio > fim) {
+          mostrarToast("A DATA INICIAL NÃO PODE SER MAIOR QUE A FINAL.");
+          return;
+        }
+        filtroMecanicosInicio = inicio;
+        filtroMecanicosFim = fim;
+      }
+
+      renderizarServicos();
+    }
+
+    function mostrarMecanicosHoje() {
+      const hoje = hojeLocalISO();
+      filtroMecanicosModo = "HOJE";
+      filtroMecanicosData = hoje;
+      filtroMecanicosInicio = hoje;
+      filtroMecanicosFim = hoje;
+      renderizarServicos();
+    }
+
     function timestampServico(item) {
       if (item?.criadoEm?.toMillis) return item.criadoEm.toMillis();
       const valorData = item?.criadoEmISO
@@ -5002,6 +5547,93 @@
       return fallback;
     }
 
+    function gerarIdAcaoNotificacaoMecanicoLPA(prefixo = "ATUALIZACAO") {
+      const sufixo = globalThis.crypto?.randomUUID
+        ? globalThis.crypto.randomUUID()
+        : `${Date.now()}-${Math.random().toString(36).slice(2, 11)}`;
+      return `${normalizar(prefixo).replace(/[^A-Z0-9]+/g, "-")}-${sufixo}`;
+    }
+
+    function payloadNotificacaoMecanicoLPA({
+      mecanico,
+      titulo = "VEÍCULO ATUALIZADO",
+      acao = "OS DADOS DO VEÍCULO FORAM ATUALIZADOS.",
+      evento = "VEICULO_ATUALIZADO",
+      contexto = "PAINEL_ADM_LPA",
+      veiculo = "VEÍCULO",
+      placa = "",
+      descricao = "SEM DESCRIÇÃO",
+      origem = "-",
+      status = "",
+      veiculoId = "",
+      listaGeralIds = [],
+      listaGeralId = "",
+      agora = new Date(),
+      acaoId = ""
+    }) {
+      const destino = mecanicoCanonico(mecanico);
+      const idsLista = Array.from(new Set([
+        ...(Array.isArray(listaGeralIds) ? listaGeralIds : []),
+        listaGeralId
+      ].filter(Boolean)));
+      const autor = usuarioPainelAtual() || "ADMIN";
+      const linhaStatus = status ? `
+STATUS: ${normalizar(status)}` : "";
+      return {
+        titulo:normalizar(titulo || "VEÍCULO ATUALIZADO"),
+        mensagem:`VEÍCULO: ${normalizar(veiculo || "VEÍCULO")}
+PLACA: ${textoCompactoBusca(placa) || "SEM PLACA"}
+SERVIÇO: ${normalizar(descricao || "SEM DESCRIÇÃO")}
+ORIGEM: ${normalizar(origem || "-") || "-"}${linhaStatus}
+
+AÇÃO: ${normalizar(acao || "VEÍCULO ATUALIZADO")}
+REALIZADO POR: ${autor}`,
+        tipo:"atualizacao",
+        prioridade:"atencao",
+        autor,
+        criadoPor:autor,
+        ativo:true,
+        lidosPor:[],
+        destinatario:destino,
+        destinatarios:[destino],
+        visibilidade:"DIRECIONADA",
+        popupDirecionado:true,
+        evento,
+        contexto,
+        canal:"LGV",
+        exibirNoPainelAdm:false,
+        placa:textoCompactoBusca(placa),
+        veiculo:normalizar(veiculo || "VEÍCULO"),
+        descricao:normalizar(descricao || "SEM DESCRIÇÃO"),
+        origem:normalizar(origem || "-") || "-",
+        mecanicoDestino:destino,
+        veiculoId:veiculoId || "",
+        listaGeralId:idsLista[0] || "",
+        listaGeralIds:idsLista,
+        acaoId:acaoId || gerarIdAcaoNotificacaoMecanicoLPA(evento),
+        criadoEm:firebase.firestore.FieldValue.serverTimestamp(),
+        criadoEmISO:agora.toISOString()
+      };
+    }
+
+    function prepararNotificacaoMecanicoLPA(dados) {
+      const mecanico = mecanicoCanonico(dados?.mecanico || "");
+      if (!mecanico) return null;
+      const ref = db.collection("notificacoes_lecar").doc();
+      const acaoId = dados?.acaoId || gerarIdAcaoNotificacaoMecanicoLPA(dados?.evento || "ATUALIZACAO");
+      return {
+        ref,
+        acaoId,
+        payload:payloadNotificacaoMecanicoLPA({ ...dados, mecanico, acaoId })
+      };
+    }
+
+    function adicionarNotificacaoMecanicoAoLote(lote, dados) {
+      const notificacao = prepararNotificacaoMecanicoLPA(dados);
+      if (notificacao) lote.set(notificacao.ref, notificacao.payload);
+      return notificacao;
+    }
+
     function descricaoEhTrocaOleoLPA(descricao) {
       return normalizar(descricao).includes("TROCA DE OLEO");
     }
@@ -5073,6 +5705,38 @@
       document.getElementById(mapaIds[visaoPainelAtual])?.classList.add("active");
     }
 
+    function filtroOrigemAtual(visao = visaoPainelAtual) {
+      return filtrosOrigemPorVisao[visao] || "TODOS";
+    }
+
+    function origemItemParaFiltro(item, visao = visaoPainelAtual) {
+      if (visao === "LIXEIRA") return item?.detalhes?.origem || "";
+      return item?.origem || "";
+    }
+
+    function itemPassaFiltroOrigem(item, visao = visaoPainelAtual) {
+      const filtro = filtroOrigemAtual(visao);
+      if (filtro === "TODOS") return true;
+      return normalizar(origemItemParaFiltro(item, visao)) === filtro;
+    }
+
+    function atualizarInterfaceFiltroOrigem() {
+      const shell = document.getElementById("filtroOrigemPainel");
+      const select = document.getElementById("selectFiltroOrigemPainel");
+      const visaoFiltravel = VISOES_COM_FILTRO_ORIGEM.includes(visaoPainelAtual);
+      shell?.classList.toggle("show", visaoFiltravel);
+      if (select && visaoFiltravel) select.value = filtroOrigemAtual();
+    }
+
+    function alterarFiltroOrigemPainel(valor) {
+      if (!VISOES_COM_FILTRO_ORIGEM.includes(visaoPainelAtual)) return;
+      const valorNormalizado = normalizar(valor);
+      filtrosOrigemPorVisao[visaoPainelAtual] = ["TODOS","ATM","BOLSAO"].includes(valorNormalizado)
+        ? valorNormalizado
+        : "TODOS";
+      renderizarServicos();
+    }
+
     function selecionarVisaoPainel(visao) {
       const permitidas = ["AGUARDANDO","ANDAMENTO","FINALIZADOS","URGENTE","MECANICOS","LIXEIRA"];
       visaoPainelAtual = permitidas.includes(visao) ? visao : "AGUARDANDO";
@@ -5081,6 +5745,12 @@
         filtroFinalizadosData = hoje;
         filtroFinalizadosInicio = hoje;
         filtroFinalizadosFim = hoje;
+      }
+      if (visaoPainelAtual === "MECANICOS" && !filtroMecanicosData) {
+        const hoje = hojeLocalISO();
+        filtroMecanicosData = hoje;
+        filtroMecanicosInicio = hoje;
+        filtroMecanicosFim = hoje;
       }
       renderizarServicos();
     }
@@ -5110,20 +5780,98 @@
       return String(status || "ATIVO").toUpperCase().trim();
     }
 
+    function timestampValorMecanicos(valor) {
+      if (!valor) return 0;
+      if (typeof valor?.toMillis === "function") return valor.toMillis();
+      if (typeof valor?.seconds === "number") return valor.seconds * 1000;
+      if (valor instanceof Date) return Number.isNaN(valor.getTime()) ? 0 : valor.getTime();
+      const data = new Date(valor);
+      return Number.isNaN(data.getTime()) ? 0 : data.getTime();
+    }
+
+    function registroListaGeralDoVeiculo(item) {
+      const listaId = String(item?.lista_geral_id || item?.listaGeralId || "").trim();
+      if (listaId) {
+        const porId = servicosAdm.find(registro => registro.id === listaId);
+        if (porId) return porId;
+      }
+      return servicosAdm.find(registro => String(registro?.veiculoId || "") === String(item?.id || "")) || null;
+    }
+
+    function timestampAssumidoMecanicos(item) {
+      const geral = registroListaGeralDoVeiculo(item);
+      const candidatos = [
+        item?.assumidoEm,
+        item?.assumidoEmISO,
+        item?.dataAssumiu,
+        item?.dataAssumiuISO,
+        item?.dataEntradaISO,
+        item?.dataEntrada,
+        geral?.assumidoEm,
+        geral?.assumidoEmISO,
+        geral?.criadoEm,
+        geral?.criadoEmISO
+      ];
+      for (const valor of candidatos) {
+        const timestamp = timestampValorMecanicos(valor);
+        if (timestamp) return timestamp;
+      }
+      return 0;
+    }
+
+    function timestampFinalizadoMecanicos(item) {
+      const candidatos = [
+        item?.dataFinalizacaoISO,
+        item?.finalizadoEm,
+        item?.finalizadoEmISO,
+        item?.dataFinalizacao,
+        item?.ultima_modificacao_iso
+      ];
+      for (const valor of candidatos) {
+        const timestamp = timestampValorMecanicos(valor);
+        if (timestamp) return timestamp;
+      }
+      return 0;
+    }
+
+    function itemPassaFiltroMecanicos(item) {
+      const referencia = item.__finalizadoMecanicos
+        ? (timestampFinalizadoMecanicos(item) || timestampAssumidoMecanicos(item))
+        : timestampAssumidoMecanicos(item);
+      const dataItem = dataLocalISO(referencia);
+      if (!dataItem) return false;
+
+      if (filtroMecanicosModo === "DATA") {
+        return dataItem === (filtroMecanicosData || hojeLocalISO());
+      }
+      if (filtroMecanicosModo === "PERIODO") {
+        if (!filtroMecanicosInicio || !filtroMecanicosFim) return false;
+        return dataItem >= filtroMecanicosInicio && dataItem <= filtroMecanicosFim;
+      }
+      return dataItem === hojeLocalISO();
+    }
+
     function renderizarMecanicos(lista, busca) {
+      const registrosMecanicos = [
+        ...veiculosAtivosAdm.map(item => ({ ...item, __finalizadoMecanicos:false })),
+        ...veiculosFinalizadosAdm.map(item => ({ ...item, __finalizadoMecanicos:true }))
+      ]
+        .filter(item => itemPassaFiltroOrigem(item, "MECANICOS"))
+        .filter(itemPassaFiltroMecanicos);
+
       const mecanicosBase = Object.values(MECANICOS_LECAR).filter(nome => !usuarioBloqueado(nome));
-      const mecanicosComVeiculos = veiculosAtivosAdm
-        .map(item => mecanicoCanonico(item.mecanico_responsavel || item.mecanicoResponsavel || item.mecanico))
+      const mecanicosComVeiculos = registrosMecanicos
+        .map(item => nomeMecanicoCard(item, ""))
         .filter(Boolean);
       const mecanicos = [...new Set([...mecanicosBase, ...mecanicosComVeiculos])]
         .sort((a,b) => a.localeCompare(b, "pt-BR"));
 
-      const veiculosDoMecanico = nome => veiculosAtivosAdm
-        .filter(item => mecanicoCanonico(item.mecanico_responsavel || item.mecanicoResponsavel || item.mecanico) === nome)
+      const veiculosDoMecanico = nome => registrosMecanicos
+        .filter(item => nomeMecanicoCard(item, "") === nome)
         .sort((a,b) => {
-          const pa = ordemEtiquetaServico(a);
-          const pb = ordemEtiquetaServico(b);
-          return pb - pa || timestampServico(b) - timestampServico(a);
+          const dataA = a.__finalizadoMecanicos ? (timestampFinalizadoMecanicos(a) || timestampAssumidoMecanicos(a)) : timestampAssumidoMecanicos(a);
+          const dataB = b.__finalizadoMecanicos ? (timestampFinalizadoMecanicos(b) || timestampAssumidoMecanicos(b)) : timestampAssumidoMecanicos(b);
+          return dataB - dataA;
         });
 
       const filtrados = mecanicos.filter(nome => {
@@ -5138,15 +5886,17 @@
             rotuloStatusOperacionalPainel(item.status),
             item.origem,
             item.prioridade,
-            etiquetaDoServico(item).nome
+            etiquetaDoServico(item).nome,
+            formatarDataTimestamp(timestampAssumidoMecanicos(item)),
+            formatarDataTimestamp(timestampFinalizadoMecanicos(item))
           ])
         ]);
       });
 
-      const totalAtivos = filtrados.reduce((total, nome) => total + veiculosDoMecanico(nome).length, 0);
+      const totalRegistros = filtrados.reduce((total, nome) => total + veiculosDoMecanico(nome).length, 0);
       document.getElementById("tituloVisaoPainel").textContent = "MECÂNICOS";
-      document.getElementById("textoResumoVisao").textContent = "VEÍCULOS ATIVOS";
-      document.getElementById("totalVisaoPainel").textContent = String(totalAtivos);
+      document.getElementById("textoResumoVisao").textContent = descricaoFiltroMecanicos();
+      document.getElementById("totalVisaoPainel").textContent = String(totalRegistros);
 
       if (!filtrados.length) {
         lista.innerHTML = '<div class="empty">NENHUM MECÂNICO ENCONTRADO.</div>';
@@ -5158,16 +5908,22 @@
         const urgentes = veiculos.filter(etiquetaUrgenteLPA).length;
         const linhas = veiculos.map(item => {
           const prioridade = prioridadeServico(item);
-          const status = item.status || "ATIVO";
+          const status = item.__finalizadoMecanicos ? "VEÍCULO FINALIZADO" : (item.status || "ATIVO");
           const classeStatus = classeStatusOperacionalPainel(status);
           const rotuloStatus = rotuloStatusOperacionalPainel(status);
-          const botaoExcluir = usuarioPodeExcluirTudo()
-            ? `<button type="button" class="mechanic-delete-btn" title="EXCLUIR VEÍCULO" aria-label="EXCLUIR VEÍCULO" onclick="excluirVeiculoAtivo('${escapar(item.id)}')">×</button>`
-            : "";
-          return `<div class="mechanic-vehicle-row ${etiquetaUrgenteLPA(item) ? "urgente" : ""} ${usuarioPodeExcluirTudo() ? "has-delete" : ""}" style="${estiloEtiquetaLPA(item)}" title="${escapar(item.descricao || "")} • ETIQUETA: ${escapar(prioridade)}">
-            <span class="mechanic-vehicle-plate">${escapar(item.placa || "-")}</span>
-            <span class="mechanic-vehicle-name">${escapar(item.veiculo || "VEÍCULO")}</span>
-            <span class="mechanic-vehicle-status ${classeStatus}">${escapar(rotuloStatus)}</span>
+          const assumiu = timestampAssumidoMecanicos(item);
+          const finalizou = item.__finalizadoMecanicos ? timestampFinalizadoMecanicos(item) : 0;
+          const botaoExcluir = "";
+          const temAcao = false;
+          return `<div class="mechanic-vehicle-row ${etiquetaUrgenteLPA(item) ? "urgente" : ""} ${item.__finalizadoMecanicos ? "finalizado" : ""} ${temAcao ? "has-delete" : ""}" style="${estiloEtiquetaLPA(item)}" title="${escapar(item.descricao || "")} • PRIORIDADE: ${escapar(prioridade)}">
+            <span class="mechanic-vehicle-field plate" data-label="PLACA"><span class="mechanic-vehicle-value">${escapar(item.placa || "-")}</span></span>
+            <span class="mechanic-vehicle-field" data-label="VEÍCULO"><span class="mechanic-vehicle-value">${escapar(item.veiculo || "VEÍCULO")}</span></span>
+            <span class="mechanic-vehicle-field" data-label="SERVIÇO"><span class="mechanic-vehicle-value">${escapar(item.descricao || "SEM DESCRIÇÃO")}</span></span>
+            <span class="mechanic-vehicle-field" data-label="ORIGEM"><span class="mechanic-vehicle-value">${escapar(item.origem || "NÃO INFORMADA")}</span></span>
+            <span class="mechanic-vehicle-field" data-label="PRIORIDADE"><span class="mechanic-vehicle-value">${escapar(prioridade || "NORMAL")}</span></span>
+            <span class="mechanic-vehicle-field status" data-label="STATUS"><span class="mechanic-vehicle-status ${classeStatus}">${escapar(rotuloStatus)}</span></span>
+            <span class="mechanic-vehicle-field" data-label="ASSUMIU"><span class="mechanic-vehicle-value">${escapar(formatarDataTimestamp(assumiu))}</span></span>
+            <span class="mechanic-vehicle-field" data-label="FINALIZOU"><span class="mechanic-vehicle-value">${escapar(finalizou ? formatarDataTimestamp(finalizou) : "—")}</span></span>
             ${botaoExcluir}
           </div>`;
         }).join("");
@@ -5176,8 +5932,8 @@
           <div class="mechanic-avatar">${escapar(iniciaisMecanico(nome))}</div>
           <div class="mechanic-name">${escapar(nome.replaceAll("_"," "))}</div>
           <div class="mechanic-total">${urgentes ? `${urgentes} URGENTE${urgentes > 1 ? "S" : ""}` : "SEM URGÊNCIA"}</div>
-          <div class="mechanic-number" title="VEÍCULOS ATIVOS">${veiculos.length}</div>
-          <div class="mechanic-services">${linhas || '<span class="mechanic-empty">SEM VEÍCULOS ATIVOS</span>'}</div>
+          <div class="mechanic-number" title="VEÍCULOS NO FILTRO">${veiculos.length}</div>
+          <div class="mechanic-services">${linhas || '<span class="mechanic-empty">SEM VEÍCULOS NO PERÍODO</span>'}</div>
         </article>`;
       }).join("")}</div>`;
     }
@@ -5206,7 +5962,9 @@
       const origem = finalizados
         ? veiculosFinalizadosAdm.filter(itemPassaFiltroFinalizados)
         : lixeiraAdm;
-      const itens = origem.filter(item => {
+      const itens = origem
+        .filter(item => itemPassaFiltroOrigem(item, tipo))
+        .filter(item => {
         const d = item?.detalhes || {};
         const fonteEtiqueta = finalizados ? item : d;
         return correspondeBuscaAdmin(busca, finalizados
@@ -5299,13 +6057,13 @@
       const lista = document.getElementById("listaServicosAdm");
       const busca = "";
       atualizarInterfaceFiltroFinalizados();
+      atualizarInterfaceFiltroMecanicos();
+      atualizarInterfaceFiltroOrigem();
       const botaoEsvaziar = document.getElementById("btnEsvaziarLixeira");
       if (botaoEsvaziar) {
         botaoEsvaziar.classList.toggle("show", visaoPainelAtual === "LIXEIRA");
         botaoEsvaziar.disabled = visaoPainelAtual !== "LIXEIRA" || lixeiraAdm.length === 0;
       }
-      const botaoImportar = document.getElementById("btnImportarPlanilha");
-      if (botaoImportar) botaoImportar.classList.toggle("show", visaoPainelAtual === "AGUARDANDO");
       atualizarBarraTarefas();
 
       if (visaoPainelAtual === "MECANICOS") {
@@ -5331,6 +6089,7 @@
           : itensAguardandoAdm();
 
       const filtrados = origemVisao
+        .filter(item => itemPassaFiltroOrigem(item, visaoPainelAtual))
         .filter(item => correspondeBuscaAdmin(busca, [
           item.veiculo,
           item.placa,
@@ -5756,6 +6515,21 @@
 
       try {
         const lote = db.batch();
+        const notificacaoImportacao = destino ? adicionarNotificacaoMecanicoAoLote(lote, {
+          mecanico:destino,
+          titulo:"NOVO SERVIÇO ATRIBUÍDO",
+          acao:"UM SERVIÇO IMPORTADO FOI ATRIBUÍDO PARA VOCÊ.",
+          evento:"SERVICO_IMPORTADO_ATRIBUIDO",
+          contexto:"IMPORTACAO_PLANILHA_LPA",
+          veiculo:item.veiculo,
+          placa:item.placa,
+          descricao:item.servico,
+          origem:item.origem || "BOLSÃO",
+          status:"AGUARDANDO ORÇAMENTO",
+          veiculoId:veiculoRef?.id || "",
+          listaGeralId:geralRef.id,
+          agora
+        }) : null;
         lote.set(geralRef, payloadGeral);
         if (destino && veiculoRef) {
           lote.set(veiculoRef, {
@@ -5792,6 +6566,7 @@
           mecanicoDestino:destino || "",
           listaGeralId:geralRef.id,
           veiculoId:veiculoRef?.id || "",
+          notificacaoId:notificacaoImportacao?.ref.id || "",
           linhaPlanilha:item.linha,
           criadoEm:firebase.firestore.FieldValue.serverTimestamp(),
           criadoEmISO:agora.toISOString()
@@ -5860,13 +6635,13 @@
             .map(doc => ({ id:doc.id, ...doc.data() }))
             .filter(item => !registroBloqueado(item));
           atualizarBarraTarefas();
-          if (visaoPainelAtual === "FINALIZADOS") renderizarServicos();
+          if (["FINALIZADOS","MECANICOS"].includes(visaoPainelAtual)) renderizarServicos();
           if (document.getElementById("buscaAdmin")?.value.trim()) renderizarResultadosBuscaGlobal();
           if (chaveHistoricoVeiculoAtual) renderizarHistoricoVeiculoAtual();
         }, erro => {
           console.error("Erro ao carregar finalizados:", erro);
           veiculosFinalizadosAdm = [];
-          if (visaoPainelAtual === "FINALIZADOS") document.getElementById("listaServicosAdm").innerHTML = '<div class="empty">NÃO FOI POSSÍVEL CARREGAR OS FINALIZADOS.</div>';
+          if (["FINALIZADOS","MECANICOS"].includes(visaoPainelAtual)) document.getElementById("listaServicosAdm").innerHTML = '<div class="empty">NÃO FOI POSSÍVEL CARREGAR OS FINALIZADOS.</div>';
         });
     }
 
@@ -5952,9 +6727,11 @@
       selectMecanico.value = mecanico;
 
       selectStatus.disabled = aguardando;
-      selectMecanico.disabled = aguardando;
+      // Em Aguardando, o mecânico fica liberado para permitir a atribuição
+      // diretamente pelo botão Editar.
+      selectMecanico.disabled = false;
       selectStatus.closest(".field")?.classList.toggle("field-control-disabled", aguardando);
-      selectMecanico.closest(".field")?.classList.toggle("field-control-disabled", aguardando);
+      selectMecanico.closest(".field")?.classList.remove("field-control-disabled");
 
       if (titulo) titulo.textContent = aguardando ? "EDITAR SERVIÇO AGUARDANDO" : "EDITAR SERVIÇO EM ANDAMENTO";
       if (contexto) {
@@ -6035,16 +6812,14 @@
       const status = aguardando
         ? statusCanonicoEdicao(item.statusServico || "AGUARDANDO ORÇAMENTO")
         : statusCanonicoEdicao(document.getElementById("editStatus")?.value || item.status);
-      const mecanico = aguardando
-        ? ""
-        : mecanicoCanonico(document.getElementById("editMecanico")?.value || "");
+      const mecanico = mecanicoCanonico(document.getElementById("editMecanico")?.value || "");
 
       if (!veiculo || !placa || !descricao) {
         alert("PREENCHA VEÍCULO, PLACA E DESCRIÇÃO.");
         return;
       }
 
-      if (!aguardando && usuarioBloqueado(document.getElementById("editMecanico")?.value || "")) {
+      if (mecanico && usuarioBloqueado(mecanico)) {
         alert("USUÁRIO BLOQUEADO PARA ATRIBUIÇÃO.");
         return;
       }
@@ -6083,6 +6858,100 @@
 
       try {
         if (aguardando) {
+          // Ao escolher um mecânico durante a edição do card Aguardando,
+          // o serviço é assumido e passa automaticamente para Em andamento.
+          if (mecanico) {
+            const veiculoRef = db.collection("veiculos").doc();
+            const atualizacaoListaAssumida = {
+              veiculo,
+              placa,
+              descricao,
+              origem,
+              prioridade,
+              etiquetaId:etiquetaSelecionada.id,
+              etiquetaCor:etiquetaSelecionada.cor,
+              trocaOleo:descricaoEhTrocaOleoLPA(descricao),
+              statusServico:status,
+              statusDistribuicao:"ASSUMIDO",
+              mecanicoResponsavel:mecanico,
+              mecanico_responsavel:mecanico,
+              veiculoId:veiculoRef.id,
+              assumidoEm:firebase.firestore.FieldValue.serverTimestamp(),
+              assumidoEmISO:agora.toISOString(),
+              ativo:true,
+              ultimaAtualizacao:firebase.firestore.FieldValue.serverTimestamp(),
+              ultimaAtualizacaoISO:agora.toISOString(),
+              editadoEAtribuidoPorPainelAdm:usuarioPainelAtual()
+            };
+
+            const novoVeiculoAtivo = {
+              veiculo,
+              placa,
+              descricao,
+              trocaOleo:descricaoEhTrocaOleoLPA(descricao),
+              kmAtualOleo:item.kmAtualOleo || "",
+              origem,
+              prioridade,
+              etiquetaId:etiquetaSelecionada.id,
+              etiquetaCor:etiquetaSelecionada.cor,
+              dataEntrada:agora.toLocaleString("pt-BR"),
+              dataEntradaISO:agora.toISOString(),
+              status,
+              pecas:Array.isArray(item.pecas) ? item.pecas : [],
+              mecanico_responsavel:mecanico,
+              mecanicoResponsavel:mecanico,
+              ultima_modificacao:agora.toLocaleString("pt-BR"),
+              ultima_modificacao_iso:agora.toISOString(),
+              origem_lista_geral:true,
+              lista_geral_id:item.id,
+              atribuido_pela_edicao_lpa:usuarioPainelAtual()
+            };
+
+            const loteAtribuicao = db.batch();
+            const notificacaoAtribuicaoEdicao = adicionarNotificacaoMecanicoAoLote(loteAtribuicao, {
+              mecanico,
+              titulo:"NOVO SERVIÇO ATRIBUÍDO",
+              acao:"O SERVIÇO FOI EDITADO E ATRIBUÍDO PARA VOCÊ.",
+              evento:"SERVICO_EDITADO_E_ATRIBUIDO",
+              contexto:"EDICAO_AGUARDANDO_LPA",
+              veiculo,
+              placa,
+              descricao,
+              origem,
+              status,
+              veiculoId:veiculoRef.id,
+              listaGeralId:item.id,
+              agora
+            });
+            loteAtribuicao.update(db.collection("servicos_lista_geral").doc(item.id), atualizacaoListaAssumida);
+            loteAtribuicao.set(veiculoRef, novoVeiculoAtivo);
+            loteAtribuicao.set(db.collection("auditoria_lecar").doc(), {
+              tipo:"SERVICO_AGUARDANDO_EDITADO_E_ATRIBUIDO_LPA",
+              servicoListaGeralId:item.id,
+              veiculoId:veiculoRef.id,
+              mecanico,
+              usuario:usuarioPainelAtual(),
+              notificacaoId:notificacaoAtribuicaoEdicao?.ref.id || "",
+              criadoEm:firebase.firestore.FieldValue.serverTimestamp(),
+              criadoEmISO:agora.toISOString(),
+              antes,
+              depois:{
+                veiculo,
+                placa,
+                descricao,
+                origem,
+                prioridade,
+                status,
+                mecanicoResponsavel:mecanico,
+                statusDistribuicao:"ASSUMIDO"
+              }
+            });
+            await loteAtribuicao.commit();
+            fecharEdicaoServico();
+            mostrarToast(`SERVIÇO ATRIBUÍDO PARA ${mecanico} E ENVIADO PARA EM ANDAMENTO.`);
+            return;
+          }
+
           const atualizacaoListaAguardando = {
             veiculo,
             placa,
@@ -6116,6 +6985,7 @@
           return;
         }
 
+        const mecanicoAnterior = mecanicoCanonico(nomeMecanicoCard(item, ""));
         const atualizacaoVeiculo = {
           veiculo,
           placa,
@@ -6154,7 +7024,158 @@
         };
 
         const refsLista = await referenciasListaGeralParaEdicao(item);
+
+        // Ao retirar o mecânico de um serviço em andamento, ele volta
+        // automaticamente para a lista Aguardando e deixa de existir em Veículos.
+        if (!mecanico) {
+          const atualizacaoListaAguardando = {
+            veiculo,
+            placa,
+            descricao,
+            origem,
+            prioridade,
+            etiquetaId:etiquetaSelecionada.id,
+            etiquetaCor:etiquetaSelecionada.cor,
+            trocaOleo:descricaoEhTrocaOleoLPA(descricao),
+            statusServico:status,
+            statusDistribuicao:"DISPONIVEL",
+            mecanicoResponsavel:"",
+            mecanico_responsavel:"",
+            veiculoId:firebase.firestore.FieldValue.delete(),
+            assumidoEm:firebase.firestore.FieldValue.delete(),
+            assumidoEmISO:firebase.firestore.FieldValue.delete(),
+            ativo:true,
+            ultimaAtualizacao:firebase.firestore.FieldValue.serverTimestamp(),
+            ultimaAtualizacaoISO:agora.toISOString(),
+            devolvidoParaAguardandoPor:usuarioPainelAtual(),
+            devolvidoParaAguardandoVia:"EDICAO_MECANICO_NAO_INFORMADO"
+          };
+
+          const loteRetorno = db.batch();
+          let idsLista = refsLista.map(ref => ref.id);
+
+          if (refsLista.length) {
+            refsLista.forEach(ref => loteRetorno.update(ref, atualizacaoListaAguardando));
+          } else {
+            const novaRef = db.collection("servicos_lista_geral").doc();
+            loteRetorno.set(novaRef, {
+              veiculo,
+              placa,
+              descricao,
+              origem,
+              prioridade,
+              etiquetaId:etiquetaSelecionada.id,
+              etiquetaCor:etiquetaSelecionada.cor,
+              trocaOleo:descricaoEhTrocaOleoLPA(descricao),
+              statusServico:status,
+              statusDistribuicao:"DISPONIVEL",
+              mecanicoResponsavel:"",
+              mecanico_responsavel:"",
+              ativo:true,
+              criadoPor:usuarioPainelAtual(),
+              criadoEm:firebase.firestore.FieldValue.serverTimestamp(),
+              criadoEmISO:agora.toISOString(),
+              ultimaAtualizacao:firebase.firestore.FieldValue.serverTimestamp(),
+              ultimaAtualizacaoISO:agora.toISOString(),
+              devolvidoParaAguardandoPor:usuarioPainelAtual(),
+              devolvidoParaAguardandoVia:"EDICAO_MECANICO_NAO_INFORMADO"
+            });
+            idsLista = [novaRef.id];
+          }
+
+          loteRetorno.delete(db.collection("veiculos").doc(item.id));
+          const notificacaoRetornoEdicao = adicionarNotificacaoMecanicoAoLote(loteRetorno, {
+            mecanico:mecanicoAnterior,
+            titulo:"SERVIÇO ENVIADO PARA AGUARDANDO",
+            acao:"O MECÂNICO FOI REMOVIDO E O SERVIÇO VOLTOU PARA AGUARDANDO.",
+            evento:"SERVICO_RETORNADO_AGUARDANDO",
+            contexto:"EDICAO_MECANICO_NAO_INFORMADO",
+            veiculo,
+            placa,
+            descricao,
+            origem,
+            status:"AGUARDANDO",
+            veiculoId:item.id,
+            listaGeralIds:idsLista,
+            agora
+          });
+          loteRetorno.set(db.collection("auditoria_lecar").doc(), {
+            tipo:"SERVICO_RETORNADO_AGUARDANDO_EDICAO_LPA",
+            usuario:usuarioPainelAtual(),
+            veiculoId:item.id,
+            listaGeralIds:idsLista,
+            notificacaoId:notificacaoRetornoEdicao?.ref.id || "",
+            criadoEm:firebase.firestore.FieldValue.serverTimestamp(),
+            criadoEmISO:agora.toISOString(),
+            antes,
+            depois:{
+              veiculo,
+              placa,
+              descricao,
+              mecanicoResponsavel:"",
+              statusDistribuicao:"DISPONIVEL"
+            }
+          });
+
+          await loteRetorno.commit();
+          fecharEdicaoServico();
+          mostrarToast("MECÂNICO REMOVIDO. SERVIÇO ENVIADO PARA AGUARDANDO.");
+          return;
+        }
+
         const lote = db.batch();
+        let notificacaoEdicaoAtual = null;
+        let notificacaoEdicaoAnterior = null;
+        if (mecanicoAnterior && mecanicoAnterior === mecanico) {
+          notificacaoEdicaoAtual = adicionarNotificacaoMecanicoAoLote(lote, {
+            mecanico,
+            titulo:"VEÍCULO ATUALIZADO",
+            acao:"OS DADOS DO VEÍCULO OU DO SERVIÇO FORAM MODIFICADOS NO PAINEL ADMINISTRATIVO.",
+            evento:"VEICULO_ATUALIZADO",
+            contexto:"EDICAO_SERVICO_LPA",
+            veiculo,
+            placa,
+            descricao,
+            origem,
+            status,
+            veiculoId:item.id,
+            listaGeralIds:refsLista.map(ref => ref.id),
+            agora
+          });
+        } else if (mecanico) {
+          notificacaoEdicaoAtual = adicionarNotificacaoMecanicoAoLote(lote, {
+            mecanico,
+            titulo:"SERVIÇO REATRIBUÍDO PARA VOCÊ",
+            acao:`O SERVIÇO FOI ATRIBUÍDO PARA VOCÊ${mecanicoAnterior ? ` E RETIRADO DE ${mecanicoAnterior}` : ""}.`,
+            evento:"SERVICO_REATRIBUIDO_NOVO_MECANICO",
+            contexto:"EDICAO_SERVICO_LPA",
+            veiculo,
+            placa,
+            descricao,
+            origem,
+            status,
+            veiculoId:item.id,
+            listaGeralIds:refsLista.map(ref => ref.id),
+            agora
+          });
+          if (mecanicoAnterior && mecanicoAnterior !== mecanico) {
+            notificacaoEdicaoAnterior = adicionarNotificacaoMecanicoAoLote(lote, {
+              mecanico:mecanicoAnterior,
+              titulo:"SERVIÇO REATRIBUÍDO",
+              acao:`O SERVIÇO FOI RETIRADO DA SUA LISTA E ATRIBUÍDO PARA ${mecanico}.`,
+              evento:"SERVICO_REATRIBUIDO_MECANICO_ANTERIOR",
+              contexto:"EDICAO_SERVICO_LPA",
+              veiculo,
+              placa,
+              descricao,
+              origem,
+              status,
+              veiculoId:item.id,
+              listaGeralIds:refsLista.map(ref => ref.id),
+              agora
+            });
+          }
+        }
         lote.update(db.collection("veiculos").doc(item.id), atualizacaoVeiculo);
         refsLista.forEach(ref => lote.update(ref, atualizacaoLista));
         lote.set(db.collection("auditoria_lecar").doc(), {
@@ -6162,6 +7183,8 @@
           veiculoId:item.id,
           listaGeralIds:refsLista.map(ref => ref.id),
           usuario:usuarioPainelAtual(),
+          notificacaoMecanicoAtualId:notificacaoEdicaoAtual?.ref.id || "",
+          notificacaoMecanicoAnteriorId:notificacaoEdicaoAnterior?.ref.id || "",
           criadoEm:firebase.firestore.FieldValue.serverTimestamp(),
           criadoEmISO:agora.toISOString(),
           antes,
@@ -6263,6 +7286,21 @@
 
       try {
         const lote = db.batch();
+        const notificacaoCadastro = mecanicoAtribuido ? adicionarNotificacaoMecanicoAoLote(lote, {
+          mecanico:mecanicoAtribuido,
+          titulo:"NOVO SERVIÇO ATRIBUÍDO",
+          acao:"UM NOVO SERVIÇO FOI CADASTRADO E ATRIBUÍDO PARA VOCÊ.",
+          evento:"SERVICO_CADASTRADO_ATRIBUIDO",
+          contexto:"CADASTRO_SERVICO_LPA",
+          veiculo,
+          placa,
+          descricao,
+          origem,
+          status:"AGUARDANDO ORÇAMENTO",
+          veiculoId:veiculoRef?.id || "",
+          listaGeralId:geralRef.id,
+          agora
+        }) : null;
         lote.set(geralRef, payloadGeral);
 
         if (mecanicoAtribuido && veiculoRef) {
@@ -6424,6 +7462,21 @@
         const veiculosLigados = assumido ? await referenciasVeiculosLigadosAoServico(item) : [];
         const relacionados = await capturarRegistrosRelacionados(veiculosLigados);
         const lote = db.batch();
+        adicionarNotificacaoMecanicoAoLote(lote, {
+          mecanico:nomeMecanicoCard(item, ""),
+          titulo:"SERVIÇO REMOVIDO",
+          acao:"O SERVIÇO FOI REMOVIDO PELO PAINEL ADMINISTRATIVO E ENVIADO PARA A LIXEIRA.",
+          evento:"SERVICO_EXCLUIDO_LPA",
+          contexto:"EXCLUSAO_SERVICO_LPA",
+          veiculo:item.veiculo,
+          placa:item.placa,
+          descricao:item.descricao,
+          origem:item.origem,
+          status:"LIXEIRA",
+          veiculoId:item.veiculoId || "",
+          listaGeralId:item.id,
+          agora:new Date()
+        });
         lote.set(db.collection("auditoria_lecar").doc(), dadosAuditoriaExclusao(item, "SERVICO_LISTA_GERAL", assumido ? "ASSUMIDO" : "DISPONÍVEL", relacionados));
         lote.delete(db.collection("servicos_lista_geral").doc(id));
         veiculosLigados.forEach(ref => lote.delete(ref));
@@ -6449,6 +7502,21 @@
         const servicosLigados = await referenciasServicosLigadosAoVeiculo(item);
         const relacionados = await capturarRegistrosRelacionados(servicosLigados);
         const lote = db.batch();
+        adicionarNotificacaoMecanicoAoLote(lote, {
+          mecanico:nomeMecanicoCard(item, ""),
+          titulo:"VEÍCULO REMOVIDO",
+          acao:"O VEÍCULO FOI REMOVIDO PELO PAINEL ADMINISTRATIVO E ENVIADO PARA A LIXEIRA.",
+          evento:"VEICULO_EXCLUIDO_LPA",
+          contexto:"EXCLUSAO_VEICULO_ATIVO_LPA",
+          veiculo:item.veiculo,
+          placa:item.placa,
+          descricao:item.descricao,
+          origem:item.origem,
+          status:"LIXEIRA",
+          veiculoId:item.id,
+          listaGeralIds:servicosLigados.map(ref => ref.id),
+          agora:new Date()
+        });
         lote.set(db.collection("auditoria_lecar").doc(), dadosAuditoriaExclusao(item, "VEICULO_ATIVO", item.status || "ATIVO", relacionados));
         lote.delete(db.collection("veiculos").doc(id));
         servicosLigados.forEach(ref => lote.delete(ref));
@@ -6641,6 +7709,22 @@
         }
 
         refsDestino.forEach(entrada => lote.set(entrada.ref, entrada.dados));
+        const mecanicoRestaurado = mecanicoCanonico(d.mecanico || registroOriginal?.mecanico_responsavel || registroOriginal?.mecanicoResponsavel || "");
+        const notificacaoRestauracao = adicionarNotificacaoMecanicoAoLote(lote, {
+          mecanico:mecanicoRestaurado,
+          titulo:"VEÍCULO RESTAURADO",
+          acao:`O VEÍCULO FOI RESTAURADO PARA ${destinoTexto}.`,
+          evento:"VEICULO_RESTAURADO_LPA",
+          contexto:"RESTAURACAO_LIXEIRA_LPA",
+          veiculo:d.veiculo,
+          placa:d.placa,
+          descricao:d.descricao,
+          origem:d.origem,
+          status:destinoTexto,
+          veiculoId:origemRegistro === "VEICULO_ATIVO" ? refPrincipal?.id || "" : d.veiculoId || "",
+          listaGeralId:origemRegistro === "SERVICO_LISTA_GERAL" ? refPrincipal?.id || "" : d.listaGeralId || "",
+          agora:new Date()
+        });
         lote.set(db.collection("auditoria_lecar").doc(), {
           tipo:"VEICULO_RESTAURADO",
           usuario:usuarioPainelAtual(),
@@ -6651,7 +7735,8 @@
             descricao:d.descricao || "",
             origemRegistro:d.origemRegistro || "",
             registroRestauradoId:refPrincipal?.id || "",
-            registroLixeiraId:id
+            registroLixeiraId:id,
+            notificacaoId:notificacaoRestauracao?.ref.id || ""
           },
           criadoEm:firebase.firestore.FieldValue.serverTimestamp(),
           criadoEmISO:new Date().toISOString()
@@ -6694,6 +7779,21 @@
         const servicosLigados = await referenciasServicosLigadosAoVeiculo(item);
         const relacionados = await capturarRegistrosRelacionados(servicosLigados);
         const lote = db.batch();
+        adicionarNotificacaoMecanicoAoLote(lote, {
+          mecanico:nomeMecanicoCard(item, ""),
+          titulo:"REGISTRO FINALIZADO REMOVIDO",
+          acao:"O REGISTRO FINALIZADO FOI REMOVIDO PELO PAINEL ADMINISTRATIVO E ENVIADO PARA A LIXEIRA.",
+          evento:"FINALIZADO_EXCLUIDO_LPA",
+          contexto:"EXCLUSAO_FINALIZADO_LPA",
+          veiculo:item.veiculo,
+          placa:item.placa,
+          descricao:item.descricao,
+          origem:item.origem,
+          status:"LIXEIRA",
+          veiculoId:item.id,
+          listaGeralIds:servicosLigados.map(ref => ref.id),
+          agora:new Date()
+        });
         lote.set(db.collection("auditoria_lecar").doc(), dadosAuditoriaExclusao(item, "VEICULO_FINALIZADO", "VEÍCULO FINALIZADO", relacionados));
         lote.delete(db.collection("veiculos").doc(id));
         servicosLigados.forEach(ref => lote.delete(ref));
