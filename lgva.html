@@ -1,0 +1,1647 @@
+<!doctype html>
+<html lang="pt-BR" translate="no">
+<head>
+  <meta charset="UTF-8">
+  <meta name="google" content="notranslate">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>LGVA — SISTEMA DE SERVIÇOS</title>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+  <style>
+    :root {
+      --blue-900:#1e3a8a;
+      --blue-700:#1d4ed8;
+      --blue-600:#2563eb;
+      --blue-500:#3b82f6;
+      --bg:#eef2f7;
+      --card:#ffffff;
+      --text:#0f172a;
+      --muted:#64748b;
+      --border:#dbe3ef;
+      --safe-bottom:env(safe-area-inset-bottom, 0px);
+    }
+
+    * { box-sizing:border-box; margin:0; padding:0; font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif; }
+    body { min-height:100vh; background:var(--bg); color:var(--text); }
+    button,input,textarea,select { font:inherit; }
+    button { cursor:pointer; }
+    [hidden] { display:none !important; }
+
+    /* LOGIN — MESMO PADRÃO VISUAL DO LPA */
+    .login-page {
+      min-height:100vh; display:flex; align-items:center; justify-content:center; padding:24px;
+      background:linear-gradient(135deg,#0d47a1,#2196f3);
+    }
+    .login-card {
+      width:360px; max-width:100%; padding:30px; border-radius:22px;
+      background:rgba(255,255,255,.10); backdrop-filter:blur(12px);
+      box-shadow:0 18px 45px rgba(0,0,0,.28); text-align:center;
+    }
+    .login-logo {
+      width:250px; max-width:92%; height:auto; margin-bottom:22px;
+      object-fit:contain; filter:drop-shadow(0 8px 18px rgba(0,0,0,.42));
+    }
+    .login-card h1 { color:#fff; font-size:1.02rem; margin-bottom:16px; text-transform:none; }
+    .login-card input {
+      width:100%; min-height:46px; margin:6px 0; padding:0 13px;
+      border:1px solid rgba(255,255,255,.24); border-radius:12px; outline:none;
+      background:rgba(255,255,255,.14); color:#fff; text-transform:none;
+    }
+    .login-card input::placeholder { color:rgba(255,255,255,.72); }
+    .login-card button {
+      width:100%; min-height:46px; margin-top:10px; border:0; border-radius:12px;
+      background:linear-gradient(90deg,#00c6ff,#0072ff); color:#fff;
+      font-weight:900; text-transform:none;
+    }
+    .login-note { margin-top:12px; color:#dbeafe; font-size:.66rem; font-weight:750; line-height:1.45; text-transform:none; }
+    .login-error { display:none; margin-top:10px; color:#fee2e2; font-size:.72rem; font-weight:850; line-height:1.35; text-transform:none; }
+    .login-card button:disabled { opacity:.65; cursor:wait; }
+
+    .app { display:none; min-height:100vh; padding-bottom:calc(88px + var(--safe-bottom)); }
+
+    .topbar {
+      position:fixed; top:0; left:0; right:0; z-index:100; min-height:54px; height:54px;
+      padding:5px 18px; display:flex; align-items:center; flex-wrap:nowrap; gap:12px;
+      color:#fff; background:linear-gradient(90deg,#1e3a8a,#2563eb,#3b82f6);
+      background-size:200% 200%; animation:gradientMove 6s ease infinite;
+      box-shadow:0 4px 12px rgba(0,0,0,.15); border-bottom-left-radius:10px; border-bottom-right-radius:10px;
+    }
+    @keyframes gradientMove { 0%{background-position:0 50%} 50%{background-position:100% 50%} 100%{background-position:0 50%} }
+    .topbar-logo {
+      height:25px; width:auto; max-width:190px; display:block; object-fit:contain;
+      filter:drop-shadow(0 4px 10px rgba(0,0,0,.80)); flex:0 0 auto;
+    }
+    .topbar-user { margin-left:auto; text-align:right; flex:0 0 auto; }
+    .topbar-user strong { display:block; font-size:.72rem; }
+    .topbar-tools { display:flex; align-items:center; gap:5px; flex:0 0 auto; }
+    .topbar-icon-btn {
+      position:relative; width:34px; height:34px; min-width:34px; padding:0; border:1px solid rgba(255,255,255,.28);
+      border-radius:10px; background:rgba(255,255,255,.12); color:#fff;
+      display:inline-flex; align-items:center; justify-content:center;
+    }
+    .topbar-icon-btn:hover,.topbar-icon-btn.active { background:rgba(255,255,255,.22); }
+    .topbar-icon-btn.active { box-shadow:inset 0 0 0 1px rgba(255,255,255,.24); }
+    .topbar-icon-btn svg { width:20px; height:20px; fill:none; stroke:currentColor; stroke-width:2.2; stroke-linecap:round; stroke-linejoin:round; }
+    .topbar-notification-count {
+      display:none; position:absolute; top:-5px; right:-5px; min-width:18px; height:18px; padding:0 5px;
+      border:2px solid #2563eb; border-radius:999px; background:#ef4444; color:#fff;
+      align-items:center; justify-content:center; font-size:.58rem; font-weight:950; line-height:1;
+    }
+    .topbar-notification-count.show { display:inline-flex; }
+
+    /* CONTEÚDO — LPA DESKTOP COMPACTO */
+    .main { width:calc(100% - 30px); max-width:none; margin:0 15px; padding-top:72px; padding-bottom:14px; }
+    .panel { border:1px solid var(--border); border-radius:18px; background:#fff; box-shadow:0 9px 24px rgba(15,23,42,.065); overflow:hidden; }
+    .panel-head {
+      min-height:48px; padding:10px 14px; border-bottom:1px solid #e2e8f0;
+      background:linear-gradient(90deg,#f8fafc,#eef4ff);
+      display:flex; align-items:center; justify-content:space-between; gap:12px; flex-wrap:wrap;
+    }
+    .panel-head h2 { color:#0f2748; font-size:.82rem; font-weight:950; text-transform:uppercase; }
+    .panel-body { padding:12px; }
+    .services-panel-head { min-height:48px; flex-wrap:wrap; }
+    .services-view-summary { display:inline-flex; align-items:center; gap:7px; color:#64748b; font-size:.64rem; font-weight:800; text-transform:uppercase; }
+    .services-view-summary strong { min-width:26px; height:24px; padding:0 8px; border-radius:999px; background:#eaf2ff; color:#1d4ed8; display:inline-flex; align-items:center; justify-content:center; font-size:.62rem; font-weight:950; }
+    .operation-filter-shell {
+      display:none; min-height:34px; margin-left:auto; padding:3px 4px 3px 9px; align-items:center; gap:7px;
+      border:1px solid #bfdbfe; border-radius:10px; background:#eff6ff; color:#1e3a8a;
+    }
+    .operation-filter-shell.show { display:inline-flex; }
+    .operation-filter-shell label { font-size:.55rem; font-weight:950; letter-spacing:.035em; text-transform:uppercase; white-space:nowrap; }
+    .operation-filter-shell select {
+      height:27px; min-width:96px; padding:0 27px 0 9px; border:1px solid #93c5fd; border-radius:8px;
+      outline:none; background:#fff; color:#0f2748; font-size:.61rem; font-weight:900; text-transform:uppercase; cursor:pointer;
+    }
+    .operation-filter-shell select:focus { border-color:#2563eb; box-shadow:0 0 0 3px rgba(37,99,235,.12); }
+    .date-filter-shell {
+      display:none; min-height:34px; padding:3px 4px 3px 9px; align-items:center; gap:6px;
+      border:1px solid #bfdbfe; border-radius:10px; background:#eff6ff; color:#1e3a8a;
+    }
+    .date-filter-shell.show { display:inline-flex; }
+    .date-filter-shell > label { font-size:.55rem; font-weight:950; letter-spacing:.035em; text-transform:uppercase; white-space:nowrap; }
+    .date-filter-shell select,.date-filter-shell input {
+      height:27px; padding:0 8px; border:1px solid #93c5fd; border-radius:8px; outline:none;
+      background:#fff; color:#0f2748; font-size:.59rem; font-weight:900; text-transform:uppercase; cursor:pointer;
+    }
+    .date-filter-shell select { min-width:112px; padding-right:25px; }
+    .date-filter-shell input[type="date"] { width:126px; }
+    .date-filter-shell select:focus,.date-filter-shell input:focus { border-color:#2563eb; box-shadow:0 0 0 3px rgba(37,99,235,.12); }
+    .date-filter-fields { display:none; align-items:center; gap:5px; }
+    .date-filter-fields.show { display:inline-flex; }
+    .date-filter-separator { color:#64748b; font-size:.54rem; font-weight:950; text-transform:uppercase; }
+
+    .services-list { display:grid; grid-template-columns:repeat(auto-fill,minmax(215px,230px)); gap:10px; align-items:start; justify-content:start; }
+    .service-row {
+      position:relative; width:100%; min-height:310px; min-width:0; padding:14px;
+      display:flex; flex-direction:column; border:1px solid #dbe3ef; border-radius:14px;
+      background:#fff; box-shadow:0 5px 14px rgba(15,23,42,.07); overflow:hidden; isolation:isolate;
+    }
+    .service-row::before { content:""; position:absolute; top:0; left:0; right:0; height:4px; background:transparent; }
+    .service-row > * { position:relative; z-index:1; }
+    .service-row:hover { border-color:#93c5fd; box-shadow:0 8px 20px rgba(37,99,235,.12); }
+    .service-row.prioridade-urgente { background:linear-gradient(180deg,#fff5f5 0%,#fff 58%); border-color:#fecaca; }
+    .service-row.prioridade-urgente::before { background:#ef4444; }
+    .service-row.status-pecas { background:linear-gradient(180deg,#fffceb 0%,#fff 58%); border-color:#fde68a; }
+    .service-row.status-pecas::before { background:#eab308; }
+    .service-row.status-finalizado { background:linear-gradient(180deg,#f0fdf4 0%,#fff 58%); border-color:#bbf7d0; }
+    .service-row.status-finalizado::before { background:#22c55e; }
+    /* ETIQUETAS DO LPA — SOMENTE LEITURA NO LGVA */
+    .service-row.etiqueta-aplicada:not(.status-finalizado) {
+      background:linear-gradient(180deg,var(--etiqueta-suave,#f8fafc) 0%,#fff 62%);
+      border-color:var(--etiqueta-borda,#dbe3ef);
+    }
+    .service-row.etiqueta-aplicada:not(.status-finalizado)::before { background:var(--etiqueta-cor,#64748b); }
+    .service-row.etiqueta-aplicada .service-bookmark { color:var(--etiqueta-cor,#2563eb); }
+    .service-label-chip {
+      max-width:100%; min-height:23px; margin-top:8px; padding:0 8px;
+      display:inline-flex; align-items:center; align-self:flex-start;
+      border:1px solid var(--etiqueta-borda,#cbd5e1); border-radius:999px;
+      background:var(--etiqueta-suave,#f1f5f9); color:var(--etiqueta-cor,#334155);
+      font-size:.52rem; font-weight:950; line-height:1; text-transform:uppercase;
+      white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
+    }
+    .service-observation {
+      margin-top:7px; padding:6px 8px; border-left:3px solid var(--etiqueta-cor,#cbd5e1);
+      border-radius:7px; background:rgba(255,255,255,.72); color:#475569;
+      font-size:.56rem; font-weight:750; line-height:1.3; text-transform:uppercase;
+      white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
+    }
+    .service-card-head { min-height:24px; display:flex; align-items:center; justify-content:space-between; gap:8px; }
+    .service-date { min-width:0; display:inline-flex; align-items:center; gap:6px; color:#475569; font-size:.58rem; font-weight:800; white-space:nowrap; }
+    .service-date svg,.service-info-line svg { width:15px; height:15px; min-width:15px; fill:none; stroke:#2563eb; stroke-width:2; stroke-linecap:round; stroke-linejoin:round; }
+    .service-bookmark { width:23px; height:23px; min-width:23px; display:inline-flex; align-items:center; justify-content:center; color:#2563eb; }
+    .service-bookmark svg { width:18px; height:18px; fill:currentColor; stroke:currentColor; stroke-width:1.7; }
+    .service-main { margin-top:12px; min-width:0; }
+    .service-plate { color:#0f172a; font-size:1.25rem; font-weight:950; line-height:1; letter-spacing:-.025em; }
+    .service-vehicle { margin-top:5px; color:#334155; font-size:.68rem; font-weight:750; line-height:1.2; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; text-transform:uppercase; }
+    .service-desc { min-height:35px; margin-top:10px; color:#475569; font-size:.64rem; font-weight:650; line-height:1.35; display:-webkit-box; -webkit-box-orient:vertical; -webkit-line-clamp:2; overflow:hidden; text-transform:uppercase; }
+    .service-info { margin-top:9px; display:grid; gap:5px; }
+    .service-info-line { min-width:0; display:flex; align-items:center; gap:6px; color:#475569; font-size:.58rem; font-weight:700; line-height:1.15; text-transform:uppercase; }
+    .service-info-line span { min-width:0; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+    .service-info-line strong { color:#1d4ed8; font-weight:950; }
+    .service-footer { min-height:61px; margin-top:auto; padding-top:9px; display:flex; flex-direction:column; align-items:stretch; justify-content:flex-end; gap:7px; border-top:1px solid #e2e8f0; }
+    .status-badge { min-width:0; max-width:100%; min-height:23px; padding:0 8px; border-radius:999px; display:inline-flex; align-items:center; align-self:flex-start; justify-content:center; font-size:.5rem; font-weight:950; text-transform:uppercase; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+    .status-badge.aguardando { background:#dbeafe; border:1px solid #bfdbfe; color:#1e3a8a; }
+    .status-badge.andamento { background:#e2e8f0; border:1px solid #cbd5e1; color:#475569; }
+    .status-badge.pecas { background:#fef3c7; border:1px solid #fde68a; color:#92400e; }
+    .status-badge.finalizado { background:#dcfce7; border:1px solid #bbf7d0; color:#15803d; }
+    .service-actions { display:flex; justify-content:flex-end; gap:5px; flex:0 0 auto; }
+    .card-btn { width:auto; min-width:54px; min-height:25px; padding:0 7px; border-radius:8px; font-size:.49rem; font-weight:950; text-transform:uppercase; white-space:nowrap; }
+    .card-btn.primary { border:1px solid #bfdbfe; background:#eff6ff; color:#1d4ed8; }
+    .card-btn.warning { border:1px solid #fde68a; background:#fffbeb; color:#92400e; }
+    .card-btn.success { border:1px solid #bbf7d0; background:#f0fdf4; color:#15803d; }
+    .card-btn.danger { border:1px solid #fecaca; background:#fff1f2; color:#dc2626; }
+    .empty { grid-column:1/-1; padding:34px 16px; border:1px dashed #cbd5e1; border-radius:15px; color:#64748b; text-align:center; font-size:.75rem; font-weight:800; text-transform:uppercase; }
+
+    /* BARRA INFERIOR — SOMENTE O QUE O LGVA USA */
+    .lpa-taskbar {
+      position:fixed; left:50%; bottom:8px; z-index:1260; width:min(760px,calc(100% - 20px)); height:56px;
+      transform:translateX(-50%); display:grid; grid-template-columns:repeat(5,minmax(0,1fr)); align-items:stretch;
+      padding:4px 8px; border:1px solid rgba(203,213,225,.92); border-radius:17px;
+      background:rgba(255,255,255,.96); box-shadow:0 14px 38px rgba(15,23,42,.20); backdrop-filter:blur(14px);
+    }
+    .lpa-taskbar-item { position:relative; min-width:0; height:48px; padding:3px 6px; border:0; border-radius:12px; background:transparent; color:#64748b; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:2px; transition:.18s; }
+    .lpa-taskbar-item:hover { background:#eef4ff; color:#1e3a8a; transform:translateY(-1px); }
+    .lpa-taskbar-item.active { background:linear-gradient(180deg,#eef4ff,#dbeafe); color:#1d4ed8; box-shadow:inset 0 0 0 1px #bfdbfe; }
+    .lpa-taskbar-item svg { width:21px; height:21px; fill:none; stroke:currentColor; stroke-width:2; stroke-linecap:round; stroke-linejoin:round; }
+    .lpa-taskbar-label { max-width:100%; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; font-size:.52rem; line-height:1; font-weight:900; letter-spacing:.025em; text-transform:uppercase; }
+    .lpa-taskbar-count { position:absolute; top:0; right:max(7px,calc(50% - 30px)); min-width:23px; height:23px; padding:0 5px; border-radius:999px; background:#e2e8f0; color:#334155; display:inline-flex; align-items:center; justify-content:center; font-size:.60rem; font-weight:950; border:2px solid #fff; }
+    .lpa-taskbar-item.active .lpa-taskbar-count { background:#2563eb; color:#fff; }
+    .lpa-taskbar-plus-wrap { position:relative; display:flex; align-items:center; justify-content:center; }
+    .lpa-taskbar-plus { position:absolute; left:50%; top:50%; width:62px; height:62px; min-width:62px; transform:translate(-50%,-57%); border:4px solid rgba(255,255,255,.98); border-radius:50%; background:linear-gradient(145deg,#1e3a8a,#2563eb,#3b82f6); color:#fff; display:inline-flex; align-items:center; justify-content:center; box-shadow:0 12px 28px rgba(30,58,138,.42); }
+    .lpa-taskbar-plus:hover { transform:translate(-50%,-61%); box-shadow:0 16px 34px rgba(30,58,138,.48); }
+    .lpa-taskbar-plus svg { width:31px; height:31px; fill:none; stroke:currentColor; stroke-width:2.6; stroke-linecap:round; stroke-linejoin:round; }
+
+    /* MODAIS E FORMULÁRIOS — PADRÃO LPA */
+    .modal-bg { display:none; position:fixed; inset:0; z-index:1300; align-items:center; justify-content:center; padding:24px; background:rgba(15,23,42,.50); backdrop-filter:blur(4px); }
+    .modal-bg.open { display:flex; }
+    .modal { width:610px; max-width:calc(100vw - 48px); max-height:calc(100vh - 48px); overflow-y:auto; border-radius:16px; background:#fff; border:1px solid #dbe3ef; box-shadow:0 24px 70px rgba(15,23,42,.34); }
+    .modal.wide { width:860px; }
+    .modal .panel-head { position:sticky; top:0; z-index:2; }
+    .modal-close { width:32px; height:32px; min-width:32px; border:1px solid #cbd5e1; border-radius:9px; background:#fff; color:#334155; font-size:1.2rem; line-height:1; }
+    .field { margin-bottom:7px; }
+    .field label { display:block; margin-bottom:4px; color:#334155; font-size:.64rem; font-weight:900; text-transform:uppercase; }
+    .field input,.field select { width:100%; height:34px; min-height:34px; padding:4px 10px; border:1px solid #cbd5e1; border-radius:9px; outline:none; background:#fff; color:#0f172a; font-size:.76rem; font-weight:400; text-transform:uppercase; }
+    .field textarea { width:100%; min-height:96px; padding:9px 10px; border:1px solid #cbd5e1; border-radius:9px; outline:none; background:#fff; color:#0f172a; font-size:.76rem; font-weight:400; resize:vertical; text-transform:uppercase; }
+    .field input:focus,.field select:focus,.field textarea:focus { border-color:#3b82f6; box-shadow:0 0 0 3px rgba(59,130,246,.12); }
+    .field-grid { display:grid; grid-template-columns:1fr 1fr; gap:8px; }
+    .submit-btn { width:100%; min-height:38px; height:38px; border:0; border-radius:9px; background:linear-gradient(90deg,#1d4ed8,#2563eb); color:#fff; font-size:.72rem; font-weight:950; text-transform:uppercase; box-shadow:0 8px 18px rgba(37,99,235,.23); }
+    .secondary-btn { width:100%; min-height:38px; border:1px solid #cbd5e1; border-radius:9px; background:#f8fafc; color:#334155; font-size:.72rem; font-weight:900; text-transform:uppercase; }
+    .form-actions { display:grid; grid-template-columns:1fr 1fr; gap:8px; margin-top:4px; }
+    .form-note { margin-top:10px; color:#64748b; font-size:.67rem; font-weight:700; line-height:1.4; text-transform:uppercase; }
+    body.modal-open { overflow:hidden; }
+
+    /* PEÇAS MANUAIS */
+    .piece-builder { display:grid; grid-template-columns:minmax(0,1fr) auto; gap:8px; align-items:end; }
+    .piece-add-btn { min-height:34px; padding:0 14px; border:0; border-radius:9px; background:#2563eb; color:#fff; font-size:.68rem; font-weight:900; text-transform:uppercase; }
+    .piece-list { margin-top:10px; display:grid; gap:7px; }
+    .piece-item { padding:9px 10px; border:1px solid #dbe3ef; border-radius:10px; background:#f8fafc; display:flex; align-items:center; justify-content:space-between; gap:10px; color:#334155; font-size:.7rem; font-weight:800; text-transform:uppercase; }
+    .piece-remove { width:28px; height:28px; border:1px solid #fecaca; border-radius:8px; background:#fff1f2; color:#dc2626; font-weight:950; }
+    .request-list { display:grid; gap:10px; }
+    .request-card { padding:13px; border:1px solid #dbe3ef; border-left:5px solid #eab308; border-radius:13px; background:#fff; }
+    .request-card.recebida { border-left-color:#22c55e; background:linear-gradient(135deg,#ffffff 0%,#f0fdf4 100%); }
+    .request-head { display:flex; justify-content:space-between; align-items:flex-start; gap:12px; }
+    .request-head-main { min-width:0; display:grid; gap:6px; }
+    .request-head strong { color:#0f2748; font-size:.82rem; text-transform:uppercase; }
+    .request-head span { color:#64748b; font-size:.6rem; font-weight:750; white-space:nowrap; }
+    .request-head-side { display:flex; align-items:center; gap:8px; }
+    .request-delete-btn { width:30px; height:30px; flex:0 0 30px; display:inline-flex; align-items:center; justify-content:center; border:1px solid #fecaca; border-radius:9px; background:#fff1f2; color:#dc2626; cursor:pointer; transition:.18s ease; }
+    .request-delete-btn:hover { background:#fee2e2; border-color:#fca5a5; transform:translateY(-1px); }
+    .request-delete-btn:disabled { opacity:.48; cursor:not-allowed; transform:none; }
+    .request-delete-btn svg { width:15px; height:15px; fill:none; stroke:currentColor; stroke-width:2; stroke-linecap:round; stroke-linejoin:round; }
+    .request-status-badge { width:auto; min-height:25px; padding:0 9px; border-radius:999px; display:inline-flex; align-items:center; justify-content:center; border:1px solid transparent; font-size:.5rem; font-weight:950; text-transform:uppercase; white-space:nowrap; }
+    button.request-status-badge { cursor:pointer; }
+    .request-status-badge.aguardando { background:#fef3c7; border-color:#fde68a; color:#92400e; }
+    .request-status-badge.recebida { background:#dcfce7; border-color:#bbf7d0; color:#15803d; cursor:default; }
+    .request-card p { margin-top:8px; color:#334155; font-size:.72rem; line-height:1.45; font-weight:650; text-transform:uppercase; }
+
+    /* NOTIFICAÇÕES */
+    .notification-layout { display:block; }
+    .notification-list { display:grid; gap:10px; }
+    .notification-item { padding:13px; border:1px solid #dbe3ef; border-left:5px solid #3b82f6; border-radius:13px; background:#fff; }
+    .notification-item.urgente { border-left-color:#ef4444; background:#fff7f7; }
+    .notification-item.atualizacao { border-left-color:#f59e0b; background:#fffaf0; }
+    .notification-type { display:inline-flex; min-height:23px; padding:0 8px; align-items:center; border-radius:999px; background:#dbeafe; color:#1e3a8a; font-size:.55rem; font-weight:950; text-transform:uppercase; }
+    .notification-head { margin-top:9px; display:flex; align-items:flex-start; justify-content:space-between; gap:10px; }
+    .notification-head strong { color:#0f2748; font-size:.82rem; text-transform:uppercase; }
+    .notification-head span { color:#64748b; font-size:.6rem; font-weight:750; white-space:nowrap; }
+    .notification-item p { margin-top:8px; color:#334155; font-size:.73rem; line-height:1.45; font-weight:650; white-space:pre-wrap; text-transform:uppercase; }
+
+    .status-note { padding:12px; border:1px dashed #cbd5e1; border-radius:12px; color:#64748b; font-size:.7rem; font-weight:750; line-height:1.45; text-transform:uppercase; }
+    .status-note.error { border-color:#fecaca; background:#fff7f7; color:#991b1b; }
+    .status-note.success { border-color:#bbf7d0; background:#f0fdf4; color:#166534; }
+
+    .toast { position:fixed; left:50%; bottom:calc(92px + var(--safe-bottom)); z-index:3000; transform:translate(-50%,30px); padding:12px 15px; border-radius:12px; background:#0f172a; color:#fff; font-size:.72rem; font-weight:850; opacity:0; pointer-events:none; transition:.2s; text-transform:uppercase; box-shadow:0 10px 28px rgba(15,23,42,.28); }
+    .toast.show { opacity:1; transform:translate(-50%,0); }
+
+    @media (max-width:900px) {
+      .notification-layout { grid-template-columns:1fr; }
+      .services-list { grid-template-columns:repeat(auto-fill,minmax(210px,1fr)); }
+      .topbar-user { display:none; }
+      .topbar-tools { margin-left:auto; }
+    }
+    @media (max-width:768px) {
+      .topbar { min-height:50px; height:50px; padding:5px 10px; gap:8px; }
+      .topbar-logo { height:27px; }
+      .main { padding-top:64px; }
+    }
+    @media (max-width:700px) {
+      .field-grid,.form-actions { grid-template-columns:1fr; }
+      .lpa-taskbar { width:calc(100% - 12px); grid-template-columns:repeat(5,minmax(0,1fr)); padding:4px 5px; }
+      .lpa-taskbar-item { padding-left:2px; padding-right:2px; }
+      .lpa-taskbar-label { font-size:.48rem; letter-spacing:.02em; }
+      .lpa-taskbar-count { right:max(6px,calc(50% - 27px)); }
+      .main { width:calc(100% - 18px); margin:0 9px; }
+      .services-panel-head { gap:8px; }
+      .operation-filter-shell { order:3; margin-left:0; }
+      .date-filter-shell { order:4; width:100%; flex-wrap:wrap; }
+      .date-filter-fields { flex-wrap:wrap; }
+    }
+    @media (max-width:480px) {
+      .topbar { min-height:46px; height:46px; padding:4px 8px; }
+      .topbar-logo { height:24px; }
+      .topbar-icon-btn { width:31px; height:31px; min-width:31px; }
+      .topbar-icon-btn svg { width:18px; height:18px; }
+      .main { padding-top:58px; }
+    }
+  </style>
+</head>
+<body>
+  <section id="loginPage" class="login-page">
+    <form id="loginForm" class="login-card">
+      <img src="logo.png" onerror="this.onerror=null;this.src='https://i.postimg.cc/zG9TvZGJ/logo.png'" alt="LECAR" class="login-logo">
+      <h1>Acesso ao sistema</h1>
+      <input id="loginNome" type="text" placeholder="Usuário ou e-mail" autocomplete="username" required>
+      <input id="loginSenha" type="password" placeholder="Senha" autocomplete="current-password" required>
+      <button id="btnLogin" type="submit">Acessar</button>
+      <div id="loginErro" class="login-error">Usuário, senha ou acesso ao LGVA inválido</div>
+    </form>
+  </section>
+
+  <div id="app" class="app">
+    <header class="topbar">
+      <img src="logo.png" onerror="this.onerror=null;this.src='https://i.postimg.cc/zG9TvZGJ/logo.png'" alt="LECAR" class="topbar-logo">
+
+      <div class="topbar-user"><strong id="usuarioNome">INSTALADOR</strong></div>
+
+      <div class="topbar-tools">
+        <button id="btnNotificacoesTopbar" type="button" class="topbar-icon-btn" title="Notificações" aria-label="Notificações">
+          <span id="countNotificacoes" class="topbar-notification-count">0</span>
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M18 8A6 6 0 0 0 6 8C6 15 3 16 3 16H21C21 16 18 15 18 8Z"></path><path d="M10 20H14"></path></svg>
+        </button>
+        <button id="btnSair" type="button" class="topbar-icon-btn" title="Sair" aria-label="Sair">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M10 5H5V19H10"></path><path d="M14 8L18 12L14 16"></path><path d="M18 12H9"></path></svg>
+        </button>
+      </div>
+    </header>
+
+    <main class="main">
+      <section class="panel">
+        <div class="panel-head services-panel-head">
+          <h2 id="tituloVisao">AGUARDANDO</h2>
+          <div class="services-view-summary"><span id="textoResumoVisao">SERVIÇOS</span><strong id="totalVisao">0</strong></div>
+          <div id="filtroOperacao" class="operation-filter-shell show" aria-label="Filtro por operação">
+            <label for="selectFiltroOperacao">OPERAÇÃO</label>
+            <select id="selectFiltroOperacao">
+              <option value="TODOS" selected>TODOS</option>
+              <option value="ATM">ATM</option>
+              <option value="BOLSAO">BOLSÃO</option>
+            </select>
+          </div>
+          <div id="filtroFinalizados" class="date-filter-shell" aria-label="Filtro por data dos veículos finalizados">
+            <label for="selectFiltroFinalizadosModo">DATA</label>
+            <select id="selectFiltroFinalizadosModo">
+              <option value="HOJE" selected>HOJE</option>
+              <option value="DATA">DATA ESPECÍFICA</option>
+              <option value="PERIODO">PERÍODO</option>
+            </select>
+            <div id="campoFiltroFinalizadosData" class="date-filter-fields">
+              <input id="filtroFinalizadosData" type="date" aria-label="Data específica">
+            </div>
+            <div id="camposFiltroFinalizadosPeriodo" class="date-filter-fields">
+              <input id="filtroFinalizadosInicio" type="date" aria-label="Data inicial">
+              <span class="date-filter-separator">ATÉ</span>
+              <input id="filtroFinalizadosFim" type="date" aria-label="Data final">
+            </div>
+          </div>
+        </div>
+        <div class="panel-body">
+          <div id="conteudoServicos" class="services-list"><div class="empty">CARREGANDO SERVIÇOS...</div></div>
+          <div id="conteudoPecas" class="request-list" hidden><div class="empty">CARREGANDO SOLICITAÇÕES...</div></div>
+          <div id="conteudoNotificacoes" class="notification-layout" hidden>
+            <div id="listaNotificacoes" class="notification-list"><div class="empty">CARREGANDO NOTIFICAÇÕES...</div></div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <nav class="lpa-taskbar" aria-label="Barra de tarefas LGVA">
+      <button id="navAguardando" class="lpa-taskbar-item active" type="button" data-view="AGUARDANDO">
+        <span id="countAguardando" class="lpa-taskbar-count">0</span>
+        <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.5"></circle><path d="M12 7.5V12L15.5 14"></path><path d="M8 3.8L6.2 2.5M16 3.8L17.8 2.5"></path></svg>
+        <span class="lpa-taskbar-label">Aguardando</span>
+      </button>
+      <button id="navAndamento" class="lpa-taskbar-item" type="button" data-view="ANDAMENTO">
+        <span id="countAndamento" class="lpa-taskbar-count">0</span>
+        <svg viewBox="0 0 24 24"><path d="M14.7 6.3A4 4 0 0 0 9.1 11.4L3.8 16.7A2.2 2.2 0 1 0 6.9 19.8L12.2 14.5A4 4 0 0 0 17.3 8.9L14.8 11.4L12.6 9.2Z"></path><path d="M15.5 15.5L20.5 20.5"></path></svg>
+        <span class="lpa-taskbar-label">Andamento</span>
+      </button>
+      <div class="lpa-taskbar-plus-wrap">
+        <button id="btnNovoServico" class="lpa-taskbar-plus" type="button" title="Novo serviço" aria-label="Novo serviço">
+          <svg viewBox="0 0 24 24"><path d="M12 5V19"></path><path d="M5 12H19"></path></svg>
+        </button>
+      </div>
+      <button id="navPecas" class="lpa-taskbar-item" type="button" data-view="PECAS">
+        <span id="countPecas" class="lpa-taskbar-count">0</span>
+        <svg viewBox="0 0 24 24"><path d="M4 7H20V19H4Z"></path><path d="M8 7V4H16V7"></path><path d="M4 12H20"></path></svg>
+        <span class="lpa-taskbar-label">Peças</span>
+      </button>
+      <button id="navFinalizados" class="lpa-taskbar-item" type="button" data-view="FINALIZADO">
+        <span id="countFinalizados" class="lpa-taskbar-count">0</span>
+        <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"></circle><path d="M8 12.3L10.7 15L16.5 9"></path></svg>
+        <span class="lpa-taskbar-label">Finalizados</span>
+      </button>
+    </nav>
+  </div>
+
+  <!-- CADASTRO DE SERVIÇO -->
+  <div id="modalServico" class="modal-bg">
+    <section class="modal" role="dialog" aria-modal="true" aria-labelledby="tituloModalServico">
+      <div class="panel-head"><h2 id="tituloModalServico">NOVO SERVIÇO</h2><button class="modal-close" type="button" data-close="modalServico">×</button></div>
+      <form id="formServico" class="panel-body">
+        <div class="field-grid">
+          <div class="field"><label for="servicoVeiculo">Veículo</label><input id="servicoVeiculo" required></div>
+          <div class="field"><label for="servicoPlaca">Placa</label><input id="servicoPlaca" maxlength="8" required></div>
+        </div>
+        <div class="field"><label for="servicoDescricao">Descrição do serviço</label><textarea id="servicoDescricao" required></textarea></div>
+        <div class="field-grid">
+          <div class="field"><label for="servicoOrigem">Origem / operação</label><select id="servicoOrigem" required><option value="BOLSAO">BOLSÃO</option><option value="ATM">ATM</option></select></div>
+          <div class="field"><label for="servicoPrioridade">Etiqueta do serviço</label><select id="servicoPrioridade"><option value="normal">NORMAL</option></select></div>
+        </div>
+        <div class="form-actions"><button type="button" class="secondary-btn" data-close="modalServico">CANCELAR</button><button class="submit-btn" type="submit">SALVAR SERVIÇO</button></div>
+      </form>
+    </section>
+  </div>
+
+  <!-- SOLICITAÇÃO MANUAL DE PEÇAS -->
+  <div id="modalPecas" class="modal-bg">
+    <section class="modal" role="dialog" aria-modal="true" aria-labelledby="tituloModalPecas">
+      <div class="panel-head"><div><h2 id="tituloModalPecas">SOLICITAR PEÇAS</h2><p id="pecasContexto">VEÍCULO</p></div><button class="modal-close" type="button" data-close="modalPecas">×</button></div>
+      <form id="formPecas" class="panel-body">
+        <div class="piece-builder">
+          <div class="field" style="margin-bottom:0"><label for="pecaManual">Peça / material</label><input id="pecaManual" placeholder="DIGITE MANUALMENTE A PEÇA"></div>
+          <button id="btnAdicionarPeca" class="piece-add-btn" type="button">ADICIONAR</button>
+        </div>
+        <div id="listaPecasTemporaria" class="piece-list"><div class="status-note">NENHUMA PEÇA ADICIONADA.</div></div>
+        <div class="form-actions"><button type="button" class="secondary-btn" data-close="modalPecas">CANCELAR</button><button class="submit-btn" type="submit">SALVAR E ABRIR WHATSAPP</button></div>
+      </form>
+    </section>
+  </div>
+
+  <div id="toast" class="toast"></div>
+
+  <script>
+    "use strict";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyDjMGX595VvyAj6Nk-I4Pj4VGlipJNovPw",
+      authDomain: "lehub-lecar.firebaseapp.com",
+      projectId: "lehub-lecar",
+      storageBucket: "lehub-lecar.firebasestorage.app",
+      messagingSenderId: "338216307290",
+      appId: "1:338216307290:web:bb31d3710098866094e663"
+    };
+
+    const COLLECTIONS = Object.freeze({
+      // Coleções compartilhadas com o módulo ACESSÓRIOS do LPA.
+      servicos: "acessorios_servicos",
+      etiquetas: "etiquetas_acessorios",
+      notificacoes: "notificacoes_lecar",
+      usuarios: "usuarios_sistema",
+      // Dados operacionais exclusivos do aplicativo dos instaladores.
+      pecas: "lgva_solicitacoes_pecas"
+    });
+    const MODULO_ATUAL = "LGVA";
+    const DOMINIO_AUTH = "lehub.local";
+    const CHAVE_SESSAO = "sessao_lgva";
+
+    const ETIQUETAS_PADRAO_LPA = Object.freeze([
+      { id:"normal", nome:"NORMAL", cor:"#64748B", ordem:10, ativa:true, aliases:[] },
+      { id:"sem-urgencia", nome:"SEM URGÊNCIA", cor:"#16A34A", ordem:15, ativa:true, aliases:[] },
+      { id:"estoque", nome:"ESTOQUE", cor:"#22C55E", ordem:25, ativa:true, aliases:[] },
+      { id:"vendido", nome:"VENDIDO", cor:"#F97316", ordem:30, ativa:true, aliases:[] },
+      { id:"retorno", nome:"RETORNO", cor:"#8B5E3C", ordem:40, ativa:true, aliases:[] },
+      { id:"atrasado", nome:"ATRASADO", cor:"#D97706", ordem:70, ativa:true, aliases:[] },
+      { id:"faltando-somente-isso", nome:"FALTANDO SOMENTE ISSO", cor:"#EAB308", ordem:80, ativa:true, aliases:[] },
+      { id:"urgente", nome:"URGENTE", cor:"#DC2626", ordem:100, ativa:true, aliases:[] }
+    ]);
+
+    let db = null;
+    let auth = null;
+    let usuarioAtual = "";
+    let usuarioAutenticado = null;
+    let aplicacaoIniciada = false;
+    let processandoEstadoAuth = false;
+    let visaoAtual = "AGUARDANDO";
+    let filtroOperacaoAtual = "TODOS";
+    let filtroFinalizadosModo = "HOJE";
+    let filtroFinalizadosData = "";
+    let filtroFinalizadosInicio = "";
+    let filtroFinalizadosFim = "";
+    let servicos = [];
+    let etiquetas = ETIQUETAS_PADRAO_LPA.map((item) => ({ ...item }));
+    let solicitacoes = [];
+    let notificacoes = [];
+    let servicoPecasAtual = null;
+    let pecasTemporarias = [];
+    let unsubServicos = null;
+    let unsubEtiquetas = null;
+    let unsubPecas = null;
+    let unsubNotificacoes = null;
+
+    const $ = (id) => document.getElementById(id);
+    const normalizar = (valor) => String(valor ?? "").trim().toUpperCase();
+
+    function usuarioParaEmailAuth(valor) {
+      const chave = String(valor || "")
+        .normalize("NFD").replace(/[\u0300-\u036f]/g, "")
+        .trim().toLowerCase().replace(/[^a-z0-9._-]+/g, "");
+      return chave ? `${chave}@${DOMINIO_AUTH}` : "";
+    }
+
+    function perfilPossuiModulo(perfil) {
+      return perfil?.ativo !== false && perfil?.modulos?.[MODULO_ATUAL] === true;
+    }
+
+    function dadosIdentidadeAtual() {
+      return {
+        usuarioUid:usuarioAutenticado?.uid || "",
+        usuarioNome:usuarioAtual,
+        usuarioEmail:usuarioAutenticado?.email || ""
+      };
+    }
+
+    function mostrarLogin(mensagem = "") {
+      aplicacaoIniciada = false;
+      $("loginPage").style.display = "flex";
+      $("app").style.display = "none";
+      const erro = $("loginErro");
+      if (erro) {
+        erro.textContent = mensagem || "Usuário, senha ou acesso ao LGVA inválido";
+        erro.style.display = mensagem ? "block" : "none";
+      }
+    }
+
+    async function carregarPerfilAutenticado(user) {
+      const snapshot = await db.collection(COLLECTIONS.usuarios).doc(user.uid).get();
+      if (!snapshot.exists) throw new Error("PERFIL_NAO_ENCONTRADO");
+      const perfil = { uid:user.uid, email:user.email || "", ...snapshot.data() };
+      if (!perfilPossuiModulo(perfil)) throw new Error("MODULO_NAO_AUTORIZADO");
+      return perfil;
+    }
+
+    const escapar = (valor) => String(valor ?? "")
+      .replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;")
+      .replace(/"/g,"&quot;").replace(/'/g,"&#039;");
+
+    function normalizarCorEtiqueta(valor, fallback = "#64748B") {
+      const cor = normalizar(valor);
+      return /^#[0-9A-F]{6}$/.test(cor) ? cor : fallback;
+    }
+
+    function corComAlpha(cor, alpha) {
+      const hex = normalizarCorEtiqueta(cor).slice(1);
+      const r = parseInt(hex.slice(0,2),16);
+      const g = parseInt(hex.slice(2,4),16);
+      const b = parseInt(hex.slice(4,6),16);
+      return `rgba(${r},${g},${b},${alpha})`;
+    }
+
+    function etiquetasDisponiveis() {
+      const base = etiquetas.length ? etiquetas : ETIQUETAS_PADRAO_LPA;
+      return base
+        .filter((item) => item.ativa !== false)
+        .map((item) => ({
+          ...item,
+          nome:normalizar(item.nome || "ETIQUETA"),
+          cor:normalizarCorEtiqueta(item.cor),
+          ordem:Number(item.ordem) || 10,
+          aliases:Array.isArray(item.aliases) ? item.aliases.map(normalizar) : []
+        }))
+        .sort((a,b) => (a.ordem - b.ordem) || a.nome.localeCompare(b.nome,"pt-BR"));
+    }
+
+    function etiquetaPorNome(valor) {
+      const nome = normalizar(valor || "NORMAL");
+      const todas = etiquetasDisponiveis();
+      return todas.find((item) => item.nome === nome || item.aliases.includes(nome))
+        || todas.find((item) => item.id === "normal")
+        || todas[0]
+        || ETIQUETAS_PADRAO_LPA[0];
+    }
+
+    function etiquetaDoServico(item) {
+      const todas = etiquetasDisponiveis();
+      const id = String(item?.etiquetaId || "").trim();
+      const nome = normalizar(item?.prioridade || item?.etiqueta || "");
+      const porId = id ? todas.find((etiqueta) => String(etiqueta.id) === id) : null;
+      const porNome = nome
+        ? todas.find((etiqueta) => etiqueta.nome === nome || etiqueta.aliases.includes(nome))
+        : null;
+      const etiquetaAtualLPA = porId || porNome;
+
+      // A coleção de etiquetas do LPA é a fonte de verdade. Assim, alterações de
+      // nome ou cor refletem imediatamente no LGVA sem depender da cor antiga
+      // gravada no cadastro do veículo.
+      if (etiquetaAtualLPA) {
+        return { ...etiquetaAtualLPA, cor:normalizarCorEtiqueta(etiquetaAtualLPA.cor) };
+      }
+
+      // Compatibilidade para registros antigos cuja etiqueta já não exista.
+      const fallback = etiquetaPorNome("NORMAL");
+      return {
+        ...fallback,
+        nome:nome || fallback.nome,
+        cor:normalizarCorEtiqueta(item?.etiquetaCor || "", fallback.cor)
+      };
+    }
+
+    function estiloEtiqueta(item) {
+      const etiqueta = etiquetaDoServico(item);
+      const cor = normalizarCorEtiqueta(etiqueta.cor);
+      return `--etiqueta-cor:${cor};--etiqueta-suave:${corComAlpha(cor,.10)};--etiqueta-borda:${corComAlpha(cor,.42)}`;
+    }
+
+    function renderizarSelectEtiquetas() {
+      const select = $("servicoPrioridade");
+      if (!select) return;
+      const atual = select.value || "normal";
+      const todas = etiquetasDisponiveis();
+      select.innerHTML = todas.map((item) => `<option value="${escapar(item.id)}">${escapar(item.nome)}</option>`).join("");
+      select.value = todas.some((item) => item.id === atual)
+        ? atual
+        : (todas.find((item) => item.id === "normal")?.id || todas[0]?.id || "");
+    }
+
+    function operacaoServico(item) {
+      return normalizar(item?.operacao || item?.origem) === "ATM" ? "ATM" : "BOLSÃO";
+    }
+
+    function valorFiltroOperacao(item) {
+      return operacaoServico(item) === "ATM" ? "ATM" : "BOLSAO";
+    }
+
+    function passaFiltroOperacao(item) {
+      return filtroOperacaoAtual === "TODOS" || valorFiltroOperacao(item) === filtroOperacaoAtual;
+    }
+
+    function alterarFiltroOperacao(valor) {
+      filtroOperacaoAtual = ["TODOS","ATM","BOLSAO"].includes(valor) ? valor : "TODOS";
+      atualizarContadores();
+      renderizarVisao();
+    }
+
+    function hojeLocalISO() {
+      const agora = new Date();
+      const ano = agora.getFullYear();
+      const mes = String(agora.getMonth() + 1).padStart(2,"0");
+      const dia = String(agora.getDate()).padStart(2,"0");
+      return `${ano}-${mes}-${dia}`;
+    }
+
+    function dataLocalISO(valor) {
+      const data = dataJS(valor);
+      if (!data) return "";
+      const ano = data.getFullYear();
+      const mes = String(data.getMonth() + 1).padStart(2,"0");
+      const dia = String(data.getDate()).padStart(2,"0");
+      return `${ano}-${mes}-${dia}`;
+    }
+
+    function inicializarFiltroFinalizados() {
+      const hoje = hojeLocalISO();
+      if (!filtroFinalizadosData) filtroFinalizadosData = hoje;
+      if (!filtroFinalizadosInicio) filtroFinalizadosInicio = hoje;
+      if (!filtroFinalizadosFim) filtroFinalizadosFim = hoje;
+      if ($("filtroFinalizadosData")) $("filtroFinalizadosData").value = filtroFinalizadosData;
+      if ($("filtroFinalizadosInicio")) $("filtroFinalizadosInicio").value = filtroFinalizadosInicio;
+      if ($("filtroFinalizadosFim")) $("filtroFinalizadosFim").value = filtroFinalizadosFim;
+      if ($("selectFiltroFinalizadosModo")) $("selectFiltroFinalizadosModo").value = filtroFinalizadosModo;
+      atualizarCamposFiltroFinalizados();
+    }
+
+    function atualizarCamposFiltroFinalizados() {
+      $("campoFiltroFinalizadosData")?.classList.toggle("show", filtroFinalizadosModo === "DATA");
+      $("camposFiltroFinalizadosPeriodo")?.classList.toggle("show", filtroFinalizadosModo === "PERIODO");
+    }
+
+    function alterarModoFiltroFinalizados(valor) {
+      filtroFinalizadosModo = ["HOJE","DATA","PERIODO"].includes(valor) ? valor : "HOJE";
+      inicializarFiltroFinalizados();
+      atualizarContadores();
+      renderizarVisao();
+    }
+
+    function atualizarDataFiltroFinalizados(tipo, valor) {
+      const hoje = hojeLocalISO();
+      const data = /^\d{4}-\d{2}-\d{2}$/.test(String(valor || "")) ? String(valor) : hoje;
+      if (tipo === "DATA") filtroFinalizadosData = data;
+      if (tipo === "INICIO") filtroFinalizadosInicio = data;
+      if (tipo === "FIM") filtroFinalizadosFim = data;
+      atualizarContadores();
+      renderizarVisao();
+    }
+
+    function timestampFinalizacaoServico(item) {
+      const campos = [
+        item?.finalizadoEm, item?.finalizadoEmISO,
+        item?.concluidoEm, item?.concluidoEmISO,
+        item?.encerradoEm, item?.encerradoEmISO
+      ];
+      for (const valor of campos) {
+        const data = dataJS(valor);
+        if (data) return data.getTime();
+      }
+      return statusInterno(item) === "FINALIZADO" ? timestampServico(item) : 0;
+    }
+
+    function passaFiltroDataFinalizados(item) {
+      if (statusInterno(item) !== "FINALIZADO") return false;
+      const dataFinalizacao = dataLocalISO(timestampFinalizacaoServico(item));
+      if (!dataFinalizacao) return false;
+      if (filtroFinalizadosModo === "DATA") return dataFinalizacao === (filtroFinalizadosData || hojeLocalISO());
+      if (filtroFinalizadosModo === "PERIODO") {
+        let inicio = filtroFinalizadosInicio || hojeLocalISO();
+        let fim = filtroFinalizadosFim || inicio;
+        if (inicio > fim) [inicio, fim] = [fim, inicio];
+        return dataFinalizacao >= inicio && dataFinalizacao <= fim;
+      }
+      return dataFinalizacao === hojeLocalISO();
+    }
+
+    function notificacaoVisivelLGVA(item) {
+      if (item?.ativo === false) return false;
+      const usuario = normalizar(usuarioAtual);
+      const canal = normalizar(item?.canal || item?.modulo || "");
+      const canaisLGVA = ["", "GERAL", "TODOS", "LGVA", "ACESSORIOS", "ACESSÓRIOS"];
+      if (!canaisLGVA.includes(canal)) return false;
+
+      const destinatarios = new Set([
+        item?.destinatario,
+        item?.mecanicoDestino,
+        item?.instaladorDestino,
+        ...(Array.isArray(item?.destinatarios) ? item.destinatarios : [])
+      ].map(normalizar).filter(Boolean));
+      const direcionada = normalizar(item?.visibilidade) === "DIRECIONADA" || destinatarios.size > 0;
+      return !direcionada || destinatarios.has(usuario);
+    }
+
+    function mostrarToast(mensagem) {
+      const toast = $("toast");
+      toast.textContent = normalizar(mensagem);
+      toast.classList.add("show");
+      clearTimeout(mostrarToast.timer);
+      mostrarToast.timer = setTimeout(() => toast.classList.remove("show"), 2600);
+    }
+
+    function abrirModal(id) {
+      $(id)?.classList.add("open");
+      document.body.classList.add("modal-open");
+    }
+
+    function fecharModal(id) {
+      $(id)?.classList.remove("open");
+      if (!document.querySelector(".modal-bg.open")) document.body.classList.remove("modal-open");
+    }
+
+    function dataJS(valor) {
+      if (!valor) return null;
+      if (typeof valor.toDate === "function") return valor.toDate();
+      const data = new Date(valor);
+      return Number.isNaN(data.getTime()) ? null : data;
+    }
+
+    function formatarData(valor) {
+      const data = dataJS(valor);
+      return data ? data.toLocaleString("pt-BR", { day:"2-digit", month:"2-digit", year:"2-digit", hour:"2-digit", minute:"2-digit" }) : "—";
+    }
+
+    function tokenStatus(valor) {
+      return String(valor ?? "")
+        .normalize("NFD")
+        .replace(/[\u0300-\u036f]/g, "")
+        .trim()
+        .toUpperCase()
+        .replace(/[^A-Z0-9]+/g, "_")
+        .replace(/^_+|_+$/g, "");
+    }
+
+    function valorStatusServico(item) {
+      const candidatos = [
+        item?.status,
+        item?.situacao,
+        item?.card,
+        item?.statusServico,
+        item?.statusAtual,
+        item?.etapa,
+        item?.estado
+      ];
+      for (const valor of candidatos) {
+        const token = tokenStatus(valor);
+        if (token) return token;
+      }
+      return "";
+    }
+
+    function pecasSalvasDoServico(item) {
+      const fontes = [item?.pecas, item?.pecasSolicitadas];
+      const unicas = new Set();
+      fontes.forEach((fonte) => {
+        if (!Array.isArray(fonte)) return;
+        fonte.forEach((peca) => {
+          const valor = normalizar(peca);
+          if (valor) unicas.add(valor);
+        });
+      });
+      return [...unicas];
+    }
+
+    function solicitacaoPendenteDoServico(item) {
+      const servicoId = String(item?.id || "");
+      if (!servicoId) return false;
+      return solicitacoes.some((solicitacao) =>
+        String(solicitacao?.servicoId || "") === servicoId
+        && tokenStatus(solicitacao?.status) === "PENDENTE"
+      );
+    }
+
+    function servicoAguardandoPecas(item) {
+      const flags = [item?.aguardandoPecas, item?.aguardando_pecas, item?.pecasPendentes];
+      if (flags.some((valor) => valor === true || tokenStatus(valor) === "SIM" || tokenStatus(valor) === "TRUE")) return true;
+      const statusPecas = tokenStatus(item?.statusPecas || item?.situacaoPecas || item?.substatus || item?.subStatus);
+      if (["AGUARDANDO_PECAS", "PECAS_PENDENTES", "PENDENTE", "SOLICITADO", "SOLICITADA"].includes(statusPecas)) return true;
+      return solicitacaoPendenteDoServico(item);
+    }
+
+    // Status principal compartilhado por LPA e LGVA: somente estes três valores.
+    function statusInterno(item) {
+      const bruto = valorStatusServico(item);
+      const aliases = {
+        AGUARDANDO:"AGUARDANDO",
+        PENDENTE:"AGUARDANDO",
+        DISPONIVEL:"AGUARDANDO",
+        NOVO:"AGUARDANDO",
+        ABERTO:"AGUARDANDO",
+        SOLICITACAO:"AGUARDANDO",
+        SOLICITACAO_INSTALACAO:"AGUARDANDO",
+        SOLICITACAO_DE_INSTALACAO:"AGUARDANDO",
+        AGUARDANDO_ACESSORIOS:"AGUARDANDO",
+        AGUARDANDO_INSTALADOR:"AGUARDANDO",
+        SUBIU_PENDENTES:"AGUARDANDO",
+        SUBIU_PENDENTES_ACESSORIOS:"AGUARDANDO",
+
+        ANDAMENTO:"ANDAMENTO",
+        EM_ANDAMENTO:"ANDAMENTO",
+        INICIADO:"ANDAMENTO",
+        INICIADA:"ANDAMENTO",
+        EM_EXECUCAO:"ANDAMENTO",
+        EXECUCAO:"ANDAMENTO",
+        ASSUMIDO:"ANDAMENTO",
+        ASSUMIDA:"ANDAMENTO",
+        INSTALACAO:"ANDAMENTO",
+        EM_INSTALACAO:"ANDAMENTO",
+        AGUARDANDO_PECAS:"ANDAMENTO",
+        PECAS_PENDENTES:"ANDAMENTO",
+        CARROS_QUE_NAO_ESTAO_AQUI:"ANDAMENTO",
+
+        FINALIZADO:"FINALIZADO",
+        FINALIZADA:"FINALIZADO",
+        FINALIZADOS:"FINALIZADO",
+        CONCLUIDO:"FINALIZADO",
+        CONCLUIDA:"FINALIZADO",
+        CONCLUIDOS:"FINALIZADO",
+        PRONTO:"FINALIZADO",
+        PRONTA:"FINALIZADO",
+        PRONTOS:"FINALIZADO",
+        ENCERRADO:"FINALIZADO",
+        ENCERRADA:"FINALIZADO",
+        ENVIAR_PARA_FORA:"FINALIZADO",
+        ENVIAR_FORA_SERVICO:"FINALIZADO",
+        ENVIAR_PARA_FORA_SERVICO:"FINALIZADO"
+      };
+
+      const status = aliases[bruto] || bruto;
+      if (status === "FINALIZADO") return "FINALIZADO";
+      if (status === "ANDAMENTO") return "ANDAMENTO";
+      if (status === "AGUARDANDO") return "AGUARDANDO";
+
+      // Compatibilidade com registros antigos que não possuem um campo de status confiável.
+      if (item?.finalizadoEm || item?.finalizadoEmISO || item?.finalizado === true) return "FINALIZADO";
+      if (servicoAguardandoPecas(item)) return "ANDAMENTO";
+      if (item?.assumidoEm || item?.assumidoEmISO || item?.iniciadoEm || item?.iniciadoEmISO || normalizar(item?.instalador)) return "ANDAMENTO";
+      return "AGUARDANDO";
+    }
+
+    function statusVisual(item) {
+      const principal = statusInterno(item);
+      return principal === "ANDAMENTO" && servicoAguardandoPecas(item)
+        ? "AGUARDANDO_PECAS"
+        : principal;
+    }
+
+    function timestampServico(item) {
+      const campos = [
+        item?.atualizadoEm, item?.finalizadoEm, item?.assumidoEm, item?.criadoEm,
+        item?.atualizadoEmISO, item?.finalizadoEmISO, item?.assumidoEmISO, item?.criadoEmISO
+      ];
+      for (const valor of campos) {
+        const data = dataJS(valor);
+        if (data) return data.getTime();
+      }
+      return 0;
+    }
+
+    function formatarDataServico(item) {
+      const tempo = statusInterno(item) === "FINALIZADO" ? timestampFinalizacaoServico(item) : timestampServico(item);
+      return tempo ? new Date(tempo).toLocaleString("pt-BR", { day:"2-digit", month:"2-digit", year:"2-digit", hour:"2-digit", minute:"2-digit" }) : "—";
+    }
+
+    function statusTexto(status) {
+      return ({ AGUARDANDO:"AGUARDANDO", ANDAMENTO:"EM ANDAMENTO", AGUARDANDO_PECAS:"AGUARDANDO PEÇAS", FINALIZADO:"FINALIZADO" })[status] || status;
+    }
+
+    function statusClasse(status) {
+      return ({ AGUARDANDO:"aguardando", ANDAMENTO:"andamento", AGUARDANDO_PECAS:"pecas", FINALIZADO:"finalizado" })[status] || "aguardando";
+    }
+
+    function configurarFirebase() {
+      try {
+        if (!window.firebase) throw new Error("SDK do Firebase não carregado");
+        if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
+        auth = auth || firebase.auth();
+        db = db || firebase.firestore();
+        iniciarListeners();
+      } catch (erro) {
+        console.error("[LGVA] Falha ao iniciar Firebase:", erro);
+        $("conteudoServicos").innerHTML = '<div class="empty">NÃO FOI POSSÍVEL CARREGAR OS SERVIÇOS.</div>';
+      }
+    }
+
+    function iniciarListeners() {
+      unsubServicos?.(); unsubEtiquetas?.(); unsubPecas?.(); unsubNotificacoes?.();
+
+      unsubServicos = db.collection(COLLECTIONS.servicos)
+        .onSnapshot((snapshot) => {
+          servicos = snapshot.docs
+            .map((doc) => ({ id:doc.id, ...doc.data() }))
+            .filter((item) => item.excluido !== true)
+            .sort((a,b) => timestampServico(b) - timestampServico(a));
+          atualizarTudo();
+        }, tratarErroFirebase);
+
+      unsubEtiquetas = db.collection(COLLECTIONS.etiquetas)
+        .onSnapshot((snapshot) => {
+          etiquetas = snapshot.empty
+            ? ETIQUETAS_PADRAO_LPA.map((item) => ({ ...item }))
+            : snapshot.docs.map((doc) => ({ id:doc.id, ...doc.data() }));
+          renderizarSelectEtiquetas();
+          atualizarTudo();
+        }, (erro) => {
+          console.warn("[LGVA] Etiquetas do LPA indisponíveis; usando padrão local:", erro);
+          etiquetas = ETIQUETAS_PADRAO_LPA.map((item) => ({ ...item }));
+          renderizarSelectEtiquetas();
+          atualizarTudo();
+        });
+
+      unsubPecas = db.collection(COLLECTIONS.pecas)
+        .orderBy("criadoEm", "desc")
+        .onSnapshot((snapshot) => {
+          solicitacoes = snapshot.docs.map((doc) => ({ id:doc.id, ...doc.data() }));
+          atualizarTudo();
+        }, tratarErroFirebase);
+
+      unsubNotificacoes = db.collection(COLLECTIONS.notificacoes)
+        .orderBy("criadoEm", "desc")
+        .limit(100)
+        .onSnapshot((snapshot) => {
+          notificacoes = snapshot.docs
+            .map((doc) => ({ id:doc.id, ...doc.data() }))
+            .filter(notificacaoVisivelLGVA);
+          atualizarTudo();
+        }, tratarErroFirebase);
+    }
+
+    function tratarErroFirebase(erro) {
+      console.error("[LGVA] Firestore:", erro);
+      mostrarToast("Não foi possível atualizar os dados");
+    }
+
+    function contagens() {
+      const servicosFiltrados = servicos.filter(passaFiltroOperacao);
+      return {
+        aguardando:servicosFiltrados.filter((s) => statusInterno(s) === "AGUARDANDO").length,
+        andamento:servicosFiltrados.filter((s) => statusInterno(s) === "ANDAMENTO").length,
+        pecas:solicitacoes.filter((p) => tokenStatus(p.status) === "PENDENTE").length,
+        finalizados:servicosFiltrados.filter(passaFiltroDataFinalizados).length,
+        notificacoes:notificacoes.length
+      };
+    }
+
+    function atualizarContadores() {
+      const c = contagens();
+      $("countAguardando").textContent = c.aguardando;
+      $("countAndamento").textContent = c.andamento;
+      $("countPecas").textContent = c.pecas;
+      $("countFinalizados").textContent = c.finalizados;
+      $("countNotificacoes").textContent = c.notificacoes;
+      $("countNotificacoes").classList.toggle("show", c.notificacoes > 0);
+    }
+
+    function atualizarTudo() {
+      atualizarContadores();
+      renderizarVisao();
+      renderizarNotificacoes();
+    }
+
+    function selecionarVisao(visao) {
+      visaoAtual = visao;
+      document.querySelectorAll(".lpa-taskbar-item").forEach((btn) => btn.classList.toggle("active", btn.dataset.view === visao));
+      $("btnNotificacoesTopbar").classList.toggle("active", visao === "NOTIFICACOES");
+      $("conteudoServicos").hidden = ["PECAS","NOTIFICACOES"].includes(visao);
+      $("conteudoPecas").hidden = visao !== "PECAS";
+      $("conteudoNotificacoes").hidden = visao !== "NOTIFICACOES";
+      renderizarVisao();
+    }
+
+    function renderizarVisao() {
+      const titulos = {
+        AGUARDANDO:"AGUARDANDO",
+        ANDAMENTO:"EM ANDAMENTO",
+        PECAS:"SOLICITAÇÕES DE PEÇAS",
+        FINALIZADO:"FINALIZADOS",
+        NOTIFICACOES:"NOTIFICAÇÕES"
+      };
+      $("tituloVisao").textContent = titulos[visaoAtual] || titulos.AGUARDANDO;
+
+      const emServicos = ["AGUARDANDO","ANDAMENTO","FINALIZADO"].includes(visaoAtual);
+      $("filtroOperacao").classList.toggle("show", emServicos);
+      $("filtroFinalizados").classList.toggle("show", visaoAtual === "FINALIZADO");
+      if (visaoAtual === "FINALIZADO") inicializarFiltroFinalizados();
+      $("textoResumoVisao").textContent = emServicos
+        ? (filtroOperacaoAtual === "TODOS" ? "SERVIÇOS" : filtroOperacaoAtual === "BOLSAO" ? "BOLSÃO" : "ATM")
+        : visaoAtual === "PECAS" ? "SOLICITAÇÕES" : "AVISOS";
+
+      if (visaoAtual === "PECAS") {
+        $("totalVisao").textContent = solicitacoes.length;
+        renderizarSolicitacoes();
+        return;
+      }
+      if (visaoAtual === "NOTIFICACOES") {
+        $("totalVisao").textContent = notificacoes.length;
+        return;
+      }
+
+      const filtrados = servicos.filter((item) =>
+        statusInterno(item) === visaoAtual
+        && passaFiltroOperacao(item)
+        && (visaoAtual !== "FINALIZADO" || passaFiltroDataFinalizados(item))
+      ).sort((a,b) => {
+        const tempoA = visaoAtual === "FINALIZADO" ? timestampFinalizacaoServico(a) : timestampServico(a);
+        const tempoB = visaoAtual === "FINALIZADO" ? timestampFinalizacaoServico(b) : timestampServico(b);
+        return tempoB - tempoA;
+      });
+      $("totalVisao").textContent = filtrados.length;
+      $("conteudoServicos").innerHTML = filtrados.length
+        ? filtrados.map(cardServico).join("")
+        : '<div class="empty">NENHUM REGISTRO NESTA VISÃO.</div>';
+    }
+
+    function cardServico(item) {
+      const statusPrincipal = statusInterno(item);
+      const statusAtual = statusVisual(item);
+      const etiqueta = etiquetaDoServico(item);
+      const observacoes = normalizar(item.observacoes);
+      const pecasSalvas = pecasSalvasDoServico(item);
+      const classe = ["etiqueta-aplicada", statusAtual === "AGUARDANDO_PECAS" ? "status-pecas" : "", statusPrincipal === "FINALIZADO" ? "status-finalizado" : ""].join(" ");
+      let botoes = "";
+      if (statusPrincipal === "AGUARDANDO") {
+        botoes = `<button class="card-btn primary" onclick="iniciarServico('${item.id}')">INICIAR</button>`;
+      } else if (statusPrincipal === "ANDAMENTO" && statusAtual !== "AGUARDANDO_PECAS") {
+        botoes = `<button class="card-btn warning" onclick="abrirSolicitacaoPecas('${item.id}')">PEÇAS</button><button class="card-btn success" onclick="finalizarServico('${item.id}')">FINALIZAR</button>`;
+      } else if (statusPrincipal === "ANDAMENTO" && statusAtual === "AGUARDANDO_PECAS") {
+        botoes = `<button class="card-btn warning" onclick="abrirSolicitacaoPecas('${item.id}')">PEÇAS</button><button class="card-btn primary" onclick="retomarServico('${item.id}')">RETOMAR</button><button class="card-btn success" onclick="finalizarServico('${item.id}')">FINALIZAR</button>`;
+      }
+
+      return `
+        <article class="service-row ${classe}" style="${estiloEtiqueta(item)}">
+          <div class="service-card-head">
+            <div class="service-date">
+              <svg viewBox="0 0 24 24"><rect x="4" y="5" width="16" height="15" rx="2"></rect><path d="M8 3V7M16 3V7M4 10H20"></path></svg>
+              ${escapar(formatarDataServico(item))}
+            </div>
+            <span class="service-bookmark"><svg viewBox="0 0 24 24"><path d="M6 3H18V21L12 17L6 21Z"></path></svg></span>
+          </div>
+          <div class="service-main">
+            <div class="service-plate">${escapar(item.placa || "SEM PLACA")}</div>
+            <div class="service-vehicle">${escapar(item.veiculo || "VEÍCULO NÃO INFORMADO")}</div>
+          </div>
+          <div class="service-desc">${escapar(item.descricao || "SEM DESCRIÇÃO")}</div>
+          <span class="service-label-chip">${escapar(etiqueta.nome)}</span>
+          ${observacoes ? `<div class="service-observation" title="${escapar(observacoes)}">OBS: ${escapar(observacoes)}</div>` : ""}
+          ${pecasSalvas.length ? `<div class="service-observation" title="${escapar(pecasSalvas.join(" | "))}">PEÇAS: ${escapar(pecasSalvas.join(" | "))}</div>` : ""}
+          <div class="service-info">
+            <div class="service-info-line"><svg viewBox="0 0 24 24"><path d="M12 21S18 15.7 18 10A6 6 0 1 0 6 10C6 15.7 12 21 12 21Z"></path><circle cx="12" cy="10" r="2"></circle></svg><span>ORIGEM: <strong>${escapar(operacaoServico(item))}</strong></span></div>
+            <div class="service-info-line"><svg viewBox="0 0 24 24"><circle cx="9" cy="8" r="3"></circle><path d="M3.5 20V18A5.5 5.5 0 0 1 9 12.5A5.5 5.5 0 0 1 14.5 18V20"></path><path d="M16 8H21M18.5 5.5V10.5"></path></svg><span>INSTALADOR: <strong>${escapar(item.instalador || "NÃO ATRIBUÍDO")}</strong></span></div>
+          </div>
+          <div class="service-footer">
+            <span class="status-badge ${statusClasse(statusAtual)}">${escapar(statusTexto(statusAtual))}</span>
+            <div class="service-actions">${botoes}</div>
+          </div>
+        </article>`;
+    }
+
+    function renderizarSolicitacoes() {
+      const lista = [...solicitacoes].sort((a,b) => {
+        const pendenteA = tokenStatus(a?.status) === "PENDENTE" ? 1 : 0;
+        const pendenteB = tokenStatus(b?.status) === "PENDENTE" ? 1 : 0;
+        if (pendenteA !== pendenteB) return pendenteB - pendenteA;
+        return timestampServico(b) - timestampServico(a);
+      });
+      $("conteudoPecas").innerHTML = lista.length ? lista.map((item) => {
+        const pendente = tokenStatus(item.status) === "PENDENTE";
+        const badge = pendente
+          ? `<button class="request-status-badge aguardando" type="button" onclick="confirmarRecebimentoPecas('${item.id}')">AGUARDANDO PEÇA</button>`
+          : '<span class="request-status-badge recebida">PEÇA RECEBIDA</span>';
+        return `
+        <article class="request-card ${pendente ? "" : "recebida"}">
+          <div class="request-head">
+            <div class="request-head-main">
+              <strong>${escapar(item.placa || "SEM PLACA")} — ${escapar(item.veiculo || "VEÍCULO")}</strong>
+              ${badge}
+            </div>
+            <div class="request-head-side">
+              <span>${escapar(formatarData(item.criadoEm || item.criadoEmISO))}</span>
+              <button class="request-delete-btn" type="button" title="EXCLUIR SOLICITAÇÃO" aria-label="Excluir solicitação de peças" onclick="excluirSolicitacaoPecas('${item.id}')">
+                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7H20"></path><path d="M7 7V20H17V7"></path><path d="M9 7V4H15V7"></path><path d="M10 11V17M14 11V17"></path></svg>
+              </button>
+            </div>
+          </div>
+          <p><strong>INSTALADOR:</strong> ${escapar(item.instalador || "—")}</p>
+          <p><strong>ITENS:</strong> ${escapar((item.itens || []).join(" | ") || "NENHUM ITEM")}</p>
+        </article>`;
+      }).join("") : '<div class="empty">NENHUMA SOLICITAÇÃO DE PEÇAS.</div>';
+    }
+
+    function renderizarNotificacoes() {
+      const lista = $("listaNotificacoes");
+      if (!lista) return;
+      lista.innerHTML = notificacoes.length ? notificacoes.map((item) => {
+        const tipo = normalizar(item.tipo);
+        const classe = tipo === "URGENTE" ? "urgente" : tipo === "ATUALIZACAO" || tipo === "ATUALIZAÇÃO" ? "atualizacao" : "";
+        return `<article class="notification-item ${classe}">
+          <span class="notification-type">${escapar(tipo || "INFORMATIVO")}</span>
+          <div class="notification-head"><strong>${escapar(item.titulo || "SEM TÍTULO")}</strong><span>${escapar(formatarData(item.criadoEm || item.criadoEmISO || item.dataCriacao))}</span></div>
+          <p>${escapar(item.mensagem || "")}</p>
+          <p><strong>PUBLICADO POR:</strong> ${escapar(item.criadoPor || item.autor || item.usuario || "ADMIN")}</p>
+        </article>`;
+      }).join("") : '<div class="empty">NENHUMA NOTIFICAÇÃO PUBLICADA.</div>';
+    }
+
+    async function criarServico(event) {
+      event.preventDefault();
+      if (!db) return mostrarToast("Firebase indisponível");
+      const agoraISO = new Date().toISOString();
+      const operacao = $("servicoOrigem").value === "ATM" ? "ATM" : "BOLSÃO";
+      const etiquetaSelecionada = etiquetasDisponiveis().find((item) => item.id === $("servicoPrioridade").value) || etiquetaPorNome("NORMAL");
+      const dados = {
+        veiculo:normalizar($("servicoVeiculo").value),
+        placa:normalizar($("servicoPlaca").value).replace(/[^A-Z0-9]/g,""),
+        descricao:normalizar($("servicoDescricao").value),
+        operacao,
+        origem:operacao,
+        observacoes:"",
+        prioridade:etiquetaSelecionada.nome,
+        etiqueta:etiquetaSelecionada.nome,
+        etiquetaId:etiquetaSelecionada.id,
+        etiquetaCor:etiquetaSelecionada.cor,
+        status:"AGUARDANDO",
+        instalador:"",
+        aguardandoPecas:false,
+        pecas:[],
+        criadoPor:usuarioAtual,
+        criadoPorUid:usuarioAutenticado?.uid || "",
+        criadoPorEmail:usuarioAutenticado?.email || "",
+        ...dadosIdentidadeAtual(),
+        criadoEm:firebase.firestore.FieldValue.serverTimestamp(),
+        criadoEmISO:agoraISO,
+        atualizadoEm:firebase.firestore.FieldValue.serverTimestamp(),
+        atualizadoEmISO:agoraISO,
+        finalizadoEm:null,
+        finalizadoEmISO:"",
+        excluido:false
+      };
+      if (!dados.veiculo || !dados.placa || !dados.descricao || !dados.origem) return mostrarToast("Preencha todos os campos");
+      try {
+        await db.collection(COLLECTIONS.servicos).add(dados);
+        $("formServico").reset();
+        renderizarSelectEtiquetas();
+        fecharModal("modalServico");
+        selecionarVisao("AGUARDANDO");
+        mostrarToast("Serviço cadastrado");
+      } catch (erro) { tratarErroFirebase(erro); }
+    }
+
+    async function iniciarServico(id) {
+      if (!db) return;
+      try {
+        const agoraISO = new Date().toISOString();
+        await db.collection(COLLECTIONS.servicos).doc(id).update({
+          status:"ANDAMENTO",
+          instalador:usuarioAtual,
+          instaladorUid:usuarioAutenticado?.uid || "",
+          instaladorEmail:usuarioAutenticado?.email || "",
+          assumidoPorUid:usuarioAutenticado?.uid || "",
+          aguardandoPecas:false,
+          iniciadoEm:firebase.firestore.FieldValue.serverTimestamp(),
+          assumidoEm:firebase.firestore.FieldValue.serverTimestamp(),
+          assumidoEmISO:agoraISO,
+          atualizadoEm:firebase.firestore.FieldValue.serverTimestamp(),
+          atualizadoEmISO:agoraISO
+        });
+        selecionarVisao("ANDAMENTO");
+        mostrarToast("Serviço iniciado");
+      } catch (erro) { tratarErroFirebase(erro); }
+    }
+
+    async function retomarServico(id) {
+      if (!db) return;
+      try {
+        const agoraISO = new Date().toISOString();
+        await db.collection(COLLECTIONS.servicos).doc(id).update({
+          status:"ANDAMENTO",
+          aguardandoPecas:false,
+          atualizadoEm:firebase.firestore.FieldValue.serverTimestamp(),
+          atualizadoEmISO:agoraISO
+        });
+        selecionarVisao("ANDAMENTO");
+        mostrarToast("Serviço retomado");
+      } catch (erro) { tratarErroFirebase(erro); }
+    }
+
+    async function finalizarServico(id) {
+      if (!db) return;
+      const item = servicos.find((s) => s.id === id);
+      if (!item) return;
+      if (!confirm(`FINALIZAR O SERVIÇO DO VEÍCULO ${item.placa}?`)) return;
+      try {
+        const agoraISO = new Date().toISOString();
+        const pendentes = solicitacoes.filter((solicitacao) =>
+          String(solicitacao?.servicoId || solicitacao?.veiculoId || "") === String(id)
+          && tokenStatus(solicitacao?.status) === "PENDENTE"
+        );
+        const lote = db.batch();
+        const movimentacoes = pendentes.map((solicitacao) => ({
+          solicitacaoId:solicitacao.id,
+          itens:Array.isArray(solicitacao.itens) ? solicitacao.itens.map(normalizar).filter(Boolean) : [],
+          status:"ATENDIDA",
+          recebidoPor:usuarioAtual,
+          recebidoEmISO:agoraISO,
+          automatico:true,
+          motivo:"FINALIZACAO_SERVICO"
+        }));
+
+        pendentes.forEach((solicitacao) => {
+          lote.set(db.collection(COLLECTIONS.pecas).doc(solicitacao.id), {
+            status:"ATENDIDA",
+            atendidaPor:usuarioAtual,
+            atendidaEm:firebase.firestore.FieldValue.serverTimestamp(),
+            atendidaEmISO:agoraISO,
+            recebimentoAutomatico:true,
+            motivoRecebimento:"FINALIZACAO_SERVICO",
+            atualizadoEm:firebase.firestore.FieldValue.serverTimestamp(),
+            atualizadoEmISO:agoraISO
+          }, { merge:true });
+        });
+
+        const atualizacaoServico = {
+          status:"FINALIZADO",
+          aguardandoPecas:false,
+          statusPecasAtual:pendentes.length ? "ATENDIDA" : (item.statusPecasAtual || ""),
+          finalizadoPor:usuarioAtual,
+          finalizadoPorUid:usuarioAutenticado?.uid || "",
+          finalizadoPorEmail:usuarioAutenticado?.email || "",
+          finalizadoEm:firebase.firestore.FieldValue.serverTimestamp(),
+          finalizadoEmISO:agoraISO,
+          atualizadoEm:firebase.firestore.FieldValue.serverTimestamp(),
+          atualizadoEmISO:agoraISO
+        };
+        if (movimentacoes.length) {
+          atualizacaoServico.historicoMovimentacaoPecas = firebase.firestore.FieldValue.arrayUnion(...movimentacoes);
+          atualizacaoServico.ultimaMovimentacaoPecas = movimentacoes[movimentacoes.length - 1];
+          atualizacaoServico.ultimaMovimentacaoPecasEmISO = agoraISO;
+          atualizacaoServico.ultimaMovimentacaoPecasPor = usuarioAtual;
+        }
+        lote.set(db.collection(COLLECTIONS.servicos).doc(id), atualizacaoServico, { merge:true });
+        await lote.commit();
+        selecionarVisao("FINALIZADO");
+        mostrarToast(pendentes.length ? "Serviço finalizado e peça marcada como recebida" : "Serviço finalizado");
+      } catch (erro) { tratarErroFirebase(erro); }
+    }
+
+    function abrirSolicitacaoPecas(id) {
+      const item = servicos.find((s) => s.id === id);
+      if (!item) return;
+      servicoPecasAtual = item;
+      pecasTemporarias = [];
+      $("pecasContexto").textContent = `${item.placa || "SEM PLACA"} — ${item.veiculo || "VEÍCULO"}`;
+      $("pecaManual").value = "";
+      renderizarPecasTemporarias();
+      abrirModal("modalPecas");
+      setTimeout(() => $("pecaManual").focus(), 50);
+    }
+
+    function adicionarPecaTemporaria() {
+      const valor = normalizar($("pecaManual").value);
+      if (!valor) return mostrarToast("Digite a peça");
+      pecasTemporarias.push(valor);
+      $("pecaManual").value = "";
+      renderizarPecasTemporarias();
+      $("pecaManual").focus();
+    }
+
+    function removerPecaTemporaria(indice) {
+      pecasTemporarias.splice(indice,1);
+      renderizarPecasTemporarias();
+    }
+
+    function renderizarPecasTemporarias() {
+      $("listaPecasTemporaria").innerHTML = pecasTemporarias.length
+        ? pecasTemporarias.map((item,indice) => `<div class="piece-item"><span>${escapar(item)}</span><button type="button" class="piece-remove" onclick="removerPecaTemporaria(${indice})">×</button></div>`).join("")
+        : '<div class="status-note">NENHUMA PEÇA ADICIONADA.</div>';
+    }
+
+    function gerarTextoSolicitacaoPecasWhatsApp(servico, itens) {
+      const pecasTexto = Array.isArray(itens) && itens.length
+        ? itens.join(", ")
+        : "NENHUMA PEÇA CADASTRADA";
+      return `VEÍCULO: ${servico?.veiculo || "-"}
+PLACA: ${servico?.placa || "-"}
+PEÇAS: ${pecasTexto}`;
+    }
+
+    function abrirSolicitacaoPecasNoWhatsApp(servico, itens, janelaPreAberta = null) {
+      const texto = gerarTextoSolicitacaoPecasWhatsApp(servico, itens);
+      const url = `https://wa.me/?text=${encodeURIComponent(texto)}`;
+      if (janelaPreAberta && !janelaPreAberta.closed) {
+        janelaPreAberta.location.href = url;
+        return;
+      }
+      const janela = window.open(url, "_blank", "noopener,noreferrer");
+      if (!janela) mostrarToast("Permita pop-ups para abrir o WhatsApp");
+    }
+
+    async function salvarSolicitacaoPecas(event) {
+      event.preventDefault();
+      if (!db || !servicoPecasAtual) return;
+      if (!pecasTemporarias.length) return mostrarToast("Adicione pelo menos uma peça");
+      const servico = servicoPecasAtual;
+      const itens = [...new Set(pecasTemporarias.map(normalizar).filter(Boolean))];
+      const agoraISO = new Date().toISOString();
+      // A janela é aberta durante o clique para evitar bloqueio de pop-up após o await do Firebase.
+      const janelaWhatsApp = window.open("about:blank", "_blank");
+      const lote = db.batch();
+      const solicitacaoRef = db.collection(COLLECTIONS.pecas).doc();
+      const servicoRef = db.collection(COLLECTIONS.servicos).doc(servico.id);
+      const registroHistorico = {
+        solicitacaoId:solicitacaoRef.id,
+        itens,
+        status:"PENDENTE",
+        solicitadoPor:usuarioAtual,
+        solicitadoEmISO:agoraISO
+      };
+      lote.set(solicitacaoRef, {
+        solicitacaoId:solicitacaoRef.id,
+        servicoId:servico.id,
+        veiculoId:servico.id,
+        veiculo:servico.veiculo || "",
+        placa:servico.placa || "",
+        instalador:usuarioAtual,
+        instaladorUid:usuarioAutenticado?.uid || "",
+        instaladorEmail:usuarioAutenticado?.email || "",
+        solicitadoPorUid:usuarioAutenticado?.uid || "",
+        itens,
+        status:"PENDENTE",
+        criadoEm:firebase.firestore.FieldValue.serverTimestamp(),
+        criadoEmISO:agoraISO,
+        atualizadoEm:firebase.firestore.FieldValue.serverTimestamp(),
+        atualizadoEmISO:agoraISO
+      });
+      lote.set(servicoRef, {
+        // O status principal permanece ANDAMENTO nos dois sistemas; a flag representa apenas o substatus visual.
+        status:"ANDAMENTO",
+        aguardandoPecas:true,
+        statusPecasAtual:"PENDENTE",
+        pecas:firebase.firestore.FieldValue.arrayUnion(...itens),
+        pecasSolicitadas:firebase.firestore.FieldValue.arrayUnion(...itens),
+        historicoPecas:firebase.firestore.FieldValue.arrayUnion(registroHistorico),
+        ultimaSolicitacaoPecas:registroHistorico,
+        ultimaSolicitacaoPecasId:solicitacaoRef.id,
+        ultimaSolicitacaoPecasEmISO:agoraISO,
+        ultimaSolicitacaoPecasPor:usuarioAtual,
+        atualizadoEm:firebase.firestore.FieldValue.serverTimestamp(),
+        atualizadoEmISO:agoraISO
+      }, { merge:true });
+      try {
+        await lote.commit();
+        abrirSolicitacaoPecasNoWhatsApp(servico, itens, janelaWhatsApp);
+        fecharModal("modalPecas");
+        servicoPecasAtual = null;
+        pecasTemporarias = [];
+        selecionarVisao("PECAS");
+        mostrarToast("Solicitação salva. WhatsApp aberto");
+      } catch (erro) {
+        if (janelaWhatsApp && !janelaWhatsApp.closed) janelaWhatsApp.close();
+        tratarErroFirebase(erro);
+      }
+    }
+
+
+    async function confirmarRecebimentoPecas(id) {
+      if (!db) return;
+      const solicitacao = solicitacoes.find((item) => item.id === id);
+      if (!solicitacao || tokenStatus(solicitacao.status) !== "PENDENTE") return;
+      if (!confirm(`ALTERAR A SOLICITAÇÃO DE ${solicitacao.placa || "ESTE VEÍCULO"} PARA PEÇA RECEBIDA?`)) return;
+      try {
+        const lote = db.batch();
+        const agoraISO = new Date().toISOString();
+        const servicoId = String(solicitacao?.servicoId || solicitacao?.veiculoId || "");
+        const outrasPendentes = solicitacoes.some((item) =>
+          item.id !== id
+          && String(item?.servicoId || item?.veiculoId || "") === servicoId
+          && tokenStatus(item?.status) === "PENDENTE"
+        );
+        const registroRecebimento = {
+          solicitacaoId:id,
+          itens:Array.isArray(solicitacao.itens) ? solicitacao.itens.map(normalizar).filter(Boolean) : [],
+          status:"ATENDIDA",
+          recebidoPor:usuarioAtual,
+          recebidoEmISO:agoraISO,
+          automatico:false,
+          motivo:"CONFIRMACAO_OPERADOR"
+        };
+        lote.set(db.collection(COLLECTIONS.pecas).doc(id), {
+          status:"ATENDIDA",
+          atendidaPor:usuarioAtual,
+          atendidaEm:firebase.firestore.FieldValue.serverTimestamp(),
+          atendidaEmISO:agoraISO,
+          recebimentoAutomatico:false,
+          motivoRecebimento:"CONFIRMACAO_OPERADOR",
+          atualizadoEm:firebase.firestore.FieldValue.serverTimestamp(),
+          atualizadoEmISO:agoraISO
+        }, { merge:true });
+        if (servicoId) {
+          lote.set(db.collection(COLLECTIONS.servicos).doc(servicoId), {
+            aguardandoPecas:outrasPendentes,
+            statusPecasAtual:outrasPendentes ? "PENDENTE" : "ATENDIDA",
+            historicoMovimentacaoPecas:firebase.firestore.FieldValue.arrayUnion(registroRecebimento),
+            ultimaMovimentacaoPecas:registroRecebimento,
+            ultimaMovimentacaoPecasEmISO:agoraISO,
+            ultimaMovimentacaoPecasPor:usuarioAtual,
+            atualizadoEm:firebase.firestore.FieldValue.serverTimestamp(),
+            atualizadoEmISO:agoraISO
+          }, { merge:true });
+        }
+        await lote.commit();
+        selecionarVisao("PECAS");
+        mostrarToast("Peça marcada como recebida");
+      } catch (erro) { tratarErroFirebase(erro); }
+    }
+
+    async function excluirSolicitacaoPecas(id) {
+      if (!db || !id) return;
+      const solicitacao = solicitacoes.find((item) => item.id === id);
+      if (!solicitacao) return mostrarToast("Solicitação não encontrada");
+      const identificacao = `${solicitacao.placa || "SEM PLACA"} — ${(solicitacao.itens || []).join(" | ") || "SEM ITENS"}`;
+      if (!confirm(`EXCLUIR A SOLICITAÇÃO DE PEÇAS?\n\n${identificacao}\n\nELA TAMBÉM SERÁ REMOVIDA DO CADASTRO DO VEÍCULO.`)) return;
+
+      try {
+        const lote = db.batch();
+        const agoraISO = new Date().toISOString();
+        const servicoId = String(solicitacao?.servicoId || solicitacao?.veiculoId || "");
+        const servico = servicos.find((item) => String(item.id) === servicoId);
+        const restantes = solicitacoes.filter((item) =>
+          item.id !== id
+          && String(item?.servicoId || item?.veiculoId || "") === servicoId
+        );
+        const pendentesRestantes = restantes.some((item) => tokenStatus(item?.status) === "PENDENTE");
+        const ultimaRestante = [...restantes].sort((a,b) => {
+          const tempoA = dataJS(a?.criadoEm || a?.criadoEmISO)?.getTime() || 0;
+          const tempoB = dataJS(b?.criadoEm || b?.criadoEmISO)?.getTime() || 0;
+          return tempoB - tempoA;
+        })[0] || null;
+
+        lote.delete(db.collection(COLLECTIONS.pecas).doc(id));
+
+        if (servicoId && servico) {
+          const historicoAtual = Array.isArray(servico.historicoPecas) ? servico.historicoPecas : [];
+          const historicoPecas = historicoAtual.filter((registro) => String(registro?.solicitacaoId || "") !== id);
+          const itensExcluidos = new Set((solicitacao.itens || []).map(normalizar).filter(Boolean));
+          const itensAindaSolicitados = new Set(restantes.flatMap((registro) => Array.isArray(registro.itens) ? registro.itens.map(normalizar).filter(Boolean) : []));
+          const pecasAtualizadas = pecasSalvasDoServico(servico).filter((peca) => !itensExcluidos.has(peca) || itensAindaSolicitados.has(peca));
+          const registroExclusao = {
+            solicitacaoId:id,
+            itens:Array.isArray(solicitacao.itens) ? solicitacao.itens.map(normalizar).filter(Boolean) : [],
+            status:"EXCLUIDA",
+            excluidoPor:usuarioAtual,
+            excluidoEmISO:agoraISO,
+            automatico:false,
+            motivo:"EXCLUSAO_OPERADOR"
+          };
+          const ultimaSolicitacao = ultimaRestante ? {
+            solicitacaoId:ultimaRestante.id,
+            itens:Array.isArray(ultimaRestante.itens) ? ultimaRestante.itens.map(normalizar).filter(Boolean) : [],
+            status:tokenStatus(ultimaRestante.status) === "PENDENTE" ? "PENDENTE" : "ATENDIDA",
+            solicitadoPor:normalizar(ultimaRestante.instalador || ultimaRestante.solicitadoPor || ""),
+            solicitadoEmISO:ultimaRestante.criadoEmISO || ""
+          } : null;
+
+          lote.set(db.collection(COLLECTIONS.servicos).doc(servicoId), {
+            aguardandoPecas:pendentesRestantes,
+            statusPecasAtual:pendentesRestantes ? "PENDENTE" : (restantes.length ? "ATENDIDA" : ""),
+            pecas:pecasAtualizadas,
+            pecasSolicitadas:pecasAtualizadas,
+            historicoPecas,
+            ultimaSolicitacaoPecas:ultimaSolicitacao,
+            ultimaSolicitacaoPecasId:ultimaRestante?.id || "",
+            ultimaSolicitacaoPecasEmISO:ultimaRestante?.criadoEmISO || "",
+            ultimaSolicitacaoPecasPor:normalizar(ultimaRestante?.instalador || ultimaRestante?.solicitadoPor || ""),
+            historicoMovimentacaoPecas:firebase.firestore.FieldValue.arrayUnion(registroExclusao),
+            ultimaMovimentacaoPecas:registroExclusao,
+            ultimaMovimentacaoPecasEmISO:agoraISO,
+            ultimaMovimentacaoPecasPor:usuarioAtual,
+            atualizadoEm:firebase.firestore.FieldValue.serverTimestamp(),
+            atualizadoEmISO:agoraISO
+          }, { merge:true });
+        }
+
+        await lote.commit();
+        selecionarVisao("PECAS");
+        mostrarToast("Solicitação de peças excluída");
+      } catch (erro) { tratarErroFirebase(erro); }
+    }
+
+    function iniciarSessao(perfil, user) {
+      usuarioAtual = normalizar(perfil?.usuario || perfil?.nome || user?.displayName || "USUÁRIO");
+      usuarioAutenticado = {
+        uid:user.uid, email:user.email || perfil?.email || "", usuario:usuarioAtual,
+        nome:normalizar(perfil?.nome || usuarioAtual), perfil:normalizar(perfil?.perfil || "OPERADOR"),
+        modulos:perfil?.modulos || {}, permissoes:perfil?.permissoes || {}
+      };
+      window.usuarioAutenticado = usuarioAutenticado;
+      localStorage.setItem(CHAVE_SESSAO, JSON.stringify({ nome:usuarioAtual, uid:user.uid }));
+      $("usuarioNome").textContent = usuarioAtual;
+      $("loginPage").style.display = "none";
+      $("app").style.display = "block";
+      $("loginErro").style.display = "none";
+      renderizarSelectEtiquetas();
+      if (!aplicacaoIniciada) {
+        aplicacaoIniciada = true;
+        configurarFirebase();
+      }
+    }
+
+    async function realizarLogin(event) {
+      event.preventDefault();
+      const entradaLogin = String($("loginNome").value || "").trim();
+      const usuario = entradaLogin.includes("@") ? "" : normalizar(entradaLogin);
+      const senha = String($("loginSenha").value || "");
+      const email = entradaLogin.includes("@") ? entradaLogin.toLowerCase() : usuarioParaEmailAuth(usuario);
+      const botao = $("btnLogin");
+      const erro = $("loginErro");
+      if (!email || !senha) return;
+      botao.disabled = true;
+      botao.textContent = "Verificando...";
+      erro.style.display = "none";
+      try {
+        await auth.signInWithEmailAndPassword(email, senha);
+      } catch (falha) {
+        console.warn("[LGVA] Login recusado:", falha?.code || falha);
+        erro.textContent = "Usuário, senha ou acesso ao LGVA inválido";
+        erro.style.display = "block";
+      } finally {
+        botao.disabled = false;
+        botao.textContent = "Acessar";
+      }
+    }
+
+    async function encerrarSessao() {
+      unsubServicos?.(); unsubEtiquetas?.(); unsubPecas?.(); unsubNotificacoes?.();
+      localStorage.removeItem(CHAVE_SESSAO);
+      usuarioAutenticado = null; usuarioAtual = "";
+      await auth?.signOut();
+      location.reload();
+    }
+
+    function inicializarAutenticacao() {
+      try {
+        if (!window.firebase) throw new Error("SDK do Firebase não carregado");
+        if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
+        auth = firebase.auth();
+        db = firebase.firestore();
+        auth.onAuthStateChanged(async (user) => {
+          if (processandoEstadoAuth) return;
+          processandoEstadoAuth = true;
+          try {
+            if (!user) { mostrarLogin(); return; }
+            const perfil = await carregarPerfilAutenticado(user);
+            iniciarSessao(perfil, user);
+          } catch (falha) {
+            console.warn("[LGVA] Sessão sem autorização:", falha?.message || falha);
+            localStorage.removeItem(CHAVE_SESSAO);
+            await auth.signOut().catch(() => {});
+            mostrarLogin("Usuário sem acesso ao LGVA");
+          } finally {
+            processandoEstadoAuth = false;
+          }
+        });
+      } catch (falha) {
+        console.error("[LGVA] Falha ao iniciar autenticação:", falha);
+        mostrarLogin("Não foi possível iniciar a autenticação");
+      }
+    }
+
+    $("loginForm").addEventListener("submit", realizarLogin);
+    $("btnSair").addEventListener("click",encerrarSessao);
+    $("btnNotificacoesTopbar").addEventListener("click",()=>selecionarVisao("NOTIFICACOES"));
+    $("selectFiltroOperacao").addEventListener("change",(event)=>alterarFiltroOperacao(event.target.value));
+    $("selectFiltroFinalizadosModo").addEventListener("change",(event)=>alterarModoFiltroFinalizados(event.target.value));
+    $("filtroFinalizadosData").addEventListener("change",(event)=>atualizarDataFiltroFinalizados("DATA",event.target.value));
+    $("filtroFinalizadosInicio").addEventListener("change",(event)=>atualizarDataFiltroFinalizados("INICIO",event.target.value));
+    $("filtroFinalizadosFim").addEventListener("change",(event)=>atualizarDataFiltroFinalizados("FIM",event.target.value));
+    $("btnNovoServico").addEventListener("click",()=>{
+      if (["ATM","BOLSAO"].includes(filtroOperacaoAtual)) $("servicoOrigem").value = filtroOperacaoAtual;
+      abrirModal("modalServico");
+    });
+    $("formServico").addEventListener("submit",criarServico);
+    $("formPecas").addEventListener("submit",salvarSolicitacaoPecas);
+    $("btnAdicionarPeca").addEventListener("click",adicionarPecaTemporaria);
+    $("pecaManual").addEventListener("keydown",(event)=>{ if(event.key==="Enter"){event.preventDefault();adicionarPecaTemporaria();} });
+    document.querySelectorAll(".lpa-taskbar-item").forEach((btn)=>btn.addEventListener("click",()=>selecionarVisao(btn.dataset.view)));
+    document.querySelectorAll("[data-close]").forEach((btn)=>btn.addEventListener("click",()=>fecharModal(btn.dataset.close)));
+    document.querySelectorAll(".modal-bg").forEach((bg)=>bg.addEventListener("click",(event)=>{ if(event.target===bg) fecharModal(bg.id); }));
+    document.addEventListener("keydown",(event)=>{ if(event.key==="Escape") document.querySelectorAll(".modal-bg.open").forEach((modal)=>fecharModal(modal.id)); });
+
+    window.iniciarServico=iniciarServico;
+    window.retomarServico=retomarServico;
+    window.finalizarServico=finalizarServico;
+    window.abrirSolicitacaoPecas=abrirSolicitacaoPecas;
+    window.removerPecaTemporaria=removerPecaTemporaria;
+    window.confirmarRecebimentoPecas=confirmarRecebimentoPecas;
+
+    inicializarFiltroFinalizados();
+
+    inicializarAutenticacao();
+  </script>
+</body>
+</html>
