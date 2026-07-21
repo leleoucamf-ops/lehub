@@ -1,5 +1,5 @@
 <!doctype html>
-<!-- LEHUB LPA V8.1 — ABA DE USUÁRIOS CORRIGIDA / 2026-07-20 -->
+<!-- LEHUB LPA V8.4 — USUÁRIOS LGVO INTEGRADOS À GESTÃO CENTRAL / 2026-07-21 -->
 <html lang="pt-BR" translate="no">
 <head>
   <meta charset="UTF-8">
@@ -15195,6 +15195,7 @@ REALIZADO POR: ${autor}`,
       "use strict";
 
       const AUTH_COLLECTION = "usuarios_sistema";
+      const LGVO_USERS_COLLECTION = "usuarios_lgvo";
       const AUTH_DOMAIN_ALIAS = "lehub.local";
       const AUTH_SECONDARY_APP = "LEHUB_CADASTRO_USUARIOS";
       const AUTH_MODULES = Object.freeze(["LGVA","LGVL","LGVP","LPA","LGVO"]);
@@ -15204,8 +15205,75 @@ REALIZADO POR: ${autor}`,
       let usuarioAuthLPA = null;
       let unsubscribeUsuariosAuth = null;
       let usuariosAuth = [];
+      let usuariosSistemaAuth = new Map();
+      let usuariosLgvoAuth = new Map();
       let processandoLoginAuth = false;
       let aplicacaoAbertaAuth = false;
+
+      function perfilCentralDerivadoLgvo(uid, dadosLgvo = {}) {
+        const usuario = normalizarUsuarioAuth(dadosLgvo.usuario || dadosLgvo.nome);
+        const nome = String(dadosLgvo.nome || usuario || "USUÁRIO LGVO").trim().toUpperCase();
+        return {
+          uid,
+          usuario:usuario || normalizarUsuarioAuth(nome),
+          nome,
+          email:String(dadosLgvo.email || "").trim().toLowerCase(),
+          setor:String(dadosLgvo.setor || "OFICINA").trim().toUpperCase(),
+          funcao:String(dadosLgvo.funcao || dadosLgvo.cargo || "OPERADOR LGVO").trim().toUpperCase(),
+          perfil:"OPERADOR",
+          ativo:dadosLgvo.ativo !== false,
+          modulos:{LGVA:false,LGVL:false,LGVP:false,LPA:false,LGVO:true},
+          permissoes:{
+            gerenciarUsuarios:false,
+            publicarNotificacoes:false,
+            excluirNotificacoes:false,
+            acessarPainelAdministrativo:false
+          }
+        };
+      }
+
+      function reconstruirUsuariosAuth() {
+        const uids = new Set([...usuariosSistemaAuth.keys(), ...usuariosLgvoAuth.keys()]);
+        usuariosAuth = [...uids].map(uid => {
+          const sistema = usuariosSistemaAuth.get(uid) || null;
+          const lgvo = usuariosLgvoAuth.get(uid) || null;
+          const derivado = lgvo ? perfilCentralDerivadoLgvo(uid, lgvo) : {uid};
+          const combinado = {...derivado, ...(sistema || {}), uid};
+          const modulos = {...(derivado.modulos || {}), ...(sistema?.modulos || {})};
+
+          if (!sistema && lgvo) modulos.LGVO = true;
+          else if (sistema && lgvo?.ativo !== false) modulos.LGVO = true;
+
+          combinado.modulos = modulos;
+          combinado.ativo = sistema ? sistema.ativo !== false : lgvo?.ativo !== false;
+          combinado._temPerfilSistema = Boolean(sistema);
+          combinado._temPerfilLgvo = Boolean(lgvo);
+          combinado._ativoLgvo = lgvo ? lgvo.ativo !== false : false;
+          combinado._perfilLgvo = String(lgvo?.perfil || "").trim().toLowerCase();
+          return combinado;
+        }).filter(item => normalizarUsuarioAuth(item.usuario || item.nome));
+
+        renderizarUsuariosAuth();
+      }
+
+      async function sincronizarPerfilLgvo(uid, dados = {}, possuiPerfilLgvo = false) {
+        const possuiModuloLgvo = dados?.modulos?.LGVO === true;
+        if (!possuiModuloLgvo && !possuiPerfilLgvo) return;
+
+        const nome = String(dados.nome || dados.usuario || "USUÁRIO").trim().toUpperCase();
+        const perfil = String(dados.perfil || "OPERADOR").trim().toUpperCase() === "ADMINISTRADOR" ? "admin" : "operador";
+        const agora = new Date().toISOString();
+
+        await dbAuthLPA.collection(LGVO_USERS_COLLECTION).doc(uid).set({
+          nome,
+          perfil,
+          ativo:possuiModuloLgvo && dados.ativo !== false,
+          atualizadoEm:firebase.firestore.FieldValue.serverTimestamp(),
+          atualizadoEmISO:agora,
+          atualizadoPor:usuarioPainelAtual(),
+          atualizadoPorUid:usuarioAuthLPA?.uid || ""
+        }, {merge:true});
+      }
 
       function normalizarUsuarioAuth(valor) {
         return String(valor || "").normalize("NFD").replace(/[\u0300-\u036f]/g, "")
@@ -15504,14 +15572,30 @@ REALIZADO POR: ${autor}`,
 
       function iniciarUsuariosAuth() {
         if (typeof unsubscribeUsuariosAuth === "function") unsubscribeUsuariosAuth();
-        unsubscribeUsuariosAuth = dbAuthLPA.collection(AUTH_COLLECTION).onSnapshot(snapshot => {
-          usuariosAuth = snapshot.docs.map(doc => ({uid:doc.id,...doc.data()}));
-          renderizarUsuariosAuth();
+
+        usuariosSistemaAuth = new Map();
+        usuariosLgvoAuth = new Map();
+
+        const unsubscribeSistema = dbAuthLPA.collection(AUTH_COLLECTION).onSnapshot(snapshot => {
+          usuariosSistemaAuth = new Map(snapshot.docs.map(doc => [doc.id,{uid:doc.id,...doc.data()}]));
+          reconstruirUsuariosAuth();
         }, erro => {
-          console.error("[LPA AUTH] Erro ao carregar usuários:", erro);
-          const lista = document.getElementById("listaUsuariosSistema");
-          if (lista) lista.innerHTML = '<div class="empty">NÃO FOI POSSÍVEL CARREGAR OS USUÁRIOS.</div>';
+          console.error("[LPA AUTH] Erro ao carregar usuarios_sistema:", erro);
+          reconstruirUsuariosAuth();
         });
+
+        const unsubscribeLgvo = dbAuthLPA.collection(LGVO_USERS_COLLECTION).onSnapshot(snapshot => {
+          usuariosLgvoAuth = new Map(snapshot.docs.map(doc => [doc.id,{uid:doc.id,...doc.data()}]));
+          reconstruirUsuariosAuth();
+        }, erro => {
+          console.error("[LPA AUTH] Erro ao carregar usuarios_lgvo:", erro);
+          reconstruirUsuariosAuth();
+        });
+
+        unsubscribeUsuariosAuth = () => {
+          unsubscribeSistema?.();
+          unsubscribeLgvo?.();
+        };
       }
 
       window.cancelarEdicaoUsuarioSistema = function() {
@@ -15593,7 +15677,9 @@ REALIZADO POR: ${autor}`,
             dados.criadoPor = usuarioPainelAtual();
             dados.criadoPorUid = usuarioAuthLPA?.uid || "";
           }
+          const existente = usuariosAuth.find(item => item.uid === uid);
           await dbAuthLPA.collection(AUTH_COLLECTION).doc(uid).set(dados,{merge:true});
+          await sincronizarPerfilLgvo(uid,dados,Boolean(existente?._temPerfilLgvo));
           if (credencialNova) await authSecundario().signOut().catch(() => {});
           mostrarToast?.(uidEdicao ? "USUÁRIO ATUALIZADO." : "USUÁRIO CRIADO NO FIREBASE AUTH.");
           window.registrarAtividadeLeCar?.({
@@ -15622,13 +15708,15 @@ REALIZADO POR: ${autor}`,
         const usuario = normalizarUsuarioAuth(dados?.usuario || dados?.nome);
         if (!confirm(`DESATIVAR O USUÁRIO ${usuario}?\n\nO HISTÓRICO SERÁ PRESERVADO.`)) return;
         try {
-          await dbAuthLPA.collection(AUTH_COLLECTION).doc(uid).set({
+          const atualizacaoCentral = {
             ativo:false,
             atualizadoEm:firebase.firestore.FieldValue.serverTimestamp(),
             atualizadoEmISO:new Date().toISOString(),
             atualizadoPor:usuarioPainelAtual(),
             atualizadoPorUid:usuarioAuthLPA?.uid || ""
-          },{merge:true});
+          };
+          await dbAuthLPA.collection(AUTH_COLLECTION).doc(uid).set(atualizacaoCentral,{merge:true});
+          await sincronizarPerfilLgvo(uid,{...dados,ativo:false},Boolean(dados?._temPerfilLgvo));
           mostrarToast?.("USUÁRIO DESATIVADO.");
         } catch (erro) {
           console.error("[LPA AUTH] Erro ao desativar usuário:", erro);
@@ -16079,7 +16167,7 @@ REALIZADO POR: ${autor}`,
           </article>`;
         }).join("") : '<div class="empty">NENHUM USUÁRIO ENCONTRADO COM ESTES FILTROS.</div>';
         const nota = document.getElementById("notaArmazenamentoUsuarios");
-        if (nota) { nota.className = "system-users-storage-note"; nota.textContent = "CONTAS SINCRONIZADAS COM FIREBASE AUTH • EXCLUSÃO DEFINITIVA RESTRITA À CONTA PROPRIETÁRIA."; }
+        if (nota) { nota.className = "system-users-storage-note"; nota.textContent = "CONTAS DE usuarios_sistema + usuarios_lgvo • EXCLUSÃO DEFINITIVA RESTRITA À CONTA PROPRIETÁRIA."; }
       };
 
       window.sincronizarBuscaUsuarios = function(valor) {
@@ -16198,7 +16286,9 @@ REALIZADO POR: ${autor}`,
             atualizadoPor:usuarioPainelAtual(),atualizadoPorUid:usuarioAuthLPA?.uid || ""
           };
           if (!uidEdicao) Object.assign(dados,{criadoEm:firebase.firestore.FieldValue.serverTimestamp(),criadoEmISO:agora,criadoPor:usuarioPainelAtual(),criadoPorUid:usuarioAuthLPA?.uid || ""});
+          const existente = usuariosAuth.find(item => item.uid === uid);
           await dbAuthLPA.collection(AUTH_COLLECTION).doc(uid).set(dados,{merge:true});
+          await sincronizarPerfilLgvo(uid,dados,Boolean(existente?._temPerfilLgvo));
           if (credencialNova) await authSecundario().signOut().catch(()=>{});
           mostrarToast?.(uidEdicao ? "USUÁRIO ATUALIZADO COM SUCESSO." : "USUÁRIO CRIADO NO FIREBASE AUTH.");
           window.registrarAtividadeLeCar?.({modulo:"SISTEMA",acao:uidEdicao ? "ATUALIZOU USUÁRIO" : "CRIOU USUÁRIO",usuario:usuarioPainelAtual(),usuarioUid:usuarioAuthLPA?.uid || "",detalhe:`${usuario} • ${setor} • ${perfil}`,origem:"FIREBASE_AUTH"});
@@ -16217,7 +16307,15 @@ REALIZADO POR: ${autor}`,
         const usuario = normalizarUsuarioAuth(dados.usuario || dados.nome);
         if (!confirm(`${novoStatus ? "REATIVAR" : "BLOQUEAR"} O USUÁRIO ${usuario}?\n\nO HISTÓRICO E AS CONFIGURAÇÕES SERÃO PRESERVADOS.`)) return;
         try {
-          await dbAuthLPA.collection(AUTH_COLLECTION).doc(uid).set({ativo:novoStatus,atualizadoEm:firebase.firestore.FieldValue.serverTimestamp(),atualizadoEmISO:new Date().toISOString(),atualizadoPor:usuarioPainelAtual(),atualizadoPorUid:usuarioAuthLPA?.uid || ""},{merge:true});
+          const atualizacaoCentral = {
+            ativo:novoStatus,
+            atualizadoEm:firebase.firestore.FieldValue.serverTimestamp(),
+            atualizadoEmISO:new Date().toISOString(),
+            atualizadoPor:usuarioPainelAtual(),
+            atualizadoPorUid:usuarioAuthLPA?.uid || ""
+          };
+          await dbAuthLPA.collection(AUTH_COLLECTION).doc(uid).set(atualizacaoCentral,{merge:true});
+          await sincronizarPerfilLgvo(uid,{...dados,ativo:novoStatus},Boolean(dados?._temPerfilLgvo));
           mostrarToast?.(novoStatus ? "USUÁRIO REATIVADO." : "USUÁRIO BLOQUEADO.");
           window.registrarAtividadeLeCar?.({modulo:"SISTEMA",acao:novoStatus ? "REATIVOU USUÁRIO" : "BLOQUEOU USUÁRIO",usuario:usuarioPainelAtual(),usuarioUid:usuarioAuthLPA?.uid || "",detalhe:usuario,origem:"FIREBASE_AUTH"});
         } catch (erro) { console.error("[LPA V8 USUÁRIOS] Status:",erro); mostrarToast?.("NÃO FOI POSSÍVEL ALTERAR O STATUS DO USUÁRIO."); }
@@ -16257,9 +16355,12 @@ REALIZADO POR: ${autor}`,
           if (credencial.user.uid !== uid) throw Object.assign(new Error("UID_DIVERGENTE"), {code:"auth/user-mismatch"});
 
           await credencial.user.delete();
-          await dbAuthLPA.collection(AUTH_COLLECTION).doc(uid).delete();
+          await Promise.all([
+            dbAuthLPA.collection(AUTH_COLLECTION).doc(uid).delete(),
+            dbAuthLPA.collection(LGVO_USERS_COLLECTION).doc(uid).delete()
+          ]);
 
-          mostrarToast?.("CONTA EXCLUÍDA DO FIREBASE AUTH E DO SISTEMA.");
+          mostrarToast?.("CONTA EXCLUÍDA DO FIREBASE AUTH E DOS PERFIS DO SISTEMA.");
           window.registrarAtividadeLeCar?.({
             modulo:"SISTEMA",
             acao:"EXCLUIU CONTA DEFINITIVAMENTE",
