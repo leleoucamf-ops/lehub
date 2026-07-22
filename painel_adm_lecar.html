@@ -4774,40 +4774,581 @@
     }
   </style>
 
+
+  <style id="lpa-v8-5-topbar-compacta">
+    /* ALTERAÇÃO PONTUAL: LOGOS, MAIS ESPAÇO PARA MÓDULOS E BUSCA RECOLHIDA. */
+    .login-logo {
+      width: 200px;
+      max-width: 92%;
+      height: auto;
+      display: block;
+      margin: 0 auto 16px;
+      object-fit: contain;
+      filter: drop-shadow(0 8px 18px rgba(0,0,0,.42));
+    }
+
+    /* LOGIN: DISTÂNCIAS VERTICAIS E ASSINATURA INSTITUCIONAL. */
+    .login-card input {
+      margin: 0 0 12px;
+    }
+
+    .login-card #loginSenha {
+      margin-bottom: 0;
+    }
+
+    .login-card button {
+      margin-top: 16px;
+    }
+
+    .login-brand-signature {
+      margin-top: 14px;
+      color: rgba(255,255,255,.78);
+      font-size: calc(.66rem - 2px);
+      font-weight: 800;
+      line-height: 1.45;
+      letter-spacing: 1.05px;
+      text-transform: uppercase;
+      filter: drop-shadow(0 6px 12px rgba(0,0,0,.55));
+    }
+
+    .topbar.app-topbar-clean .logo-img {
+      height: 10px !important;
+      width: auto !important;
+    }
+
+    .topbar.app-topbar-clean .app-search-shell {
+      position: relative !important;
+      width: 40px !important;
+      max-width: 40px !important;
+      flex: 0 0 40px !important;
+      margin: 0 !important;
+      overflow: visible !important;
+      z-index: 25 !important;
+    }
+
+    .topbar.app-topbar-clean .app-search-trigger {
+      width: 40px !important;
+      height: 40px !important;
+      min-width: 40px !important;
+    }
+
+    .topbar.app-topbar-clean .app-search-trigger svg {
+      width: 20px !important;
+      height: 20px !important;
+    }
+
+    .app-search-popover {
+      display: none;
+      position: absolute;
+      top: calc(100% + 10px);
+      right: 0;
+      z-index: 1500;
+      width: 390px;
+      max-width: calc(100vw - 20px);
+      padding: 9px;
+      border: 1px solid #cbd5e1;
+      border-radius: 15px;
+      background: rgba(255,255,255,.99);
+      box-shadow: 0 18px 48px rgba(15,23,42,.28);
+    }
+
+    .app-search-popover.open { display: block; }
+
+    .topbar.app-topbar-clean .app-search-popover .app-search-card {
+      width: 100% !important;
+      height: 40px !important;
+      min-height: 40px !important;
+      padding: 0 11px !important;
+      gap: 8px !important;
+      border: 1px solid #cbd5e1 !important;
+      border-radius: 11px !important;
+      background: #f8fafc !important;
+      box-shadow: none !important;
+      backdrop-filter: none !important;
+      -webkit-backdrop-filter: none !important;
+    }
+
+    .topbar.app-topbar-clean .app-search-popover .app-search-icon {
+      width: 18px !important;
+      height: 18px !important;
+      min-width: 18px !important;
+      stroke: #64748b !important;
+    }
+
+    .topbar.app-topbar-clean .app-search-popover .app-search-input,
+    .topbar.app-topbar-clean .app-search-popover .app-search-input:focus {
+      width: 100% !important;
+      height: 38px !important;
+      min-height: 38px !important;
+      padding: 0 !important;
+      color: #0f172a !important;
+      font-size: .74rem !important;
+      font-weight: 700 !important;
+      background: transparent !important;
+    }
+
+    .topbar.app-topbar-clean .app-search-popover .app-search-input::placeholder {
+      color: #94a3b8 !important;
+    }
+
+    .topbar.app-topbar-clean .app-search-popover .app-search-clear {
+      color: #475569 !important;
+      background: #e2e8f0 !important;
+    }
+
+    .app-search-popover .global-search-results {
+      position: static !important;
+      top: auto !important;
+      right: auto !important;
+      width: 100% !important;
+      max-width: none !important;
+      max-height: min(460px, calc(100vh - 140px)) !important;
+      margin-top: 8px;
+      box-shadow: none !important;
+    }
+
+    .topbar.app-topbar-clean .module-placeholder {
+      cursor: default !important;
+    }
+
+    @media (min-width: 1041px) {
+      .topbar.app-topbar-clean {
+        grid-template-columns: max-content minmax(0,1fr) 40px max-content !important;
+      }
+
+      .topbar.app-topbar-clean .logo-img {
+        height: 18px !important;
+      }
+
+      .topbar.app-topbar-clean .system-switcher {
+        padding-left: 5px !important;
+        padding-right: 5px !important;
+      }
+
+      .topbar.app-topbar-clean .system-tab {
+        padding-left: 14px !important;
+        padding-right: 14px !important;
+      }
+    }
+
+    @media (max-width: 1040px) {
+      .topbar.app-topbar-clean .app-search-shell {
+        width: 34px !important;
+        max-width: 34px !important;
+        flex-basis: 34px !important;
+      }
+
+      .topbar.app-topbar-clean .app-search-trigger {
+        width: 34px !important;
+        height: 34px !important;
+        min-width: 34px !important;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .app-search-popover {
+        position: fixed;
+        top: 54px;
+        right: 8px;
+        left: 8px;
+        width: auto;
+        max-width: none;
+      }
+    }
+  </style>
+
+
+
+  <style id="lpa-v8-5-topbar-ajuste-fino">
+    /* LAPIDAÇÃO FINA SOLICITADA — SOMENTE DIMENSÕES DA TOPBAR. */
+    .topbar.app-topbar-clean .logo-img {
+      height: 9.5px !important; /* -5% sobre 10px */
+    }
+
+    .topbar.app-topbar-clean .app-search-shell {
+      width: 35px !important;
+      max-width: 35px !important;
+      flex-basis: 35px !important;
+    }
+
+    .topbar.app-topbar-clean .app-search-trigger,
+    .topbar-icon-btn,
+    .btn-menu-hamburguer.topbar-icon-btn {
+      width: 35px !important;
+      height: 35px !important;
+      min-width: 35px !important;
+    }
+
+    .topbar.app-topbar-clean .app-search-trigger svg,
+    .topbar-icon-btn svg,
+    .btn-menu-hamburguer.topbar-icon-btn svg {
+      width: 18px !important;
+      height: 18px !important;
+    }
+
+    @media (min-width: 1041px) {
+      .topbar.app-topbar-clean {
+        min-height: 54px !important;
+        height: 54px !important;
+        padding-top: 5px !important;
+        padding-bottom: 5px !important;
+        grid-template-columns: max-content minmax(0,1fr) 35px max-content !important;
+      }
+
+      .topbar.app-topbar-clean .logo-img {
+        height: 17.1px !important; /* -5% sobre 18px */
+      }
+
+      .topbar.app-topbar-clean .system-switcher {
+        height: 41px !important;
+      }
+
+      .topbar.app-topbar-clean .system-tabs-track {
+        height: 39px !important;
+        padding: 3px !important;
+      }
+
+      .topbar.app-topbar-clean .system-tab {
+        height: 31px !important;
+        padding-left: 12px !important;
+        padding-right: 12px !important;
+      }
+
+      .topbar.app-topbar-clean .system-tab + .system-tab::before {
+        top: 7px !important;
+        bottom: 7px !important;
+      }
+
+      .main {
+        padding-top: 66px !important;
+      }
+    }
+
+    @media (max-width: 1040px) {
+      .topbar.app-topbar-clean {
+        height: 84px !important;
+        min-height: 84px !important;
+        padding-bottom: 38px !important;
+      }
+
+      .topbar.app-topbar-clean .app-search-shell {
+        width: 29px !important;
+        max-width: 29px !important;
+        flex-basis: 29px !important;
+      }
+
+      .topbar.app-topbar-clean .app-search-trigger,
+      .topbar-icon-btn,
+      .btn-menu-hamburguer.topbar-icon-btn {
+        width: 29px !important;
+        height: 29px !important;
+        min-width: 29px !important;
+      }
+
+      .topbar.app-topbar-clean .system-switcher {
+        height: 29px !important;
+      }
+
+      .topbar.app-topbar-clean .system-tabs-track {
+        height: 29px !important;
+        padding: 2px !important;
+      }
+
+      .topbar.app-topbar-clean .system-tab {
+        height: 23px !important;
+        padding-left: 10px !important;
+        padding-right: 10px !important;
+      }
+
+      .main {
+        padding-top: 96px !important;
+      }
+    }
+
+    @media (max-width: 600px) {
+      .topbar.app-topbar-clean {
+        height: 80px !important;
+        min-height: 80px !important;
+        padding-bottom: 35px !important;
+      }
+
+      .topbar.app-topbar-clean .system-switcher {
+        height: 27px !important;
+      }
+
+      .topbar.app-topbar-clean .system-tabs-track {
+        height: 27px !important;
+      }
+
+      .topbar.app-topbar-clean .system-tab {
+        height: 21px !important;
+        padding-left: 9px !important;
+        padding-right: 9px !important;
+      }
+
+      .main {
+        padding-top: 92px !important;
+      }
+    }
+  </style>
+
+
+
+  <style id="lpa-v8-5-usuarios-layout-reorganizado">
+    /* V8.5 — USUÁRIOS: FORMULÁRIO RECOLHÍVEL, 3 CARDS POR LINHA E FILTRO POR PERFIL */
+    .system-users-toolbar { display:none !important; }
+
+    .system-users-workspace {
+      margin-top:12px !important;
+      display:grid !important;
+      grid-template-columns:minmax(0,1fr) !important;
+      gap:12px !important;
+      align-items:start !important;
+    }
+
+    .system-users-editor,
+    .system-users-directory {
+      width:100% !important;
+      min-width:0 !important;
+    }
+
+    .system-users-editor {
+      position:static !important;
+      top:auto !important;
+      max-height:none !important;
+      overflow:hidden !important;
+    }
+
+    .system-users-editor-head {
+      min-height:58px;
+      padding:12px 14px !important;
+      align-items:center !important;
+      cursor:default;
+    }
+
+    .system-users-editor-head > div:first-child {
+      min-width:0;
+    }
+
+    .system-users-editor-head .system-users-editor-kicker,
+    .system-users-editor-head p,
+    .system-users-editor-head > .system-users-editor-state {
+      display:none !important;
+    }
+
+    .system-users-editor-head h2 {
+      margin:0 !important;
+      font-size:.78rem !important;
+      line-height:1.2;
+      letter-spacing:.02em;
+    }
+
+    .system-users-editor-actions {
+      margin-left:auto;
+      display:flex;
+      align-items:center;
+      gap:8px;
+      flex:0 0 auto;
+    }
+
+    .system-users-inline-back,
+    .system-users-editor-toggle {
+      min-height:36px;
+      border-radius:10px;
+      font-size:.57rem;
+      font-weight:950;
+      letter-spacing:.035em;
+      text-transform:uppercase;
+      cursor:pointer;
+      transition:transform .16s ease, box-shadow .16s ease, background .16s ease;
+    }
+
+    .system-users-inline-back {
+      padding:0 10px;
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      gap:6px;
+      border:1px solid #d7e0ec;
+      background:#fff;
+      color:#475569;
+    }
+
+    .system-users-inline-back svg {
+      width:15px;
+      height:15px;
+      fill:none;
+      stroke:currentColor;
+      stroke-width:2;
+      stroke-linecap:round;
+      stroke-linejoin:round;
+    }
+
+    .system-users-editor-toggle {
+      min-width:112px;
+      padding:0 14px;
+      border:1px solid #2563eb;
+      background:linear-gradient(135deg,#1d4ed8,#2563eb);
+      color:#fff;
+      box-shadow:0 5px 14px rgba(37,99,235,.18);
+    }
+
+    .system-users-inline-back:hover,
+    .system-users-editor-toggle:hover {
+      transform:translateY(-1px);
+    }
+
+    .system-users-editor:not(.form-open) > .system-users-form-card,
+    .system-users-editor:not(.form-open) > .system-users-security-details {
+      display:none !important;
+    }
+
+    .system-users-editor.form-open > .system-users-form-card,
+    .system-users-editor.form-open > .system-users-security-details {
+      display:block;
+    }
+
+    .system-users-directory {
+      min-height:560px;
+    }
+
+    .system-users-profile-filter {
+      min-width:185px;
+      display:grid;
+      gap:4px;
+      flex:0 0 auto;
+    }
+
+    .system-users-profile-filter span {
+      color:#64748b;
+      font-size:.46rem;
+      font-weight:950;
+      letter-spacing:.04em;
+      text-align:right;
+      text-transform:uppercase;
+    }
+
+    .system-users-profile-filter select {
+      width:100%;
+      height:36px;
+      min-height:36px;
+      padding:0 30px 0 10px;
+      border:1px solid #bfdbfe;
+      border-radius:10px;
+      outline:0;
+      background:#fff;
+      color:#1e3a8a;
+      font-size:.55rem;
+      font-weight:950;
+      text-transform:uppercase;
+      cursor:pointer;
+    }
+
+    .system-users-profile-filter select:focus {
+      border-color:#2563eb;
+      box-shadow:0 0 0 3px rgba(37,99,235,.10);
+    }
+
+    .system-users-profile-heading {
+      grid-column:1/-1;
+      margin:5px 2px 0;
+      padding:9px 11px;
+      border-left:4px solid #2563eb;
+      border-radius:8px;
+      background:#eff6ff;
+      color:#1e3a8a;
+      font-size:.62rem;
+      font-weight:950;
+      letter-spacing:.045em;
+      text-transform:uppercase;
+    }
+
+    .system-users-list.modern {
+      grid-template-columns:repeat(3,minmax(0,1fr)) !important;
+      align-items:stretch;
+    }
+
+    .system-user-card {
+      min-width:0;
+      width:100%;
+    }
+
+    @media (max-width:1180px) {
+      .system-users-list.modern {
+        grid-template-columns:repeat(2,minmax(0,1fr)) !important;
+      }
+    }
+
+    @media (max-width:700px) {
+      .system-users-editor-head {
+        min-height:54px;
+        padding:9px 10px !important;
+      }
+
+      .system-users-inline-back span { display:none; }
+      .system-users-inline-back { width:36px; min-width:36px; padding:0; }
+      .system-users-editor-toggle { min-width:96px; padding:0 10px; }
+
+      .system-users-directory-head {
+        align-items:flex-start !important;
+        flex-direction:column;
+      }
+
+      .system-users-profile-filter {
+        width:100%;
+        min-width:0;
+      }
+
+      .system-users-profile-filter span {
+        text-align:left;
+      }
+
+      .system-users-list.modern {
+        grid-template-columns:1fr !important;
+      }
+    }
+  </style>
+
 </head>
 <body data-lecar-build="FIREBASE_AUTH_V8_2_USUARIOS_INTERFACE_ENXUTA">
   <section id="loginPage" class="login-page">
     <form class="login-card" onsubmit="entrarAdmin(event)">
-      <img src="logo1.png" alt="LECAR" class="logo-img">
-      <h1>Painel ADM de Serviços</h1>
+      <img src="logo.png" alt="LECAR" class="login-logo">
       <input id="loginUsuario" type="email" value="leleoucamf@gmail.com" placeholder="E-mail" autocomplete="username" autocapitalize="none" autocorrect="off" spellcheck="false" inputmode="email" required>
       <input id="loginSenha" type="password" placeholder="Senha" autocomplete="current-password" autocapitalize="none" autocorrect="off" spellcheck="false" required>
       <button type="submit">Acessar painel</button>
+      <div class="login-brand-signature">LEHUB — INTELIGÊNCIA EM DADOS E FLUXOS OPERACIONAIS</div>
       <div id="loginErro" class="login-error">E-MAIL OU SENHA INVÁLIDOS.</div>
-      <div style="margin-top:10px;color:rgba(255,255,255,.78);font-size:.68rem;font-weight:750;line-height:1.4;">USE A SENHA NOVA REDEFINIDA POR E-MAIL.</div>
     </form>
   </section>
 
   <div id="app" class="app">
     <header class="topbar app-topbar-clean">
-      <img src="logo2.png" alt="LECAR" class="logo-img">
+      <img src="logo.png" alt="LECAR" class="logo-img">
 
       <nav class="system-switcher" aria-label="Sistemas LeCar">
         <div class="system-tabs-track">
+          <button id="tabModuloCheck" type="button" class="system-tab module-placeholder" aria-disabled="true" title="Módulo Check">CHECK</button>
           <button id="tabModuloOficina" type="button" class="system-tab active" aria-current="page" title="Sistema Oficina" onclick="selecionarModuloLeCar('OFICINA')">OFICINA</button>
           <button id="tabModuloAcessorios" type="button" class="system-tab" title="Sistema Acessórios" onclick="selecionarModuloLeCar('ACESSORIOS')">ACESSÓRIOS</button>
           <button id="tabModuloLavaRapido" type="button" class="system-tab" title="Sistema Lava Rápido" onclick="selecionarModuloLeCar('LAVA_RAPIDO')">LAVA RÁPIDO</button>
           <button id="tabModuloPolimento" type="button" class="system-tab" title="Sistema Polimento" onclick="selecionarModuloLeCar('POLIMENTO')">POLIMENTO</button>
+          <button id="tabModuloPecas" type="button" class="system-tab module-placeholder" aria-disabled="true" title="Módulo Peças">PEÇAS</button>
         </div>
       </nav>
 
       <div class="app-search-shell">
-        <div class="app-search-card">
-          <svg class="app-search-icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5"></circle><path d="M15.5 15.5L21 21"></path></svg>
-          <input id="buscaAdmin" class="app-search-input" type="search" placeholder="BUSCAR" autocomplete="off" spellcheck="false" aria-label="Buscar veículo em qualquer situação" oninput="aoDigitarBuscaModulo()" onkeydown="aoTeclarBuscaModulo(event)" onfocus="aoDigitarBuscaModulo()">
-          <button id="limparBuscaAdmin" type="button" class="app-search-clear" title="LIMPAR BUSCA" aria-label="Limpar busca" onclick="limparBuscaModulo()">×</button>
+        <button id="btnAbrirBuscaAdmin" type="button" class="topbar-icon-btn app-search-trigger" title="Buscar" aria-label="Abrir busca" aria-expanded="false" aria-controls="appSearchPopover" onclick="alternarBuscaAdminPopup(event)">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5"></circle><path d="M15.5 15.5L21 21"></path></svg>
+        </button>
+        <div id="appSearchPopover" class="app-search-popover" aria-hidden="true">
+          <div class="app-search-card">
+            <svg class="app-search-icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5"></circle><path d="M15.5 15.5L21 21"></path></svg>
+            <input id="buscaAdmin" class="app-search-input" type="search" placeholder="BUSCAR" autocomplete="off" spellcheck="false" aria-label="Buscar veículo em qualquer situação" oninput="aoDigitarBuscaModulo()" onkeydown="aoTeclarBuscaModulo(event)" onfocus="aoDigitarBuscaModulo()">
+            <button id="limparBuscaAdmin" type="button" class="app-search-clear" title="LIMPAR BUSCA" aria-label="Limpar busca" onclick="limparBuscaModulo()">×</button>
+          </div>
+          <div id="resultadosBuscaGlobal" class="global-search-results" role="listbox" aria-label="Resultados da busca global"></div>
         </div>
-        <div id="resultadosBuscaGlobal" class="global-search-results" role="listbox" aria-label="Resultados da busca global"></div>
       </div>
 
       <div class="topbar-tools" aria-label="Ações rápidas">
@@ -5593,9 +6134,16 @@
         <main class="system-users-directory" aria-label="Usuários cadastrados">
           <div class="system-users-directory-head">
             <div><span class="system-users-directory-kicker">DIRETÓRIO DE ACESSOS</span><h2>USUÁRIOS CADASTRADOS</h2><p id="resumoListaUsuariosSistema">CARREGANDO CONTAS DO FIREBASE...</p></div>
-            <span id="totalUsuariosFiltrados" class="system-users-count">0</span>
+            <div class="operation-filter-shell show" aria-label="Filtro de usuários por perfil">
+              <label for="filtroUsuariosCabecalho">FILTRAR USUÁRIOS</label>
+              <select id="filtroUsuariosCabecalho">
+                <option value="TODOS">TODOS</option>
+                <option value="ADMINISTRADOR">ADMINISTRADORES</option>
+                <option value="OPERADOR">OPERADORES</option>
+                <option value="BLOQUEADOS">BLOQUEADOS</option>
+              </select>
+            </div>
           </div>
-          <div id="resumoSetoresUsuarios" class="system-users-sector-summary" aria-label="Resumo por setor"></div>
           <div id="listaUsuariosSistema" class="system-users-list modern"><div class="empty">CARREGANDO USUÁRIOS...</div></div>
         </main>
       </div>
@@ -9994,9 +10542,41 @@ REALIZADO POR: ${autor}`,
       }
     }
 
+    function abrirBuscaAdminPopup() {
+      const popup = document.getElementById("appSearchPopover");
+      const botao = document.getElementById("btnAbrirBuscaAdmin");
+      const campo = document.getElementById("buscaAdmin");
+      if (!popup || !botao || !campo) return;
+      popup.classList.add("open");
+      popup.setAttribute("aria-hidden", "false");
+      botao.setAttribute("aria-expanded", "true");
+      requestAnimationFrame(() => {
+        campo.focus();
+        campo.select();
+      });
+    }
+
+    function fecharBuscaAdminPopup() {
+      const popup = document.getElementById("appSearchPopover");
+      const botao = document.getElementById("btnAbrirBuscaAdmin");
+      if (!popup || !botao) return;
+      popup.classList.remove("open");
+      popup.setAttribute("aria-hidden", "true");
+      botao.setAttribute("aria-expanded", "false");
+      fecharResultadosBuscaGlobal();
+    }
+
+    function alternarBuscaAdminPopup(event) {
+      event?.stopPropagation();
+      const popup = document.getElementById("appSearchPopover");
+      if (!popup) return;
+      if (popup.classList.contains("open")) fecharBuscaAdminPopup();
+      else abrirBuscaAdminPopup();
+    }
+
     document.addEventListener("click", event => {
       const shell = document.querySelector(".app-search-shell");
-      if (shell && !shell.contains(event.target)) fecharResultadosBuscaGlobal();
+      if (shell && !shell.contains(event.target)) fecharBuscaAdminPopup();
     });
 
     document.addEventListener("keydown", event => {
@@ -10004,8 +10584,7 @@ REALIZADO POR: ${autor}`,
       const atalhoBusca = (event.ctrlKey || event.metaKey) && normalizar(event.key) === "K";
       if (atalhoBusca) {
         event.preventDefault();
-        campoBusca?.focus();
-        campoBusca?.select();
+        abrirBuscaAdminPopup();
         return;
       }
 
@@ -10028,6 +10607,10 @@ REALIZADO POR: ${autor}`,
         }
         if (campoBusca === document.activeElement && campoBusca?.value) {
           limparBuscaAdmin();
+          return;
+        }
+        if (document.getElementById("appSearchPopover")?.classList.contains("open")) {
+          fecharBuscaAdminPopup();
           return;
         }
         fecharDrawer();
@@ -15473,7 +16056,7 @@ REALIZADO POR: ${autor}`,
           if (erroEl) {
             const codigo = String(erro?.code || erro?.message || "");
             erroEl.textContent = codigo.includes("wrong-password") || codigo.includes("invalid-credential")
-              ? "E-MAIL OU SENHA NÃO CONFEREM. USE A SENHA NOVA REDEFINIDA POR E-MAIL"
+              ? "E-MAIL OU SENHA NÃO CONFEREM"
               : codigo.includes("user-not-found")
                 ? "CONTA NÃO ENCONTRADA NO FIREBASE AUTHENTICATION"
                 : codigo.includes("too-many-requests")
@@ -16058,7 +16641,7 @@ REALIZADO POR: ${autor}`,
       function dadosFiltradosUsuariosV8() {
         const termo = normalizarTextoUsuarioV8(valorCampoUsuarioV8("buscaUsuariosSistema"));
         const setor = normalizarTextoUsuarioV8(valorCampoUsuarioV8("filtroUsuariosSetor") || "TODOS");
-        const perfil = normalizarTextoUsuarioV8(valorCampoUsuarioV8("filtroUsuariosPerfil") || "TODOS");
+        const perfil = normalizarTextoUsuarioV8(valorCampoUsuarioV8("filtroUsuariosCabecalho") || "TODOS");
         const status = normalizarTextoUsuarioV8(valorCampoUsuarioV8("filtroUsuariosStatus") || "TODOS");
         const modulo = normalizarTextoUsuarioV8(valorCampoUsuarioV8("filtroUsuariosModulo") || "TODOS");
         const ordem = normalizarTextoUsuarioV8(valorCampoUsuarioV8("ordenacaoUsuariosSistema") || "NOME");
@@ -16071,9 +16654,12 @@ REALIZADO POR: ${autor}`,
           const perfilItem = normalizarTextoUsuarioV8(item.perfil || "OPERADOR");
           const ativo = item.ativo !== false;
           const atendeTermo = !termo || [usuario,nome,setorItem,funcao,email,perfilItem].some(valor => valor.includes(termo));
+          const atendeFiltroCabecalho = perfil === "BLOQUEADOS"
+            ? !ativo
+            : ativo && (perfil === "TODOS" || perfilItem === perfil);
           return atendeTermo
             && (setor === "TODOS" || setorItem === setor)
-            && (perfil === "TODOS" || perfilItem === perfil)
+            && atendeFiltroCabecalho
             && (status === "TODOS" || (status === "ATIVO" ? ativo : !ativo))
             && (modulo === "TODOS" || item?.modulos?.[modulo] === true);
         });
@@ -16113,12 +16699,6 @@ REALIZADO POR: ${autor}`,
         Object.entries(mapa).forEach(([id,valor]) => { const el = document.getElementById(id); if (el) el.textContent = String(valor); });
         const resumo = document.getElementById("resumoListaUsuariosSistema");
         if (resumo) resumo.textContent = `${filtrados.length} DE ${total} CONTA${total === 1 ? "" : "S"} EXIBIDA${filtrados.length === 1 ? "" : "S"} • FIREBASE AUTH`;
-        const resumoSetores = document.getElementById("resumoSetoresUsuarios");
-        if (resumoSetores) {
-          const contagem = {};
-          usuariosAuth.forEach(item => { const setor = normalizarTextoUsuarioV8(item.setor || "NÃO DEFINIDO"); contagem[setor] = (contagem[setor] || 0) + 1; });
-          resumoSetores.innerHTML = Object.entries(contagem).sort((a,b) => a[0].localeCompare(b[0],"pt-BR")).map(([setor,qtd]) => `<span class="system-users-sector-chip">${escaparUsuarioV8(setor)} <strong>${qtd}</strong></span>`).join("") || '<span class="system-users-sector-chip">SEM SETORES <strong>0</strong></span>';
-        }
       }
 
       renderizarUsuariosAuth = function() {
@@ -16129,7 +16709,8 @@ REALIZADO POR: ${autor}`,
         atualizarResumoUsuariosV8(filtrados);
         const limpar = document.getElementById("limparBuscaUsuariosSistema");
         limpar?.classList.toggle("show", Boolean(valorCampoUsuarioV8("buscaUsuariosSistema")));
-        lista.innerHTML = filtrados.length ? filtrados.map(item => {
+
+        const renderizarCardUsuario = item => {
           const usuario = normalizarUsuarioAuth(item.usuario || item.nome);
           const nome = normalizarTextoUsuarioV8(item.nome || usuario) || usuario;
           const setor = normalizarTextoUsuarioV8(item.setor || "NÃO DEFINIDO");
@@ -16165,10 +16746,38 @@ REALIZADO POR: ${autor}`,
               </div>
             </div>
           </article>`;
-        }).join("") : '<div class="empty">NENHUM USUÁRIO ENCONTRADO COM ESTES FILTROS.</div>';
+        };
+
+        if (!filtrados.length) {
+          lista.innerHTML = '<div class="empty">NENHUM USUÁRIO ENCONTRADO.</div>';
+        } else {
+          const filtroPerfil = normalizarTextoUsuarioV8(valorCampoUsuarioV8("filtroUsuariosCabecalho") || "TODOS");
+          const administradores = filtrados.filter(item => normalizarTextoUsuarioV8(item.perfil || "OPERADOR") === "ADMINISTRADOR");
+          const operadores = filtrados.filter(item => normalizarTextoUsuarioV8(item.perfil || "OPERADOR") !== "ADMINISTRADOR");
+          const grupos = filtroPerfil === "ADMINISTRADOR"
+            ? [["ADMINISTRADORES", administradores]]
+            : filtroPerfil === "OPERADOR"
+              ? [["OPERADORES", operadores]]
+              : filtroPerfil === "BLOQUEADOS"
+                ? [["BLOQUEADOS", filtrados]]
+                : [["ADMINISTRADORES", administradores], ["OPERADORES", operadores]];
+          lista.innerHTML = grupos
+            .filter(([,itens]) => itens.length)
+            .map(([titulo,itens]) => `<h3 class="system-users-profile-heading">${titulo}</h3>${itens.map(renderizarCardUsuario).join("")}`)
+            .join("");
+        }
         const nota = document.getElementById("notaArmazenamentoUsuarios");
         if (nota) { nota.className = "system-users-storage-note"; nota.textContent = "CONTAS DE usuarios_sistema + usuarios_lgvo • EXCLUSÃO DEFINITIVA RESTRITA À CONTA PROPRIETÁRIA."; }
       };
+
+      function vincularFiltroUsuariosCabecalhoV8() {
+        const filtro = document.getElementById("filtroUsuariosCabecalho");
+        if (!filtro || filtro.dataset.filtroUsuariosV8 === "1") return;
+        filtro.dataset.filtroUsuariosV8 = "1";
+        filtro.addEventListener("change", () => renderizarUsuariosAuth());
+      }
+
+      vincularFiltroUsuariosCabecalhoV8();
 
       window.sincronizarBuscaUsuarios = function(valor) {
         const termo = String(valor || "");
@@ -16468,6 +17077,338 @@ REALIZADO POR: ${autor}`,
 
 
 
+
+
+
+  <script id="lpa-v8-5-usuarios-layout-reorganizado-script">
+    (() => {
+      "use strict";
+
+      const editor = document.getElementById("editorUsuarioSistema");
+      const cabecalho = editor?.querySelector(".system-users-editor-head");
+      if (!editor || !cabecalho) return;
+
+      if (!document.getElementById("acoesCabecalhoUsuarioSistema")) {
+        const acoes = document.createElement("div");
+        acoes.id = "acoesCabecalhoUsuarioSistema";
+        acoes.className = "system-users-editor-actions";
+        acoes.innerHTML = `
+          <button type="button" class="system-users-inline-back" onclick="fecharGerenciadorUsuarios()" title="Voltar ao painel" aria-label="Voltar ao painel">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M19 12H5"></path><path d="M12 19L5 12L12 5"></path></svg>
+            <span>VOLTAR</span>
+          </button>
+          <button id="btnAlternarFormularioUsuarioSistema" type="button" class="system-users-editor-toggle" aria-expanded="false" aria-controls="formUsuarioSistema" onclick="alternarFormularioUsuarioSistema()">ADICIONAR</button>
+        `;
+        cabecalho.appendChild(acoes);
+      }
+
+      function definirFormularioUsuarioAberto(aberto) {
+        const estaAberto = aberto === true;
+        editor.classList.toggle("form-open", estaAberto);
+        const botao = document.getElementById("btnAlternarFormularioUsuarioSistema");
+        if (botao) {
+          botao.textContent = estaAberto ? "MINIMIZAR" : "ADICIONAR";
+          botao.setAttribute("aria-expanded", String(estaAberto));
+        }
+      }
+
+      const cancelarOriginal = window.cancelarEdicaoUsuarioSistema;
+      window.cancelarEdicaoUsuarioSistema = function() {
+        const retorno = cancelarOriginal?.apply(this, arguments);
+        definirFormularioUsuarioAberto(false);
+        return retorno;
+      };
+
+      window.alternarFormularioUsuarioSistema = function() {
+        const estaAberto = editor.classList.contains("form-open");
+        if (estaAberto) {
+          window.cancelarEdicaoUsuarioSistema();
+          return;
+        }
+        cancelarOriginal?.call(window);
+        definirFormularioUsuarioAberto(true);
+        editor.scrollIntoView({behavior:"smooth", block:"start"});
+        setTimeout(() => document.getElementById("usuarioSistemaNomeCompleto")?.focus(), 180);
+      };
+
+      window.abrirNovoUsuarioSistema = function() {
+        cancelarOriginal?.call(window);
+        definirFormularioUsuarioAberto(true);
+        editor.scrollIntoView({behavior:"smooth", block:"start"});
+        setTimeout(() => document.getElementById("usuarioSistemaNomeCompleto")?.focus(), 180);
+      };
+
+      const editarOriginal = window.editarUsuarioSistema;
+      window.editarUsuarioSistema = function(uid) {
+        const retorno = editarOriginal?.apply(this, arguments);
+        definirFormularioUsuarioAberto(true);
+        editor.scrollIntoView({behavior:"smooth", block:"start"});
+        return retorno;
+      };
+
+      definirFormularioUsuarioAberto(false);
+    })();
+  </script>
+
+
+  <style id="lpa-v8-5-modulo-check-estrutura-style">
+    body.modulo-check-ativo .lpa-taskbar-item,
+    body.modulo-check-ativo .lpa-taskbar-plus {
+      cursor: default !important;
+      opacity: .58;
+      filter: saturate(.72);
+    }
+
+    body.modulo-check-ativo .lpa-taskbar-item:hover,
+    body.modulo-check-ativo .lpa-taskbar-plus:hover {
+      transform: none !important;
+    }
+
+    .check-module-panel .services-panel-head {
+      min-height: 48px;
+    }
+
+    .check-module-placeholder {
+      min-height: 320px;
+      display: grid;
+      place-items: center;
+      padding: 28px 18px;
+      text-align: center;
+    }
+
+    .check-module-placeholder-card {
+      width: min(520px, 100%);
+      padding: 28px 22px;
+      border: 1px dashed #93c5fd;
+      border-radius: 16px;
+      background: linear-gradient(180deg, #f8fbff 0%, #eff6ff 100%);
+      color: #1e3a8a;
+      box-shadow: 0 10px 28px rgba(37, 99, 235, .07);
+    }
+
+    .check-module-placeholder-card strong {
+      display: block;
+      margin-bottom: 7px;
+      font-size: .88rem;
+      font-weight: 950;
+      letter-spacing: .05em;
+      text-transform: uppercase;
+    }
+
+    .check-module-placeholder-card span {
+      display: block;
+      color: #64748b;
+      font-size: .66rem;
+      font-weight: 850;
+      letter-spacing: .035em;
+      line-height: 1.5;
+      text-transform: uppercase;
+    }
+  </style>
+
+  <script id="lpa-v8-5-modulo-check-estrutura-script">
+    (() => {
+      "use strict";
+
+      function criarEstruturaModuloCheck() {
+        if (!document.getElementById("mainCheck")) {
+          const mainOficina = document.getElementById("mainOficina");
+          mainOficina?.insertAdjacentHTML("beforebegin", `
+            <main id="mainCheck" class="main modulo-main" hidden>
+              <div class="layout">
+                <section class="panel list-panel check-module-panel">
+                  <div class="panel-head services-panel-head">
+                    <h2>CHECK</h2>
+                    <div class="services-view-summary"><span>SOLICITAÇÕES</span><strong>0</strong></div>
+                  </div>
+                  <div class="panel-body services-panel-body check-module-placeholder">
+                    <div class="check-module-placeholder-card">
+                      <strong>MÓDULO EM DESENVOLVIMENTO</strong>
+                      <span>LEHUB — INTELIGÊNCIA EM DADOS E FLUXOS OPERACIONAIS</span>
+                    </div>
+                  </div>
+                </section>
+              </div>
+            </main>`);
+        }
+
+        const abaCheck = document.getElementById("tabModuloCheck");
+        if (abaCheck) {
+          abaCheck.classList.remove("module-placeholder");
+          abaCheck.removeAttribute("aria-disabled");
+          abaCheck.setAttribute("onclick", "selecionarModuloLeCar('CHECK')");
+          abaCheck.title = "Módulo Check";
+        }
+      }
+
+      criarEstruturaModuloCheck();
+
+      const atualizarAbasAnteriorCheck = typeof atualizarAbasModulosLeCar === "function"
+        ? atualizarAbasModulosLeCar
+        : null;
+      atualizarAbasModulosLeCar = function() {
+        atualizarAbasAnteriorCheck?.apply(this, arguments);
+        const abaCheck = document.getElementById("tabModuloCheck");
+        if (!abaCheck) return;
+        abaCheck.classList.toggle("active", moduloAtualLeCar === "CHECK");
+        if (moduloAtualLeCar === "CHECK") abaCheck.setAttribute("aria-current", "page");
+        else abaCheck.removeAttribute("aria-current");
+      };
+
+      const configurarTextosAnteriorCheck = typeof configurarTextosTaskbarModulo === "function"
+        ? configurarTextosTaskbarModulo
+        : null;
+      configurarTextosTaskbarModulo = function() {
+        if (moduloAtualLeCar !== "CHECK") {
+          return configurarTextosAnteriorCheck?.apply(this, arguments);
+        }
+
+        const labelEquipe = document.getElementById("labelNavEquipe");
+        if (labelEquipe) labelEquipe.textContent = "CONSULTOR";
+
+        const titulos = {
+          navAguardando: "Aguardando",
+          navUrgente: "Urgente",
+          navAndamento: "Andamento",
+          navFinalizados: "Finalizados",
+          navMecanicos: "Consultor",
+          navNotificacoes: "Notificações",
+          navEtiquetas: "Etiquetas",
+          navLixeira: "Lixeira"
+        };
+        Object.entries(titulos).forEach(([id, titulo]) => {
+          const botao = document.getElementById(id);
+          if (botao) botao.title = titulo;
+        });
+      };
+
+      function definirTaskbarCheck(inativa) {
+        const botoes = document.querySelectorAll(".lpa-taskbar button");
+        botoes.forEach(botao => {
+          botao.disabled = inativa;
+          botao.setAttribute("aria-disabled", String(inativa));
+          if (inativa) botao.classList.remove("active");
+        });
+
+        if (inativa) {
+          ["countAguardando", "countUrgente", "countAndamento", "countFinalizados", "countLixeira"]
+            .forEach(id => {
+              const contador = document.getElementById(id);
+              if (contador) contador.textContent = "0";
+            });
+        }
+      }
+
+      const selecionarModuloAnteriorCheck = typeof selecionarModuloLeCar === "function"
+        ? selecionarModuloLeCar
+        : null;
+      selecionarModuloLeCar = function(modulo) {
+        const destino = typeof normalizar === "function"
+          ? normalizar(modulo)
+          : String(modulo || "").trim().toUpperCase();
+        const mainCheck = document.getElementById("mainCheck");
+
+        if (destino !== "CHECK") {
+          if (mainCheck) mainCheck.hidden = true;
+          document.body.classList.remove("modulo-check-ativo");
+          definirTaskbarCheck(false);
+          const retorno = selecionarModuloAnteriorCheck?.apply(this, arguments);
+          configurarTextosTaskbarModulo();
+          atualizarAbasModulosLeCar();
+          return retorno;
+        }
+
+        moduloAtualLeCar = "CHECK";
+        ["mainOficina", "mainAcessorios", "mainLavaRapido", "mainPolimento"].forEach(id => {
+          const main = document.getElementById(id);
+          if (main) main.hidden = true;
+        });
+        if (mainCheck) mainCheck.hidden = false;
+
+        document.body.classList.remove("modulo-acessorios-ativo");
+        document.body.classList.add("modulo-check-ativo");
+
+        const campoBusca = document.getElementById("buscaAdmin");
+        if (campoBusca) campoBusca.value = "";
+        if (typeof fecharResultadosBuscaGlobal === "function") fecharResultadosBuscaGlobal();
+
+        configurarTextosTaskbarModulo();
+        definirTaskbarCheck(true);
+        atualizarAbasModulosLeCar();
+        if (typeof atualizarEstadoBuscaModulo === "function") atualizarEstadoBuscaModulo();
+      };
+
+      const selecionarVisaoAnteriorCheck = typeof selecionarVisaoModulo === "function"
+        ? selecionarVisaoModulo
+        : null;
+      selecionarVisaoModulo = function() {
+        if (moduloAtualLeCar === "CHECK") return;
+        return selecionarVisaoAnteriorCheck?.apply(this, arguments);
+      };
+
+      const abrirCadastroAnteriorCheck = typeof abrirCadastroModulo === "function"
+        ? abrirCadastroModulo
+        : null;
+      abrirCadastroModulo = function() {
+        if (moduloAtualLeCar === "CHECK") return;
+        return abrirCadastroAnteriorCheck?.apply(this, arguments);
+      };
+
+      const abrirNotificacoesAnteriorCheck = typeof abrirNotificacoesModulo === "function"
+        ? abrirNotificacoesModulo
+        : null;
+      abrirNotificacoesModulo = function() {
+        if (moduloAtualLeCar === "CHECK") return;
+        return abrirNotificacoesAnteriorCheck?.apply(this, arguments);
+      };
+
+      const abrirEtiquetasAnteriorCheck = typeof abrirEtiquetasModulo === "function"
+        ? abrirEtiquetasModulo
+        : null;
+      abrirEtiquetasModulo = function() {
+        if (moduloAtualLeCar === "CHECK") return;
+        return abrirEtiquetasAnteriorCheck?.apply(this, arguments);
+      };
+
+      const buscaAnteriorCheck = typeof aoDigitarBuscaModulo === "function"
+        ? aoDigitarBuscaModulo
+        : null;
+      aoDigitarBuscaModulo = function() {
+        if (moduloAtualLeCar === "CHECK") {
+          if (typeof fecharResultadosBuscaGlobal === "function") fecharResultadosBuscaGlobal();
+          return;
+        }
+        return buscaAnteriorCheck?.apply(this, arguments);
+      };
+
+      const teclaAnteriorCheck = typeof aoTeclarBuscaModulo === "function"
+        ? aoTeclarBuscaModulo
+        : null;
+      aoTeclarBuscaModulo = function(event) {
+        if (moduloAtualLeCar === "CHECK") {
+          if (event?.key === "Escape") limparBuscaModulo();
+          return;
+        }
+        return teclaAnteriorCheck?.apply(this, arguments);
+      };
+
+      const limparAnteriorCheck = typeof limparBuscaModulo === "function"
+        ? limparBuscaModulo
+        : null;
+      limparBuscaModulo = function() {
+        if (moduloAtualLeCar === "CHECK") {
+          const campo = document.getElementById("buscaAdmin");
+          if (campo) campo.value = "";
+          if (typeof fecharResultadosBuscaGlobal === "function") fecharResultadosBuscaGlobal();
+          if (typeof atualizarEstadoBuscaModulo === "function") atualizarEstadoBuscaModulo();
+          return;
+        }
+        return limparAnteriorCheck?.apply(this, arguments);
+      };
+
+      atualizarAbasModulosLeCar();
+    })();
+  </script>
 
 </body>
 </html>
