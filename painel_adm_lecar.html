@@ -1,5 +1,5 @@
 <!doctype html>
-<!-- LEHUB LPA V8.4 — USUÁRIOS LGVO INTEGRADOS À GESTÃO CENTRAL / 2026-07-21 -->
+<!-- LEHUB LPA V8.6 — LOGIN FINAL / CARD 15% MAIOR SOBRE A VERSÃO V8.5 / 20% TRANSPARENTE / ESPAÇAMENTO UNIFORME / SOMBRAS REFORÇADAS / SEM MÓDULO CHECK -->
 <html lang="pt-BR" translate="no">
 <head>
   <meta charset="UTF-8">
@@ -5309,17 +5309,739 @@
     }
   </style>
 
+
+
+  <style id="lecar-login-conceito-desktop-2026">
+    /* TELA DE LOGIN — CARD À ESQUERDA / IDENTIDADE LECAR À DIREITA */
+    .login-page {
+      position: relative;
+      isolation: isolate;
+      min-height: 100vh;
+      min-height: 100dvh;
+      width: 100%;
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      align-items: center;
+      gap: clamp(36px, 7vw, 120px);
+      padding: clamp(30px, 5vw, 86px);
+      overflow: hidden;
+      background-color: #061526;
+      background-image: url("lecar-login-background.png");
+      background-repeat: no-repeat;
+      background-size: cover;
+      background-position: center center;
+    }
+
+    .login-page::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      z-index: -1;
+      pointer-events: none;
+      background:
+        linear-gradient(90deg,
+          rgba(2, 12, 27, .34) 0%,
+          rgba(2, 12, 27, .18) 42%,
+          rgba(2, 12, 27, .30) 72%,
+          rgba(2, 12, 27, .48) 100%);
+    }
+
+    .login-identity {
+      position: relative;
+      z-index: 1;
+      grid-column: 2;
+      grid-row: 1;
+      width: min(44vw, 560px);
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      justify-content: center;
+      justify-self: end;
+      text-align: right;
+    }
+
+    .login-identity-logo {
+      display: block;
+      width: min(360px, 88%);
+      max-width: 100%;
+      height: auto;
+      object-fit: contain;
+      filter:
+        drop-shadow(0 8px 12px rgba(0, 0, 0, .62))
+        drop-shadow(0 20px 34px rgba(0, 0, 0, .48));
+    }
+
+    .login-brand-signature {
+      max-width: 410px;
+      margin-top: 18px;
+      color: rgba(255, 255, 255, .92);
+      font-size: .68rem;
+      font-weight: 850;
+      line-height: 1.55;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+      text-shadow:
+        0 2px 4px rgba(0, 0, 0, .72),
+        0 8px 18px rgba(0, 0, 0, .52);
+    }
+
+    .login-stage {
+      width: min(294px, 100%);
+      position: relative;
+      z-index: 1;
+      grid-column: 1;
+      grid-row: 1;
+      justify-self: start;
+    }
+
+    .login-card {
+      width: 100%;
+      max-width: none;
+      min-height: 340px;
+      padding: 35px 21px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      border: 1px solid rgba(255, 255, 255, .68);
+      border-radius: 14px;
+      background: rgba(255, 255, 255, .80);
+      -webkit-backdrop-filter: blur(16px) saturate(118%);
+      backdrop-filter: blur(16px) saturate(118%);
+      box-shadow:
+        0 28px 68px rgba(2, 12, 27, .46),
+        0 9px 26px rgba(15, 23, 42, .24),
+        inset 0 1px 0 rgba(255, 255, 255, .42);
+      text-align: left;
+    }
+
+    /* GARANTIA DE CENTRALIZAÇÃO VERTICAL DO CONJUNTO CAMPOS + BOTÃO */
+    .login-form-center {
+      width: 100%;
+      min-height: 0;
+      flex: 1 1 auto;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+
+    .login-field {
+      width: 75%;
+      margin: 0 auto 14px;
+    }
+
+    .login-field label {
+      display: block;
+      margin: 0 0 7px 2px;
+      color: #334155;
+      font-size: .66rem;
+      font-weight: 900;
+      letter-spacing: .055em;
+      text-transform: uppercase;
+    }
+
+    .login-card input,
+    .login-card #loginSenha {
+      width: 100%;
+      min-height: 39px;
+      height: 39px;
+      margin: 0;
+      padding: 0 15px;
+      border: 1px solid #cbd5e1;
+      border-radius: 12px;
+      outline: none;
+      background: rgba(248, 250, 252, .50);
+      color: #0f172a;
+      font-size: .86rem;
+      font-weight: 650;
+      text-transform: none;
+      box-shadow: inset 0 1px 2px rgba(15, 23, 42, .035);
+      transition: border-color .18s ease, box-shadow .18s ease, background .18s ease;
+    }
+
+    .login-card input::placeholder {
+      color: #94a3b8;
+      opacity: 1;
+    }
+
+    .login-card input:hover {
+      border-color: #94a3b8;
+      background: rgba(255, 255, 255, .62);
+    }
+
+    .login-card input:focus {
+      border-color: #3b82f6;
+      background: rgba(255, 255, 255, .72);
+      box-shadow: 0 0 0 4px rgba(59, 130, 246, .13);
+    }
+
+    .login-card button[type="submit"] {
+      display: block;
+      width: 75%;
+      min-height: 39px;
+      height: 39px;
+      margin: 14px auto 0;
+      border: 0;
+      border-radius: 12px;
+      background: linear-gradient(90deg, #1e3a8a 0%, #2563eb 58%, #3b82f6 100%);
+      background-size: 160% 100%;
+      color: #ffffff;
+      font-size: .72rem;
+      font-weight: 950;
+      letter-spacing: .06em;
+      text-transform: uppercase;
+      box-shadow: 0 10px 22px rgba(37, 99, 235, .28);
+      transition: transform .18s ease, box-shadow .18s ease, background-position .25s ease, opacity .18s ease;
+    }
+
+    .login-card button[type="submit"]:hover {
+      transform: translateY(-1px);
+      background-position: 100% 0;
+      box-shadow: 0 14px 27px rgba(37, 99, 235, .34);
+    }
+
+    .login-card button[type="submit"]:active {
+      transform: translateY(0) scale(.992);
+    }
+
+    .login-card button[type="submit"]:disabled {
+      cursor: wait;
+      opacity: .72;
+      transform: none;
+    }
+
+    .login-error {
+      display: none;
+      margin-top: 13px;
+      padding: 10px 12px;
+      border: 1px solid #fecaca;
+      border-radius: 10px;
+      background: #fff1f2;
+      color: #b91c1c;
+      font-size: .65rem;
+      font-weight: 850;
+      line-height: 1.4;
+      text-align: center;
+      text-transform: uppercase;
+    }
+
+    @media (min-width: 1800px) {
+      .login-page {
+        padding-left: clamp(90px, 7vw, 155px);
+        padding-right: clamp(90px, 7vw, 155px);
+        background-position: center 52%;
+      }
+
+      .login-identity-logo { width: min(410px, 90%); }
+      .login-stage { width: 313px; }
+    }
+
+    @media (max-width: 1366px) and (min-width: 901px) {
+      .login-page {
+        gap: clamp(30px, 5vw, 74px);
+        padding: clamp(30px, 4vw, 56px);
+        background-position: 54% center;
+      }
+
+      .login-identity { width: min(42vw, 500px); }
+      .login-identity-logo { width: min(310px, 86%); }
+      .login-stage { width: 285px; }
+      .login-card { min-height: 322px; padding: 31px 18px; border-radius: 14px; }
+    }
+
+    @media (max-width: 1100px) and (min-width: 769px) {
+      .login-page {
+        gap: 30px;
+        padding: 30px;
+        background-position: 58% center;
+      }
+
+      .login-identity { width: min(39vw, 420px); }
+      .login-identity-logo { width: min(270px, 88%); }
+      .login-brand-signature { max-width: 330px; font-size: .60rem; }
+      .login-stage { width: 276px; }
+      .login-card { min-height: 313px; padding: 29px 17px; }
+    }
+
+    @media (max-height: 760px) and (min-width: 769px) {
+      .login-card { min-height: 304px; padding: 25px 17px; }
+      .login-field { margin-bottom: 10px; }
+      .login-card input,
+      .login-card #loginSenha,
+      .login-card button[type="submit"] { min-height: 39px; height: 39px; }
+      .login-brand-signature { margin-top: 12px; }
+    }
+
+    @media (max-width: 768px) {
+      .login-page {
+        grid-template-columns: 1fr;
+        justify-items: center;
+        gap: 24px;
+        padding: 22px;
+        background-position: 50% center;
+      }
+
+      .login-page::before {
+        background: rgba(2, 12, 27, .42);
+      }
+
+      .login-identity {
+        grid-column: 1;
+        grid-row: 2;
+        width: min(390px, 100%);
+        align-items: center;
+        justify-self: center;
+        text-align: center;
+      }
+
+      .login-identity-logo { width: min(230px, 72%); }
+      .login-brand-signature { max-width: 340px; font-size: .57rem; }
+      .login-stage {
+        grid-column: 1;
+        grid-row: 1;
+        width: min(294px, 100%);
+        justify-self: center;
+      }
+      .login-card { min-height: 322px; padding: 30px 18px; border-radius: 14px; }
+    }
+
+    @media (max-width: 420px) {
+      .login-page { padding: 15px; gap: 18px; }
+      .login-identity-logo { width: min(205px, 68%); }
+      .login-brand-signature { margin-top: 11px; font-size: .52rem; }
+      .login-card { min-height: 304px; padding: 25px 16px; border-radius: 13px; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .login-card input,
+      .login-card button[type="submit"] { transition: none; }
+    }
+  </style>
+<style id="lecar-padronizacao-total-oficina-v4">
+    /*
+      PADRÃO MESTRE: MÓDULO OFICINA
+      Aplicado a Oficina, Lava Rápido, Polimento e Acessórios,
+      nas abas Aguardando, Urgentes, Em andamento, Finalizados e Lixeira.
+    */
+    :root {
+      --lecar-card-width-min: 215px;
+      --lecar-card-width-max: 230px;
+      --lecar-card-height: 262px;
+      --lecar-card-gap: 10px;
+      --lecar-card-padding-y: 12px;
+      --lecar-card-padding-x: 13px;
+      --lecar-card-radius: 14px;
+      --lecar-action-width: 34px;
+      --lecar-action-height: 32px;
+      --lecar-action-gap: 6px;
+    }
+
+    /* Grade: mesma largura, altura, distância e alinhamento em todos os módulos. */
+    .services-list.view-cards {
+      display: grid !important;
+      grid-template-columns: repeat(auto-fill, minmax(var(--lecar-card-width-min), var(--lecar-card-width-max))) !important;
+      grid-auto-rows: var(--lecar-card-height) !important;
+      gap: var(--lecar-card-gap) !important;
+      align-items: stretch !important;
+      justify-content: start !important;
+    }
+
+    /* Geometria externa única. */
+    .services-list.view-cards .service-row,
+    .services-list.view-cards .service-row.lecar-standard-card,
+    .services-list.view-cards .service-row.lava-card,
+    .services-list.view-cards .service-row.acessorios-card {
+      position: relative !important;
+      width: 100% !important;
+      height: var(--lecar-card-height) !important;
+      min-height: var(--lecar-card-height) !important;
+      max-height: var(--lecar-card-height) !important;
+      aspect-ratio: auto !important;
+      padding: var(--lecar-card-padding-y) var(--lecar-card-padding-x) !important;
+      display: flex !important;
+      flex-direction: column !important;
+      align-self: stretch !important;
+      overflow: hidden !important;
+      border-width: 1px !important;
+      border-style: solid !important;
+      border-color: var(--etiqueta-borda, #dbe3ef) !important;
+      border-radius: var(--lecar-card-radius) !important;
+      background: linear-gradient(180deg, var(--etiqueta-suave, #ffffff) 0%, #ffffff 62%) !important;
+      box-shadow: 0 5px 14px rgba(15, 23, 42, .07) !important;
+      opacity: 1 !important;
+      box-sizing: border-box !important;
+    }
+
+    .services-list.view-cards .service-row:hover {
+      border-color: #93c5fd !important;
+      box-shadow: 0 8px 20px rgba(37, 99, 235, .12) !important;
+    }
+
+    /* Barra de etiqueta idêntica à Oficina. */
+    .services-list.view-cards .service-row.etiqueta-aplicada::before {
+      content: "" !important;
+      position: absolute !important;
+      top: 0 !important;
+      left: 0 !important;
+      right: 0 !important;
+      height: 5px !important;
+      background: var(--etiqueta-cor, #64748b) !important;
+      z-index: 0 !important;
+    }
+
+    .services-list.view-cards .service-row > * {
+      position: relative !important;
+      z-index: 1 !important;
+    }
+
+    /* Cabeçalho. */
+    .services-list.view-cards .service-card-head {
+      height: 24px !important;
+      min-height: 24px !important;
+      max-height: 24px !important;
+      display: flex !important;
+      align-items: center !important;
+      justify-content: space-between !important;
+      gap: 8px !important;
+      overflow: hidden !important;
+      flex: 0 0 24px !important;
+    }
+
+    .services-list.view-cards .service-date {
+      min-width: 0 !important;
+      height: 24px !important;
+      display: inline-flex !important;
+      align-items: center !important;
+      gap: 6px !important;
+      overflow: hidden !important;
+      color: #475569 !important;
+      font-size: .58rem !important;
+      font-weight: 800 !important;
+      line-height: 1 !important;
+      white-space: nowrap !important;
+      text-overflow: ellipsis !important;
+    }
+
+    .services-list.view-cards .service-date svg,
+    .services-list.view-cards .service-info-line svg {
+      width: 15px !important;
+      height: 15px !important;
+      min-width: 15px !important;
+      flex: 0 0 15px !important;
+      fill: none !important;
+      stroke: #2563eb !important;
+      stroke-width: 2 !important;
+      stroke-linecap: round !important;
+      stroke-linejoin: round !important;
+    }
+
+    .services-list.view-cards .service-label-chip {
+      max-width: 112px !important;
+      min-width: 0 !important;
+      height: 24px !important;
+      min-height: 24px !important;
+      padding: 0 9px !important;
+      margin-left: auto !important;
+      flex: 0 1 auto !important;
+      overflow: hidden !important;
+      border: 1px solid var(--etiqueta-borda, #cbd5e1) !important;
+      border-radius: 999px !important;
+      background: var(--etiqueta-suave, #f1f5f9) !important;
+      color: var(--etiqueta-cor, #334155) !important;
+      font-size: .49rem !important;
+      font-weight: 950 !important;
+      line-height: 1 !important;
+      letter-spacing: .025em !important;
+      text-overflow: ellipsis !important;
+      text-transform: uppercase !important;
+      white-space: nowrap !important;
+    }
+
+    /* Identificação principal. */
+    .services-list.view-cards .service-main {
+      height: 47px !important;
+      min-height: 47px !important;
+      max-height: 47px !important;
+      margin-top: 12px !important;
+      overflow: hidden !important;
+      flex: 0 0 47px !important;
+    }
+
+    .services-list.view-cards .service-plate {
+      height: 22px !important;
+      overflow: hidden !important;
+      color: #0f172a !important;
+      font-size: 1.25rem !important;
+      font-weight: 950 !important;
+      line-height: 1 !important;
+      letter-spacing: -.025em !important;
+      text-overflow: ellipsis !important;
+      white-space: nowrap !important;
+    }
+
+    .services-list.view-cards .service-vehicle {
+      height: 17px !important;
+      margin-top: 5px !important;
+      overflow: hidden !important;
+      color: #334155 !important;
+      font-size: .68rem !important;
+      font-weight: 750 !important;
+      line-height: 1.2 !important;
+      text-overflow: ellipsis !important;
+      white-space: nowrap !important;
+    }
+
+    /* Descrição: exatamente duas linhas; conteúdo maior é cortado. */
+    .services-list.view-cards .service-desc,
+    .services-list.view-cards .acessorios-card-description {
+      height: 35px !important;
+      min-height: 35px !important;
+      max-height: 35px !important;
+      margin-top: 10px !important;
+      display: -webkit-box !important;
+      overflow: hidden !important;
+      color: #475569 !important;
+      font-size: .64rem !important;
+      font-weight: 650 !important;
+      line-height: 1.35 !important;
+      text-overflow: ellipsis !important;
+      white-space: normal !important;
+      overflow-wrap: anywhere !important;
+      -webkit-box-orient: vertical !important;
+      -webkit-line-clamp: 2 !important;
+      line-clamp: 2 !important;
+      flex: 0 0 35px !important;
+    }
+
+    /* Duas linhas informativas, exatamente como na Oficina. */
+    .services-list.view-cards .service-info {
+      height: 39px !important;
+      min-height: 39px !important;
+      max-height: 39px !important;
+      margin-top: 9px !important;
+      display: grid !important;
+      grid-template-rows: repeat(2, 17px) !important;
+      gap: 5px !important;
+      overflow: hidden !important;
+      flex: 0 0 39px !important;
+    }
+
+    .services-list.view-cards .service-info-line,
+    .services-list.view-cards .service-info-line.service-mechanic {
+      min-width: 0 !important;
+      height: 17px !important;
+      min-height: 17px !important;
+      max-height: 17px !important;
+      display: flex !important;
+      align-items: center !important;
+      gap: 6px !important;
+      overflow: hidden !important;
+      color: #475569 !important;
+      font-size: .58rem !important;
+      font-weight: 700 !important;
+      line-height: 1 !important;
+      text-transform: uppercase !important;
+    }
+
+    .services-list.view-cards .service-info-line > span,
+    .services-list.view-cards .service-info-line.service-mechanic > span {
+      min-width: 0 !important;
+      display: block !important;
+      overflow: hidden !important;
+      line-height: 17px !important;
+      text-overflow: ellipsis !important;
+      white-space: nowrap !important;
+    }
+
+    .services-list.view-cards .service-info-label {
+      color: #475569 !important;
+      font-weight: 700 !important;
+    }
+
+    .services-list.view-cards .service-info-line strong {
+      color: #1d4ed8 !important;
+      font-weight: 950 !important;
+    }
+
+    /* Rodapé e ações sempre na mesma coordenada. */
+    .services-list.view-cards .service-footer {
+      height: 33px !important;
+      min-height: 33px !important;
+      max-height: 33px !important;
+      margin-top: auto !important;
+      padding-top: 8px !important;
+      display: flex !important;
+      align-items: center !important;
+      justify-content: space-between !important;
+      gap: 7px !important;
+      overflow: hidden !important;
+      border-top: 1px solid #e2e8f0 !important;
+      flex: 0 0 33px !important;
+    }
+
+    .services-list.view-cards .status-badge,
+    .services-list.view-cards button.status-badge {
+      max-width: 124px !important;
+      min-width: 0 !important;
+      height: 23px !important;
+      min-height: 23px !important;
+      max-height: 23px !important;
+      padding: 0 7px !important;
+      display: inline-flex !important;
+      align-items: center !important;
+      justify-content: center !important;
+      overflow: hidden !important;
+      border-radius: 999px !important;
+      font-size: .5rem !important;
+      font-weight: 950 !important;
+      line-height: 1 !important;
+      text-overflow: ellipsis !important;
+      text-transform: uppercase !important;
+      white-space: nowrap !important;
+    }
+
+    .services-list.view-cards .service-actions,
+    .team-row-actions {
+      height: var(--lecar-action-height) !important;
+      margin: 0 !important;
+      padding: 0 !important;
+      display: flex !important;
+      align-items: center !important;
+      justify-content: flex-end !important;
+      gap: var(--lecar-action-gap) !important;
+      flex: 0 0 auto !important;
+    }
+
+    .services-list.view-cards .service-actions .card-action-icon,
+    .team-row-actions .card-action-icon {
+      width: var(--lecar-action-width) !important;
+      height: var(--lecar-action-height) !important;
+      min-width: var(--lecar-action-width) !important;
+      min-height: var(--lecar-action-height) !important;
+      max-width: var(--lecar-action-width) !important;
+      max-height: var(--lecar-action-height) !important;
+      padding: 0 !important;
+      display: inline-flex !important;
+      align-items: center !important;
+      justify-content: center !important;
+      flex: 0 0 var(--lecar-action-width) !important;
+      border-width: 1px !important;
+      border-style: solid !important;
+      border-radius: 9px !important;
+      font-size: 0 !important;
+      line-height: 1 !important;
+      box-sizing: border-box !important;
+    }
+
+    .services-list.view-cards .service-actions .card-action-icon svg,
+    .team-row-actions .card-action-icon svg {
+      width: 15px !important;
+      height: 15px !important;
+      min-width: 15px !important;
+      min-height: 15px !important;
+      flex: 0 0 15px !important;
+      fill: none !important;
+      stroke: currentColor !important;
+      stroke-width: 2.1 !important;
+      stroke-linecap: round !important;
+      stroke-linejoin: round !important;
+    }
+
+    /* Abas de profissionais: mesma matriz e mesma geometria entre módulos. */
+    .mechanics-grid,
+    .acessorios-installer-grid .mechanics-grid {
+      display: grid !important;
+      grid-template-columns: repeat(auto-fill, minmax(290px, 1fr)) !important;
+      gap: 10px !important;
+      align-items: stretch !important;
+    }
+
+    .mechanic-card {
+      height: 310px !important;
+      min-height: 310px !important;
+      max-height: 310px !important;
+      overflow: hidden !important;
+      box-sizing: border-box !important;
+    }
+
+    .mechanic-services {
+      height: 220px !important;
+      min-height: 220px !important;
+      max-height: 220px !important;
+      grid-auto-rows: 31px !important;
+      overflow-x: hidden !important;
+      overflow-y: auto !important;
+    }
+
+    .mechanic-vehicle-row,
+    .mechanic-vehicle-row.has-actions,
+    .mechanic-vehicle-row.has-delete,
+    .mechanic-vehicle-row:not(.has-delete) {
+      height: 31px !important;
+      min-height: 31px !important;
+      max-height: 31px !important;
+      overflow: hidden !important;
+    }
+
+    /* Remoção definitiva dos antigos blocos específicos dos módulos. */
+    .services-list.view-cards .lava-card-type,
+    .services-list.view-cards .lava-card-flags,
+    .services-list.view-cards .acessorios-card-flags {
+      display: none !important;
+    }
+
+    @media (max-width: 600px) {
+      :root {
+        --lecar-card-width-min: 100%;
+        --lecar-card-width-max: 100%;
+        --lecar-card-height: 250px;
+        --lecar-action-width: 38px;
+        --lecar-action-height: 36px;
+      }
+
+      .services-list.view-cards {
+        grid-template-columns: 1fr !important;
+      }
+
+      .services-list.view-cards .service-main {
+        margin-top: 9px !important;
+      }
+
+      .services-list.view-cards .service-desc {
+        margin-top: 7px !important;
+      }
+
+      .services-list.view-cards .service-info {
+        margin-top: 6px !important;
+      }
+    }
+  </style>
+
 </head>
 <body data-lecar-build="FIREBASE_AUTH_V8_2_USUARIOS_INTERFACE_ENXUTA">
-  <section id="loginPage" class="login-page">
-    <form class="login-card" onsubmit="entrarAdmin(event)">
-      <img src="logo.png" alt="LECAR" class="login-logo">
-      <input id="loginUsuario" type="email" value="leleoucamf@gmail.com" placeholder="E-mail" autocomplete="username" autocapitalize="none" autocorrect="off" spellcheck="false" inputmode="email" required>
-      <input id="loginSenha" type="password" placeholder="Senha" autocomplete="current-password" autocapitalize="none" autocorrect="off" spellcheck="false" required>
-      <button type="submit">Acessar painel</button>
+  <section id="loginPage" class="login-page" aria-label="Acesso ao sistema LeCar">
+    <div class="login-identity" aria-label="Identidade LeCar">
+      <img src="logo.png" alt="LECAR" class="login-identity-logo">
       <div class="login-brand-signature">LEHUB — INTELIGÊNCIA EM DADOS E FLUXOS OPERACIONAIS</div>
-      <div id="loginErro" class="login-error">E-MAIL OU SENHA INVÁLIDOS.</div>
-    </form>
+    </div>
+
+    <div class="login-stage">
+      <form class="login-card" onsubmit="entrarAdmin(event)">
+        <div class="login-form-center">
+          <div class="login-field">
+            <label for="loginUsuario">Usuário</label>
+            <input id="loginUsuario" type="email" value="leleoucamf@gmail.com" placeholder="E-mail" autocomplete="username" autocapitalize="none" autocorrect="off" spellcheck="false" inputmode="email" required>
+          </div>
+
+          <div class="login-field">
+            <label for="loginSenha">Senha</label>
+            <input id="loginSenha" type="password" placeholder="Senha" autocomplete="current-password" autocapitalize="none" autocorrect="off" spellcheck="false" required>
+          </div>
+
+          <button type="submit">Entrar no sistema</button>
+          <div id="loginErro" class="login-error" role="alert">E-MAIL OU SENHA INVÁLIDOS.</div>
+        </div>
+      </form>
+    </div>
   </section>
 
   <div id="app" class="app">
@@ -5328,7 +6050,6 @@
 
       <nav class="system-switcher" aria-label="Sistemas LeCar">
         <div class="system-tabs-track">
-          <button id="tabModuloCheck" type="button" class="system-tab module-placeholder" aria-disabled="true" title="Módulo Check">CHECK</button>
           <button id="tabModuloOficina" type="button" class="system-tab active" aria-current="page" title="Sistema Oficina" onclick="selecionarModuloLeCar('OFICINA')">OFICINA</button>
           <button id="tabModuloAcessorios" type="button" class="system-tab" title="Sistema Acessórios" onclick="selecionarModuloLeCar('ACESSORIOS')">ACESSÓRIOS</button>
           <button id="tabModuloLavaRapido" type="button" class="system-tab" title="Sistema Lava Rápido" onclick="selecionarModuloLeCar('LAVA_RAPIDO')">LAVA RÁPIDO</button>
@@ -5807,10 +6528,9 @@
         <div class="field-grid">
           <div class="field">
             <label for="admOrigem">Origem</label>
-            <select id="admOrigem">
-              <option value="BOLSÃO" selected>BOLSÃO</option>
+            <select id="admOrigem" required>
+              <option value="BOLSAO" selected>BOLSÃO</option>
               <option value="ATM">ATM</option>
-              <option value="-">NÃO INFORMADA</option>
             </select>
           </div>
           <div class="field">
@@ -5834,6 +6554,8 @@
             <option value="MAICON">MAICON</option>
             <option value="DOUGLAS">DOUGLAS</option>
             <option value="HARON">HARON</option>
+            <option value="JONAS">JONAS</option>
+            <option value="IGOR">IGOR</option>
           </select>
         </div>
         <button id="btnPublicar" class="submit-btn" type="submit">Publicar na Lista Geral</button>
@@ -5866,10 +6588,9 @@
         <div class="field-grid">
           <div class="field">
             <label for="editOrigem">Origem</label>
-            <select id="editOrigem">
-              <option value="-">NÃO INFORMADA</option>
+            <select id="editOrigem" required>
+              <option value="BOLSAO">BOLSÃO</option>
               <option value="ATM">ATM</option>
-              <option value="BOLSÃO">BOLSÃO</option>
             </select>
           </div>
           <div class="field">
@@ -5904,6 +6625,8 @@
               <option value="MAICON">MAICON</option>
               <option value="DOUGLAS">DOUGLAS</option>
               <option value="HARON">HARON</option>
+              <option value="JONAS">JONAS</option>
+              <option value="IGOR">IGOR</option>
             </select>
           </div>
         </div>
@@ -5954,6 +6677,8 @@
             <option value="MAICON">MAICON</option>
             <option value="DOUGLAS">DOUGLAS</option>
             <option value="HARON">HARON</option>
+            <option value="JONAS">JONAS</option>
+            <option value="IGOR">IGOR</option>
           </select>
         </div>
         <div class="history-assign-actions">
@@ -7377,7 +8102,7 @@
       fecharGerenciadorEtiquetas();
 
       document.getElementById("app").style.display = "none";
-      document.getElementById("loginPage").style.display = "flex";
+      document.getElementById("loginPage").style.display = "grid";
       document.getElementById("loginSenha").value = "";
       document.getElementById("loginErro").style.display = "none";
       document.getElementById("loginUsuario").focus();
@@ -8068,7 +8793,9 @@
       PEDRO:"PEDRO",
       MAICON:"MAICON",
       DOUGLAS:"DOUGLAS",
-      HARON:"HARON"
+      HARON:"HARON",
+      JONAS:"JONAS",
+      IGOR:"IGOR"
     });
 
     function normalizarCorEtiquetaLPA(valor, fallback = "#64748B") {
@@ -8820,7 +9547,7 @@ REALIZADO POR: ${autor}`,
         const mecanico = nomeMecanicoCard(item, assumido ? "NÃO INFORMADO" : "NÃO ASSUMIDO");
         const etiqueta = etiquetaDoServico(item);
         const prioridade = etiqueta.nome;
-        const origem = normalizar(item.origem || "-");
+        const origem = normalizar(item.origem || origemPadraoCadastroServico() || "BOLSAO");
         const statusOperacional = rotuloStatusOperacionalPainel(item.status || "ATIVO");
         const classeStatus = veiculoAtivo ? classeStatusOperacionalPainel(item.status) : (assumido ? "assumido" : "disponivel");
         const statusTexto = veiculoAtivo
@@ -9415,7 +10142,7 @@ REALIZADO POR: ${autor}`,
       document.getElementById("editVeiculo").value = normalizar(item.veiculo || "");
       document.getElementById("editPlaca").value = normalizar(item.placa || "").replace(/[^A-Z0-9]/g, "");
       document.getElementById("editDescricao").value = normalizar(item.descricao || "");
-      document.getElementById("editOrigem").value = ["ATM","BOLSÃO"].includes(normalizar(item.origem)) ? normalizar(item.origem) : "-";
+      document.getElementById("editOrigem").value = ["ATM","BOLSAO"].includes(normalizar(item.origem)) ? normalizar(item.origem) : "BOLSAO";
       selectStatus.value = status;
       selectPrioridade.value = prioridade;
       selectMecanico.value = mecanico;
@@ -9500,7 +10227,7 @@ REALIZADO POR: ${autor}`,
       const veiculo = normalizar(document.getElementById("editVeiculo")?.value || "");
       const placa = normalizar(document.getElementById("editPlaca")?.value || "").replace(/[^A-Z0-9]/g, "");
       const descricao = normalizar(document.getElementById("editDescricao")?.value || "");
-      const origem = normalizar(document.getElementById("editOrigem")?.value || "-");
+      const origem = normalizar(document.getElementById("editOrigem")?.value || "");
       const etiquetaSelecionada = etiquetaPorNomeLPA(document.getElementById("editPrioridade")?.value || item.prioridade || "NORMAL");
       const prioridade = etiquetaSelecionada.nome;
       const status = aguardando
@@ -9510,6 +10237,12 @@ REALIZADO POR: ${autor}`,
 
       if (!veiculo || !placa || !descricao) {
         alert("PREENCHA VEÍCULO, PLACA E DESCRIÇÃO.");
+        return;
+      }
+
+      if (!["ATM", "BOLSAO"].includes(origem)) {
+        alert("SELECIONE A ORIGEM DO SERVIÇO.");
+        document.getElementById("editOrigem")?.focus();
         return;
       }
 
@@ -9905,10 +10638,17 @@ REALIZADO POR: ${autor}`,
       }
     }
 
+    function origemPadraoCadastroServico() {
+      const operacaoCabecalho = normalizar(document.getElementById("selectFiltroOrigemPainel")?.value || "");
+      return operacaoCabecalho === "ATM" ? "ATM" : "BOLSAO";
+    }
+
     function abrirCadastroServico() {
       if (!acessoAdminValido()) return;
       const modal = document.getElementById("modalCadastroServico");
       if (!modal) return;
+      const campoOrigem = document.getElementById("admOrigem");
+      if (campoOrigem) campoOrigem.value = origemPadraoCadastroServico();
       modal.classList.add("open");
       document.body.classList.add("cadastro-modal-open");
       window.setTimeout(() => document.getElementById("admVeiculo")?.focus(), 40);
@@ -9935,7 +10675,7 @@ REALIZADO POR: ${autor}`,
       const veiculo = normalizar(document.getElementById("admVeiculo").value);
       const placa = normalizar(document.getElementById("admPlaca").value).replace(/[^A-Z0-9]/g,"");
       const descricao = normalizar(document.getElementById("admDescricao").value);
-      const origem = normalizar(document.getElementById("admOrigem").value || "-");
+      const origem = normalizar(document.getElementById("admOrigem").value || "");
       const etiquetaSelecionada = etiquetaPorNomeLPA(document.getElementById("admPrioridade").value || "NORMAL");
       const prioridade = etiquetaSelecionada.nome;
       const mecanicoAtribuido = mecanicoCanonico(document.getElementById("admMecanico")?.value || "");
@@ -9947,6 +10687,12 @@ REALIZADO POR: ${autor}`,
 
       if (!veiculo || !placa || !descricao) {
         alert("PREENCHA VEÍCULO, PLACA E DESCRIÇÃO.");
+        return;
+      }
+
+      if (!["ATM", "BOLSAO"].includes(origem)) {
+        alert("SELECIONE A ORIGEM DO SERVIÇO.");
+        document.getElementById("admOrigem")?.focus();
         return;
       }
 
@@ -10030,7 +10776,7 @@ REALIZADO POR: ${autor}`,
         await lote.commit();
         window.registrarAtividadeLeCar?.({modulo:"OFICINA",acao:mecanicoAtribuido ? "CADASTROU E ATRIBUIU" : "CADASTROU",profissional:mecanicoAtribuido,usuario:usuarioPainelAtual(),veiculo,placa,statusNovo:mecanicoAtribuido ? "ANDAMENTO" : "AGUARDANDO",detalhe:descricao});
         document.getElementById("formNovoServico").reset();
-        document.getElementById("admOrigem").value = "BOLSÃO";
+        document.getElementById("admOrigem").value = origemPadraoCadastroServico();
         document.getElementById("admPrioridade").value = etiquetaPorNomeLPA("NORMAL").nome;
         document.getElementById("admMecanico").value = "";
         mostrarToast(mecanicoAtribuido
@@ -13614,7 +14360,7 @@ REALIZADO POR: ${autor}`,
       document.getElementById("editVeiculo").value = normalizar(item.veiculo || "");
       document.getElementById("editPlaca").value = normalizar(item.placa || "").replace(/[^A-Z0-9]/g, "");
       document.getElementById("editDescricao").value = normalizar(item.descricao || "");
-      document.getElementById("editOrigem").value = ["ATM","BOLSAO"].includes(normalizar(item.origem)) ? (normalizar(item.origem) === "BOLSAO" ? "BOLSÃO" : "ATM") : "-";
+      document.getElementById("editOrigem").value = ["ATM","BOLSAO"].includes(normalizar(item.origem)) ? normalizar(item.origem) : "BOLSAO";
       selectStatus.value = "VEÍCULO FINALIZADO";
       selectPrioridade.value = prioridade;
       selectMecanico.value = mecanico;
@@ -13644,10 +14390,15 @@ REALIZADO POR: ${autor}`,
       const veiculo = normalizar(document.getElementById("editVeiculo")?.value || "");
       const placa = normalizar(document.getElementById("editPlaca")?.value || "").replace(/[^A-Z0-9]/g, "");
       const descricao = normalizar(document.getElementById("editDescricao")?.value || "");
-      const origem = normalizar(document.getElementById("editOrigem")?.value || "-");
+      const origem = normalizar(document.getElementById("editOrigem")?.value || "");
       const etiqueta = etiquetaPorNomeLPA(document.getElementById("editPrioridade")?.value || prioridadeServico(item));
       const mecanico = mecanicoCanonico(document.getElementById("editMecanico")?.value || nomeMecanicoCard(item, ""));
       if (!veiculo || !placa || !descricao) return alert("PREENCHA VEÍCULO, PLACA E DESCRIÇÃO.");
+      if (!["ATM", "BOLSAO"].includes(origem)) {
+        alert("SELECIONE A ORIGEM DO SERVIÇO.");
+        document.getElementById("editOrigem")?.focus();
+        return;
+      }
 
       salvandoEdicaoServico = true;
       const botao = document.getElementById("btnSalvarEdicaoServico");
@@ -13657,7 +14408,7 @@ REALIZADO POR: ${autor}`,
           veiculo,
           placa,
           descricao,
-          origem:origem === "BOLSAO" ? "BOLSÃO" : origem,
+          origem,
           prioridade:etiqueta.nome,
           etiqueta:etiqueta.nome,
           etiquetaId:etiqueta.id,
@@ -13687,25 +14438,46 @@ REALIZADO POR: ${autor}`,
       const tipo = normalizar(item.tipoLavagem || item.tipo_lavagem || "NÃO INFORMADO");
       const cera = Boolean(item.comCera ?? item.com_cera);
       const etiqueta = etiquetaLavaDoServico(item);
+      const origem = origemLavaRapido(item);
       const statusClasse = status === "FINALIZADO" ? "finalizado" : status === "ANDAMENTO" ? "assumido" : status === "EXCLUIDO" ? "excluido" : "disponivel";
       const statusTexto = status === "FINALIZADO" ? "FINALIZADO" : status === "ANDAMENTO" ? "EM LAVAGEM" : status === "EXCLUIDO" ? "EXCLUÍDO" : "DISPONÍVEL";
+      const profissional = lavador || "NÃO ASSUMIDO";
+      const descricaoCard = `LAVAGEM ${tipo} • ${cera ? "COM CERA" : "SEM CERA"}`;
       const acoes = status === "EXCLUIDO"
         ? `${botaoRestaurarPadrao(`restaurarServicoLavaRapido('${escapar(item.id)}')`)}${botaoExcluirPadrao(`apagarServicoLavaRapido('${escapar(item.id)}')`, "APAGAR DEFINITIVAMENTE")}`
-        : `${botaoEditarPadrao(`abrirEdicaoLavaRapidoPadrao('${escapar(item.id)}')`, "EDITAR LAVAGEM")}${botaoExcluirPadrao(`moverServicoLavaRapidoParaLixeira('${escapar(item.id)}')`)}`;
+        : `${botaoEditarPadrao(`abrirEdicaoLavaRapidoPadrao('${escapar(item.id)}')`, "EDITAR SERVIÇO")}${botaoExcluirPadrao(`moverServicoLavaRapidoParaLixeira('${escapar(item.id)}')`)}`;
 
-      return `<article class="service-row lava-card etiqueta-aplicada ${cera ? "com-cera" : ""} ${statusClasse}" style="${estiloEtiquetaLava(item)}">
+      return `<article class="service-row lecar-standard-card lecar-card-lava etiqueta-aplicada ${cera ? "com-cera" : ""} ${statusClasse}" style="${estiloEtiquetaLava(item)}">
         <div class="service-card-head">
-          <span class="service-date">${escapar(dataLavaRapido(item))}</span>
-          <span class="service-label-chip" title="ETIQUETA: ${escapar(etiqueta.nome)}">${escapar(etiqueta.nome)}</span>
+          <span class="service-date">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="2"></rect><path d="M16 3V7M8 3V7M3 10H21"></path></svg>
+            ${escapar(dataLavaRapido(item))}
+          </span>
+          <span class="service-label-chip" title="ETIQUETA: ${escapar(etiqueta.nome)}" aria-label="ETIQUETA: ${escapar(etiqueta.nome)}">${escapar(etiqueta.nome)}</span>
         </div>
-        <div class="service-main"><div class="service-plate">${escapar(item.placa || "SEM PLACA")}</div><div class="service-vehicle">${escapar(item.veiculo || "VEÍCULO NÃO INFORMADO")}</div></div>
-        <div class="lava-card-type">TIPO DE LAVAGEM: ${escapar(tipo)}</div>
-        <div class="lava-card-flags">
-          <span class="lava-flag ${cera ? "wax" : ""}">${cera ? "COM CERA" : "SEM CERA"}</span>
-          ${lavador ? `<span class="lava-flag">LAVADOR: ${escapar(lavador)}</span>` : '<span class="lava-flag">AGUARDANDO LAVADOR</span>'}
-          <span class="lava-flag">OPERAÇÃO: ${escapar(origemLavaRapido(item))}</span>
+
+        <div class="service-main">
+          <div class="service-plate">${escapar(item.placa || "SEM PLACA")}</div>
+          <div class="service-vehicle">${escapar(item.veiculo || "VEÍCULO NÃO INFORMADO")}</div>
         </div>
-        <div class="service-footer"><span class="status-badge ${statusClasse}">${statusTexto}</span><div class="service-actions">${acoes}</div></div>
+
+        <div class="service-desc" title="${escaparAtributo(descricaoCard)}">${escapar(descricaoCard)}</div>
+
+        <div class="service-info">
+          <div class="service-info-line service-origin-priority">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 21V4"></path><path d="M5 5H17L15 9L17 13H5"></path></svg>
+            <span><span class="service-info-label">ORIGEM: </span><strong>${escapar(origem)}</strong></span>
+          </div>
+          <div class="service-info-line service-mechanic" title="${escaparAtributo(profissional)}">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 12A4 4 0 1 0 12 4A4 4 0 0 0 12 12Z"></path><path d="M4 21A8 8 0 0 1 20 21"></path></svg>
+            <span><span class="service-info-label">LAVADOR: </span><strong>${escapar(profissional)}</strong></span>
+          </div>
+        </div>
+
+        <div class="service-footer">
+          <span class="status-badge ${statusClasse}" title="${statusTexto}">${statusTexto}</span>
+          <div class="service-actions">${acoes}</div>
+        </div>
       </article>`;
     };
 
@@ -13717,27 +14489,54 @@ REALIZADO POR: ${autor}`,
       const farol = Boolean(item.farol ?? item.polirFarol);
       const retorno = Boolean(item.retorno);
       const motivo = normalizar(item.motivoRetorno || item.motivo_retorno || "");
+      const origem = origemPolimento(item);
+      const cor = normalizar(item.cor || "NÃO INFORMADA");
       const statusClasse = status === "FINALIZADO" ? "finalizado" : status === "ANDAMENTO" ? "assumido" : status === "EXCLUIDO" ? "excluido" : "disponivel";
       const statusTexto = status === "FINALIZADO" ? "FINALIZADO" : status === "ANDAMENTO" ? "EM POLIMENTO" : status === "EXCLUIDO" ? "EXCLUÍDO" : "DISPONÍVEL";
-      let statusHtml = `<span class="status-badge ${statusClasse}">${statusTexto}</span>`;
-      if (status === "AGUARDANDO") statusHtml = `<button type="button" class="status-badge disponivel status-workflow-btn" title="ATRIBUIR PARA LEANDRO" onclick="assumirServicoPolimentoTeste('${escapar(item.id)}')">DISPONÍVEL</button>`;
-      if (status === "ANDAMENTO") statusHtml = `<button type="button" class="status-badge assumido status-workflow-btn" title="FINALIZAR POLIMENTO" onclick="finalizarServicoPolimentoTeste('${escapar(item.id)}')">EM POLIMENTO</button>`;
+      const profissional = polidor || "NÃO ASSUMIDO";
+      const detalhes = [`COR: ${cor}`, farol ? "POLIR FAROL" : "SEM FAROL", retorno ? "RETORNO" : "PRIMEIRA PASSAGEM"];
+      if (retorno && motivo) detalhes.push(`MOTIVO: ${motivo}`);
+      const descricaoCard = detalhes.join(" • ");
+
+      let statusHtml = `<span class="status-badge ${statusClasse}" title="${statusTexto}">${statusTexto}</span>`;
+      if (status === "AGUARDANDO") statusHtml = `<button type="button" class="status-badge disponivel status-workflow-btn" title="ATRIBUIR SERVIÇO" aria-label="ATRIBUIR SERVIÇO" onclick="assumirServicoPolimentoTeste('${escapar(item.id)}')">DISPONÍVEL</button>`;
+      if (status === "ANDAMENTO") statusHtml = `<button type="button" class="status-badge assumido status-workflow-btn" title="FINALIZAR SERVIÇO" aria-label="FINALIZAR SERVIÇO" onclick="finalizarServicoPolimentoTeste('${escapar(item.id)}')">EM POLIMENTO</button>`;
+
       const acoes = status === "EXCLUIDO"
         ? `${botaoRestaurarPadrao(`restaurarServicoPolimento('${escapar(item.id)}')`)}${botaoExcluirPadrao(`apagarServicoPolimento('${escapar(item.id)}')`, "APAGAR DEFINITIVAMENTE")}`
-        : `${botaoEditarPadrao(`abrirEdicaoPolimentoPadrao('${escapar(item.id)}')`, "EDITAR POLIMENTO")}${botaoExcluirPadrao(`moverServicoPolimentoParaLixeira('${escapar(item.id)}')`)}`;
+        : `${botaoEditarPadrao(`abrirEdicaoPolimentoPadrao('${escapar(item.id)}')`, "EDITAR SERVIÇO")}${botaoExcluirPadrao(`moverServicoPolimentoParaLixeira('${escapar(item.id)}')`)}`;
 
-      return `<article class="service-row lava-card etiqueta-aplicada ${statusClasse}" style="${estiloEtiquetaPolimento(item)}">
-        <div class="service-card-head"><span class="service-date">${escapar(dataPolimento(item))}</span><span class="service-label-chip" title="ETIQUETA: ${escapar(etiqueta.nome)}">${escapar(etiqueta.nome)}</span></div>
-        <div class="service-main"><div class="service-plate">${escapar(item.placa || "SEM PLACA")}</div><div class="service-vehicle">${escapar(item.veiculo || "VEÍCULO NÃO INFORMADO")}</div></div>
-        <div class="lava-card-type">COR: ${escapar(item.cor || "NÃO INFORMADA")}</div>
-        <div class="lava-card-flags">
-          <span class="lava-flag ${farol ? "wax" : ""}">${farol ? "POLIR FAROL" : "SEM FAROL"}</span>
-          <span class="lava-flag ${retorno ? "wax" : ""}">${retorno ? "RETORNO" : "PRIMEIRA PASSAGEM"}</span>
-          ${polidor ? `<span class="lava-flag">POLIDOR: ${escapar(polidor)}</span>` : '<span class="lava-flag">AGUARDANDO POLIDOR</span>'}
-          <span class="lava-flag">OPERAÇÃO: ${escapar(origemPolimento(item))}</span>
-          ${retorno && motivo ? `<span class="lava-flag" title="${escaparAtributo(motivo)}">MOTIVO: ${escapar(motivo)}</span>` : ""}
+      return `<article class="service-row lecar-standard-card lecar-card-polimento etiqueta-aplicada ${statusClasse}" style="${estiloEtiquetaPolimento(item)}">
+        <div class="service-card-head">
+          <span class="service-date">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="2"></rect><path d="M16 3V7M8 3V7M3 10H21"></path></svg>
+            ${escapar(dataPolimento(item))}
+          </span>
+          <span class="service-label-chip" title="ETIQUETA: ${escapar(etiqueta.nome)}" aria-label="ETIQUETA: ${escapar(etiqueta.nome)}">${escapar(etiqueta.nome)}</span>
         </div>
-        <div class="service-footer">${statusHtml}<div class="service-actions">${acoes}</div></div>
+
+        <div class="service-main">
+          <div class="service-plate">${escapar(item.placa || "SEM PLACA")}</div>
+          <div class="service-vehicle">${escapar(item.veiculo || "VEÍCULO NÃO INFORMADO")}</div>
+        </div>
+
+        <div class="service-desc" title="${escaparAtributo(descricaoCard)}">${escapar(descricaoCard)}</div>
+
+        <div class="service-info">
+          <div class="service-info-line service-origin-priority">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 21V4"></path><path d="M5 5H17L15 9L17 13H5"></path></svg>
+            <span><span class="service-info-label">ORIGEM: </span><strong>${escapar(origem)}</strong></span>
+          </div>
+          <div class="service-info-line service-mechanic" title="${escaparAtributo(profissional)}">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 12A4 4 0 1 0 12 4A4 4 0 0 0 12 12Z"></path><path d="M4 21A8 8 0 0 1 20 21"></path></svg>
+            <span><span class="service-info-label">POLIDOR: </span><strong>${escapar(profissional)}</strong></span>
+          </div>
+        </div>
+
+        <div class="service-footer">
+          ${statusHtml}
+          <div class="service-actions">${acoes}</div>
+        </div>
       </article>`;
     };
 
@@ -14175,21 +14974,47 @@ REALIZADO POR: ${autor}`,
         const instalador = normalizar(item.instalador);
         const observacoes = normalizar(item.observacoes);
         const excluido = Boolean(item.excluido);
+        const origem = operacaoAcessorios(item);
+        const profissional = instalador || "NÃO ASSUMIDO";
+        const descricao = normalizar(item.descricao) || "SEM DESCRIÇÃO";
+        const descricaoCard = observacoes ? `${descricao} • OBS: ${observacoes}` : descricao;
         const statusClasse = excluido ? "excluido" : status === "FINALIZADO" ? "finalizado" : status === "ANDAMENTO" ? "assumido" : "disponivel";
+        const statusTexto = excluido ? "EXCLUÍDO" : status === "FINALIZADO" ? "FINALIZADO" : status === "ANDAMENTO" ? "EM INSTALAÇÃO" : "DISPONÍVEL";
         const acoes = excluido
           ? `${botaoRestaurarPadrao(`restaurarServicoAcessorios('${escaparAtributo(item.id)}')`)}${botaoExcluirPadrao(`apagarServicoAcessorios('${escaparAtributo(item.id)}')`, "APAGAR DEFINITIVAMENTE")}`
-          : `${botaoEditarPadrao(`abrirEdicaoAcessorios('${escaparAtributo(item.id)}')`, "EDITAR ACESSÓRIO")}${botaoExcluirPadrao(`moverServicoAcessoriosParaLixeira('${escaparAtributo(item.id)}')`)}`;
+          : `${botaoEditarPadrao(`abrirEdicaoAcessorios('${escaparAtributo(item.id)}')`, "EDITAR SERVIÇO")}${botaoExcluirPadrao(`moverServicoAcessoriosParaLixeira('${escaparAtributo(item.id)}')`)}`;
 
-        return `<article class="service-row lava-card etiqueta-aplicada ${statusClasse}" style="${estiloEtiquetaAcessorios(item)}">
-          <div class="service-card-head"><span class="service-date">${escapar(formatarDataAcessorios(item))}</span></div>
-          <div class="service-main"><div class="service-plate">${escapar(normalizar(item.placa) || "SEM PLACA")}</div><div class="service-vehicle">${escapar(normalizar(item.veiculo) || "VEÍCULO NÃO INFORMADO")}</div></div>
-          <div class="lava-card-type acessorios-card-description">ACESSÓRIO / INSTALAÇÃO: ${escapar(normalizar(item.descricao) || "NÃO INFORMADO")}</div>
-          <div class="lava-card-flags acessorios-card-flags">
-            <span class="lava-flag">OPERAÇÃO: ${escapar(operacaoAcessorios(item))}</span>
-            ${instalador ? `<span class="lava-flag">INSTALADOR: ${escapar(instalador)}</span>` : '<span class="lava-flag">AGUARDANDO INSTALADOR</span>'}
-            ${observacoes ? `<span class="lava-flag" title="${escaparAtributo(observacoes)}">OBS: ${escapar(observacoes)}</span>` : ""}
+        return `<article class="service-row lecar-standard-card lecar-card-acessorios etiqueta-aplicada ${statusClasse}" style="${estiloEtiquetaAcessorios(item)}">
+          <div class="service-card-head">
+            <span class="service-date">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="2"></rect><path d="M16 3V7M8 3V7M3 10H21"></path></svg>
+              ${escapar(formatarDataAcessorios(item))}
+            </span>
+            <span class="service-label-chip" title="ETIQUETA: ${escapar(etiqueta.nome)}" aria-label="ETIQUETA: ${escapar(etiqueta.nome)}">${escapar(etiqueta.nome)}</span>
           </div>
-          <div class="service-footer"><span class="status-badge ${statusClasse}">${escapar(rotuloStatusAcessorios(status))}</span><div class="service-actions">${acoes}</div></div>
+
+          <div class="service-main">
+            <div class="service-plate">${escapar(normalizar(item.placa) || "SEM PLACA")}</div>
+            <div class="service-vehicle">${escapar(normalizar(item.veiculo) || "VEÍCULO NÃO INFORMADO")}</div>
+          </div>
+
+          <div class="service-desc" title="${escaparAtributo(descricaoCard)}">${escapar(descricaoCard)}</div>
+
+          <div class="service-info">
+            <div class="service-info-line service-origin-priority">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 21V4"></path><path d="M5 5H17L15 9L17 13H5"></path></svg>
+              <span><span class="service-info-label">ORIGEM: </span><strong>${escapar(origem)}</strong></span>
+            </div>
+            <div class="service-info-line service-mechanic" title="${escaparAtributo(profissional)}">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 12A4 4 0 1 0 12 4A4 4 0 0 0 12 12Z"></path><path d="M4 21A8 8 0 0 1 20 21"></path></svg>
+              <span><span class="service-info-label">INSTALADOR: </span><strong>${escapar(profissional)}</strong></span>
+            </div>
+          </div>
+
+          <div class="service-footer">
+            <span class="status-badge ${statusClasse}" title="${statusTexto}">${statusTexto}</span>
+            <div class="service-actions">${acoes}</div>
+          </div>
         </article>`;
       }
 
@@ -14635,7 +15460,7 @@ REALIZADO POR: ${autor}`,
           if (erroEl) erroEl.style.display = "block";
           if (entrarAdminAntesUsuarios && !usuario) entrarAdminAntesUsuarios(event);
         } finally {
-          if (botao) { botao.disabled = false; botao.textContent = "ACESSAR PAINEL"; }
+          if (botao) { botao.disabled = false; botao.textContent = "ENTRAR NO SISTEMA"; }
         }
       };
 
@@ -15890,7 +16715,7 @@ REALIZADO POR: ${autor}`,
       }
 
       function mostrarLoginAuth(mensagem = "") {
-        document.getElementById("loginPage").style.display = "flex";
+        document.getElementById("loginPage").style.display = "grid";
         document.getElementById("app").style.display = "none";
         const erro = document.getElementById("loginErro");
         if (erro) {
@@ -16068,7 +16893,7 @@ REALIZADO POR: ${autor}`,
           }
         } finally {
           processandoLoginAuth = false;
-          if (botao) { botao.disabled = false; botao.textContent = "ACESSAR PAINEL"; }
+          if (botao) { botao.disabled = false; botao.textContent = "ENTRAR NO SISTEMA"; }
         }
       }
 
@@ -17150,265 +17975,366 @@ REALIZADO POR: ${autor}`,
     })();
   </script>
 
-
-  <style id="lpa-v8-5-modulo-check-estrutura-style">
-    body.modulo-check-ativo .lpa-taskbar-item,
-    body.modulo-check-ativo .lpa-taskbar-plus {
-      cursor: default !important;
-      opacity: .58;
-      filter: saturate(.72);
+  <style id="lecar-geometria-estavel-cards-v9">
+    /*
+      GEOMETRIA ESTÁVEL V9 — APROVEITAMENTO TOTAL DO ESPAÇO
+      - Oficina continua como padrão visual mestre.
+      - Todos os cards possuem exatamente a mesma altura.
+      - A descrição recebe quatro linhas completas.
+      - Origem e profissional ficam posicionados 21px mais abaixo.
+      - Nenhuma área pode deslocar ou invadir outra.
+    */
+    :root {
+      --lecar-card-height-stable: 320px;
+      --lecar-card-side-stable: 14px;
+      --lecar-action-width-stable: 38px;
+      --lecar-action-height-stable: 34px;
     }
 
-    body.modulo-check-ativo .lpa-taskbar-item:hover,
-    body.modulo-check-ativo .lpa-taskbar-plus:hover {
-      transform: none !important;
+    .services-list.view-cards {
+      display: grid !important;
+      grid-template-columns: repeat(auto-fill, minmax(215px, 230px)) !important;
+      grid-auto-rows: var(--lecar-card-height-stable) !important;
+      gap: 10px !important;
+      align-items: stretch !important;
+      justify-content: start !important;
     }
 
-    .check-module-panel .services-panel-head {
-      min-height: 48px;
+    .services-list.view-cards .service-row,
+    .services-list.view-cards .service-row.lecar-standard-card,
+    .services-list.view-cards .service-row.lava-card,
+    .services-list.view-cards .service-row.acessorios-card {
+      position: relative !important;
+      width: 100% !important;
+      height: var(--lecar-card-height-stable) !important;
+      min-height: var(--lecar-card-height-stable) !important;
+      max-height: var(--lecar-card-height-stable) !important;
+      aspect-ratio: auto !important;
+      padding: 0 !important;
+      display: block !important;
+      overflow: hidden !important;
+      box-sizing: border-box !important;
     }
 
-    .check-module-placeholder {
-      min-height: 320px;
-      display: grid;
-      place-items: center;
-      padding: 28px 18px;
-      text-align: center;
+    .services-list.view-cards .service-row > .service-card-head,
+    .services-list.view-cards .service-row > .service-main,
+    .services-list.view-cards .service-row > .service-desc,
+    .services-list.view-cards .service-row > .service-info,
+    .services-list.view-cards .service-row > .service-footer {
+      position: absolute !important;
+      left: var(--lecar-card-side-stable) !important;
+      right: var(--lecar-card-side-stable) !important;
+      width: auto !important;
+      min-width: 0 !important;
+      margin: 0 !important;
+      box-sizing: border-box !important;
     }
 
-    .check-module-placeholder-card {
-      width: min(520px, 100%);
-      padding: 28px 22px;
-      border: 1px dashed #93c5fd;
-      border-radius: 16px;
-      background: linear-gradient(180deg, #f8fbff 0%, #eff6ff 100%);
-      color: #1e3a8a;
-      box-shadow: 0 10px 28px rgba(37, 99, 235, .07);
+    /* 1. Data e etiqueta. */
+    .services-list.view-cards .service-row > .service-card-head {
+      top: 14px !important;
+      height: 26px !important;
+      min-height: 26px !important;
+      max-height: 26px !important;
+      display: flex !important;
+      align-items: center !important;
+      justify-content: space-between !important;
+      gap: 8px !important;
+      overflow: hidden !important;
     }
 
-    .check-module-placeholder-card strong {
-      display: block;
-      margin-bottom: 7px;
-      font-size: .88rem;
-      font-weight: 950;
-      letter-spacing: .05em;
-      text-transform: uppercase;
+    .services-list.view-cards .service-date {
+      min-width: 0 !important;
+      max-width: calc(100% - 94px) !important;
+      height: 24px !important;
+      display: inline-flex !important;
+      align-items: center !important;
+      gap: 6px !important;
+      overflow: hidden !important;
+      line-height: 24px !important;
+      white-space: nowrap !important;
+      text-overflow: ellipsis !important;
     }
 
-    .check-module-placeholder-card span {
-      display: block;
-      color: #64748b;
-      font-size: .66rem;
-      font-weight: 850;
-      letter-spacing: .035em;
-      line-height: 1.5;
-      text-transform: uppercase;
+    .services-list.view-cards .service-label-chip {
+      max-width: 102px !important;
+      height: 26px !important;
+      min-height: 26px !important;
+      max-height: 26px !important;
+      padding: 0 10px !important;
+      display: inline-flex !important;
+      align-items: center !important;
+      justify-content: center !important;
+      overflow: hidden !important;
+      line-height: 1 !important;
+      white-space: nowrap !important;
+      text-overflow: ellipsis !important;
+      box-sizing: border-box !important;
+    }
+
+    /* 2. Placa e veículo. */
+    .services-list.view-cards .service-row > .service-main {
+      top: 54px !important;
+      height: 49px !important;
+      min-height: 49px !important;
+      max-height: 49px !important;
+      display: block !important;
+      overflow: hidden !important;
+    }
+
+    .services-list.view-cards .service-plate {
+      height: 24px !important;
+      min-height: 24px !important;
+      max-height: 24px !important;
+      margin: 0 !important;
+      overflow: hidden !important;
+      line-height: 24px !important;
+      white-space: nowrap !important;
+      text-overflow: ellipsis !important;
+    }
+
+    .services-list.view-cards .service-vehicle {
+      height: 17px !important;
+      min-height: 17px !important;
+      max-height: 17px !important;
+      margin: 5px 0 0 !important;
+      overflow: hidden !important;
+      line-height: 17px !important;
+      white-space: nowrap !important;
+      text-overflow: ellipsis !important;
+    }
+
+    /* 3. Descrição: área física de quatro linhas, sem depender do line-clamp. */
+    .services-list.view-cards .service-row > .service-desc,
+    .services-list.view-cards .service-row > .acessorios-card-description {
+      top: 116px !important;
+      height: 68px !important;
+      min-height: 68px !important;
+      max-height: 68px !important;
+      padding: 0 !important;
+      display: block !important;
+      overflow: hidden !important;
+      clip-path: inset(0) !important;
+      contain: paint !important;
+      font-size: .64rem !important;
+      line-height: 17px !important;
+      white-space: normal !important;
+      overflow-wrap: anywhere !important;
+      word-break: break-word !important;
+      text-overflow: clip !important;
+      -webkit-line-clamp: unset !important;
+      line-clamp: unset !important;
+      box-sizing: border-box !important;
+    }
+
+    /* 4. Origem e profissional. Valores permanecem na mesma linha do rótulo. */
+    .services-list.view-cards .service-row > .service-info {
+      top: 197px !important;
+      height: 55px !important;
+      min-height: 55px !important;
+      max-height: 55px !important;
+      padding: 0 !important;
+      display: grid !important;
+      grid-template-columns: minmax(0, 1fr) !important;
+      grid-template-rows: repeat(3, 17px) !important;
+      row-gap: 2px !important;
+      align-content: start !important;
+      overflow: hidden !important;
+      clip-path: inset(0) !important;
+      contain: paint !important;
+      visibility: visible !important;
+      opacity: 1 !important;
+    }
+
+    .services-list.view-cards .service-info-line,
+    .services-list.view-cards .service-info-line.service-mechanic {
+      min-width: 0 !important;
+      width: 100% !important;
+      height: 17px !important;
+      min-height: 17px !important;
+      max-height: 17px !important;
+      margin: 0 !important;
+      padding: 0 !important;
+      display: flex !important;
+      align-items: center !important;
+      gap: 6px !important;
+      overflow: hidden !important;
+      color: #475569 !important;
+      font-size: .60rem !important;
+      font-weight: 750 !important;
+      line-height: 17px !important;
+      visibility: visible !important;
+      opacity: 1 !important;
+      box-sizing: border-box !important;
+    }
+
+    .services-list.view-cards .service-info-line svg {
+      width: 15px !important;
+      height: 15px !important;
+      min-width: 15px !important;
+      max-width: 15px !important;
+      flex: 0 0 15px !important;
+      display: block !important;
+      visibility: visible !important;
+      opacity: 1 !important;
+    }
+
+    /* O contêiner textual é uma linha flexível; o rótulo não encolhe e o valor recebe reticências. */
+    .services-list.view-cards .service-info-line > span,
+    .services-list.view-cards .service-info-line.service-mechanic > span {
+      min-width: 0 !important;
+      width: auto !important;
+      max-width: calc(100% - 21px) !important;
+      height: 17px !important;
+      min-height: 17px !important;
+      max-height: 17px !important;
+      display: flex !important;
+      align-items: center !important;
+      gap: 3px !important;
+      flex: 1 1 auto !important;
+      overflow: hidden !important;
+      color: #475569 !important;
+      line-height: 17px !important;
+      white-space: nowrap !important;
+      text-overflow: clip !important;
+      visibility: visible !important;
+      opacity: 1 !important;
+    }
+
+    .services-list.view-cards .service-info-line .service-info-label {
+      width: auto !important;
+      min-width: max-content !important;
+      max-width: none !important;
+      height: auto !important;
+      min-height: 0 !important;
+      max-height: none !important;
+      display: inline-block !important;
+      flex: 0 0 auto !important;
+      overflow: visible !important;
+      color: #475569 !important;
+      line-height: 17px !important;
+      white-space: nowrap !important;
+      visibility: visible !important;
+      opacity: 1 !important;
+    }
+
+    .services-list.view-cards .service-info-line strong,
+    .services-list.view-cards .service-info-line.service-mechanic strong {
+      min-width: 0 !important;
+      width: auto !important;
+      max-width: 100% !important;
+      height: auto !important;
+      min-height: 0 !important;
+      max-height: none !important;
+      margin: 0 !important;
+      padding: 0 !important;
+      display: block !important;
+      flex: 1 1 auto !important;
+      overflow: hidden !important;
+      color: #1d4ed8 !important;
+      font-weight: 950 !important;
+      line-height: 17px !important;
+      white-space: nowrap !important;
+      text-overflow: ellipsis !important;
+      overflow-wrap: normal !important;
+      word-break: normal !important;
+      visibility: visible !important;
+      opacity: 1 !important;
+    }
+
+    /* 5. Rodapé fixo e isolado. */
+    .services-list.view-cards .service-row > .service-footer {
+      bottom: 14px !important;
+      height: 45px !important;
+      min-height: 45px !important;
+      max-height: 45px !important;
+      padding: 9px 0 0 !important;
+      display: flex !important;
+      align-items: center !important;
+      justify-content: space-between !important;
+      gap: 8px !important;
+      overflow: hidden !important;
+      border-top: 1px solid #e2e8f0 !important;
+    }
+
+    .services-list.view-cards .service-footer > .lava-status,
+    .services-list.view-cards .service-footer > .status-badge,
+    .services-list.view-cards .service-footer > button.status-badge {
+      min-width: 0 !important;
+      max-width: none !important;
+      width: auto !important;
+      height: var(--lecar-action-height-stable) !important;
+      min-height: var(--lecar-action-height-stable) !important;
+      max-height: var(--lecar-action-height-stable) !important;
+      padding: 0 10px !important;
+      display: inline-flex !important;
+      align-items: center !important;
+      justify-content: center !important;
+      flex: 1 1 auto !important;
+      overflow: hidden !important;
+      line-height: 1 !important;
+      white-space: nowrap !important;
+      text-overflow: ellipsis !important;
+      box-sizing: border-box !important;
+    }
+
+    .services-list.view-cards .service-footer .service-actions {
+      height: var(--lecar-action-height-stable) !important;
+      min-height: var(--lecar-action-height-stable) !important;
+      max-height: var(--lecar-action-height-stable) !important;
+      margin: 0 !important;
+      padding: 0 !important;
+      display: flex !important;
+      align-items: center !important;
+      justify-content: flex-end !important;
+      gap: 6px !important;
+      flex: 0 0 auto !important;
+      overflow: hidden !important;
+    }
+
+    .services-list.view-cards .service-footer .card-action-icon {
+      width: var(--lecar-action-width-stable) !important;
+      min-width: var(--lecar-action-width-stable) !important;
+      max-width: var(--lecar-action-width-stable) !important;
+      height: var(--lecar-action-height-stable) !important;
+      min-height: var(--lecar-action-height-stable) !important;
+      max-height: var(--lecar-action-height-stable) !important;
+      padding: 0 !important;
+      display: inline-flex !important;
+      align-items: center !important;
+      justify-content: center !important;
+      flex: 0 0 var(--lecar-action-width-stable) !important;
+      overflow: hidden !important;
+      border-radius: 10px !important;
+      box-sizing: border-box !important;
+    }
+
+    .services-list.view-cards .service-footer .card-action-icon svg {
+      width: 15px !important;
+      height: 15px !important;
+      min-width: 15px !important;
+      min-height: 15px !important;
+      max-width: 15px !important;
+      max-height: 15px !important;
+      flex: 0 0 15px !important;
+    }
+
+    @media (max-width: 600px) {
+      .services-list.view-cards {
+        grid-template-columns: minmax(0, 1fr) !important;
+        grid-auto-rows: var(--lecar-card-height-stable) !important;
+      }
+
+      .services-list.view-cards .service-row,
+      .services-list.view-cards .service-row.lecar-standard-card,
+      .services-list.view-cards .service-row.lava-card,
+      .services-list.view-cards .service-row.acessorios-card {
+        height: var(--lecar-card-height-stable) !important;
+        min-height: var(--lecar-card-height-stable) !important;
+        max-height: var(--lecar-card-height-stable) !important;
+      }
     }
   </style>
-
-  <script id="lpa-v8-5-modulo-check-estrutura-script">
-    (() => {
-      "use strict";
-
-      function criarEstruturaModuloCheck() {
-        if (!document.getElementById("mainCheck")) {
-          const mainOficina = document.getElementById("mainOficina");
-          mainOficina?.insertAdjacentHTML("beforebegin", `
-            <main id="mainCheck" class="main modulo-main" hidden>
-              <div class="layout">
-                <section class="panel list-panel check-module-panel">
-                  <div class="panel-head services-panel-head">
-                    <h2>CHECK</h2>
-                    <div class="services-view-summary"><span>SOLICITAÇÕES</span><strong>0</strong></div>
-                  </div>
-                  <div class="panel-body services-panel-body check-module-placeholder">
-                    <div class="check-module-placeholder-card">
-                      <strong>MÓDULO EM DESENVOLVIMENTO</strong>
-                      <span>LEHUB — INTELIGÊNCIA EM DADOS E FLUXOS OPERACIONAIS</span>
-                    </div>
-                  </div>
-                </section>
-              </div>
-            </main>`);
-        }
-
-        const abaCheck = document.getElementById("tabModuloCheck");
-        if (abaCheck) {
-          abaCheck.classList.remove("module-placeholder");
-          abaCheck.removeAttribute("aria-disabled");
-          abaCheck.setAttribute("onclick", "selecionarModuloLeCar('CHECK')");
-          abaCheck.title = "Módulo Check";
-        }
-      }
-
-      criarEstruturaModuloCheck();
-
-      const atualizarAbasAnteriorCheck = typeof atualizarAbasModulosLeCar === "function"
-        ? atualizarAbasModulosLeCar
-        : null;
-      atualizarAbasModulosLeCar = function() {
-        atualizarAbasAnteriorCheck?.apply(this, arguments);
-        const abaCheck = document.getElementById("tabModuloCheck");
-        if (!abaCheck) return;
-        abaCheck.classList.toggle("active", moduloAtualLeCar === "CHECK");
-        if (moduloAtualLeCar === "CHECK") abaCheck.setAttribute("aria-current", "page");
-        else abaCheck.removeAttribute("aria-current");
-      };
-
-      const configurarTextosAnteriorCheck = typeof configurarTextosTaskbarModulo === "function"
-        ? configurarTextosTaskbarModulo
-        : null;
-      configurarTextosTaskbarModulo = function() {
-        if (moduloAtualLeCar !== "CHECK") {
-          return configurarTextosAnteriorCheck?.apply(this, arguments);
-        }
-
-        const labelEquipe = document.getElementById("labelNavEquipe");
-        if (labelEquipe) labelEquipe.textContent = "CONSULTOR";
-
-        const titulos = {
-          navAguardando: "Aguardando",
-          navUrgente: "Urgente",
-          navAndamento: "Andamento",
-          navFinalizados: "Finalizados",
-          navMecanicos: "Consultor",
-          navNotificacoes: "Notificações",
-          navEtiquetas: "Etiquetas",
-          navLixeira: "Lixeira"
-        };
-        Object.entries(titulos).forEach(([id, titulo]) => {
-          const botao = document.getElementById(id);
-          if (botao) botao.title = titulo;
-        });
-      };
-
-      function definirTaskbarCheck(inativa) {
-        const botoes = document.querySelectorAll(".lpa-taskbar button");
-        botoes.forEach(botao => {
-          botao.disabled = inativa;
-          botao.setAttribute("aria-disabled", String(inativa));
-          if (inativa) botao.classList.remove("active");
-        });
-
-        if (inativa) {
-          ["countAguardando", "countUrgente", "countAndamento", "countFinalizados", "countLixeira"]
-            .forEach(id => {
-              const contador = document.getElementById(id);
-              if (contador) contador.textContent = "0";
-            });
-        }
-      }
-
-      const selecionarModuloAnteriorCheck = typeof selecionarModuloLeCar === "function"
-        ? selecionarModuloLeCar
-        : null;
-      selecionarModuloLeCar = function(modulo) {
-        const destino = typeof normalizar === "function"
-          ? normalizar(modulo)
-          : String(modulo || "").trim().toUpperCase();
-        const mainCheck = document.getElementById("mainCheck");
-
-        if (destino !== "CHECK") {
-          if (mainCheck) mainCheck.hidden = true;
-          document.body.classList.remove("modulo-check-ativo");
-          definirTaskbarCheck(false);
-          const retorno = selecionarModuloAnteriorCheck?.apply(this, arguments);
-          configurarTextosTaskbarModulo();
-          atualizarAbasModulosLeCar();
-          return retorno;
-        }
-
-        moduloAtualLeCar = "CHECK";
-        ["mainOficina", "mainAcessorios", "mainLavaRapido", "mainPolimento"].forEach(id => {
-          const main = document.getElementById(id);
-          if (main) main.hidden = true;
-        });
-        if (mainCheck) mainCheck.hidden = false;
-
-        document.body.classList.remove("modulo-acessorios-ativo");
-        document.body.classList.add("modulo-check-ativo");
-
-        const campoBusca = document.getElementById("buscaAdmin");
-        if (campoBusca) campoBusca.value = "";
-        if (typeof fecharResultadosBuscaGlobal === "function") fecharResultadosBuscaGlobal();
-
-        configurarTextosTaskbarModulo();
-        definirTaskbarCheck(true);
-        atualizarAbasModulosLeCar();
-        if (typeof atualizarEstadoBuscaModulo === "function") atualizarEstadoBuscaModulo();
-      };
-
-      const selecionarVisaoAnteriorCheck = typeof selecionarVisaoModulo === "function"
-        ? selecionarVisaoModulo
-        : null;
-      selecionarVisaoModulo = function() {
-        if (moduloAtualLeCar === "CHECK") return;
-        return selecionarVisaoAnteriorCheck?.apply(this, arguments);
-      };
-
-      const abrirCadastroAnteriorCheck = typeof abrirCadastroModulo === "function"
-        ? abrirCadastroModulo
-        : null;
-      abrirCadastroModulo = function() {
-        if (moduloAtualLeCar === "CHECK") return;
-        return abrirCadastroAnteriorCheck?.apply(this, arguments);
-      };
-
-      const abrirNotificacoesAnteriorCheck = typeof abrirNotificacoesModulo === "function"
-        ? abrirNotificacoesModulo
-        : null;
-      abrirNotificacoesModulo = function() {
-        if (moduloAtualLeCar === "CHECK") return;
-        return abrirNotificacoesAnteriorCheck?.apply(this, arguments);
-      };
-
-      const abrirEtiquetasAnteriorCheck = typeof abrirEtiquetasModulo === "function"
-        ? abrirEtiquetasModulo
-        : null;
-      abrirEtiquetasModulo = function() {
-        if (moduloAtualLeCar === "CHECK") return;
-        return abrirEtiquetasAnteriorCheck?.apply(this, arguments);
-      };
-
-      const buscaAnteriorCheck = typeof aoDigitarBuscaModulo === "function"
-        ? aoDigitarBuscaModulo
-        : null;
-      aoDigitarBuscaModulo = function() {
-        if (moduloAtualLeCar === "CHECK") {
-          if (typeof fecharResultadosBuscaGlobal === "function") fecharResultadosBuscaGlobal();
-          return;
-        }
-        return buscaAnteriorCheck?.apply(this, arguments);
-      };
-
-      const teclaAnteriorCheck = typeof aoTeclarBuscaModulo === "function"
-        ? aoTeclarBuscaModulo
-        : null;
-      aoTeclarBuscaModulo = function(event) {
-        if (moduloAtualLeCar === "CHECK") {
-          if (event?.key === "Escape") limparBuscaModulo();
-          return;
-        }
-        return teclaAnteriorCheck?.apply(this, arguments);
-      };
-
-      const limparAnteriorCheck = typeof limparBuscaModulo === "function"
-        ? limparBuscaModulo
-        : null;
-      limparBuscaModulo = function() {
-        if (moduloAtualLeCar === "CHECK") {
-          const campo = document.getElementById("buscaAdmin");
-          if (campo) campo.value = "";
-          if (typeof fecharResultadosBuscaGlobal === "function") fecharResultadosBuscaGlobal();
-          if (typeof atualizarEstadoBuscaModulo === "function") atualizarEstadoBuscaModulo();
-          return;
-        }
-        return limparAnteriorCheck?.apply(this, arguments);
-      };
-
-      atualizarAbasModulosLeCar();
-    })();
-  </script>
 
 </body>
 </html>
