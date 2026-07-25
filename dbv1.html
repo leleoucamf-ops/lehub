@@ -1,0 +1,1920 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="color-scheme" content="light" />
+  <title>LECAR — DASHBOARD V1</title>
+
+
+  <style>
+      :root {
+        --blue-950: #172554;
+        --blue-900: #1e3a8a;
+        --blue-800: #1e40af;
+        --blue-700: #1d4ed8;
+        --blue-600: #2563eb;
+        --blue-500: #3b82f6;
+        --blue-100: #dbeafe;
+        --blue-50: #eff6ff;
+        --bg: #f2f4f7;
+        --surface: #ffffff;
+        --surface-soft: #f8fafc;
+        --surface-muted: #f3f5f8;
+        --text: #111827;
+        --muted: #64748b;
+        --border: #d9e0e8;
+        --border-strong: #cbd5e1;
+        --green: #2f855a;
+        --green-soft: #edf7f1;
+        --amber: #b7791f;
+        --amber-soft: #fff8e8;
+        --red: #b91c1c;
+        --red-soft: #fff1f2;
+        --slate: #475569;
+        --shadow: 0 12px 28px rgba(15, 23, 42, 0.075);
+        --shadow-soft: 0 2px 9px rgba(15, 23, 42, 0.055);
+        --radius-xl: 14px;
+        --radius-lg: 12px;
+        --radius-md: 9px;
+      }
+  
+      * { box-sizing: border-box; }
+  
+      html {
+        scroll-behavior: smooth;
+        background: var(--bg);
+      }
+  
+      body {
+        margin: 0;
+        min-height: 100vh;
+        background:
+          linear-gradient(rgba(255, 255, 255, .78), rgba(255, 255, 255, .78)),
+          repeating-linear-gradient(0deg, transparent 0 31px, rgba(100, 116, 139, .035) 31px 32px),
+          repeating-linear-gradient(90deg, transparent 0 31px, rgba(100, 116, 139, .035) 31px 32px),
+          var(--bg);
+        color: var(--text);
+        font-family: "Segoe UI Variable", "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        font-variant-numeric: tabular-nums;
+        text-rendering: optimizeLegibility;
+        -webkit-font-smoothing: antialiased;
+      }
+  
+      button, input, select { font: inherit; }
+  
+      button {
+        cursor: pointer;
+        -webkit-tap-highlight-color: transparent;
+      }
+  
+      button:focus-visible,
+      input:focus-visible,
+      select:focus-visible,
+      [tabindex]:focus-visible {
+        outline: 2px solid rgba(37, 99, 235, .72);
+        outline-offset: 2px;
+      }
+  
+      body {
+        min-width: 1240px;
+      }
+
+      .dashboard-shell {
+        width: min(1680px, 100%);
+        margin: 0 auto;
+        padding: calc(var(--filterbar-height, 176px) + 18px) 24px 24px;
+      }
+
+      .filters-card {
+        position: fixed;
+        inset: 0 0 auto 0;
+        z-index: 50;
+        background: rgba(248, 250, 252, .985);
+        backdrop-filter: blur(18px) saturate(135%);
+        border: 0;
+        border-bottom: 1px solid #cbd5e1;
+        box-shadow: 0 10px 30px rgba(15, 23, 42, .11);
+      }
+
+      .filters-card::before {
+        content: "";
+        position: absolute;
+        inset: 0 0 auto;
+        height: 4px;
+        background: linear-gradient(90deg, var(--blue-950) 0%, var(--blue-800) 44%, var(--blue-500) 100%);
+      }
+
+      .filters-inner {
+        width: min(1680px, calc(100% - 48px));
+        min-width: 1192px;
+        margin: 0 auto;
+        padding: 12px 0 7px;
+      }
+
+      .filters-all-row {
+        display: grid;
+        grid-template-columns: 136px 136px 158px 196px 180px 142px 76px 122px;
+        gap: 8px;
+        align-items: end;
+        justify-content: center;
+        min-width: 0;
+      }
+
+      .filters-all-row > .date-fields,
+      .filters-all-row > .filters-grid,
+      .filters-all-row > .filter-actions {
+        display: contents;
+      }
+
+      .filters-identity {
+        min-width: 0;
+        padding: 1px 0 3px;
+      }
+
+      .filters-kicker {
+        display: block;
+        margin-bottom: 5px;
+        color: var(--blue-700);
+        font-size: .59rem;
+        font-weight: 900;
+        line-height: 1;
+        letter-spacing: .13em;
+        text-transform: uppercase;
+      }
+
+      .filters-identity strong {
+        display: block;
+        overflow: hidden;
+        color: #172033;
+        font-size: 1rem;
+        font-weight: 900;
+        line-height: 1.15;
+        letter-spacing: -.025em;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+
+      .date-mode-control,
+      .field {
+        display: grid;
+        gap: 5px;
+        min-width: 0;
+      }
+
+      .date-mode-label,
+      .field label {
+        color: #526175;
+        font-size: .61rem;
+        font-weight: 900;
+        line-height: 1;
+        letter-spacing: .075em;
+        text-transform: uppercase;
+        white-space: nowrap;
+      }
+
+      .date-mode-switch {
+        display: grid;
+        grid-template-columns: 1.16fr .84fr .84fr;
+        height: 34px;
+        padding: 3px;
+        overflow: hidden;
+        border: 1px solid #ccd5e1;
+        border-radius: 9px;
+        background: #e9eef5;
+        box-shadow: inset 0 1px 2px rgba(15, 23, 42, .06);
+      }
+
+      .date-mode-btn {
+        min-width: 0;
+        border: 0;
+        border-radius: 6px;
+        background: transparent;
+        color: #526175;
+        padding: 0 11px;
+        font-size: .66rem;
+        font-weight: 900;
+        letter-spacing: .045em;
+        text-transform: uppercase;
+        transition: color .15s ease, background .15s ease, box-shadow .15s ease, transform .15s ease;
+      }
+
+      .date-mode-btn:hover {
+        color: var(--blue-900);
+        background: rgba(255, 255, 255, .72);
+      }
+
+      .date-mode-btn.active,
+      .date-mode-btn[aria-pressed="true"] {
+        color: #fff;
+        background: linear-gradient(135deg, var(--blue-900), var(--blue-700));
+        box-shadow: 0 4px 10px rgba(30, 64, 175, .24), inset 0 1px 0 rgba(255, 255, 255, .16);
+      }
+
+      .date-mode-btn:active { transform: translateY(1px); }
+
+      .date-fields {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(132px, 1fr));
+        gap: 10px;
+        min-width: 0;
+      }
+
+      .date-fields.single-date {
+        grid-template-columns: minmax(170px, 220px);
+      }
+
+      .today-date-display {
+        display: flex;
+        align-items: center;
+        height: 34px;
+        border: 1px solid #ccd5e1;
+        border-radius: 8px;
+        background: linear-gradient(180deg, #ffffff, #f8fafc);
+        color: var(--blue-950);
+        padding: 0 12px;
+        font-size: .78rem;
+        font-weight: 900;
+        letter-spacing: .02em;
+        box-shadow: inset 0 1px 0 rgba(255, 255, 255, .9);
+      }
+
+      .field[hidden] { display: none !important; }
+
+      .field input,
+      .field select {
+        width: 100%;
+        min-width: 0;
+        height: 34px;
+        border: 1px solid #ccd5e1;
+        border-radius: 8px;
+        background: #fff;
+        color: #172033;
+        padding: 0 11px;
+        outline: none;
+        font-size: .75rem;
+        font-weight: 720;
+        line-height: 1;
+        box-shadow: inset 0 1px 0 rgba(255, 255, 255, .85);
+        transition: border-color .16s ease, box-shadow .16s ease, background .16s ease;
+      }
+
+      .field input:hover,
+      .field select:hover {
+        border-color: #aebccd;
+        background: #fcfdff;
+      }
+
+      .field input:focus,
+      .field select:focus {
+        border-color: var(--blue-600);
+        background: #fff;
+        box-shadow: 0 0 0 3px rgba(37, 99, 235, .12), inset 0 1px 0 rgba(255, 255, 255, .9);
+      }
+
+      .field input::placeholder {
+        color: #94a3b8;
+        font-weight: 650;
+      }
+
+      .filter-actions {
+        display: grid;
+        grid-template-columns: 82px minmax(132px, 1fr);
+        gap: 8px;
+        min-width: 0;
+      }
+
+      .btn {
+        height: 34px;
+        border: 1px solid transparent;
+        border-radius: 8px;
+        padding: 0 13px;
+        font-size: .65rem;
+        font-weight: 900;
+        line-height: 1;
+        letter-spacing: .045em;
+        text-transform: uppercase;
+        white-space: nowrap;
+        transition: transform .14s ease, border-color .14s ease, background .14s ease, box-shadow .14s ease;
+      }
+
+      .btn:hover { transform: translateY(-1px); }
+      .btn:active { transform: translateY(0); }
+
+      .btn-primary {
+        color: #fff;
+        background: linear-gradient(135deg, var(--blue-900), var(--blue-700));
+        border-color: var(--blue-800);
+        box-shadow: 0 6px 14px rgba(30, 64, 175, .23), inset 0 1px 0 rgba(255, 255, 255, .14);
+      }
+
+      .btn-primary:hover {
+        background: linear-gradient(135deg, var(--blue-800), var(--blue-600));
+        border-color: var(--blue-700);
+        box-shadow: 0 8px 18px rgba(30, 64, 175, .29), inset 0 1px 0 rgba(255, 255, 255, .16);
+      }
+
+      .btn-secondary {
+        color: #475569;
+        background: #fff;
+        border-color: #cbd5e1;
+        box-shadow: 0 1px 2px rgba(15, 23, 42, .04);
+      }
+
+      .btn-secondary:hover {
+        color: var(--blue-900);
+        border-color: #9fb1c8;
+        background: var(--blue-50);
+      }
+
+      .filters-separator {
+        height: 1px;
+        margin: 8px 0 7px;
+        background: linear-gradient(90deg, transparent, #d7dee8 4%, #d7dee8 96%, transparent);
+      }
+
+      .filters-grid {
+        display: grid;
+        grid-template-columns: 1.02fr 1.3fr 1.18fr .84fr;
+        gap: 10px;
+        align-items: end;
+        min-width: 0;
+      }
+
+      .filter-summary {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 18px;
+        min-height: 23px;
+        margin-top: 6px;
+        padding-top: 6px;
+        border-top: 1px solid #e2e8f0;
+      }
+
+      .filter-summary-content {
+        display: flex;
+        align-items: center;
+        min-width: 0;
+        overflow: hidden;
+      }
+
+      .summary-chip {
+        position: relative;
+        display: inline-flex;
+        flex: 0 0 auto;
+        align-items: center;
+        gap: 5px;
+        border: 0;
+        background: transparent;
+        color: #64748b;
+        padding: 0 13px;
+        font-size: .62rem;
+        font-weight: 750;
+        line-height: 1.2;
+        white-space: nowrap;
+      }
+
+      .summary-chip:first-child { padding-left: 0; }
+
+      .summary-chip:not(:last-child)::after {
+        content: "";
+        position: absolute;
+        top: 1px;
+        right: 0;
+        width: 1px;
+        height: 13px;
+        background: #d7dee8;
+      }
+
+      .summary-chip strong {
+        color: #243247;
+        font-weight: 900;
+      }
+
+      .data-badge {
+        display: inline-flex;
+        flex: 0 0 auto;
+        align-items: center;
+        gap: 7px;
+        border: 1px solid #cce8d6;
+        border-radius: 999px;
+        background: var(--green-soft);
+        color: #226442;
+        padding: 4px 9px;
+        font-size: .59rem;
+        font-weight: 900;
+        line-height: 1.2;
+        letter-spacing: .045em;
+        text-transform: uppercase;
+        white-space: nowrap;
+      }
+
+      .data-badge::before {
+        content: "";
+        width: 6px;
+        height: 6px;
+        border-radius: 50%;
+        background: var(--green);
+        box-shadow: 0 0 0 3px rgba(47, 133, 90, .12);
+      }
+
+      .kpi-grid {
+        display: grid;
+        grid-template-columns: repeat(5, minmax(0, 1fr));
+        gap: 14px;
+        margin-bottom: 14px;
+      }
+  
+      .kpi-card {
+        position: relative;
+        overflow: hidden;
+        min-height: 142px;
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: var(--radius-lg);
+        box-shadow: var(--shadow-soft);
+        padding: 18px;
+        transition: transform .16s ease, border-color .16s ease, box-shadow .16s ease;
+      }
+  
+      .kpi-card.clickable:hover {
+        transform: translateY(-1px);
+        border-color: #bdc9d8;
+        box-shadow: 0 8px 20px rgba(15, 23, 42, .085);
+      }
+  
+      .kpi-card::after {
+        content: "";
+        position: absolute;
+        inset: 0 0 auto 0;
+        width: auto;
+        height: 3px;
+        border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+        background: var(--blue-700);
+      }
+  
+      .kpi-card.warning::after { background: var(--amber); }
+      .kpi-card.success::after { background: var(--green); }
+      .kpi-card.danger::after { background: var(--red); }
+  
+      .kpi-label {
+        position: relative;
+        z-index: 1;
+        color: var(--muted);
+        font-size: .66rem;
+        font-weight: 850;
+        letter-spacing: .075em;
+        text-transform: uppercase;
+      }
+  
+      .kpi-value {
+        position: relative;
+        z-index: 1;
+        margin-top: 11px;
+        color: #172033;
+        font-size: clamp(1.85rem, 3vw, 2.9rem);
+        font-weight: 900;
+        letter-spacing: -.045em;
+        line-height: 1;
+      }
+  
+      .kpi-subtitle {
+        position: relative;
+        z-index: 1;
+        margin-top: 9px;
+        color: var(--muted);
+        font-size: .69rem;
+        line-height: 1.4;
+        font-weight: 650;
+      }
+  
+      .content-grid {
+        display: grid;
+        grid-template-columns: repeat(12, minmax(0, 1fr));
+        gap: 14px;
+      }
+  
+      .panel {
+        min-width: 0;
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: var(--radius-lg);
+        box-shadow: var(--shadow-soft);
+        padding: 18px;
+      }
+  
+      .span-12 { grid-column: span 12; }
+      .span-8 { grid-column: span 8; }
+      .span-7 { grid-column: span 7; }
+      .span-6 { grid-column: span 6; }
+      .span-5 { grid-column: span 5; }
+      .span-4 { grid-column: span 4; }
+  
+      .panel-head {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        gap: 14px;
+        margin-bottom: 14px;
+        padding-bottom: 12px;
+        border-bottom: 1px solid #e8edf3;
+      }
+  
+      .panel-head h2 {
+        margin: 0;
+        color: #1f2a3d;
+        font-size: .94rem;
+        font-weight: 850;
+        line-height: 1.25;
+        letter-spacing: -.01em;
+      }
+  
+      .panel-head p {
+        margin: 4px 0 0;
+        color: var(--muted);
+        font-size: .68rem;
+        line-height: 1.42;
+        font-weight: 600;
+      }
+  
+      .panel-count {
+        flex: 0 0 auto;
+        min-width: 34px;
+        border-radius: 999px;
+        background: var(--surface-muted);
+        border: 1px solid var(--border);
+        color: var(--blue-900);
+        padding: 5px 8px;
+        text-align: center;
+        font-size: .68rem;
+        font-weight: 900;
+        box-shadow: inset 0 1px 0 rgba(255, 255, 255, .8);
+      }
+  
+      .chart-list {
+        display: grid;
+        gap: 2px;
+      }
+  
+      .bar-row {
+        position: relative;
+        appearance: none;
+        display: block;
+        border: 0;
+        border-bottom: 1px solid #edf1f5;
+        border-radius: 0;
+        padding: 8px 5px 9px;
+        background: transparent;
+        transition: background .14s ease, color .14s ease;
+      }
+  
+      .bar-row:last-child { border-bottom: 0; }
+  
+      .bar-row:hover {
+        border-color: #e2e8f0;
+        background: #f8fafc;
+      }
+  
+      .bar-row:focus-visible {
+        border-radius: 6px;
+      }
+  
+      .bar-row-head {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) auto;
+        gap: 10px;
+        align-items: baseline;
+        margin-bottom: 6px;
+      }
+  
+      .bar-label {
+        min-width: 0;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        color: #263246;
+        font-size: .73rem;
+        font-weight: 760;
+        letter-spacing: .005em;
+      }
+  
+      .bar-value {
+        min-width: 34px;
+        color: #1f3f78;
+        font-size: .72rem;
+        font-weight: 900;
+        text-align: right;
+        font-variant-numeric: tabular-nums;
+      }
+  
+      .bar-track {
+        position: relative;
+        height: 6px;
+        overflow: hidden;
+        border-radius: 3px;
+        background:
+          repeating-linear-gradient(90deg, transparent 0 calc(25% - 1px), rgba(100, 116, 139, .10) calc(25% - 1px) 25%),
+          #e9eef4;
+        box-shadow: inset 0 1px 1px rgba(15, 23, 42, .05);
+      }
+  
+      .bar-fill {
+        position: relative;
+        height: 100%;
+        min-width: 3px;
+        border-radius: 3px;
+        background: var(--blue-700);
+        box-shadow: none;
+        transition: width .3s ease;
+      }
+  
+      .bar-fill::after {
+        content: "";
+        position: absolute;
+        inset: 0 0 0 auto;
+        width: 1px;
+        background: rgba(255, 255, 255, .7);
+      }
+  
+      .bar-fill.orange { background: var(--amber); }
+      .bar-fill.green { background: var(--green); }
+  
+      .table-wrap {
+        width: 100%;
+        overflow: auto;
+        border: 1px solid var(--border);
+        border-radius: 9px;
+        background: #fff;
+        scrollbar-width: thin;
+        scrollbar-color: #cbd5e1 transparent;
+      }
+  
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        min-width: 680px;
+        font-variant-numeric: tabular-nums;
+      }
+  
+      th {
+        position: sticky;
+        top: 0;
+        z-index: 1;
+        background: #f5f7fa;
+        color: #5d6b7e;
+        font-size: .62rem;
+        font-weight: 850;
+        letter-spacing: .065em;
+        text-transform: uppercase;
+        text-align: left;
+        padding: 9px 11px;
+        border-bottom: 1px solid var(--border-strong);
+        white-space: nowrap;
+      }
+  
+      td {
+        padding: 9px 11px;
+        border-bottom: 1px solid #edf1f5;
+        color: #263246;
+        font-size: .72rem;
+        font-weight: 620;
+        line-height: 1.35;
+        vertical-align: middle;
+      }
+  
+      tbody tr:last-child td { border-bottom: 0; }
+  
+      tbody tr {
+        transition: background .12s ease;
+      }
+  
+      tbody tr:nth-child(even) { background: #fbfcfd; }
+      tbody tr:hover { background: #f1f5f9; }
+  
+      .rank-number {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 24px;
+        height: 24px;
+        border-radius: 6px;
+        color: #334155;
+        background: #f1f5f9;
+        border: 1px solid #dce3eb;
+        font-size: .68rem;
+        font-weight: 900;
+      }
+  
+      .detail-link {
+        border: 1px solid #cbd7e6;
+        border-radius: 6px;
+        color: var(--blue-900);
+        background: #fff;
+        padding: 5px 8px;
+        font-size: .62rem;
+        font-weight: 850;
+        letter-spacing: .025em;
+        text-transform: uppercase;
+        transition: border-color .14s ease, background .14s ease, color .14s ease;
+      }
+  
+      .detail-link:hover {
+        border-color: #9db3d0;
+        color: var(--blue-800);
+        background: var(--blue-50);
+      }
+  
+      .tag {
+        display: inline-flex;
+        align-items: center;
+        border: 1px solid transparent;
+        border-radius: 999px;
+        padding: 4px 7px;
+        font-size: .6rem;
+        font-weight: 850;
+        letter-spacing: .025em;
+        text-transform: uppercase;
+        white-space: nowrap;
+      }
+  
+      .tag-internal {
+        color: #226442;
+        background: var(--green-soft);
+        border-color: #cce8d6;
+      }
+  
+      .tag-third {
+        color: #875714;
+        background: var(--amber-soft);
+        border-color: #f0dfb4;
+      }
+  
+      .tag-missing {
+        color: #9f1239;
+        background: var(--red-soft);
+        border-color: #fecdd3;
+      }
+  
+      .audit-grid {
+        display: grid;
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        gap: 10px;
+      }
+  
+      .audit-item {
+        position: relative;
+        overflow: hidden;
+        border: 1px solid var(--border);
+        border-radius: 8px;
+        background: #fbfcfd;
+        padding: 12px;
+      }
+  
+      .audit-item::before {
+        content: "";
+        position: absolute;
+        inset: 0 auto 0 0;
+        width: 2px;
+        background: #94a3b8;
+      }
+  
+      .audit-item span {
+        display: block;
+        color: var(--muted);
+        font-size: .6rem;
+        font-weight: 850;
+        text-transform: uppercase;
+        letter-spacing: .055em;
+      }
+  
+      .audit-item strong {
+        display: block;
+        margin-top: 7px;
+        color: #1f2a3d;
+        font-size: 1.28rem;
+        font-weight: 900;
+        line-height: 1;
+      }
+  
+      .empty-state {
+        display: grid;
+        place-items: center;
+        min-height: 165px;
+        border: 1px dashed var(--border-strong);
+        border-radius: 9px;
+        background: #fbfcfd;
+        color: var(--muted);
+        padding: 24px;
+        text-align: center;
+        font-size: .74rem;
+        font-weight: 700;
+      }
+  
+      .loading-screen,
+      .error-screen {
+        min-height: 100vh;
+        display: grid;
+        place-items: center;
+        padding: 24px;
+        background: var(--bg);
+      }
+  
+      .loading-card,
+      .error-card {
+        width: min(620px, 100%);
+        background: #fff;
+        border: 1px solid var(--border);
+        border-radius: var(--radius-xl);
+        box-shadow: var(--shadow);
+        padding: 28px;
+        text-align: center;
+      }
+  
+      .loading-card h1,
+      .error-card h1 {
+        margin: 0 0 10px;
+        color: var(--blue-950);
+        font-weight: 900;
+        letter-spacing: -.03em;
+      }
+  
+      .loading-card p,
+      .error-card p {
+        color: var(--muted);
+        line-height: 1.55;
+        font-weight: 650;
+      }
+  
+      .modal-backdrop {
+        position: fixed;
+        inset: 0;
+        z-index: 100;
+        display: none;
+        align-items: center;
+        justify-content: center;
+        padding: 20px;
+        background: rgba(15, 23, 42, .62);
+        backdrop-filter: blur(4px);
+      }
+  
+      .modal-backdrop.open { display: flex; }
+  
+      .modal {
+        width: min(1420px, 100%);
+        max-height: 92vh;
+        display: flex;
+        flex-direction: column;
+        overflow: hidden;
+        border-radius: 13px;
+        background: var(--surface);
+        box-shadow: 0 28px 80px rgba(15, 23, 42, .32);
+        border: 1px solid rgba(255, 255, 255, .14);
+      }
+  
+      .modal-head {
+        display: flex;
+        align-items: flex-start;
+        justify-content: space-between;
+        gap: 16px;
+        padding: 16px 18px;
+        background: linear-gradient(100deg, #172554, #1e3a8a 62%, #1e40af);
+        color: #fff;
+        border-bottom: 1px solid rgba(255, 255, 255, .12);
+      }
+  
+      .modal-head h3 {
+        margin: 0;
+        font-size: 1rem;
+        font-weight: 850;
+        letter-spacing: -.01em;
+      }
+  
+      .modal-head p {
+        margin: 5px 0 0;
+        color: rgba(255,255,255,.74);
+        font-size: .7rem;
+        font-weight: 600;
+      }
+  
+      .modal-close {
+        flex: 0 0 auto;
+        width: 34px;
+        height: 34px;
+        border: 1px solid rgba(255,255,255,.22);
+        border-radius: 7px;
+        color: #fff;
+        background: rgba(255,255,255,.08);
+        font-size: .9rem;
+        font-weight: 850;
+        transition: background .14s ease;
+      }
+  
+      .modal-close:hover { background: rgba(255,255,255,.16); }
+  
+      .modal-body {
+        overflow: auto;
+        padding: 16px;
+        background: #f8fafc;
+      }
+  
+      .detail-description {
+        max-width: 440px;
+        white-space: normal;
+        line-height: 1.42;
+        color: var(--slate);
+      }
+  
+      .footer-note {
+        margin: 16px 0 4px;
+        color: #718096;
+        text-align: center;
+        font-size: .63rem;
+        line-height: 1.45;
+        font-weight: 650;
+      }
+  
+      @media (prefers-reduced-motion: reduce) {
+        *, *::before, *::after {
+          scroll-behavior: auto !important;
+          transition-duration: .01ms !important;
+          animation-duration: .01ms !important;
+        }
+      }
+  
+      @media (max-width: 1360px) {
+        .filters-inner {
+          width: calc(100% - 32px);
+          min-width: 1208px;
+        }
+
+        .filters-all-row {
+          gap: 8px;
+        }
+        .kpi-grid { gap: 12px; }
+        .content-grid { gap: 12px; }
+      }
+
+    </style>
+</head>
+<body>
+  <div id="loadingScreen" class="loading-screen">
+    <div class="loading-card">
+      <h1>LECAR</h1>
+      <p>Carregando e auditando os registros do <strong>data.js</strong>...</p>
+    </div>
+  </div>
+
+  <main id="app" class="dashboard-shell" hidden>
+    <section id="filtersTopbar" class="filters-card" aria-label="Filtros do dashboard">
+      <div class="filters-inner">
+        <div class="filters-all-row">
+          <div id="dateFields" class="date-fields">
+            <div id="dateStartField" class="field">
+              <label for="dateStart">Data inicial</label>
+              <input id="dateStart" type="date" />
+            </div>
+
+            <div id="dateEndField" class="field">
+              <label for="dateEnd">Data final</label>
+              <input id="dateEnd" type="date" />
+            </div>
+          </div>
+
+          <div class="filters-grid">
+            <div class="field">
+              <label for="mechanicFilter">Mecânico</label>
+              <select id="mechanicFilter"><option value="">Todos os mecânicos</option></select>
+            </div>
+
+            <div class="field">
+              <label for="categoryFilter">Categoria de serviço</label>
+              <select id="categoryFilter"><option value="">Todas as categorias</option></select>
+            </div>
+
+            <div class="field">
+              <label for="resultFilter">Resultado</label>
+              <select id="resultFilter">
+                <option value="">Todos os resultados</option>
+                <option value="INTERNO">Executado internamente</option>
+                <option value="TERCEIRO">Enviado para terceiro</option>
+              </select>
+            </div>
+
+            <div class="field">
+              <label for="originFilter">Origem</label>
+              <select id="originFilter"><option value="">Todas as origens</option></select>
+            </div>
+          </div>
+
+          <div class="filter-actions">
+            <button id="clearFilters" class="btn btn-secondary" type="button">Limpar</button>
+            <button id="applyFilters" class="btn btn-primary" type="button">Aplicar filtros</button>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <section class="kpi-grid">
+      <article id="kpiCarsCard" class="kpi-card clickable" tabindex="0" role="button">
+        <div class="kpi-label">Carros finalizados</div>
+        <div id="kpiCars" class="kpi-value">0</div>
+        <div id="kpiCarsSub" class="kpi-subtitle">Visitas únicas no período</div>
+      </article>
+
+      <article class="kpi-card success">
+        <div class="kpi-label">Média de carros por dia</div>
+        <div id="kpiAverage" class="kpi-value">0,0</div>
+        <div id="kpiAverageSub" class="kpi-subtitle">Baseada nos dias operacionais encontrados</div>
+      </article>
+
+      <article id="kpiServicesCard" class="kpi-card clickable" tabindex="0" role="button">
+        <div class="kpi-label">Ocorrências de serviços</div>
+        <div id="kpiServices" class="kpi-value">0</div>
+        <div id="kpiServicesSub" class="kpi-subtitle">Categorias identificadas nas visitas</div>
+      </article>
+
+      <article id="kpiThirdCard" class="kpi-card warning clickable" tabindex="0" role="button">
+        <div class="kpi-label">Enviados para terceiro</div>
+        <div id="kpiThird" class="kpi-value">0</div>
+        <div id="kpiThirdSub" class="kpi-subtitle">Não executados internamente</div>
+      </article>
+
+      <article id="kpiRecurringCard" class="kpi-card danger clickable" tabindex="0" role="button">
+        <div class="kpi-label">Placas recorrentes</div>
+        <div id="kpiRecurring" class="kpi-value">0</div>
+        <div id="kpiRecurringSub" class="kpi-subtitle">Placas com duas ou mais visitas</div>
+      </article>
+    </section>
+
+    <section class="content-grid">
+      <article class="panel span-12">
+        <div class="panel-head">
+          <div>
+            <h2>Produção e média por mecânico</h2>
+            <p>Cada linha usa documentos finalizados únicos. A média considera os dias operacionais do período filtrado.</p>
+          </div>
+          <span id="mechanicCount" class="panel-count">0</span>
+        </div>
+        <div id="mechanicTable"></div>
+      </article>
+
+      <article class="panel span-6">
+        <div class="panel-head">
+          <div>
+            <h2>Principais serviços realizados internamente</h2>
+            <p>Categorias identificadas nos registros finalizados sem envio para terceiro.</p>
+          </div>
+          <span id="internalServiceCount" class="panel-count">0</span>
+        </div>
+        <div id="internalServicesChart" class="chart-list"></div>
+      </article>
+
+      <article class="panel span-6">
+        <div class="panel-head">
+          <div>
+            <h2>Principais serviços não executados internamente</h2>
+            <p>Somente registros com evidência explícita de envio para terceiro.</p>
+          </div>
+          <span id="thirdServiceCount" class="panel-count">0</span>
+        </div>
+        <div id="thirdServicesChart" class="chart-list"></div>
+      </article>
+
+      <article class="panel span-7">
+        <div class="panel-head">
+          <div>
+            <h2>Serviços por data</h2>
+            <p>Quantidade de ocorrências de categorias por dia. Um carro pode gerar mais de uma categoria.</p>
+          </div>
+          <span id="dailyCount" class="panel-count">0</span>
+        </div>
+        <div id="dailyServicesChart" class="chart-list"></div>
+      </article>
+
+      <article class="panel span-5">
+        <div class="panel-head">
+          <div>
+            <h2>Modelos mais frequentes por serviço</h2>
+            <p>Combinações entre modelo e categoria no período selecionado.</p>
+          </div>
+          <span id="modelServiceCount" class="panel-count">0</span>
+        </div>
+        <div id="modelServicesChart" class="chart-list"></div>
+      </article>
+
+      <article class="panel span-8">
+        <div class="panel-head">
+          <div>
+            <h2>Carros que apareceram mais de uma vez</h2>
+            <p>Recorrência calculada pela placa normalizada, mantendo cada visita finalizada como um registro distinto.</p>
+          </div>
+          <span id="recurringCount" class="panel-count">0</span>
+        </div>
+        <div id="recurringTable"></div>
+      </article>
+
+      <article class="panel span-4">
+        <div class="panel-head">
+          <div>
+            <h2>Auditoria dos dados filtrados</h2>
+            <p>Registros incompletos continuam visíveis para conferência.</p>
+          </div>
+        </div>
+        <div id="auditGrid" class="audit-grid"></div>
+      </article>
+    </section>
+
+    <p class="footer-note">
+      Fonte operacional: <strong>LECAR_DATA.veiculos</strong>. A lista geral não é somada novamente. Serviços “não executados internamente” são apenas os registros com finalização explícita para terceiro.
+    </p>
+  </main>
+
+  <div id="detailModal" class="modal-backdrop" aria-hidden="true">
+    <section class="modal" role="dialog" aria-modal="true" aria-labelledby="detailTitle">
+      <header class="modal-head">
+        <div>
+          <h3 id="detailTitle">Detalhamento</h3>
+          <p id="detailSubtitle">Placas e datas que formaram o indicador.</p>
+        </div>
+        <button id="closeModal" class="modal-close" type="button" aria-label="Fechar">✕</button>
+      </header>
+      <div id="detailBody" class="modal-body"></div>
+    </section>
+  </div>
+
+  <!-- O data.js deve ficar na mesma pasta deste arquivo. -->
+  <script src="./data.js"></script>
+
+  <script>
+    (() => {
+      "use strict";
+
+      const CATEGORY_CATALOG = {
+        TROCA_OLEO_FILTROS: "TROCA DE ÓLEO E FILTROS",
+        SUSPENSAO: "SUSPENSÃO",
+        FREIOS: "FREIOS",
+        ARREFECIMENTO: "ARREFECIMENTO",
+        MOTOR_INJECAO_IGNICAO: "MOTOR, INJEÇÃO E IGNIÇÃO",
+        VAZAMENTO_OLEO: "VAZAMENTO DE ÓLEO",
+        CAMBIO_EMBREAGEM_TRANSMISSAO: "CÂMBIO, EMBREAGEM E TRANSMISSÃO",
+        COXINS_SUPORTES: "COXINS E SUPORTES",
+        ELETRICA_BATERIA_PARTIDA: "ELÉTRICA, BATERIA E PARTIDA",
+        DIRECAO_ALINHAMENTO: "DIREÇÃO E ALINHAMENTO",
+        PNEUS_RODAS: "PNEUS E RODAS",
+        COMBUSTIVEL_SENSOR_NIVEL: "COMBUSTÍVEL E SENSOR DE NÍVEL",
+        CORREIAS_POLIAS: "CORREIAS, TENSORES E POLIAS",
+        ESCAPAMENTO: "ESCAPAMENTO",
+        AIRBAG_E_SEGURANCA_ELETRONICA: "AIRBAG E SEGURANÇA ELETRÔNICA",
+        LIMPADOR_ESGUICHO: "LIMPADOR E ESGUICHO",
+        AR_CONDICIONADO: "AR-CONDICIONADO",
+        REVISAO_FILTROS: "REVISÃO E FILTROS",
+        DIAGNOSTICO_PAINEL: "DIAGNÓSTICO DE PAINEL",
+        SISTEMA_LUBRIFICACAO: "SISTEMA DE LUBRIFICAÇÃO / PRESSÃO DE ÓLEO",
+        DIAGNOSTICO_RUIDO_VIBRACAO: "DIAGNÓSTICO DE RUÍDOS E VIBRAÇÕES",
+        VAZAMENTO_NAO_ESPECIFICADO: "VAZAMENTO NÃO ESPECIFICADO",
+        REGISTRO_TESTE: "REGISTRO DE TESTE"
+      };
+
+      const CATEGORY_RULES = [
+        ["TROCA_OLEO_FILTROS", /\b(TROCA|TROCAR|MAO DE OBRA)\b.{0,45}\bOLEO\b|\bOLEO\b.{0,30}\bFILTRO\b|\bFILTRO DE OLEO\b/i],
+        ["SUSPENSAO", /\bSUSPENSAO\b|\bAMORTECEDOR(?:ES)?\b|\bBIELETA(?:S)?\b|\bBANDEJA(?:S)?\b|\bPIVO(?:S)?\b|\bBUCHA(?:S)?\b|\bBATENTE(?:S)?\b|\bMOLA(?:S)?\b/i],
+        ["FREIOS", /\bFREIO(?:S)?\b|\bPASTILHA(?:S)?\b|\bDISCO(?:S)?\b|\bFLUIDO DE FREIO\b|\bSERVO FREIO\b|\bCILINDRO MESTRE\b/i],
+        ["ARREFECIMENTO", /\bARREFECIMENTO\b|\bRADIADOR\b|\bADITIVO\b|\bRESERVATORIO\b|\bVENTOINHA\b|\bVALVULA TERMOSTATICA\b|\bBOMBA D.?AGUA\b|\bMANGUEIRA D.?AGUA\b|\bCABECOTE\b/i],
+        ["MOTOR_INJECAO_IGNICAO", /\bMOTOR\b|\bINJECAO\b|\bIGNICAO\b|\bVELA(?:S)?\b|\bBOBINA(?:S)?\b|\bBICO(?:S)?\b|\bSONDA\b|\bCATALIZADOR\b|\bTURBINA\b|\bFALHANDO\b|\bPERDA DE POTENCIA\b|\bNAO ACELERA\b/i],
+        ["VAZAMENTO_OLEO", /\bVAZA(?:NDO|MENTO)\b.{0,20}\bOLEO\b|\bOLEO\b.{0,20}\bVAZA(?:NDO|MENTO)\b|\bTAMPA DE VALVULA\b/i],
+        ["CAMBIO_EMBREAGEM_TRANSMISSAO", /\bCAMBIO\b|\bEMBREAGEM\b|\bMARCHA(?:S)?\b|\bTRAMBULADOR\b|\bHOMOCINETICA\b|\bDIFERENCIAL\b|\bENGATANDO\b|\bENGATAR\b/i],
+        ["COXINS_SUPORTES", /\bCOXIM\b|\bCOXINS\b|\bCOXIN\b/i],
+        ["ELETRICA_BATERIA_PARTIDA", /\bBATERIA\b|\bALTERNADOR\b|\bMOTOR DE PARTIDA\b|\bNAO LIGA\b|\bNAO PEGA\b|\bNAO FUNCIONA\b|\bNAO RECONHECE A CHAVE\b/i],
+        ["DIRECAO_ALINHAMENTO", /\bDIRECAO\b|\bBOMBA HIDRAULICA\b|\bCOLUNA DE DIRECAO\b|\bALINHAMENTO\b|\bVOLANTE\b/i],
+        ["PNEUS_RODAS", /\bPNEU(?:S)?\b|\bRODA(?:S)?\b|\bTPMS\b|\bCALIBRAGEM\b|\bRODIZIO\b|\bROLAMENTO DE RODA\b/i],
+        ["COMBUSTIVEL_SENSOR_NIVEL", /\bCOMBUSTIVEL\b|\bSENSOR DE NIVEL\b|\bNIVEL DE COMBUSTIVEL\b/i],
+        ["CORREIAS_POLIAS", /\bCORREIA(?:S)?\b|\bTENSOR\b|\bPOLIA\b/i],
+        ["ESCAPAMENTO", /\bESCAPAMENTO\b|\bESCAPE\b|\bPROTECAO TERMICA\b/i],
+        ["AIRBAG_E_SEGURANCA_ELETRONICA", /\bAIR ?BAG\b|\bCONTROLE DE TRACAO\b|\bALERTA DE COLISAO\b|\bPARK ASSIST\b|\bADAS\b|\bACC\b/i],
+        ["LIMPADOR_ESGUICHO", /\bLIMPADOR\b|\bESGUICHO\b|\bPARABRISA\b/i],
+        ["AR_CONDICIONADO", /\bAR CONDICIONADO\b|\bCOMPRESSOR DO AR\b|\bAR QUENTE\b/i],
+        ["REVISAO_FILTROS", /\bREVISAO\b|\bFILTRO DE AR\b|\bFILTRO DE CABINE\b/i],
+        ["DIAGNOSTICO_PAINEL", /\bLUZ DO PAINEL\b|\bCOMPUTADOR DE BORDO\b|\bMENSAGEM DE INSPECAO\b|\bLUZ DE MANUTENCAO\b/i],
+        ["SISTEMA_LUBRIFICACAO", /\bLUZ DE OLEO\b|\bPRESSAO DE OLEO\b|\bCOMPLETAR OLEO\b/i],
+        ["DIAGNOSTICO_RUIDO_VIBRACAO", /\bBARULHO\b|\bRUIDO\b|\bRONCO\b|\bVIBRACAO\b|\bTREPIDACAO\b/i],
+        ["VAZAMENTO_NAO_ESPECIFICADO", /\bVAZAMENTO\b|\bVAZANDO\b/i]
+      ];
+
+      const state = {
+        allRecords: [],
+        filteredRecords: [],
+        minDate: "",
+        maxDate: "",
+        todayDate: "",
+        dateMode: "PERIODO",
+        filters: {},
+        detailContext: null
+      };
+
+      const el = (id) => document.getElementById(id);
+
+      function normalize(value) {
+        return String(value ?? "")
+          .normalize("NFD")
+          .replace(/[\u0300-\u036f]/g, "")
+          .toUpperCase()
+          .replace(/[^A-Z0-9]+/g, " ")
+          .replace(/\s+/g, " ")
+          .trim();
+      }
+
+      function normalizePlate(value) {
+        return normalize(value).replace(/[^A-Z0-9]/g, "");
+      }
+
+      function normalizeModel(value) {
+        const model = normalize(value);
+        return model || "MODELO NÃO INFORMADO";
+      }
+
+      function escapeHtml(value) {
+        return String(value ?? "")
+          .replace(/&/g, "&amp;")
+          .replace(/</g, "&lt;")
+          .replace(/>/g, "&gt;")
+          .replace(/"/g, "&quot;")
+          .replace(/'/g, "&#039;");
+      }
+
+      function formatNumber(value) {
+        return new Intl.NumberFormat("pt-BR").format(Number(value || 0));
+      }
+
+      function formatDecimal(value) {
+        return new Intl.NumberFormat("pt-BR", {
+          minimumFractionDigits: 1,
+          maximumFractionDigits: 1
+        }).format(Number.isFinite(value) ? value : 0);
+      }
+
+      function parseBrDate(value) {
+        const match = String(value || "").match(/(\d{2})\/(\d{2})\/(\d{4})(?:,?\s*(\d{2}):(\d{2})(?::(\d{2}))?)?/);
+        if (!match) return null;
+        const [, day, month, year, hour = "00", minute = "00", second = "00"] = match;
+        const date = new Date(Number(year), Number(month) - 1, Number(day), Number(hour), Number(minute), Number(second));
+        return Number.isNaN(date.getTime()) ? null : date;
+      }
+
+      function isoDateKeyInSaoPaulo(value) {
+        if (!value) return "";
+        const date = new Date(value);
+        if (Number.isNaN(date.getTime())) return "";
+        const parts = new Intl.DateTimeFormat("en-CA", {
+          timeZone: "America/Sao_Paulo",
+          year: "numeric",
+          month: "2-digit",
+          day: "2-digit"
+        }).formatToParts(date);
+        const map = Object.fromEntries(parts.map((part) => [part.type, part.value]));
+        return `${map.year}-${map.month}-${map.day}`;
+      }
+
+      function dateKeyFromRecord(record) {
+        const br = String(record.dataFinalizacao || "").match(/(\d{2})\/(\d{2})\/(\d{4})/);
+        if (br) return `${br[3]}-${br[2]}-${br[1]}`;
+        return isoDateKeyInSaoPaulo(record.dataFinalizacaoISO || record.ultima_modificacao_iso || "");
+      }
+
+      function timestampFromRecord(record) {
+        const local = parseBrDate(record.dataFinalizacao || record.ultima_modificacao || "");
+        if (local) return local.getTime();
+        const iso = new Date(record.dataFinalizacaoISO || record.ultima_modificacao_iso || 0);
+        return Number.isNaN(iso.getTime()) ? 0 : iso.getTime();
+      }
+
+      function formatDateKey(dateKey) {
+        if (!dateKey) return "DATA NÃO INFORMADA";
+        const [year, month, day] = dateKey.split("-");
+        return `${day}/${month}/${year}`;
+      }
+
+      function todayKeyInSaoPaulo() {
+        return isoDateKeyInSaoPaulo(new Date());
+      }
+
+      function mechanicFromRecord(record) {
+        return normalize(record.mecanico || record.mecanico_responsavel || record.mecanicoResponsavel) || "MECÂNICO NÃO INFORMADO";
+      }
+
+      function originFromRecord(record) {
+        return normalize(record.origem) || "ORIGEM NÃO INFORMADA";
+      }
+
+      function isFinalized(record) {
+        return normalize(record.status).includes("FINALIZADO");
+      }
+
+      function isThirdParty(record) {
+        return normalize(record.finalizacaoTipo).includes("TERCEIRO") || Boolean(String(record.fornecedorTerceiro || "").trim());
+      }
+
+      function classifyDescription(record) {
+        const existing = Array.isArray(record.categoriasServico)
+          ? record.categoriasServico.map(normalize).filter((code) => CATEGORY_CATALOG[code])
+          : [];
+
+        if (existing.length) return [...new Set(existing)].filter((code) => code !== "REGISTRO_TESTE");
+
+        let text = normalize(record.descricao);
+        if (!text && Array.isArray(record.pecas)) text = normalize(record.pecas.join(" "));
+        if (!text) return [];
+
+        const categories = [];
+        CATEGORY_RULES.forEach(([code, regex]) => {
+          if (regex.test(text)) categories.push(code);
+        });
+        return [...new Set(categories)].filter((code) => code !== "REGISTRO_TESTE");
+      }
+
+      function canonicalRecord(raw, index) {
+        const id = String(raw.id || `SEM_ID_${index}`);
+        const dateKey = dateKeyFromRecord(raw);
+        const categories = classifyDescription(raw);
+        return {
+          raw,
+          id,
+          dateKey,
+          timestamp: timestampFromRecord(raw),
+          mechanic: mechanicFromRecord(raw),
+          plate: normalizePlate(raw.placa) || "SEMPLACA",
+          model: normalizeModel(raw.veiculo),
+          origin: originFromRecord(raw),
+          result: isThirdParty(raw) ? "TERCEIRO" : "INTERNO",
+          categories,
+          description: String(raw.descricao || "").trim(),
+          supplier: String(raw.fornecedorTerceiro || "").trim(),
+          pieces: Array.isArray(raw.pecas) ? raw.pecas.filter(Boolean) : []
+        };
+      }
+
+      function uniqueById(records) {
+        const map = new Map();
+        records.forEach((record) => {
+          if (!map.has(record.id)) map.set(record.id, record);
+        });
+        return [...map.values()];
+      }
+
+      function groupBy(items, keyFn) {
+        const map = new Map();
+        items.forEach((item) => {
+          const key = keyFn(item);
+          if (!map.has(key)) map.set(key, []);
+          map.get(key).push(item);
+        });
+        return map;
+      }
+
+      function operationalDays(records) {
+        return new Set(records.map((record) => record.dateKey).filter(Boolean)).size;
+      }
+
+      function serviceOccurrences(records) {
+        return records.reduce((total, record) => total + record.categories.length, 0);
+      }
+
+      function buildDataset() {
+        const source = window.LECAR_DATA;
+        if (!source || !Array.isArray(source.veiculos)) {
+          throw new Error("O arquivo data.js não definiu window.LECAR_DATA.veiculos.");
+        }
+
+        const canonical = source.veiculos
+          .filter(isFinalized)
+          .map(canonicalRecord);
+
+        state.allRecords = uniqueById(canonical).sort((a, b) => b.timestamp - a.timestamp);
+
+        const validDates = state.allRecords.map((record) => record.dateKey).filter(Boolean).sort();
+        state.minDate = validDates[0] || "";
+        state.maxDate = validDates.at(-1) || "";
+      }
+
+      function populateFilters() {
+        const mechanics = [...new Set(state.allRecords.map((record) => record.mechanic))].sort((a, b) => a.localeCompare(b, "pt-BR"));
+        const categories = [...new Set(state.allRecords.flatMap((record) => record.categories))]
+          .sort((a, b) => (CATEGORY_CATALOG[a] || a).localeCompare(CATEGORY_CATALOG[b] || b, "pt-BR"));
+        const origins = [...new Set(state.allRecords.map((record) => record.origin))].sort((a, b) => a.localeCompare(b, "pt-BR"));
+
+        el("mechanicFilter").innerHTML = `<option value="">Todos os mecânicos</option>${mechanics.map((name) => `<option value="${escapeHtml(name)}">${escapeHtml(name)}</option>`).join("")}`;
+        el("categoryFilter").innerHTML = `<option value="">Todas as categorias</option>${categories.map((code) => `<option value="${escapeHtml(code)}">${escapeHtml(CATEGORY_CATALOG[code] || code)}</option>`).join("")}`;
+        el("originFilter").innerHTML = `<option value="">Todas as origens</option>${origins.map((origin) => `<option value="${escapeHtml(origin)}">${escapeHtml(origin)}</option>`).join("")}`;
+
+        state.todayDate = todayKeyInSaoPaulo();
+
+        [el("dateStart"), el("dateEnd")].forEach((input) => {
+          input.min = state.minDate;
+          input.max = state.maxDate;
+        });
+
+        el("dateStart").value = state.minDate;
+        el("dateEnd").value = state.maxDate;
+        requestAnimationFrame(syncFilterBarHeight);
+      }
+
+      function readFilters() {
+        return {
+          dateMode: "PERIODO",
+          dateStart: el("dateStart").value || state.minDate,
+          dateEnd: el("dateEnd").value || state.maxDate,
+          mechanic: normalize(el("mechanicFilter").value),
+          category: normalize(el("categoryFilter").value),
+          result: normalize(el("resultFilter").value),
+          origin: normalize(el("originFilter").value)
+        };
+      }
+
+      function applyFilters() {
+        const filters = readFilters();
+        if (filters.dateMode === "PERIODO" && filters.dateStart && filters.dateEnd && filters.dateStart > filters.dateEnd) {
+          const temp = filters.dateStart;
+          filters.dateStart = filters.dateEnd;
+          filters.dateEnd = temp;
+          el("dateStart").value = filters.dateStart;
+          el("dateEnd").value = filters.dateEnd;
+        }
+
+        state.filters = filters;
+        state.filteredRecords = state.allRecords.filter((record) => {
+          if (!record.dateKey) return false;
+          if (filters.dateStart && record.dateKey < filters.dateStart) return false;
+          if (filters.dateEnd && record.dateKey > filters.dateEnd) return false;
+          if (filters.mechanic && record.mechanic !== filters.mechanic) return false;
+          if (filters.category && !record.categories.includes(filters.category)) return false;
+          if (filters.result && record.result !== filters.result) return false;
+          if (filters.origin && record.origin !== filters.origin) return false;
+          return true;
+        });
+
+        renderAll();
+      }
+
+      function clearFilters() {
+        el("dateStart").value = state.minDate;
+        el("dateEnd").value = state.maxDate;
+        el("mechanicFilter").value = "";
+        el("categoryFilter").value = "";
+        el("resultFilter").value = "";
+        el("originFilter").value = "";
+        applyFilters();
+      }
+
+      function recurringGroups(records) {
+        return [...groupBy(records.filter((record) => record.plate !== "SEMPLACA"), (record) => record.plate).entries()]
+          .map(([plate, items]) => ({ plate, items, count: items.length, model: mode(items.map((item) => item.model)) }))
+          .filter((group) => group.count >= 2)
+          .sort((a, b) => b.count - a.count || a.plate.localeCompare(b.plate));
+      }
+
+      function mode(values) {
+        const counts = new Map();
+        values.forEach((value) => counts.set(value, (counts.get(value) || 0) + 1));
+        return [...counts.entries()].sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0], "pt-BR"))[0]?.[0] || "—";
+      }
+
+      function renderKpis() {
+        const records = state.filteredRecords;
+        const days = operationalDays(records);
+        const services = serviceOccurrences(records);
+        const third = records.filter((record) => record.result === "TERCEIRO");
+        const recurring = recurringGroups(records);
+        const average = days ? records.length / days : 0;
+
+        el("kpiCars").textContent = formatNumber(records.length);
+        el("kpiCarsSub").textContent = `${formatNumber(days)} dia(s) operacional(is) no filtro`;
+        el("kpiAverage").textContent = formatDecimal(average);
+        el("kpiAverageSub").textContent = state.filters.mechanic
+          ? `Média de ${state.filters.mechanic} por dia operacional`
+          : "Média geral da oficina por dia operacional";
+        el("kpiServices").textContent = formatNumber(services);
+        el("kpiServicesSub").textContent = `${formatNumber(records.filter((r) => r.categories.length).length)} visita(s) com categoria`;
+        el("kpiThird").textContent = formatNumber(third.length);
+        el("kpiThirdSub").textContent = `${formatDecimal(records.length ? third.length / records.length * 100 : 0)}% das finalizações filtradas`;
+        el("kpiRecurring").textContent = formatNumber(recurring.length);
+        el("kpiRecurringSub").textContent = `${formatNumber(recurring.reduce((sum, group) => sum + group.count, 0))} visitas nessas placas`;
+      }
+
+      function renderMechanicTable() {
+        const records = state.filteredRecords;
+        const days = operationalDays(records);
+        const groups = [...groupBy(records, (record) => record.mechanic).entries()]
+          .map(([mechanic, items]) => ({
+            mechanic,
+            items,
+            total: items.length,
+            average: days ? items.length / days : 0,
+            serviceCount: serviceOccurrences(items),
+            third: items.filter((record) => record.result === "TERCEIRO").length
+          }))
+          .sort((a, b) => b.total - a.total || a.mechanic.localeCompare(b.mechanic, "pt-BR"));
+
+        el("mechanicCount").textContent = formatNumber(groups.length);
+
+        if (!groups.length) {
+          el("mechanicTable").innerHTML = emptyState("Nenhum mecânico encontrado no período filtrado.");
+          return;
+        }
+
+        el("mechanicTable").innerHTML = `
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>#</th>
+                  <th>Mecânico</th>
+                  <th>Carros finalizados</th>
+                  <th>Média por dia</th>
+                  <th>Ocorrências de serviço</th>
+                  <th>Terceiro</th>
+                  <th>Conferência</th>
+                </tr>
+              </thead>
+              <tbody>
+                ${groups.map((group, index) => `
+                  <tr>
+                    <td><span class="rank-number">${index + 1}</span></td>
+                    <td><strong>${escapeHtml(group.mechanic)}</strong></td>
+                    <td>${formatNumber(group.total)}</td>
+                    <td>${formatDecimal(group.average)}</td>
+                    <td>${formatNumber(group.serviceCount)}</td>
+                    <td>${formatNumber(group.third)}</td>
+                    <td><button class="detail-link" data-detail="mechanic" data-key="${escapeHtml(group.mechanic)}">Ver placas</button></td>
+                  </tr>
+                `).join("")}
+              </tbody>
+            </table>
+          </div>`;
+      }
+
+      function categoryGroups(records) {
+        const groups = new Map();
+        records.forEach((record) => {
+          record.categories.forEach((code) => {
+            if (!groups.has(code)) groups.set(code, []);
+            groups.get(code).push(record);
+          });
+        });
+        return [...groups.entries()]
+          .map(([code, items]) => ({ code, name: CATEGORY_CATALOG[code] || code, count: items.length, items }))
+          .sort((a, b) => b.count - a.count || a.name.localeCompare(b.name, "pt-BR"));
+      }
+
+      function renderBarChart(containerId, groups, options = {}) {
+        const container = el(containerId);
+        const limit = options.limit || 12;
+        const visible = groups.slice(0, limit);
+        const max = Math.max(1, ...visible.map((group) => group.count));
+
+        if (!visible.length) {
+          container.innerHTML = emptyState(options.empty || "Nenhum dado encontrado.");
+          return;
+        }
+
+        container.innerHTML = visible.map((group) => `
+          <button class="bar-row" type="button" data-detail="${escapeHtml(options.detailType || "category")}" data-key="${escapeHtml(group.key || group.code || group.label || "")}" style="text-align:left;width:100%;">
+            <div class="bar-row-head">
+              <span class="bar-label" title="${escapeHtml(group.name || group.label)}">${escapeHtml(group.name || group.label)}</span>
+              <span class="bar-value">${formatNumber(group.count)}</span>
+            </div>
+            <div class="bar-track"><div class="bar-fill ${escapeHtml(options.fillClass || "")}" style="width:${Math.max(2, group.count / max * 100)}%"></div></div>
+          </button>
+        `).join("");
+      }
+
+      function renderServiceCharts() {
+        const internal = categoryGroups(state.filteredRecords.filter((record) => record.result === "INTERNO"));
+        const third = categoryGroups(state.filteredRecords.filter((record) => record.result === "TERCEIRO"));
+
+        el("internalServiceCount").textContent = formatNumber(internal.reduce((sum, group) => sum + group.count, 0));
+        el("thirdServiceCount").textContent = formatNumber(third.reduce((sum, group) => sum + group.count, 0));
+
+        renderBarChart("internalServicesChart", internal, {
+          detailType: "internal-category",
+          fillClass: "green",
+          empty: "Nenhum serviço executado internamente no filtro."
+        });
+
+        renderBarChart("thirdServicesChart", third, {
+          detailType: "third-category",
+          fillClass: "orange",
+          empty: "Nenhum envio para terceiro no filtro."
+        });
+      }
+
+      function renderDailyServices() {
+        const groups = [...groupBy(state.filteredRecords, (record) => record.dateKey).entries()]
+          .map(([dateKey, items]) => ({
+            key: dateKey,
+            label: formatDateKey(dateKey),
+            name: formatDateKey(dateKey),
+            count: serviceOccurrences(items),
+            items
+          }))
+          .sort((a, b) => a.key.localeCompare(b.key));
+
+        el("dailyCount").textContent = formatNumber(groups.length);
+        renderBarChart("dailyServicesChart", groups, {
+          detailType: "date",
+          limit: 31,
+          empty: "Nenhum serviço encontrado nas datas selecionadas."
+        });
+      }
+
+      function renderModelServices() {
+        const pairMap = new Map();
+        state.filteredRecords.forEach((record) => {
+          record.categories.forEach((code) => {
+            const key = `${record.model}|||${code}`;
+            if (!pairMap.has(key)) pairMap.set(key, []);
+            pairMap.get(key).push(record);
+          });
+        });
+
+        const groups = [...pairMap.entries()]
+          .map(([key, items]) => {
+            const [model, code] = key.split("|||");
+            return {
+              key,
+              label: `${model} • ${CATEGORY_CATALOG[code] || code}`,
+              name: `${model} • ${CATEGORY_CATALOG[code] || code}`,
+              count: items.length,
+              items
+            };
+          })
+          .sort((a, b) => b.count - a.count || a.label.localeCompare(b.label, "pt-BR"));
+
+        el("modelServiceCount").textContent = formatNumber(groups.length);
+        renderBarChart("modelServicesChart", groups, {
+          detailType: "model-category",
+          limit: 14,
+          empty: "Nenhuma combinação de modelo e serviço foi encontrada."
+        });
+      }
+
+      function renderRecurringTable() {
+        const groups = recurringGroups(state.filteredRecords);
+        el("recurringCount").textContent = formatNumber(groups.length);
+
+        if (!groups.length) {
+          el("recurringTable").innerHTML = emptyState("Nenhuma placa apareceu duas vezes no período selecionado.");
+          return;
+        }
+
+        el("recurringTable").innerHTML = `
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>#</th>
+                  <th>Placa</th>
+                  <th>Modelo predominante</th>
+                  <th>Visitas</th>
+                  <th>Primeira visita</th>
+                  <th>Última visita</th>
+                  <th>Conferência</th>
+                </tr>
+              </thead>
+              <tbody>
+                ${groups.slice(0, 100).map((group, index) => {
+                  const dates = group.items.map((item) => item.dateKey).filter(Boolean).sort();
+                  return `
+                    <tr>
+                      <td><span class="rank-number">${index + 1}</span></td>
+                      <td><strong>${escapeHtml(group.plate)}</strong></td>
+                      <td>${escapeHtml(group.model)}</td>
+                      <td>${formatNumber(group.count)}</td>
+                      <td>${escapeHtml(formatDateKey(dates[0]))}</td>
+                      <td>${escapeHtml(formatDateKey(dates.at(-1)))}</td>
+                      <td><button class="detail-link" data-detail="plate" data-key="${escapeHtml(group.plate)}">Ver visitas</button></td>
+                    </tr>`;
+                }).join("")}
+              </tbody>
+            </table>
+          </div>`;
+      }
+
+      function renderAudit() {
+        const records = state.filteredRecords;
+        const missingMechanic = records.filter((record) => record.mechanic === "MECÂNICO NÃO INFORMADO").length;
+        const missingDate = state.allRecords.filter((record) => !record.dateKey).length;
+        const missingCategory = records.filter((record) => !record.categories.length).length;
+        const missingPlate = records.filter((record) => record.plate === "SEMPLACA").length;
+
+        el("auditGrid").innerHTML = [
+          ["Sem mecânico", missingMechanic],
+          ["Sem data", missingDate],
+          ["Sem categoria", missingCategory],
+          ["Sem placa", missingPlate]
+        ].map(([label, value]) => `
+          <div class="audit-item">
+            <span>${escapeHtml(label)}</span>
+            <strong>${formatNumber(value)}</strong>
+          </div>
+        `).join("");
+      }
+
+      function emptyState(message) {
+        return `<div class="empty-state">${escapeHtml(message)}</div>`;
+      }
+
+      function detailRecords(type, key) {
+        const records = state.filteredRecords;
+        switch (type) {
+          case "all-cars":
+            return { title: "Carros finalizados", subtitle: "Todas as visitas que formaram o total filtrado.", records };
+          case "all-services":
+            return { title: "Ocorrências de serviços", subtitle: "Visitas com as categorias identificadas no período.", records: records.filter((record) => record.categories.length) };
+          case "all-third":
+            return { title: "Enviados para terceiro", subtitle: "Registros classificados como não executados internamente.", records: records.filter((record) => record.result === "TERCEIRO") };
+          case "all-recurring": {
+            const plates = new Set(recurringGroups(records).map((group) => group.plate));
+            return { title: "Placas recorrentes", subtitle: "Todas as visitas das placas com duas ou mais ocorrências.", records: records.filter((record) => plates.has(record.plate)) };
+          }
+          case "mechanic":
+            return { title: `Mecânico: ${key}`, subtitle: "Placas e datas usadas no total e na média do profissional.", records: records.filter((record) => record.mechanic === key) };
+          case "internal-category":
+            return { title: CATEGORY_CATALOG[key] || key, subtitle: "Registros executados internamente nesta categoria.", records: records.filter((record) => record.result === "INTERNO" && record.categories.includes(key)), category: key };
+          case "third-category":
+            return { title: CATEGORY_CATALOG[key] || key, subtitle: "Registros enviados para terceiro nesta categoria.", records: records.filter((record) => record.result === "TERCEIRO" && record.categories.includes(key)), category: key };
+          case "date":
+            return { title: `Serviços em ${formatDateKey(key)}`, subtitle: "Visitas e categorias identificadas nesta data.", records: records.filter((record) => record.dateKey === key) };
+          case "plate":
+            return { title: `Histórico da placa ${key}`, subtitle: "Visitas finalizadas da placa no período selecionado.", records: records.filter((record) => record.plate === key) };
+          case "model-category": {
+            const [model, category] = key.split("|||");
+            return {
+              title: `${model} • ${CATEGORY_CATALOG[category] || category}`,
+              subtitle: "Registros que formaram a combinação de modelo e serviço.",
+              records: records.filter((record) => record.model === model && record.categories.includes(category)),
+              category
+            };
+          }
+          default:
+            return { title: "Detalhamento", subtitle: "Placas e datas do indicador.", records: [] };
+        }
+      }
+
+      function openDetail(type, key = "") {
+        const detail = detailRecords(type, key);
+        const records = [...detail.records].sort((a, b) => b.timestamp - a.timestamp);
+        el("detailTitle").textContent = `${detail.title} — ${formatNumber(records.length)} registro(s)`;
+        el("detailSubtitle").textContent = detail.subtitle;
+
+        if (!records.length) {
+          el("detailBody").innerHTML = emptyState("Nenhum registro encontrado para este detalhamento.");
+        } else {
+          el("detailBody").innerHTML = `
+            <div class="table-wrap">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Data</th>
+                    <th>Placa</th>
+                    <th>Modelo</th>
+                    <th>Mecânico</th>
+                    <th>Categoria(s)</th>
+                    <th>Resultado</th>
+                    <th>Descrição original</th>
+                    <th>Fornecedor</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  ${records.map((record) => {
+                    const categories = detail.category
+                      ? [detail.category]
+                      : record.categories;
+                    return `
+                      <tr>
+                        <td>${escapeHtml(formatDateKey(record.dateKey))}</td>
+                        <td><strong>${escapeHtml(record.plate)}</strong></td>
+                        <td>${escapeHtml(record.model)}</td>
+                        <td>${escapeHtml(record.mechanic)}</td>
+                        <td>${categories.length ? categories.map((code) => escapeHtml(CATEGORY_CATALOG[code] || code)).join("<br>") : '<span class="tag tag-missing">Não classificado</span>'}</td>
+                        <td>${record.result === "TERCEIRO" ? '<span class="tag tag-third">Terceiro</span>' : '<span class="tag tag-internal">Interno</span>'}</td>
+                        <td class="detail-description">${escapeHtml(record.description || "SEM DESCRIÇÃO")}</td>
+                        <td>${escapeHtml(record.supplier || "—")}</td>
+                      </tr>`;
+                  }).join("")}
+                </tbody>
+              </table>
+            </div>`;
+        }
+
+        el("detailModal").classList.add("open");
+        el("detailModal").setAttribute("aria-hidden", "false");
+        document.body.style.overflow = "hidden";
+      }
+
+      function closeDetail() {
+        el("detailModal").classList.remove("open");
+        el("detailModal").setAttribute("aria-hidden", "true");
+        document.body.style.overflow = "";
+      }
+
+      function syncFilterBarHeight() {
+        const topbar = el("filtersTopbar");
+        if (!topbar) return;
+        const height = Math.ceil(topbar.getBoundingClientRect().height);
+        document.documentElement.style.setProperty("--filterbar-height", `${height}px`);
+      }
+
+      function renderAll() {
+        renderKpis();
+        renderMechanicTable();
+        renderServiceCharts();
+        renderDailyServices();
+        renderModelServices();
+        renderRecurringTable();
+        renderAudit();
+      }
+
+      function bindEvents() {
+        el("applyFilters").addEventListener("click", applyFilters);
+        el("clearFilters").addEventListener("click", clearFilters);
+
+        ["dateStart", "dateEnd", "mechanicFilter", "categoryFilter", "resultFilter", "originFilter"].forEach((id) => {
+          el(id).addEventListener("change", applyFilters);
+        });
+
+        window.addEventListener("resize", syncFilterBarHeight, { passive: true });
+        if ("ResizeObserver" in window) {
+          new ResizeObserver(syncFilterBarHeight).observe(el("filtersTopbar"));
+        }
+
+        document.addEventListener("click", (event) => {
+          const target = event.target.closest("[data-detail]");
+          if (!target) return;
+          openDetail(target.dataset.detail, target.dataset.key || "");
+        });
+
+        el("kpiCarsCard").addEventListener("click", () => openDetail("all-cars"));
+        el("kpiServicesCard").addEventListener("click", () => openDetail("all-services"));
+        el("kpiThirdCard").addEventListener("click", () => openDetail("all-third"));
+        el("kpiRecurringCard").addEventListener("click", () => openDetail("all-recurring"));
+
+        ["kpiCarsCard", "kpiServicesCard", "kpiThirdCard", "kpiRecurringCard"].forEach((id) => {
+          el(id).addEventListener("keydown", (event) => {
+            if (event.key === "Enter" || event.key === " ") {
+              event.preventDefault();
+              el(id).click();
+            }
+          });
+        });
+
+        el("closeModal").addEventListener("click", closeDetail);
+        el("detailModal").addEventListener("click", (event) => {
+          if (event.target === el("detailModal")) closeDetail();
+        });
+        document.addEventListener("keydown", (event) => {
+          if (event.key === "Escape") closeDetail();
+        });
+      }
+
+      function validateKnownCheckpoint() {
+        const leandroDay = state.allRecords.filter((record) => record.mechanic === "LEANDRO" && record.dateKey === "2026-07-24");
+        console.info(`[LECAR] Validação 24/07/2026 • LEANDRO: ${leandroDay.length} carros`, leandroDay.map((record) => record.plate));
+      }
+
+      function showError(error) {
+        document.body.innerHTML = `
+          <div class="error-screen">
+            <div class="error-card">
+              <h1>Não foi possível abrir o dashboard</h1>
+              <p>${escapeHtml(error?.message || String(error))}</p>
+              <p>Confirme que o arquivo <strong>data.js</strong> está na mesma pasta e contém <strong>window.LECAR_DATA</strong>.</p>
+            </div>
+          </div>`;
+      }
+
+      function init() {
+        try {
+          buildDataset();
+          populateFilters();
+          bindEvents();
+          applyFilters();
+          validateKnownCheckpoint();
+          el("loadingScreen").remove();
+          el("app").hidden = false;
+          requestAnimationFrame(syncFilterBarHeight);
+        } catch (error) {
+          console.error("[LECAR DASHBOARD]", error);
+          showError(error);
+        }
+      }
+
+      if (document.readyState === "loading") {
+        document.addEventListener("DOMContentLoaded", init, { once: true });
+      } else {
+        init();
+      }
+    })();
+  </script>
+</body>
+</html>
