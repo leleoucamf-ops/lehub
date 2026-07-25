@@ -5,7 +5,7 @@
   <meta charset="UTF-8">
   <meta name="google" content="notranslate">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>LECAR — PAINEL ADM DE SERVIÇOS</title>
+  <title>LECAR — LGVC</title>
   <link rel="icon" type="image/x-icon" href="favicon.ico">
   <link rel="apple-touch-icon" href="apple-touch-icon.png">
   <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
@@ -18626,6 +18626,652 @@ REALIZADO POR: ${autor}`,
 
       atualizarAbasModulosLeCar();
     })();
+  </script>
+
+
+  <script id="lgvc-cadastro-geral-unico-v4">
+(() => {
+  "use strict";
+
+  const COLECAO_LGVC_VEICULOS = "lgvc_veiculos";
+  const COLECAO_LGVC_ORDENS = "lgvc_ordens_servico";
+  const CHAVE_DESCRICOES_OFICINA = "lgvc_descricoes_personalizadas_v1";
+  const CHAVE_DESCRICOES_ACESSORIOS = "lecar_descricoes_acessorios_personalizadas_v1";
+  let salvandoCadastroGeralLGVC = false;
+
+  function normalizarLGVC(valor) {
+    if (typeof window.normalizar === "function") return window.normalizar(valor || "");
+    return String(valor || "").trim().toUpperCase();
+  }
+
+  function moduloAtualCadastroLGVC() {
+    try {
+      return typeof moduloAtualLeCar !== "undefined"
+        ? normalizarLGVC(moduloAtualLeCar || "")
+        : "";
+    } catch (_) {
+      return "";
+    }
+  }
+
+  function usuarioCadastroLGVC() {
+    try {
+      return typeof window.usuarioPainelAtual === "function"
+        ? normalizarLGVC(window.usuarioPainelAtual() || "ADMIN")
+        : "ADMIN";
+    } catch (_) {
+      return "ADMIN";
+    }
+  }
+
+  function lerListaLocalLGVC(chave) {
+    try {
+      const dados = JSON.parse(localStorage.getItem(chave) || "[]");
+      if (!Array.isArray(dados)) return [];
+      return [...new Set(dados.map(item => normalizarLGVC(item).replace(/\s+/g, " ")).filter(Boolean))];
+    } catch (erro) {
+      console.warn(`Não foi possível carregar o catálogo ${chave}:`, erro);
+      return [];
+    }
+  }
+
+  function opcoesDoSelectLGVC(id) {
+    const select = document.getElementById(id);
+    if (!select) return [];
+    return [...select.options]
+      .map(option => ({ valor:String(option.value || ""), texto:normalizarLGVC(option.textContent || "") }))
+      .filter(item => item.valor && item.texto && !item.texto.includes("SELECIONE") && !item.texto.includes("NENHUMA"));
+  }
+
+  function preencherSelectTextoLGVC(id, itens, textoInicial) {
+    const select = document.getElementById(id);
+    if (!select) return;
+    const lista = [...new Set((itens || []).map(item => normalizarLGVC(item).replace(/\s+/g, " ")).filter(Boolean))];
+    select.innerHTML = "";
+    const inicial = document.createElement("option");
+    inicial.value = "";
+    inicial.textContent = lista.length ? textoInicial : "NENHUMA SUGESTÃO CADASTRADA";
+    select.appendChild(inicial);
+    lista.forEach(item => {
+      const option = document.createElement("option");
+      option.value = item;
+      option.textContent = item;
+      select.appendChild(option);
+    });
+  }
+
+  function copiarOpcoesSelectLGVC(origemId, destinoId, fallback) {
+    const origem = document.getElementById(origemId);
+    const destino = document.getElementById(destinoId);
+    if (!destino) return;
+    if (origem && origem.options.length) {
+      destino.innerHTML = origem.innerHTML;
+      destino.value = origem.value || destino.options[0]?.value || "";
+      return;
+    }
+    destino.innerHTML = fallback;
+  }
+
+  function criarCadastroGeralLGVC() {
+    if (document.getElementById("modalCadastroGeralLGVC")) return;
+
+    const referencia = document.getElementById("modalCadastroServico") || document.body.lastElementChild;
+    const html = `
+      <div id="modalCadastroGeralLGVC" class="cadastro-modal-bg" onclick="fecharCadastroGeralLGVC(event)">
+        <section class="cadastro-modal form-panel lgvc-novo-servico-modal" role="dialog" aria-modal="true" aria-labelledby="tituloCadastroGeralLGVC">
+          <div class="panel-head">
+            <h2 id="tituloCadastroGeralLGVC">NOVO CADASTRO GERAL</h2>
+            <button type="button" class="cadastro-modal-close" aria-label="Fechar cadastro" onclick="fecharCadastroGeralLGVC()">×</button>
+          </div>
+
+          <form id="formCadastroGeralLGVC" class="panel-body lgvc-novo-servico-form" onsubmit="publicarCadastroGeralLGVC(event)">
+            <div class="field-grid">
+              <div class="field">
+                <label for="lgvcGeralVeiculo">Veículo</label>
+                <input id="lgvcGeralVeiculo" type="text" maxlength="80" placeholder="EX: TOYOTA COROLLA" autocomplete="off" oninput="this.value=this.value.toUpperCase()" required>
+              </div>
+              <div class="field">
+                <label for="lgvcGeralPlaca">Placa</label>
+                <input id="lgvcGeralPlaca" type="text" maxlength="8" placeholder="ABC1D23" autocomplete="off" oninput="this.value=this.value.replace(/[^a-zA-Z0-9]/g,'').toUpperCase()" required>
+              </div>
+            </div>
+
+            <div class="field">
+              <label for="lgvcGeralKm">KM</label>
+              <input id="lgvcGeralKm" type="text" inputmode="numeric" maxlength="9" placeholder="OBRIGATÓRIO QUANDO HOUVER SERVIÇO NA OFICINA" autocomplete="off" oninput="this.value=this.value.replace(/\D/g,'')">
+            </div>
+
+            <p class="form-note">PREENCHA SOMENTE OS SETORES NECESSÁRIOS. SETOR SEM SERVIÇO PREENCHIDO NÃO SERÁ PUBLICADO.</p>
+
+            <div id="lgvcBlocoOficina">
+              <div class="edicao-contexto">OFICINA — CATÁLOGO EXCLUSIVO DO SETOR</div>
+              <div class="field">
+                <label for="lgvcOficinaDescricao">Descrição do serviço</label>
+                <input id="lgvcOficinaDescricao" type="text" maxlength="120" placeholder="EX: SUSPENSÃO" autocomplete="off" oninput="this.value=this.value.replace(/\s+/g,' ').toUpperCase()">
+              </div>
+              <div class="field-grid">
+                <div class="field">
+                  <label for="lgvcOficinaSugestao">Sugestão da oficina</label>
+                  <select id="lgvcOficinaSugestao" onchange="aplicarSugestaoCadastroGeralLGVC('OFICINA', this.value)"></select>
+                </div>
+                <div class="field">
+                  <label for="lgvcOficinaPrioridade">Etiqueta</label>
+                  <select id="lgvcOficinaPrioridade"></select>
+                </div>
+              </div>
+              <button type="button" class="edicao-cancel-btn" onclick="cadastrarSugestaoSetorLGVC('OFICINA')">+ CADASTRAR SERVIÇO DA OFICINA</button>
+            </div>
+
+            <div id="lgvcBlocoAcessorios">
+              <div class="edicao-contexto">ACESSÓRIOS — CATÁLOGO EXCLUSIVO DO SETOR</div>
+              <div class="field">
+                <label for="lgvcAcessoriosDescricao">Acessório / instalação</label>
+                <input id="lgvcAcessoriosDescricao" type="text" maxlength="120" placeholder="EX: LIMPADOR DE PARA-BRISA" autocomplete="off" oninput="this.value=this.value.replace(/\s+/g,' ').toUpperCase()">
+              </div>
+              <div class="field">
+                <label for="lgvcAcessoriosSugestao">Sugestão de acessórios</label>
+                <select id="lgvcAcessoriosSugestao" onchange="aplicarSugestaoCadastroGeralLGVC('ACESSORIOS', this.value)"></select>
+              </div>
+              <div class="field-grid">
+                <div class="field">
+                  <label for="lgvcAcessoriosOperacao">Operação</label>
+                  <select id="lgvcAcessoriosOperacao"><option value="BOLSAO">BOLSÃO</option><option value="ATM">ATM</option></select>
+                </div>
+                <div class="field">
+                  <label for="lgvcAcessoriosEtiqueta">Etiqueta</label>
+                  <select id="lgvcAcessoriosEtiqueta"></select>
+                </div>
+              </div>
+              <div class="field">
+                <label for="lgvcAcessoriosObservacoes">Observações</label>
+                <textarea id="lgvcAcessoriosObservacoes" placeholder="OPCIONAL" oninput="this.value=this.value.toUpperCase()"></textarea>
+              </div>
+              <button type="button" class="edicao-cancel-btn" onclick="cadastrarSugestaoSetorLGVC('ACESSORIOS')">+ CADASTRAR SERVIÇO DE ACESSÓRIOS</button>
+            </div>
+
+            <div id="lgvcBlocoPolimento">
+              <div class="edicao-contexto">POLIMENTO — CAMPOS EXCLUSIVOS DO SETOR</div>
+              <div class="field-grid">
+                <div class="field">
+                  <label for="lgvcPolimentoCor">Cor</label>
+                  <input id="lgvcPolimentoCor" type="text" maxlength="40" placeholder="EX: PRETO" oninput="this.value=this.value.toUpperCase()">
+                </div>
+                <div class="field">
+                  <label for="lgvcPolimentoEtiqueta">Etiqueta</label>
+                  <select id="lgvcPolimentoEtiqueta"></select>
+                </div>
+              </div>
+              <div class="field-grid">
+                <div class="field">
+                  <label>Farol?</label>
+                  <label class="lava-checkbox" for="lgvcPolimentoFarol"><input id="lgvcPolimentoFarol" type="checkbox"><span>SIM — POLIR FAROL</span></label>
+                </div>
+                <div class="field">
+                  <label>Retorno?</label>
+                  <label class="lava-checkbox" for="lgvcPolimentoRetorno"><input id="lgvcPolimentoRetorno" type="checkbox" onchange="alternarRetornoCadastroGeralLGVC()"><span>SIM — É RETORNO</span></label>
+                </div>
+              </div>
+              <div id="lgvcPolimentoMotivoWrap" class="field" hidden>
+                <label for="lgvcPolimentoMotivo">Motivo do retorno</label>
+                <textarea id="lgvcPolimentoMotivo" placeholder="INFORME O MOTIVO DO RETORNO" oninput="this.value=this.value.toUpperCase()"></textarea>
+              </div>
+            </div>
+
+            <div id="lgvcBlocoLavaRapido">
+              <div class="edicao-contexto">LAVA RÁPIDO — SERVIÇOS EXCLUSIVOS DO SETOR</div>
+              <div class="field-grid">
+                <div class="field">
+                  <label for="lgvcLavaTipo">Tipo de lavagem</label>
+                  <select id="lgvcLavaTipo"><option value="">NÃO CADASTRAR LAVAGEM</option><option value="SIMPLES">SIMPLES</option><option value="COMPLETA">COMPLETA</option><option value="LH">LH</option></select>
+                </div>
+                <div class="field">
+                  <label>Adicional</label>
+                  <label class="lava-checkbox" for="lgvcLavaCera"><input id="lgvcLavaCera" type="checkbox"><span>COM CERA</span></label>
+                </div>
+              </div>
+              <div class="field">
+                <label for="lgvcLavaEtiqueta">Etiqueta</label>
+                <select id="lgvcLavaEtiqueta"></select>
+              </div>
+            </div>
+
+            <button id="btnSalvarCadastroGeralLGVC" class="submit-btn" type="submit">PUBLICAR CADASTRO GERAL</button>
+          </form>
+        </section>
+      </div>`;
+
+    if (referencia && referencia.insertAdjacentHTML) referencia.insertAdjacentHTML("beforebegin", html);
+    else document.body.insertAdjacentHTML("beforeend", html);
+  }
+
+  function selecionarEtiquetaNormalLGVC(id) {
+    const select = document.getElementById(id);
+    if (!select) return;
+
+    let opcaoNormal = [...select.options].find(option => {
+      const valor = normalizarLGVC(option.value || "");
+      const texto = normalizarLGVC(option.textContent || "");
+      return valor === "NORMAL" || texto === "NORMAL";
+    });
+
+    /* A lista dinâmica do LPA pode não trazer NORMAL. Nesse caso,
+       o LGVC cria a opção localmente para impedir que RECALL ou outra
+       etiqueta seja assumida como padrão no cadastro da Mecânica. */
+    if (!opcaoNormal) {
+      opcaoNormal = document.createElement("option");
+      opcaoNormal.value = id === "lgvcOficinaPrioridade" ? "NORMAL" : "normal";
+      opcaoNormal.textContent = "NORMAL";
+      select.insertBefore(opcaoNormal, select.firstChild);
+    }
+
+    [...select.options].forEach(option => { option.selected = false; });
+    opcaoNormal.selected = true;
+    select.value = opcaoNormal.value;
+  }
+
+  function definirEtiquetasNormaisLGVC() {
+    [
+      "lgvcOficinaPrioridade",
+      "lgvcAcessoriosEtiqueta",
+      "lgvcPolimentoEtiqueta",
+      "lgvcLavaEtiqueta"
+    ].forEach(selecionarEtiquetaNormalLGVC);
+  }
+
+  function atualizarCatalogosCadastroGeralLGVC() {
+    const oficinaPadrao = opcoesDoSelectLGVC("admSugestaoDescricao").map(item => item.texto);
+    const oficina = [...oficinaPadrao, ...lerListaLocalLGVC(CHAVE_DESCRICOES_OFICINA)];
+    preencherSelectTextoLGVC("lgvcOficinaSugestao", oficina, "SELECIONE UM SERVIÇO DA OFICINA");
+
+    const acessoriosExistentes = opcoesDoSelectLGVC("acessoriosSugestaoDescricao").map(item => item.texto);
+    const acessorios = [...acessoriosExistentes, ...lerListaLocalLGVC(CHAVE_DESCRICOES_ACESSORIOS)];
+    preencherSelectTextoLGVC("lgvcAcessoriosSugestao", acessorios, "SELECIONE UM SERVIÇO DE ACESSÓRIOS");
+
+    copiarOpcoesSelectLGVC("admPrioridade", "lgvcOficinaPrioridade", '<option value="NORMAL">NORMAL</option><option value="VENDIDO">VENDIDO</option><option value="RETORNO">RETORNO</option><option value="ATRASADO">ATRASADO</option><option value="URGENTE">URGENTE</option>');
+    copiarOpcoesSelectLGVC("acessoriosEtiqueta", "lgvcAcessoriosEtiqueta", '<option value="normal">NORMAL</option>');
+    copiarOpcoesSelectLGVC("polimentoEtiqueta", "lgvcPolimentoEtiqueta", '<option value="normal">NORMAL</option><option value="retorno">RETORNO</option><option value="atrasado">ATRASADO</option><option value="urgente">URGENTE</option>');
+    copiarOpcoesSelectLGVC("lavaEtiqueta", "lgvcLavaEtiqueta", '<option value="normal">NORMAL</option>');
+  }
+
+  window.aplicarSugestaoCadastroGeralLGVC = function(setor, valor) {
+    const descricao = normalizarLGVC(valor).replace(/\s+/g, " ");
+    if (!descricao) return;
+    const campoId = setor === "OFICINA" ? "lgvcOficinaDescricao" : "lgvcAcessoriosDescricao";
+    const campo = document.getElementById(campoId);
+    if (!campo) return;
+    campo.value = descricao;
+    campo.focus();
+    campo.setSelectionRange?.(campo.value.length, campo.value.length);
+  };
+
+  window.cadastrarSugestaoSetorLGVC = function(setor) {
+    const oficina = setor === "OFICINA";
+    const chave = oficina ? CHAVE_DESCRICOES_OFICINA : CHAVE_DESCRICOES_ACESSORIOS;
+    const rotulo = oficina ? "SERVIÇO DA OFICINA" : "SERVIÇO DE ACESSÓRIOS";
+    const digitada = window.prompt(`DIGITE O NOVO ${rotulo}:`, "");
+    if (digitada === null) return;
+    const descricao = normalizarLGVC(digitada).replace(/\s+/g, " ").slice(0, 120);
+    if (!descricao) return alert("INFORME UMA DESCRIÇÃO VÁLIDA.");
+    try {
+      const atuais = lerListaLocalLGVC(chave);
+      if (!atuais.includes(descricao)) localStorage.setItem(chave, JSON.stringify([...atuais, descricao]));
+      atualizarCatalogosCadastroGeralLGVC();
+      window.aplicarSugestaoCadastroGeralLGVC(setor, descricao);
+      if (typeof window.mostrarToast === "function") window.mostrarToast(`${rotulo} CADASTRADO.`);
+    } catch (erro) {
+      console.error(`Não foi possível salvar o catálogo de ${setor}:`, erro);
+      alert("NÃO FOI POSSÍVEL SALVAR A DESCRIÇÃO NESTE APARELHO.");
+    }
+  };
+
+  window.alternarRetornoCadastroGeralLGVC = function() {
+    const retorno = Boolean(document.getElementById("lgvcPolimentoRetorno")?.checked);
+    const wrap = document.getElementById("lgvcPolimentoMotivoWrap");
+    const campo = document.getElementById("lgvcPolimentoMotivo");
+    if (wrap) wrap.hidden = !retorno;
+    if (campo) {
+      campo.required = retorno;
+      if (!retorno) campo.value = "";
+    }
+  };
+
+  function setoresSelecionadosLGVC() {
+    const setores = [];
+    const oficinaDescricao = normalizarLGVC(document.getElementById("lgvcOficinaDescricao")?.value).replace(/\s+/g, " ");
+    const acessoriosDescricao = normalizarLGVC(document.getElementById("lgvcAcessoriosDescricao")?.value).replace(/\s+/g, " ");
+    const polimentoCor = normalizarLGVC(document.getElementById("lgvcPolimentoCor")?.value);
+    const polimentoFarol = Boolean(document.getElementById("lgvcPolimentoFarol")?.checked);
+    const polimentoRetorno = Boolean(document.getElementById("lgvcPolimentoRetorno")?.checked);
+    const polimentoMotivo = normalizarLGVC(document.getElementById("lgvcPolimentoMotivo")?.value);
+    const lavaTipo = normalizarLGVC(document.getElementById("lgvcLavaTipo")?.value);
+
+    if (oficinaDescricao) setores.push("OFICINA");
+    if (acessoriosDescricao) setores.push("ACESSORIOS");
+    if (polimentoCor || polimentoFarol || polimentoRetorno || polimentoMotivo) setores.push("POLIMENTO");
+    if (lavaTipo) setores.push("LAVA_RAPIDO");
+    return setores;
+  }
+
+  function etiquetaBasicaDoSelectLGVC(id, corPadrao = "#64748B") {
+    const select = document.getElementById(id);
+    const option = select?.selectedOptions?.[0];
+    const valor = String(select?.value || "normal");
+    return {
+      id:valor || "normal",
+      nome:normalizarLGVC(option?.textContent || valor || "NORMAL") || "NORMAL",
+      cor:corPadrao
+    };
+  }
+
+  function fecharTodosCadastrosSetoriaisLGVC() {
+    ["modalCadastroServico", "modalCadastroAcessorios", "modalCadastroPolimento", "modalCadastroLavaRapido"].forEach(id => {
+      document.getElementById(id)?.classList.remove("open");
+    });
+  }
+
+  window.abrirCadastroGeralLGVC = function(dados = {}) {
+    if (typeof window.acessoAdminValido === "function" && !window.acessoAdminValido()) return;
+    criarCadastroGeralLGVC();
+    fecharTodosCadastrosSetoriaisLGVC();
+    const form = document.getElementById("formCadastroGeralLGVC");
+    form?.reset();
+    atualizarCatalogosCadastroGeralLGVC();
+    definirEtiquetasNormaisLGVC();
+    /* Reforço após a renderização do modal para evitar restauração automática
+       do valor anterior pelo navegador ou por carregamento tardio das etiquetas. */
+    window.setTimeout(definirEtiquetasNormaisLGVC, 0);
+    window.setTimeout(definirEtiquetasNormaisLGVC, 120);
+
+    const veiculo = normalizarLGVC(dados.veiculo || dados.carro || "");
+    const placa = normalizarLGVC(dados.placa || "").replace(/[^A-Z0-9]/g, "");
+    const km = String(dados.km || dados.kmAtual || "").replace(/\D/g, "");
+    if (document.getElementById("lgvcGeralVeiculo")) document.getElementById("lgvcGeralVeiculo").value = veiculo;
+    if (document.getElementById("lgvcGeralPlaca")) document.getElementById("lgvcGeralPlaca").value = placa;
+    if (document.getElementById("lgvcGeralKm")) document.getElementById("lgvcGeralKm").value = km;
+
+    window.alternarRetornoCadastroGeralLGVC();
+    document.getElementById("modalCadastroGeralLGVC")?.classList.add("open");
+    document.body.classList.add("cadastro-modal-open");
+    window.setTimeout(() => document.getElementById("lgvcGeralVeiculo")?.focus(), 40);
+  };
+
+  window.fecharCadastroGeralLGVC = function(event) {
+    const modal = document.getElementById("modalCadastroGeralLGVC");
+    if (!modal) return;
+    if (event && event.target !== modal) return;
+    modal.classList.remove("open");
+    if (!document.querySelector(".cadastro-modal-bg.open,.etiquetas-modal-bg.open")) {
+      document.body.classList.remove("cadastro-modal-open");
+    }
+  };
+
+  window.publicarCadastroGeralLGVC = async function(event) {
+    event.preventDefault();
+    if (salvandoCadastroGeralLGVC) return;
+    if (typeof window.acessoAdminValido === "function" && !window.acessoAdminValido()) return;
+
+    const veiculo = normalizarLGVC(document.getElementById("lgvcGeralVeiculo")?.value).replace(/\s+/g, " ");
+    const placa = normalizarLGVC(document.getElementById("lgvcGeralPlaca")?.value).replace(/[^A-Z0-9]/g, "");
+    const km = String(document.getElementById("lgvcGeralKm")?.value || "").replace(/\D/g, "");
+    const setores = setoresSelecionadosLGVC();
+
+    if (!veiculo || placa.length < 6) return alert("PREENCHA VEÍCULO E PLACA.");
+    if (!setores.length) return alert("PREENCHA PELO MENOS UM SERVIÇO EM OFICINA, ACESSÓRIOS, POLIMENTO OU LAVA RÁPIDO.");
+    if (setores.includes("OFICINA") && !km) return alert("INFORME O KM PARA O SERVIÇO DA OFICINA.");
+
+    const oficinaDescricao = normalizarLGVC(document.getElementById("lgvcOficinaDescricao")?.value).replace(/\s+/g, " ");
+    const acessoriosDescricao = normalizarLGVC(document.getElementById("lgvcAcessoriosDescricao")?.value).replace(/\s+/g, " ");
+    const polimentoCor = normalizarLGVC(document.getElementById("lgvcPolimentoCor")?.value);
+    const polimentoFarol = Boolean(document.getElementById("lgvcPolimentoFarol")?.checked);
+    const polimentoRetorno = Boolean(document.getElementById("lgvcPolimentoRetorno")?.checked);
+    const polimentoMotivo = normalizarLGVC(document.getElementById("lgvcPolimentoMotivo")?.value);
+    const lavaTipo = normalizarLGVC(document.getElementById("lgvcLavaTipo")?.value);
+    const lavaCera = Boolean(document.getElementById("lgvcLavaCera")?.checked);
+
+    if (setores.includes("OFICINA") && !oficinaDescricao) return alert("INFORME O SERVIÇO DA OFICINA.");
+    if (setores.includes("ACESSORIOS") && !acessoriosDescricao) return alert("INFORME O SERVIÇO DE ACESSÓRIOS.");
+    if (setores.includes("POLIMENTO") && !polimentoCor) return alert("INFORME A COR DO VEÍCULO PARA O POLIMENTO.");
+    if (setores.includes("POLIMENTO") && polimentoRetorno && !polimentoMotivo) return alert("INFORME O MOTIVO DO RETORNO DO POLIMENTO.");
+    if (setores.includes("LAVA_RAPIDO") && !["SIMPLES", "COMPLETA", "LH"].includes(lavaTipo)) return alert("SELECIONE UM TIPO DE LAVAGEM VÁLIDO.");
+
+    salvandoCadastroGeralLGVC = true;
+    const botao = document.getElementById("btnSalvarCadastroGeralLGVC");
+    if (botao) {
+      botao.disabled = true;
+      botao.textContent = "PUBLICANDO...";
+    }
+
+    const agora = new Date();
+    const usuario = usuarioCadastroLGVC();
+    const veiculoRef = db.collection(COLECAO_LGVC_VEICULOS).doc(placa);
+    const ordemRef = db.collection(COLECAO_LGVC_ORDENS).doc();
+    const auditoriaRef = db.collection("auditoria_lecar").doc();
+    const lote = db.batch();
+    const servicos = {};
+
+    try {
+      if (setores.includes("OFICINA")) {
+        const etiqueta = typeof window.etiquetaPorNomeLPA === "function"
+          ? window.etiquetaPorNomeLPA(document.getElementById("lgvcOficinaPrioridade")?.value || "NORMAL")
+          : etiquetaBasicaDoSelectLGVC("lgvcOficinaPrioridade", "#64748B");
+        const ref = db.collection("servicos_lista_geral").doc();
+        servicos.OFICINA = ref.id;
+        lote.set(ref, {
+          modulo:"OFICINA",
+          lgvcVeiculoId:placa,
+          lgvcOrdemId:ordemRef.id,
+          cadastroGeralLGVC:true,
+          veiculo,
+          placa,
+          km,
+          kmAtual:km,
+          quilometragem:km,
+          descricao:oficinaDescricao,
+          origem:"BOLSÃO",
+          prioridade:normalizarLGVC(etiqueta.nome || "NORMAL"),
+          etiquetaId:etiqueta.id || "normal",
+          etiquetaCor:etiqueta.cor || "#64748B",
+          statusServico:"AGUARDANDO ORÇAMENTO",
+          statusDistribuicao:"DISPONIVEL",
+          mecanicoResponsavel:"",
+          mecanico_responsavel:"",
+          ativo:true,
+          criadoPor:usuario,
+          criadoEm:firebase.firestore.FieldValue.serverTimestamp(),
+          criadoEmISO:agora.toISOString(),
+          ultimaAtualizacao:firebase.firestore.FieldValue.serverTimestamp(),
+          ultimaAtualizacaoISO:agora.toISOString()
+        });
+      }
+
+      if (setores.includes("ACESSORIOS")) {
+        const etiqueta = etiquetaBasicaDoSelectLGVC("lgvcAcessoriosEtiqueta", "#64748B");
+        const operacao = document.getElementById("lgvcAcessoriosOperacao")?.value === "ATM" ? "ATM" : "BOLSÃO";
+        const observacoes = normalizarLGVC(document.getElementById("lgvcAcessoriosObservacoes")?.value);
+        const ref = db.collection("acessorios_servicos").doc();
+        servicos.ACESSORIOS = ref.id;
+        lote.set(ref, {
+          modulo:"ACESSORIOS",
+          lgvcVeiculoId:placa,
+          lgvcOrdemId:ordemRef.id,
+          cadastroGeralLGVC:true,
+          veiculo,
+          placa,
+          descricao:acessoriosDescricao,
+          operacao,
+          instalador:"",
+          observacoes,
+          status:"AGUARDANDO",
+          prioridade:etiqueta.nome,
+          etiqueta:etiqueta.nome,
+          etiquetaId:etiqueta.id,
+          excluido:false,
+          criadoEm:firebase.firestore.FieldValue.serverTimestamp(),
+          criadoEmISO:agora.toISOString(),
+          atualizadoEm:firebase.firestore.FieldValue.serverTimestamp(),
+          atualizadoEmISO:agora.toISOString(),
+          criadoPor:usuario
+        });
+      }
+
+      if (setores.includes("POLIMENTO")) {
+        const etiqueta = typeof window.etiquetaPolimentoPorId === "function"
+          ? window.etiquetaPolimentoPorId(document.getElementById("lgvcPolimentoEtiqueta")?.value || "normal")
+          : etiquetaBasicaDoSelectLGVC("lgvcPolimentoEtiqueta", "#64748B");
+        const ref = db.collection("polimento_servicos").doc();
+        servicos.POLIMENTO = ref.id;
+        lote.set(ref, {
+          modulo:"POLIMENTO",
+          lgvcVeiculoId:placa,
+          lgvcOrdemId:ordemRef.id,
+          cadastroGeralLGVC:true,
+          veiculo,
+          placa,
+          cor:polimentoCor,
+          farol:polimentoFarol,
+          polirFarol:polimentoFarol,
+          retorno:polimentoRetorno,
+          motivoRetorno:polimentoRetorno ? polimentoMotivo : "",
+          motivo_retorno:polimentoRetorno ? polimentoMotivo : "",
+          descricao:`POLIMENTO${polimentoFarol ? " + FAROL" : ""}${polimentoRetorno ? " — RETORNO" : ""}`,
+          origem:"BOLSÃO",
+          operacao:"BOLSÃO",
+          prioridade:normalizarLGVC(etiqueta.nome || "NORMAL"),
+          etiqueta:normalizarLGVC(etiqueta.nome || "NORMAL"),
+          etiquetaId:etiqueta.id || "normal",
+          etiquetaCor:etiqueta.cor || "#64748B",
+          urgente:(etiqueta.id || "") === "urgente",
+          status:"AGUARDANDO",
+          statusDistribuicao:"DISPONIVEL",
+          polidorResponsavel:"",
+          polidor_responsavel:"",
+          excluido:false,
+          criadoPor:usuario,
+          criadoEm:firebase.firestore.FieldValue.serverTimestamp(),
+          criadoEmISO:agora.toISOString(),
+          atualizadoEmISO:agora.toISOString()
+        });
+      }
+
+      if (setores.includes("LAVA_RAPIDO")) {
+        const etiqueta = etiquetaBasicaDoSelectLGVC("lgvcLavaEtiqueta", "#64748B");
+        const ref = db.collection("lava_rapido_servicos").doc();
+        servicos.LAVA_RAPIDO = ref.id;
+        lote.set(ref, {
+          modulo:"LAVA_RAPIDO",
+          lgvcVeiculoId:placa,
+          lgvcOrdemId:ordemRef.id,
+          cadastroGeralLGVC:true,
+          veiculo,
+          placa,
+          tipoLavagem:lavaTipo,
+          tipo_lavagem:lavaTipo,
+          comCera:lavaCera,
+          com_cera:lavaCera,
+          descricao:`LAVAGEM ${lavaTipo}${lavaCera ? " + CERA" : ""}`,
+          prioridade:etiqueta.nome,
+          etiqueta:etiqueta.nome,
+          etiquetaId:etiqueta.id,
+          status:"AGUARDANDO",
+          statusDistribuicao:"DISPONIVEL",
+          lavadorResponsavel:"",
+          lavador_responsavel:"",
+          excluido:false,
+          criadoPor:usuario,
+          criadoEm:firebase.firestore.FieldValue.serverTimestamp(),
+          criadoEmISO:agora.toISOString(),
+          atualizadoEmISO:agora.toISOString()
+        });
+      }
+
+      lote.set(veiculoRef, {
+        veiculo,
+        placa,
+        kmAtual:km || "",
+        ultimaOrdemId:ordemRef.id,
+        setoresUltimaOrdem:setores,
+        ativo:true,
+        criadoEm:firebase.firestore.FieldValue.serverTimestamp(),
+        criadoEmISO:agora.toISOString(),
+        atualizadoEm:firebase.firestore.FieldValue.serverTimestamp(),
+        atualizadoEmISO:agora.toISOString(),
+        atualizadoPor:usuario
+      }, { merge:true });
+
+      lote.set(ordemRef, {
+        veiculoId:placa,
+        veiculo,
+        placa,
+        km:km || "",
+        setores,
+        servicos,
+        status:"ABERTA",
+        origemCadastro:"LGVC",
+        criadoPor:usuario,
+        criadoEm:firebase.firestore.FieldValue.serverTimestamp(),
+        criadoEmISO:agora.toISOString(),
+        atualizadoEm:firebase.firestore.FieldValue.serverTimestamp(),
+        atualizadoEmISO:agora.toISOString()
+      });
+
+      lote.set(auditoriaRef, {
+        tipo:"CADASTRO_GERAL_LGVC",
+        modulo:"LGVC",
+        usuario,
+        veiculo,
+        placa,
+        lgvcVeiculoId:placa,
+        lgvcOrdemId:ordemRef.id,
+        setores,
+        servicos,
+        criadoEm:firebase.firestore.FieldValue.serverTimestamp(),
+        criadoEmISO:agora.toISOString()
+      });
+
+      await lote.commit();
+
+      setores.forEach(setor => {
+        try {
+          window.registrarAtividadeLeCar?.({
+            modulo:setor === "LAVA_RAPIDO" ? "LAVA RÁPIDO" : setor === "ACESSORIOS" ? "ACESSÓRIOS" : setor,
+            acao:"CADASTROU",
+            usuario,
+            veiculo,
+            placa,
+            statusNovo:"AGUARDANDO",
+            detalhe:`ORDEM LGVC: ${ordemRef.id}`
+          });
+        } catch (_) {}
+      });
+
+      document.getElementById("formCadastroGeralLGVC")?.reset();
+      window.fecharCadastroGeralLGVC();
+      if (typeof window.mostrarToast === "function") {
+        window.mostrarToast(`VEÍCULO CADASTRADO EM ${setores.length} SETOR${setores.length === 1 ? "" : "ES"}.`);
+      }
+    } catch (erro) {
+      console.error("Erro ao publicar cadastro geral do LGVC:", erro);
+      const permissao = String(erro?.code || "").includes("permission-denied");
+      alert(permissao
+        ? "NÃO FOI POSSÍVEL GRAVAR O CADASTRO GERAL. AS REGRAS DO FIREBASE PRECISAM LIBERAR AS COLEÇÕES lgvc_veiculos E lgvc_ordens_servico."
+        : "NÃO FOI POSSÍVEL PUBLICAR O CADASTRO GERAL.");
+    } finally {
+      salvandoCadastroGeralLGVC = false;
+      if (botao) {
+        botao.disabled = false;
+        botao.textContent = "PUBLICAR CADASTRO GERAL";
+      }
+    }
+  };
+
+  criarCadastroGeralLGVC();
+
+  window.abrirCadastroModulo = function() {
+    if (moduloAtualCadastroLGVC() === "CHECK") return;
+    window.abrirCadastroGeralLGVC();
+  };
+})();
+
   </script>
 
 </body>
