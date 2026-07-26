@@ -1,5 +1,5 @@
 <!doctype html>
-<!-- LGVO — AJUSTES OPERACIONAIS + BLOQUEIO SETORIAL V1 / 2026-07-25 -->
+<!-- LGVO — CORREÇÃO DE PEÇAS NA REATRIBUIÇÃO V1 / 2026-07-26 -->
 <html lang="pt-BR" translate="no">
   <head>
     <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
@@ -9015,6 +9015,7 @@ function sincronizarFirebase() {
         const modelo = normalizarTextoBusca(v.veiculo) || "VEÍCULO NÃO INFORMADO";
         const dataHora = formatarDataServicoListaGeral(v);
         const resumo = gerarResumoServico(v.descricao);
+        const kmCard = renderizarKmCard(v);
         const prioridade = normalizarTextoBusca(v.prioridade || "NORMAL");
         const statusOperacional = v.statusServico || "AGUARDANDO ORÇAMENTO";
         const corClass = obterClasseStatusOperacional(statusOperacional);
@@ -9061,6 +9062,7 @@ function sincronizarFirebase() {
               </div>
               <div class="service-meta">
                 <div class="meta-row"><svg class="ui-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M21 10C21 16 12 22 12 22C12 22 3 16 3 10A9 9 0 0 1 21 10Z"></path><circle cx="12" cy="10" r="3"></circle></svg><span>${escaparHTML(v.origem || "-")}</span></div>
+                ${kmCard}
                 <div class="meta-row"><svg class="ui-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M16 2V6"></path><path d="M8 2V6"></path><path d="M3 10H21"></path><path d="M5 4H19C20.1 4 21 4.9 21 6V20C21 21.1 20.1 22 19 22H5C3.9 22 3 21.1 3 20V6C3 4.9 3.9 4 5 4Z"></path></svg><span>${escaparHTML(dataHora.data)} • ${escaparHTML(dataHora.hora)}</span></div>
                 ${avisoBloqueio}
               </div>
@@ -9120,6 +9122,89 @@ function sincronizarFirebase() {
               if (resumo) resumo.textContent = "ERRO AO CARREGAR";
             }
           );
+      }
+
+      function normalizarListaPecasLGVO(valor) {
+        if (!Array.isArray(valor)) return [];
+        return valor
+          .map(item => normalizarTextoBusca(item))
+          .filter(Boolean);
+      }
+
+      function mesclarListasPecasLGVO(...listas) {
+        const resultado = [];
+        const existentes = new Set();
+
+        listas.forEach(lista => {
+          normalizarListaPecasLGVO(lista).forEach(peca => {
+            const chave = normalizarTextoBusca(peca);
+            if (!chave || existentes.has(chave)) return;
+            existentes.add(chave);
+            resultado.push(peca);
+          });
+        });
+
+        return resultado;
+      }
+
+      function listasPecasIguaisLGVO(listaA, listaB) {
+        const a = normalizarListaPecasLGVO(listaA);
+        const b = normalizarListaPecasLGVO(listaB);
+        return a.length === b.length && a.every((item, indice) => item === b[indice]);
+      }
+
+      async function reconciliarPecasComListaGeralLGVO(indice) {
+        const veiculoLocal = dados[indice];
+        const listaGeralId = veiculoLocal?.lista_geral_id;
+        if (!veiculoLocal?.id || !listaGeralId) return veiculoLocal;
+
+        const veiculoRef = db.collection("veiculos").doc(veiculoLocal.id);
+        const geralRef = db.collection("servicos_lista_geral").doc(listaGeralId);
+        let resultado = veiculoLocal;
+
+        await db.runTransaction(async transaction => {
+          const veiculoSnapshot = await transaction.get(veiculoRef);
+          const geralSnapshot = await transaction.get(geralRef);
+          if (!veiculoSnapshot.exists || !geralSnapshot.exists) return;
+
+          const veiculoFirebase = { id:veiculoSnapshot.id, ...veiculoSnapshot.data() };
+          const geralFirebase = geralSnapshot.data() || {};
+          const pecasMescladas = mesclarListasPecasLGVO(veiculoFirebase.pecas, geralFirebase.pecas);
+          const controleCompartilhamento = veiculoFirebase.pecas_compartilhamento_whatsapp
+            || geralFirebase.pecas_compartilhamento_whatsapp
+            || null;
+
+          const atualizacaoVeiculo = {};
+          const atualizacaoGeral = {};
+
+          if (!listasPecasIguaisLGVO(veiculoFirebase.pecas, pecasMescladas)) {
+            atualizacaoVeiculo.pecas = pecasMescladas;
+          }
+          if (!listasPecasIguaisLGVO(geralFirebase.pecas, pecasMescladas)) {
+            atualizacaoGeral.pecas = pecasMescladas;
+          }
+
+          if (controleCompartilhamento) {
+            if (!veiculoFirebase.pecas_compartilhamento_whatsapp) {
+              atualizacaoVeiculo.pecas_compartilhamento_whatsapp = controleCompartilhamento;
+            }
+            if (!geralFirebase.pecas_compartilhamento_whatsapp) {
+              atualizacaoGeral.pecas_compartilhamento_whatsapp = controleCompartilhamento;
+            }
+          }
+
+          if (Object.keys(atualizacaoVeiculo).length) transaction.update(veiculoRef, atualizacaoVeiculo);
+          if (Object.keys(atualizacaoGeral).length) transaction.update(geralRef, atualizacaoGeral);
+
+          resultado = {
+            ...veiculoFirebase,
+            pecas:pecasMescladas,
+            pecas_compartilhamento_whatsapp:controleCompartilhamento
+          };
+        });
+
+        dados[indice] = { ...dados[indice], ...resultado };
+        return dados[indice];
       }
 
       async function assumirServicoListaGeral(servicoId, botao) {
@@ -9185,13 +9270,15 @@ function sincronizarFirebase() {
               placa:normalizarTextoBusca(servico.placa || ""),
               descricao:descricaoServico,
               trocaOleo:descricaoEhTrocaOleo(descricaoServico),
-              kmAtualOleo:"",
+              kmAtual:obterKmAtualVeiculo(servico),
+              kmAtualOleo:obterKmAtualVeiculo(servico),
               origem:normalizarTextoBusca(servico.origem || "-"),
               prioridade:normalizarTextoBusca(etiquetaServico.nome || servico.prioridade || "NORMAL"),
               dataEntrada:agora.toLocaleString("pt-BR"),
               dataEntradaISO:agora.toISOString(),
               status:obterStatusCurto(servico.statusServico || "AGUARDANDO ORÇAMENTO"),
-              pecas:[],
+              pecas:normalizarListaPecasLGVO(servico.pecas),
+              pecas_compartilhamento_whatsapp:servico.pecas_compartilhamento_whatsapp || null,
               mecanico_responsavel:usuario,
               mecanico_uid:usuarioFirebaseAtual?.uid || "",
               ultima_modificacao:agora.toLocaleString("pt-BR"),
@@ -9616,7 +9703,12 @@ async function salvar() {
     placa: placa.value.toUpperCase(),
     descricao: descricao.value.toUpperCase(),
     trocaOleo: descricaoEhTrocaOleo(descricao.value),
-    kmAtualOleo: descricaoEhTrocaOleo(descricao.value) ? (kmAtualOleo?.value || "").trim() : "",
+    kmAtual: descricaoEhTrocaOleo(descricao.value)
+      ? (kmAtualOleo?.value || "").trim()
+      : (index.value !== "" ? obterKmAtualVeiculo(dados[index.value]) : ""),
+    kmAtualOleo: descricaoEhTrocaOleo(descricao.value)
+      ? (kmAtualOleo?.value || "").trim()
+      : (index.value !== "" ? obterKmAtualVeiculo(dados[index.value]) : ""),
     origem,
     dataEntrada: new Date().toLocaleString("pt-BR"),
     dataEntradaISO: new Date().toISOString(),
@@ -9824,6 +9916,42 @@ async function salvar() {
         return `<svg viewBox="0 0 100 100" role="img"><circle cx="50" cy="50" r="42" fill="none" stroke="currentColor" stroke-width="6"/><text x="50" y="57" text-anchor="middle" class="brand-text" fill="currentColor">${sigla}</text></svg>`;
       }
 
+      function obterKmAtualVeiculo(v) {
+        const candidatos = [
+          v?.kmAtual,
+          v?.kmAtualOleo,
+          v?.km,
+          v?.quilometragemAtual,
+          v?.quilometragem
+        ];
+
+        for (const valor of candidatos) {
+          if (valor === null || valor === undefined) continue;
+          const texto = String(valor).trim();
+          if (!texto) continue;
+          const somenteDigitos = texto.replace(/\D/g, "");
+          return somenteDigitos || texto;
+        }
+
+        return "";
+      }
+
+      function formatarKmAtualVeiculo(v) {
+        const km = obterKmAtualVeiculo(v);
+        if (!km) return "";
+        if (/^\d+$/.test(km)) {
+          const numero = Number(km);
+          if (Number.isFinite(numero)) return numero.toLocaleString("pt-BR");
+        }
+        return String(km).toUpperCase();
+      }
+
+      function renderizarKmCard(v) {
+        const km = formatarKmAtualVeiculo(v);
+        if (!km) return "";
+        return `<div class="meta-row meta-row-km"><svg class="ui-icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"></circle><path d="M7 15A5 5 0 0 1 17 15"></path><path d="M12 12L15 9"></path><path d="M8 9H8.01"></path><path d="M16 9H16.01"></path></svg><span>${escaparHTML(km)} KM</span></div>`;
+      }
+
       function obterPartesData(dataEntrada) {
         const texto = String(dataEntrada || "-");
         const partes = texto.split(",");
@@ -9857,6 +9985,7 @@ async function salvar() {
         const modelo = normalizarTextoBusca(v.veiculo) || "VEÍCULO CADASTRADO";
         const dataHora = obterPartesData(finalizado ? (v.dataFinalizacao || v.ultima_modificacao || v.dataEntrada) : (v.dataEntrada || v.ultima_modificacao || v.dataFinalizacao));
         const resumo = gerarResumoServico(v.descricao);
+        const kmCard = renderizarKmCard(v);
         const corClass = obterClasseStatusOperacional(v.status);
         const visualEtiqueta = visualEtiquetaCardLeCar(v);
         const cardClick = finalizado ? `onclick="navegar('abrir_finalizado_${v.iOriginal}'); abrirModalFinalizado(${v.iOriginal})"` : "";
@@ -9881,6 +10010,7 @@ async function salvar() {
               </div>
               <div class="service-meta">
                 <div class="meta-row"><svg class="ui-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M21 10C21 16 12 22 12 22C12 22 3 16 3 10A9 9 0 0 1 21 10Z"></path><circle cx="12" cy="10" r="3"></circle></svg><span>${escaparHTML(v.origem || '-')}</span></div>
+                ${kmCard}
                 <div class="meta-row"><svg class="ui-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M16 2V6"></path><path d="M8 2V6"></path><path d="M3 10H21"></path><path d="M5 4H19C20.1 4 21 4.9 21 6V20C21 21.1 20.1 22 19 22H5C3.9 22 3 21.1 3 20V6C3 4.9 3.9 4 5 4Z"></path></svg><span>${escaparHTML(dataHora.data)}</span></div>
                 <div class="meta-row"><svg class="ui-icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"></circle><path d="M12 7V12L15 14"></path></svg><span>${escaparHTML(dataHora.hora)}</span></div>
               </div>
@@ -10410,7 +10540,7 @@ async function salvar() {
         veiculo.value = v.veiculo;
         placa.value = v.placa;
         descricao.value = v.descricao;
-        if (kmAtualOleo) kmAtualOleo.value = v.kmAtualOleo || "";
+        if (kmAtualOleo) kmAtualOleo.value = obterKmAtualVeiculo(v);
         verificarCampoKmOleo();
         status.value = v.status;
         atm.checked = v.origem === "ATM";
@@ -10715,7 +10845,7 @@ async function salvar() {
           return false;
         }
 
-        const pecasAtualizadas = v.pecas || [];
+        const pecasAtualizadas = normalizarListaPecasLGVO(v.pecas);
         let novoStatus = v.status;
 
         if (
@@ -10726,16 +10856,47 @@ async function salvar() {
           novoStatus = "AGUARDANDO PEÇAS";
         }
 
+        const agora = new Date();
         const payload = {
           pecas: pecasAtualizadas,
           status: novoStatus,
-          ultima_modificacao: new Date().toLocaleString()
+          ultima_modificacao: agora.toLocaleString("pt-BR"),
+          ultima_modificacao_iso: agora.toISOString()
         };
 
         try {
-          await db.collection("veiculos").doc(v.id).update(payload);
+          const veiculoRef = db.collection("veiculos").doc(v.id);
+          const listaGeralId = v.lista_geral_id;
+
+          if (listaGeralId) {
+            const geralRef = db.collection("servicos_lista_geral").doc(listaGeralId);
+
+            await db.runTransaction(async transaction => {
+              const geralSnapshot = await transaction.get(geralRef);
+              transaction.update(veiculoRef, payload);
+
+              if (geralSnapshot.exists) {
+                const atualizacaoGeral = {
+                  pecas:pecasAtualizadas,
+                  statusServico:obterStatusCurto(novoStatus),
+                  ultimaAtualizacao:firebase.firestore.FieldValue.serverTimestamp(),
+                  ultimaAtualizacaoISO:agora.toISOString()
+                };
+
+                if (v.pecas_compartilhamento_whatsapp) {
+                  atualizacaoGeral.pecas_compartilhamento_whatsapp = v.pecas_compartilhamento_whatsapp;
+                }
+
+                transaction.update(geralRef, atualizacaoGeral);
+              }
+            });
+          } else {
+            await veiculoRef.update(payload);
+          }
+
           registrarAtividadeLeCar("PECAS_ALTERADAS", {
             registroId: v.id,
+            listaGeralId:v.lista_geral_id || "",
             veiculo: v.veiculo,
             placa: v.placa,
             quantidadePecas: pecasAtualizadas.length,
@@ -10750,11 +10911,11 @@ async function salvar() {
           };
 
           atualizarTabela();
-          console.log("[v0] Peças salvas no Firebase:", v.id);
+          console.log("[v0] Peças salvas e sincronizadas:", v.id, v.lista_geral_id || "SEM LISTA GERAL");
           return true;
         } catch (err) {
-          console.error("[v0] Erro ao salvar peças:", err);
-          alert("Erro ao salvar peças no Firebase. Verifique sua conexão.");
+          console.error("[v0] Erro ao salvar/sincronizar peças:", err);
+          alert("Erro ao salvar peças no Firebase. Nenhuma alteração parcial foi confirmada.");
           return false;
         }
       }
@@ -10857,16 +11018,27 @@ async function salvar() {
         abrirModal(i);
       }
 
-      function abrirModal(i) {
+      async function abrirModal(i) {
         fecharModalBusca(false);
         indicePecasAtual = i;
         novaPeca.value = "";
         limparModeloCategoria();
+        listaPecas.innerHTML = '<li style="justify-content:center;color:#64748b;">CARREGANDO PEÇAS...</li>';
+        modal.style.display = "flex";
+
+        try {
+          await reconciliarPecasComListaGeralLGVO(i);
+        } catch (erro) {
+          console.warn("Não foi possível reconciliar peças com a Lista Geral:", erro);
+        }
+
+        if (indicePecasAtual !== i || !dados[i]) return;
+
         listaPecas.innerHTML = "";
-        (dados[i].pecas || []).forEach((p, j) => {
-          let li = document.createElement("li");
+        normalizarListaPecasLGVO(dados[i].pecas).forEach((p, j) => {
+          const li = document.createElement("li");
           li.textContent = p;
-          let btn = document.createElement("button");
+          const btn = document.createElement("button");
           btn.textContent = "X";
           btn.onclick = () => {
             navegar("remover_peca_" + j);
@@ -10875,7 +11047,14 @@ async function salvar() {
           li.appendChild(btn);
           listaPecas.appendChild(li);
         });
-        modal.style.display = "flex";
+
+        if (!normalizarListaPecasLGVO(dados[i].pecas).length) {
+          const li = document.createElement("li");
+          li.textContent = "NENHUMA PEÇA CADASTRADA";
+          li.style.justifyContent = "center";
+          li.style.color = "#64748b";
+          listaPecas.appendChild(li);
+        }
 
         // Evita abrir o teclado automaticamente no celular ao abrir o modal de peças.
         if (document.activeElement && typeof document.activeElement.blur === "function") {
@@ -11077,9 +11256,13 @@ async function sincronizarStatusListaGeral(veiculo, novoStatus) {
     const finalizado = normalizarTextoBusca(novoStatus || "").includes("FINALIZADO");
     const atualizacao = {
       statusServico:obterStatusCurto(novoStatus),
+      pecas:normalizarListaPecasLGVO(veiculo?.pecas),
       ultimaAtualizacao:firebase.firestore.FieldValue.serverTimestamp(),
       ultimaAtualizacaoISO:agora.toISOString()
     };
+    if (veiculo?.pecas_compartilhamento_whatsapp) {
+      atualizacao.pecas_compartilhamento_whatsapp = veiculo.pecas_compartilhamento_whatsapp;
+    }
     if (finalizado) {
       atualizacao.ativo = false;
       atualizacao.statusDistribuicao = "FINALIZADO";
