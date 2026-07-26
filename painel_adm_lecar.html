@@ -5952,6 +5952,786 @@
     }
   </style>
 
+
+
+  <style id="lpa-modulo-pecas-experimental-v7-baixa-novas">
+    body.modulo-pecas-ativo { overflow-y:auto !important; }
+    body.modulo-pecas-ativo .lpa-taskbar { display:none !important; }
+    body.modulo-pecas-ativo .main { padding-bottom:18px !important; }
+
+    .pecas-module-main .layout { display:block !important; width:100% !important; }
+    .pecas-module-panel { width:100% !important; }
+    .pecas-module-head { min-height:58px; flex-wrap:wrap; }
+    .pecas-module-title { display:flex; align-items:center; gap:9px; min-width:230px; }
+    .pecas-experimental-badge {
+      min-height:23px; padding:0 8px; display:inline-flex; align-items:center; justify-content:center;
+      border:1px solid #fde68a; border-radius:999px; background:#fffbeb; color:#92400e;
+      font-size:.52rem; font-weight:950; letter-spacing:.04em; white-space:nowrap;
+    }
+    .pecas-new-toggle {
+      width:100%;
+      min-height:34px;
+      margin:0;
+      padding:4px 8px;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:8px;
+      border:1px solid #fecaca;
+      border-radius:10px;
+      background:#fff7f7;
+      color:#991b1b;
+      cursor:pointer;
+      user-select:none;
+      -webkit-tap-highlight-color:transparent;
+    }
+    .pecas-new-toggle input {
+      position:absolute;
+      width:1px !important;
+      height:1px !important;
+      margin:-1px !important;
+      padding:0 !important;
+      overflow:hidden;
+      clip:rect(0 0 0 0);
+      white-space:nowrap;
+      border:0;
+    }
+    .pecas-new-toggle-track {
+      position:relative;
+      width:38px;
+      height:22px;
+      min-width:38px;
+      display:inline-flex;
+      align-items:center;
+      border:1px solid #cbd5e1;
+      border-radius:999px;
+      background:#e2e8f0;
+      transition:background .18s ease,border-color .18s ease;
+    }
+    .pecas-new-toggle-thumb {
+      position:absolute;
+      left:3px;
+      width:16px;
+      height:16px;
+      border-radius:50%;
+      background:#ffffff;
+      box-shadow:0 2px 5px rgba(15,23,42,.22);
+      transition:transform .18s ease;
+    }
+    .pecas-new-toggle-state {
+      min-width:62px;
+      font-size:.52rem;
+      font-weight:950;
+      line-height:1.1;
+      letter-spacing:.025em;
+      text-align:center;
+      white-space:nowrap;
+      text-transform:uppercase;
+    }
+    .pecas-new-toggle input:checked + .pecas-new-toggle-track {
+      border-color:#dc2626;
+      background:#dc2626;
+    }
+    .pecas-new-toggle input:checked + .pecas-new-toggle-track .pecas-new-toggle-thumb {
+      transform:translateX(16px);
+    }
+    .pecas-new-toggle:has(input:focus-visible) {
+      outline:3px solid rgba(220,38,38,.20);
+      outline-offset:2px;
+    }
+    .pecas-new-toggle:has(input:disabled) { opacity:.62; cursor:wait; }
+    .pecas-new-toggle:not(:has(input:checked)) {
+      border-color:#cbd5e1;
+      background:#f8fafc;
+      color:#64748b;
+    }
+    .pecas-module-body { overflow:visible !important; }
+
+    .pecas-stats {
+      display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:9px; margin-bottom:10px;
+    }
+    .pecas-stat-card {
+      min-height:66px; padding:10px 12px; border:1px solid #dbe3ef; border-radius:13px;
+      background:linear-gradient(180deg,#ffffff,#f8fafc); box-shadow:0 4px 12px rgba(15,23,42,.05);
+    }
+    .pecas-stat-card > span { color:#64748b; font-size:.56rem; font-weight:950; text-transform:uppercase; }
+    .pecas-stat-card > strong { display:block; margin-top:5px; color:#1d4ed8; font-size:1.35rem; line-height:1; }
+    .pecas-stat-card.status-guide {
+      display:flex; flex-direction:column; justify-content:center; gap:5px;
+    }
+    .pecas-status-guide-row {
+      display:grid; grid-template-columns:auto minmax(0,1fr); align-items:center; gap:6px;
+      min-width:0;
+    }
+    .pecas-status-guide-badge {
+      display:inline-flex; align-items:center; justify-content:center; min-height:20px; padding:3px 7px;
+      border-radius:999px; font-size:.48rem; font-weight:950; line-height:1.05; text-align:center;
+      white-space:nowrap; text-transform:uppercase;
+    }
+    .pecas-status-guide-badge.waiting-parts { background:#facc15; color:#1e293b; }
+    .pecas-status-guide-badge.waiting-service { background:#cbd5e1; color:#334155; }
+    .pecas-status-guide-text {
+      min-width:0; color:#475569; font-size:.53rem; font-weight:900; line-height:1.12;
+      text-transform:uppercase;
+    }
+
+    .pecas-groups { display:grid; grid-template-columns:minmax(0,1fr); gap:10px; }
+    .pecas-group-card {
+      width:100%; min-width:0; border:1px solid #dbe3ef; border-radius:15px;
+      background:#ffffff; box-shadow:0 6px 16px rgba(15,23,42,.06); overflow:hidden;
+    }
+    .pecas-group-head {
+      min-height:48px; padding:8px 12px; display:flex; align-items:center; gap:10px;
+      border-bottom:1px solid #e2e8f0; background:linear-gradient(90deg,#f8fafc,#eef4ff);
+    }
+    .pecas-group-avatar {
+      width:34px; height:34px; min-width:34px; display:inline-flex; align-items:center; justify-content:center;
+      border-radius:11px; background:linear-gradient(145deg,#1e3a8a,#2563eb); color:#fff;
+      font-size:.7rem; font-weight:950; box-shadow:0 4px 10px rgba(37,99,235,.20);
+    }
+    .pecas-group-name { min-width:0; color:#0f2748; font-size:.78rem; font-weight:950; text-transform:uppercase; }
+    .pecas-group-count {
+      margin-left:auto; min-width:29px; height:25px; padding:0 8px; display:inline-flex; align-items:center; justify-content:center;
+      border-radius:999px; background:#dbeafe; color:#1d4ed8; font-size:.62rem; font-weight:950;
+    }
+    /* SEM BARRA INTERNA: toda a rolagem vertical acontece na página. */
+    .pecas-group-scroll {
+      width:100%;
+      max-height:none;
+      overflow:visible;
+      overscroll-behavior:auto;
+    }
+    .pecas-row {
+      width:100%;
+      min-width:0;
+      min-height:64px;
+      padding:8px 10px;
+      display:grid;
+      grid-template-columns:minmax(112px,.68fr) minmax(160px,1fr) minmax(220px,1.62fr) minmax(126px,.74fr) minmax(60px,.38fr) minmax(108px,.64fr) 42px;
+      grid-template-areas:"vehicle service parts status origin update action";
+      gap:8px;
+      align-items:start;
+      border-bottom:1px solid #edf2f7;
+      background:#fff;
+    }
+    .pecas-row:nth-child(even) { background:#f8fafc; }
+    .pecas-row:hover { background:#eef4ff; }
+    .pecas-row:last-child { border-bottom:0; }
+
+    .pecas-field {
+      min-width:0;
+      height:100%;
+      display:flex;
+      flex-direction:column;
+      align-items:flex-start;
+      justify-content:flex-start;
+      overflow:hidden;
+    }
+    .pecas-field.vehicle { grid-area:vehicle; }
+    .pecas-field.service { grid-area:service; }
+    .pecas-field.parts { grid-area:parts; }
+    .pecas-field.status { grid-area:status; width:100%; }
+    .pecas-field.status .pecas-value { width:100%; max-width:none; display:block; }
+    .pecas-field.origin { grid-area:origin; }
+    .pecas-field.update { grid-area:update; }
+    .pecas-field.action {
+      grid-area:action;
+      align-items:flex-end;
+      justify-content:flex-start;
+      overflow:visible;
+    }
+    .pecas-field.action::before { display:none; }
+
+    .pecas-wa-btn {
+      width:34px;
+      height:34px;
+      min-width:34px;
+      margin:0;
+      padding:0;
+      border:1px solid #86efac;
+      border-radius:10px;
+      background:#dcfce7;
+      color:#15803d;
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      box-shadow:0 2px 6px rgba(21,128,61,.12);
+      cursor:pointer;
+    }
+    .pecas-wa-btn:hover {
+      background:#bbf7d0;
+      border-color:#4ade80;
+      transform:none;
+      opacity:1;
+    }
+    .pecas-wa-btn svg {
+      width:20px;
+      height:20px;
+      fill:none;
+      stroke:currentColor;
+      stroke-width:1.9;
+      stroke-linecap:round;
+      stroke-linejoin:round;
+      pointer-events:none;
+    }
+
+    .pecas-field::before {
+      content:attr(data-label);
+      color:#94a3b8;
+      font-size:.46rem;
+      font-weight:950;
+      line-height:1;
+      letter-spacing:.03em;
+      text-transform:uppercase;
+      white-space:nowrap;
+    }
+    .pecas-value {
+      min-width:0;
+      max-width:100%;
+      margin-top:4px;
+      color:#334155;
+      font-size:.61rem;
+      font-weight:760;
+      line-height:1.25;
+      text-transform:uppercase;
+      white-space:normal;
+      overflow-wrap:anywhere;
+    }
+    .pecas-vehicle-main {
+      color:#0f172a;
+      font-size:.72rem;
+      font-weight:950;
+      line-height:1.05;
+      letter-spacing:.025em;
+    }
+    .pecas-vehicle-model {
+      display:block;
+      margin-top:4px;
+      color:#475569;
+      font-size:.57rem;
+      font-weight:800;
+      line-height:1.2;
+      overflow-wrap:anywhere;
+    }
+    .pecas-service-value {
+      display:-webkit-box;
+      -webkit-box-orient:vertical;
+      -webkit-line-clamp:3;
+      overflow:hidden;
+    }
+    .pecas-list-value {
+      display:flex;
+      flex-wrap:wrap;
+      align-content:flex-start;
+      gap:4px;
+      white-space:normal;
+      overflow:visible;
+    }
+    .pecas-chip {
+      max-width:100%;
+      min-height:21px;
+      padding:3px 7px;
+      display:inline-flex;
+      align-items:center;
+      border:1px solid #fde68a;
+      border-radius:999px;
+      background:#fffbeb;
+      color:#92400e;
+      font-size:.54rem;
+      font-weight:900;
+      line-height:1.1;
+      overflow-wrap:anywhere;
+    }
+    .pecas-chip-nova-badge {
+      min-height:16px;
+      margin-left:5px;
+      padding:1px 5px;
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      border-radius:999px;
+      background:#dc2626;
+      color:#ffffff;
+      font-size:.42rem;
+      font-weight:950;
+      line-height:1;
+      letter-spacing:.035em;
+      white-space:nowrap;
+    }
+
+    /* STATUS: MESMO PADRÃO VISUAL FORTE DO LGVO. */
+    .pecas-status {
+      width:100%;
+      max-width:100%;
+      min-height:27px;
+      padding:4px 8px;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      box-sizing:border-box;
+      border:0;
+      border-radius:999px;
+      font-size:.52rem;
+      font-weight:950;
+      line-height:1.08;
+      text-align:center;
+      white-space:normal;
+      overflow-wrap:anywhere;
+      box-shadow:0 2px 6px rgba(15,23,42,.08);
+    }
+    .pecas-status.status-agendamento { background:#f87171; color:#fff; }
+    .pecas-status.status-pecas { background:#facc15; color:#1e293b; }
+    .pecas-status.status-servico { background:#cbd5e1; color:#334155; }
+    .pecas-status.status-fornecedor { background:#3b82f6; color:#fff; }
+    .pecas-status.status-finalizado { background:#4ade80; color:#fff; }
+    .pecas-empty-group { padding:18px; color:#64748b; font-size:.66rem; font-weight:850; text-align:center; text-transform:uppercase; }
+
+    @media (max-width:900px) {
+    }
+    @media (max-width:520px) {
+    }
+
+    /* MODAL DE COMPARTILHAMENTO WHATSAPP — seleção temporária; salva somente o controle auxiliar de peças já compartilhadas. */
+    .pecas-share-modal-bg {
+      display:none;
+      position:fixed;
+      inset:0;
+      z-index:2200;
+      padding:18px;
+      align-items:center;
+      justify-content:center;
+      background:rgba(15,23,42,.56);
+      backdrop-filter:blur(5px);
+    }
+    .pecas-share-modal-bg.show { display:flex; }
+    body.pecas-share-modal-open { overflow:hidden !important; }
+    .pecas-share-modal {
+      width:560px;
+      max-width:100%;
+      max-height:88vh;
+      display:flex;
+      flex-direction:column;
+      overflow:hidden;
+      border:1px solid #dbe3ef;
+      border-radius:18px;
+      background:#fff;
+      box-shadow:0 24px 70px rgba(15,23,42,.34);
+    }
+    .pecas-share-modal-head {
+      min-height:64px;
+      padding:13px 15px;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:12px;
+      border-bottom:1px solid #e2e8f0;
+      background:linear-gradient(90deg,#f8fafc,#eef4ff);
+    }
+    .pecas-share-modal-head h3 { color:#0f2748; font-size:.88rem; font-weight:950; text-transform:uppercase; }
+    .pecas-share-modal-head p { margin-top:3px; color:#64748b; font-size:.61rem; font-weight:750; text-transform:uppercase; }
+    .pecas-share-close {
+      width:34px; height:34px; min-width:34px; margin:0; padding:0;
+      border:1px solid #cbd5e1; border-radius:10px; background:#fff; color:#334155;
+      display:inline-flex; align-items:center; justify-content:center; font-size:1.15rem; font-weight:900;
+    }
+    .pecas-share-modal-body { padding:14px; overflow-y:auto; }
+    .pecas-share-context {
+      display:grid;
+      grid-template-columns:repeat(2,minmax(0,1fr));
+      gap:8px;
+      margin-bottom:12px;
+    }
+    .pecas-share-context-item {
+      min-width:0;
+      padding:9px 10px;
+      border:1px solid #dbeafe;
+      border-radius:11px;
+      background:#eff6ff;
+    }
+    .pecas-share-context-item span {
+      display:block; color:#64748b; font-size:.49rem; font-weight:950; text-transform:uppercase;
+    }
+    .pecas-share-context-item strong {
+      display:block; margin-top:4px; color:#0f2748; font-size:.69rem; font-weight:900;
+      line-height:1.25; text-transform:uppercase; overflow-wrap:anywhere;
+    }
+    .pecas-share-select-all {
+      min-height:38px;
+      margin-bottom:8px;
+      padding:7px 10px;
+      display:flex;
+      align-items:center;
+      gap:9px;
+      border:1px solid #bbf7d0;
+      border-radius:11px;
+      background:#f0fdf4;
+      color:#166534;
+      font-size:.64rem;
+      font-weight:950;
+      text-transform:uppercase;
+      cursor:pointer;
+    }
+    .pecas-share-select-all input,
+    .pecas-share-item input {
+      width:20px;
+      height:20px;
+      min-width:20px;
+      margin:0;
+      accent-color:#16a34a;
+      cursor:pointer;
+    }
+    .pecas-share-list { display:grid; gap:7px; }
+    .pecas-share-item {
+      min-height:42px;
+      padding:8px 10px;
+      display:flex;
+      align-items:flex-start;
+      gap:9px;
+      border:1px solid #e2e8f0;
+      border-radius:11px;
+      background:#fff;
+      color:#334155;
+      font-size:.67rem;
+      font-weight:850;
+      line-height:1.3;
+      text-transform:uppercase;
+      cursor:pointer;
+    }
+    .pecas-share-item:has(input:checked) { border-color:#86efac; background:#f0fdf4; color:#166534; }
+    .pecas-share-item-text { min-width:0; flex:1; overflow-wrap:anywhere; }
+    .pecas-share-item-new {
+      min-height:18px;
+      padding:1px 6px;
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      border-radius:999px;
+      background:#dc2626;
+      color:#ffffff;
+      font-size:.45rem;
+      font-weight:950;
+      line-height:1;
+      white-space:nowrap;
+    }
+    .pecas-share-actions {
+      padding:11px 14px;
+      display:grid;
+      grid-template-columns:1fr 1.45fr;
+      gap:8px;
+      border-top:1px solid #e2e8f0;
+      background:#f8fafc;
+    }
+    .pecas-share-cancel,
+    .pecas-share-send {
+      min-height:40px;
+      margin:0;
+      border-radius:11px;
+      font-size:.67rem;
+      font-weight:950;
+      text-transform:uppercase;
+    }
+    .pecas-share-cancel { border:1px solid #cbd5e1; background:#fff; color:#475569; }
+    .pecas-share-send {
+      border:1px solid #16a34a;
+      background:#16a34a;
+      color:#fff;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      gap:7px;
+    }
+    .pecas-share-send svg { width:18px; height:18px; fill:none; stroke:currentColor; stroke-width:2; }
+    @media (max-width:520px) {
+      .pecas-share-modal-bg { padding:10px; }
+      .pecas-share-context { grid-template-columns:1fr; }
+      .pecas-share-actions { grid-template-columns:1fr; }
+    }
+
+
+    /* LARGURAS INTERMEDIÁRIAS: reorganiza a linha, nunca cria scroll horizontal. */
+    @media (max-width:1050px) {
+      .pecas-row {
+        grid-template-columns:minmax(112px,.68fr) minmax(158px,.95fr) minmax(210px,1.48fr) minmax(124px,.74fr) 42px;
+        grid-template-areas:
+          "vehicle service parts status action"
+          "vehicle origin parts update action";
+        row-gap:7px;
+      }
+    }
+
+    @media (max-width:760px) {
+      .pecas-module-head { align-items:flex-start; }
+      .pecas-module-title { width:100%; }
+      .pecas-stats { grid-template-columns:repeat(2,minmax(0,1fr)); gap:6px; }
+      .pecas-stat-card { min-height:58px; padding:8px; }
+      .pecas-stat-card > strong { font-size:1.12rem; }
+      .pecas-status-guide-row { grid-template-columns:1fr; gap:3px; }
+      .pecas-status-guide-badge { justify-self:start; white-space:normal; }
+      .pecas-group-head { padding:7px 9px; }
+      .pecas-row {
+        grid-template-columns:minmax(104px,.68fr) minmax(0,1fr) 42px;
+        grid-template-areas:
+          "vehicle status action"
+          "service service service"
+          "parts parts parts"
+          "origin update update";
+        min-height:0;
+        padding:10px;
+      }
+    }
+
+    @media (max-width:480px) {
+      .pecas-stats { grid-template-columns:repeat(2,minmax(0,1fr)); }
+      .pecas-row {
+        grid-template-columns:minmax(0,1fr) 42px;
+        grid-template-areas:
+          "vehicle action"
+          "status status"
+          "service service"
+          "parts parts"
+          "origin origin"
+          "update update";
+      }
+    }
+  </style>
+
+
+
+  
+
+
+  <style id="lpa-modulo-pecas-v13-filtros-tamanho-conteudo">
+    /*
+      V13 — FILTROS DIMENSIONADOS PELO CONTEÚDO.
+      Este bloco é o único responsável pelo layout dos filtros do módulo Peças.
+      Os controles não crescem para preencher linha, coluna ou espaço disponível.
+    */
+    .pecas-module-head {
+      align-items:center !important;
+      gap:10px !important;
+      padding:10px 14px !important;
+    }
+
+    .pecas-module-filters {
+      width:fit-content !important;
+      max-width:100% !important;
+      margin-left:auto !important;
+      display:flex !important;
+      grid-template-columns:none !important;
+      align-items:center !important;
+      justify-content:flex-start !important;
+      flex:0 1 auto !important;
+      flex-wrap:wrap !important;
+      gap:6px !important;
+    }
+
+    .pecas-module-filters .operation-filter-shell {
+      width:max-content !important;
+      max-width:100% !important;
+      min-width:0 !important;
+      min-height:32px !important;
+      height:32px !important;
+      margin:0 !important;
+      padding:2px 3px 2px 8px !important;
+      display:inline-flex !important;
+      grid-template-columns:none !important;
+      flex:0 0 auto !important;
+      flex-direction:row !important;
+      align-items:center !important;
+      justify-content:flex-start !important;
+      gap:5px !important;
+      box-sizing:border-box !important;
+      border:1px solid #bfdbfe !important;
+      border-radius:10px !important;
+      background:#eff6ff !important;
+      color:#1e3a8a !important;
+      box-shadow:none !important;
+    }
+
+    .pecas-module-filters .operation-filter-shell > label:first-child {
+      min-width:0 !important;
+      min-height:0 !important;
+      height:auto !important;
+      margin:0 !important;
+      padding:0 !important;
+      display:block !important;
+      color:#1e3a8a !important;
+      font-size:.52rem !important;
+      font-weight:950 !important;
+      line-height:1 !important;
+      letter-spacing:.03em !important;
+      text-transform:uppercase !important;
+      white-space:nowrap !important;
+    }
+
+    .pecas-module-filters .operation-filter-shell select {
+      field-sizing:content !important;
+      width:auto !important;
+      min-width:68px !important;
+      height:25px !important;
+      min-height:25px !important;
+      max-height:25px !important;
+      margin:0 !important;
+      padding:0 22px 0 7px !important;
+      flex:0 0 auto !important;
+      box-sizing:border-box !important;
+      border:1px solid #93c5fd !important;
+      border-radius:8px !important;
+      outline:none !important;
+      background-color:#ffffff !important;
+      color:#0f2748 !important;
+      font-size:.59rem !important;
+      font-weight:900 !important;
+      line-height:25px !important;
+      text-transform:uppercase !important;
+      cursor:pointer !important;
+      box-shadow:none !important;
+    }
+
+    .pecas-module-filters #filtroPecasMecanico {
+      max-width:140px !important;
+    }
+
+    .pecas-module-filters #filtroPecasStatus {
+      max-width:178px !important;
+    }
+
+    .pecas-module-filters .operation-filter-shell select:focus {
+      border-color:#2563eb !important;
+      box-shadow:0 0 0 3px rgba(37,99,235,.12) !important;
+    }
+
+    .pecas-module-filters .pecas-new-control {
+      width:max-content !important;
+      min-width:0 !important;
+      flex:0 0 auto !important;
+    }
+
+    .pecas-module-filters .pecas-new-toggle {
+      width:max-content !important;
+      min-width:0 !important;
+      height:25px !important;
+      min-height:25px !important;
+      max-height:25px !important;
+      margin:0 !important;
+      padding:2px 6px !important;
+      align-self:center !important;
+      display:inline-flex !important;
+      flex:0 0 auto !important;
+      align-items:center !important;
+      justify-content:flex-start !important;
+      gap:5px !important;
+      box-sizing:border-box !important;
+      border:1px solid #93c5fd !important;
+      border-radius:8px !important;
+      background:#ffffff !important;
+      color:#0f2748 !important;
+      box-shadow:none !important;
+    }
+
+    .pecas-module-filters .pecas-new-toggle-track {
+      width:30px !important;
+      min-width:30px !important;
+      height:16px !important;
+      border-color:#cbd5e1 !important;
+      background:#e2e8f0 !important;
+    }
+
+    .pecas-module-filters .pecas-new-toggle-thumb {
+      left:2px !important;
+      width:12px !important;
+      height:12px !important;
+      box-shadow:0 1px 4px rgba(15,23,42,.22) !important;
+    }
+
+    .pecas-module-filters .pecas-new-toggle input:checked + .pecas-new-toggle-track {
+      border-color:#dc2626 !important;
+      background:#dc2626 !important;
+    }
+
+    .pecas-module-filters .pecas-new-toggle input:checked + .pecas-new-toggle-track .pecas-new-toggle-thumb {
+      transform:translateX(14px) !important;
+    }
+
+    .pecas-module-filters .pecas-new-toggle-state {
+      min-width:0 !important;
+      color:inherit !important;
+      font-size:.50rem !important;
+      font-weight:950 !important;
+      line-height:1 !important;
+      letter-spacing:.02em !important;
+      text-align:center !important;
+      white-space:nowrap !important;
+      text-transform:uppercase !important;
+    }
+
+    .pecas-module-filters .pecas-new-toggle:not(:has(input:checked)) {
+      border-color:#93c5fd !important;
+      background:#ffffff !important;
+      color:#64748b !important;
+    }
+
+    @media (max-width:1080px) {
+      .pecas-module-head {
+        align-items:flex-start !important;
+      }
+
+      .pecas-module-filters {
+        order:4 !important;
+        width:100% !important;
+        margin-left:0 !important;
+        display:flex !important;
+        grid-template-columns:none !important;
+        justify-content:flex-start !important;
+      }
+    }
+
+    @media (max-width:700px) {
+      .pecas-module-filters,
+      .services-header-filters.pecas-module-filters {
+        width:100% !important;
+        display:flex !important;
+        grid-template-columns:none !important;
+        flex-wrap:wrap !important;
+        justify-content:flex-start !important;
+        gap:6px !important;
+      }
+
+      .pecas-module-filters .operation-filter-shell,
+      .pecas-module-filters .operation-filter-shell:has(#filtroPecasMecanico),
+      .pecas-module-filters .operation-filter-shell:has(#filtroPecasStatus) {
+        width:max-content !important;
+        min-width:0 !important;
+        max-width:100% !important;
+        flex:0 0 auto !important;
+      }
+
+      .pecas-module-filters .operation-filter-shell select,
+      .pecas-module-filters .pecas-new-toggle {
+        width:auto !important;
+        min-width:0 !important;
+        flex:0 0 auto !important;
+      }
+
+      .pecas-module-filters #filtroPecasMecanico,
+      .pecas-module-filters #filtroPecasStatus {
+        min-width:68px !important;
+      }
+    }
+
+    @media (max-width:460px) {
+      .pecas-module-filters .operation-filter-shell,
+      .pecas-module-filters .operation-filter-shell:has(#filtroPecasMecanico),
+      .pecas-module-filters .operation-filter-shell:has(#filtroPecasStatus) {
+        width:max-content !important;
+        flex:0 0 auto !important;
+      }
+    }
+  </style>
+
+
+  
+
 </head>
 <body data-lecar-build="FIREBASE_AUTH_V8_2_USUARIOS_INTERFACE_ENXUTA">
   <section id="loginPage" class="login-page" aria-label="Acesso ao sistema LeCar">
@@ -5990,7 +6770,7 @@
           <button id="tabModuloAcessorios" type="button" class="system-tab" title="Sistema Acessórios" onclick="selecionarModuloLeCar('ACESSORIOS')">ACESSÓRIOS</button>
           <button id="tabModuloPolimento" type="button" class="system-tab" title="Sistema Polimento" onclick="selecionarModuloLeCar('POLIMENTO')">POLIMENTO</button>
           <button id="tabModuloLavaRapido" type="button" class="system-tab" title="Sistema Lava Rápido" onclick="selecionarModuloLeCar('LAVA_RAPIDO')">LAVA RÁPIDO</button>
-          <button id="tabModuloPecas" type="button" class="system-tab module-placeholder" aria-disabled="true" title="Módulo Peças">PEÇAS</button>
+          <button id="tabModuloPecas" type="button" class="system-tab" title="Módulo Peças — Experimental" onclick="selecionarModuloLeCar('PECAS')">PEÇAS</button>
         </div>
       </nav>
 
@@ -6110,6 +6890,61 @@
       </div>
     </main>
 
+
+    <main id="mainPecas" class="main modulo-main pecas-module-main" hidden>
+      <div class="layout">
+        <section class="panel list-panel pecas-module-panel">
+          <div class="panel-head services-panel-head pecas-module-head">
+            <div class="pecas-module-title">
+              <h2>PEÇAS SOLICITADAS</h2>
+              <span class="pecas-experimental-badge">EXPERIMENTAL • LGVO</span>
+            </div>
+            <div class="services-view-summary"><span>SERVIÇOS COM PEÇAS</span><strong id="totalServicosPecasModulo">0</strong></div>
+            <div class="services-header-filters pecas-module-filters" aria-label="Filtros e controle do módulo de peças">
+              <div class="operation-filter-shell show pecas-new-control">
+                <label for="toggleExibirNovasPecas">EXIBIR NOVAS</label>
+                <label class="pecas-new-toggle" for="toggleExibirNovasPecas" title="Desligue para remover os indicativos NOVA sem compartilhar pelo WhatsApp">
+                  <input id="toggleExibirNovasPecas" type="checkbox" checked aria-label="Remover indicativos NOVA das peças">
+                  <span class="pecas-new-toggle-track" aria-hidden="true"><span class="pecas-new-toggle-thumb"></span></span>
+                  <span id="textoToggleNovasPecas" class="pecas-new-toggle-state">ATIVAS</span>
+                </label>
+              </div>
+              <div class="operation-filter-shell show">
+                <label for="filtroPecasMecanico">MECÂNICO</label>
+                <select id="filtroPecasMecanico" onchange="alterarFiltroPecasMecanico(this.value)">
+                  <option value="TODOS">TODOS</option>
+                </select>
+              </div>
+              <div class="operation-filter-shell show">
+                <label for="filtroPecasStatus">STATUS</label>
+                <select id="filtroPecasStatus" onchange="alterarFiltroPecasStatus(this.value)">
+                  <option value="TODOS">TODOS</option>
+                </select>
+              </div>
+            </div>
+          </div>
+          <div class="panel-body services-panel-body pecas-module-body">
+            <div class="pecas-stats" aria-label="Resumo do módulo de peças">
+              <div class="pecas-stat-card"><span>SERVIÇOS</span><strong id="statServicosPecas">0</strong></div>
+              <div class="pecas-stat-card"><span>ITENS DE PEÇAS</span><strong id="statItensPecas">0</strong></div>
+              <div class="pecas-stat-card"><span>MECÂNICOS</span><strong id="statMecanicosPecas">0</strong></div>
+              <div class="pecas-stat-card status-guide" aria-label="Explicação dos status de peças">
+                <span>ENTENDA OS STATUS</span>
+                <div class="pecas-status-guide-row">
+                  <span class="pecas-status-guide-badge waiting-parts">AGUARDANDO PEÇAS</span>
+                  <span class="pecas-status-guide-text">PEÇAS AINDA NÃO CHEGARAM</span>
+                </div>
+                <div class="pecas-status-guide-row">
+                  <span class="pecas-status-guide-badge waiting-service">AGUARDANDO SERVIÇO</span>
+                  <span class="pecas-status-guide-text">PEÇAS JÁ CHEGARAM</span>
+                </div>
+              </div>
+            </div>
+            <div id="listaPecasModuloAdm" class="pecas-groups"><div class="empty">CARREGANDO PEÇAS...</div></div>
+          </div>
+        </section>
+      </div>
+    </main>
 
     <main id="mainLavaRapido" class="main modulo-main" hidden>
       <div class="layout">
@@ -7461,6 +8296,8 @@
         etiquetaId:etiqueta.id,
         etiquetaCor:etiqueta.cor,
         trocaOleo:descricaoEhTrocaOleoLPA(registro.descricao || dados.descricao || ""),
+        pecas:Array.isArray(dados.pecas) ? [...dados.pecas] : [],
+        pecas_compartilhamento_whatsapp:dados.pecas_compartilhamento_whatsapp || null,
         statusServico:status,
         statusDistribuicao:"DISPONIVEL",
         mecanicoResponsavel:"",
@@ -7522,6 +8359,8 @@
             etiquetaId:etiqueta.id,
             etiquetaCor:etiqueta.cor,
             trocaOleo:descricaoEhTrocaOleoLPA(item.descricao || descricao),
+            pecas:Array.isArray(item.pecas) ? [...item.pecas] : [],
+            pecas_compartilhamento_whatsapp:item.pecas_compartilhamento_whatsapp || null,
             statusServico:statusCanonicoEdicao(item.status || "AGUARDANDO ORÇAMENTO"),
             statusDistribuicao:"DISPONIVEL",
             mecanicoResponsavel:"",
@@ -7551,6 +8390,8 @@
               etiquetaId:atualizacaoLista.etiquetaId,
               etiquetaCor:atualizacaoLista.etiquetaCor,
               trocaOleo:atualizacaoLista.trocaOleo,
+              pecas:Array.isArray(atualizacaoLista.pecas) ? [...atualizacaoLista.pecas] : [],
+              pecas_compartilhamento_whatsapp:atualizacaoLista.pecas_compartilhamento_whatsapp || null,
               statusServico:atualizacaoLista.statusServico,
               statusDistribuicao:"DISPONIVEL",
               mecanicoResponsavel:"",
@@ -7734,6 +8575,7 @@
             dataEntradaISO:agora.toISOString(),
             status,
             pecas:Array.isArray(item.pecas) ? item.pecas : [],
+            pecas_compartilhamento_whatsapp:item.pecas_compartilhamento_whatsapp || null,
             mecanico_responsavel:mecanico,
             mecanicoResponsavel:mecanico,
             ultima_modificacao:agora.toLocaleString("pt-BR"),
@@ -10039,6 +10881,7 @@ REALIZADO POR: ${autor}`,
             .filter(item => veiculoEstaAtivo(item) && !registroBloqueado(item));
           atualizarBarraTarefas();
           if (["ANDAMENTO","URGENTE","MECANICOS"].includes(visaoPainelAtual)) renderizarServicos();
+          if (typeof moduloAtualLeCar !== "undefined" && moduloAtualLeCar === "PECAS" && typeof window.renderizarModuloPecas === "function") window.renderizarModuloPecas();
           if (document.getElementById("modalImportacaoPlanilha")?.classList.contains("open")) reanalisarItensImportacaoPlanilha();
           if (document.getElementById("buscaAdmin")?.value.trim()) renderizarResultadosBuscaGlobal();
           if (chaveHistoricoVeiculoAtual) renderizarHistoricoVeiculoAtual();
@@ -10048,6 +10891,10 @@ REALIZADO POR: ${autor}`,
           atualizarBarraTarefas();
           if (["ANDAMENTO","URGENTE","MECANICOS"].includes(visaoPainelAtual)) {
             document.getElementById("listaServicosAdm").innerHTML = '<div class="empty">NÃO FOI POSSÍVEL CARREGAR OS VEÍCULOS ATIVOS.</div>';
+          }
+          if (typeof moduloAtualLeCar !== "undefined" && moduloAtualLeCar === "PECAS") {
+            const listaPecasErro = document.getElementById("listaPecasModuloAdm");
+            if (listaPecasErro) listaPecasErro.innerHTML = '<div class="empty">NÃO FOI POSSÍVEL CARREGAR AS PEÇAS.</div>';
           }
         });
     }
@@ -10303,6 +11150,8 @@ REALIZADO POR: ${autor}`,
               etiquetaId:etiquetaSelecionada.id,
               etiquetaCor:etiquetaSelecionada.cor,
               trocaOleo:descricaoEhTrocaOleoLPA(descricao),
+              pecas:Array.isArray(item.pecas) ? [...item.pecas] : [],
+            pecas_compartilhamento_whatsapp:item.pecas_compartilhamento_whatsapp || null,
               statusServico:status,
               statusDistribuicao:"ASSUMIDO",
               mecanicoResponsavel:mecanico,
@@ -10332,6 +11181,7 @@ REALIZADO POR: ${autor}`,
               dataEntradaISO:agora.toISOString(),
               status,
               pecas:Array.isArray(item.pecas) ? item.pecas : [],
+            pecas_compartilhamento_whatsapp:item.pecas_compartilhamento_whatsapp || null,
               mecanico_responsavel:mecanico,
               mecanicoResponsavel:mecanico,
               ultima_modificacao:agora.toLocaleString("pt-BR"),
@@ -10396,6 +11246,8 @@ REALIZADO POR: ${autor}`,
             etiquetaId:etiquetaSelecionada.id,
             etiquetaCor:etiquetaSelecionada.cor,
             trocaOleo:descricaoEhTrocaOleoLPA(descricao),
+            pecas:Array.isArray(item.pecas) ? [...item.pecas] : [],
+            pecas_compartilhamento_whatsapp:item.pecas_compartilhamento_whatsapp || null,
             statusDistribuicao:"DISPONIVEL",
             ativo:true,
             ultimaAtualizacao:firebase.firestore.FieldValue.serverTimestamp(),
@@ -10427,6 +11279,8 @@ REALIZADO POR: ${autor}`,
           placa,
           descricao,
           trocaOleo:descricaoEhTrocaOleoLPA(descricao),
+          pecas:Array.isArray(item.pecas) ? [...item.pecas] : [],
+            pecas_compartilhamento_whatsapp:item.pecas_compartilhamento_whatsapp || null,
           origem,
           status,
           prioridade,
@@ -10448,6 +11302,8 @@ REALIZADO POR: ${autor}`,
           prioridade,
           etiquetaId:etiquetaSelecionada.id,
           etiquetaCor:etiquetaSelecionada.cor,
+          pecas:Array.isArray(item.pecas) ? [...item.pecas] : [],
+            pecas_compartilhamento_whatsapp:item.pecas_compartilhamento_whatsapp || null,
           statusServico:status,
           statusDistribuicao:"ASSUMIDO",
           mecanicoResponsavel:mecanico,
@@ -10473,6 +11329,8 @@ REALIZADO POR: ${autor}`,
             etiquetaId:etiquetaSelecionada.id,
             etiquetaCor:etiquetaSelecionada.cor,
             trocaOleo:descricaoEhTrocaOleoLPA(descricao),
+            pecas:Array.isArray(item.pecas) ? [...item.pecas] : [],
+            pecas_compartilhamento_whatsapp:item.pecas_compartilhamento_whatsapp || null,
             statusServico:status,
             statusDistribuicao:"DISPONIVEL",
             mecanicoResponsavel:"",
@@ -10503,6 +11361,8 @@ REALIZADO POR: ${autor}`,
               etiquetaId:etiquetaSelecionada.id,
               etiquetaCor:etiquetaSelecionada.cor,
               trocaOleo:descricaoEhTrocaOleoLPA(descricao),
+              pecas:Array.isArray(item.pecas) ? [...item.pecas] : [],
+            pecas_compartilhamento_whatsapp:item.pecas_compartilhamento_whatsapp || null,
               statusServico:status,
               statusDistribuicao:"DISPONIVEL",
               mecanicoResponsavel:"",
@@ -18116,6 +18976,664 @@ REALIZADO POR: ${autor}`,
     } catch (erro) {
       console.error("[LPA BLOQUEIO CENTRAL] Não foi possível acompanhar autenticação:", erro);
     }
+  })();
+  </script>
+
+
+
+
+
+
+  <div id="modalCompartilharPecasAdm" class="pecas-share-modal-bg" role="dialog" aria-modal="true" aria-labelledby="tituloCompartilharPecasAdm">
+    <section class="pecas-share-modal">
+      <header class="pecas-share-modal-head">
+        <div>
+          <h3 id="tituloCompartilharPecasAdm">COMPARTILHAR PEÇAS</h3>
+          <p>DESMARQUE SOMENTE O QUE NÃO SERÁ ENVIADO</p>
+        </div>
+        <button id="fecharCompartilharPecasAdm" type="button" class="pecas-share-close" aria-label="Fechar">×</button>
+      </header>
+      <div class="pecas-share-modal-body">
+        <div class="pecas-share-context">
+          <div class="pecas-share-context-item"><span>VEÍCULO</span><strong id="compartilharPecasVeiculoAdm">-</strong></div>
+          <div class="pecas-share-context-item"><span>PLACA</span><strong id="compartilharPecasPlacaAdm">-</strong></div>
+          <div class="pecas-share-context-item"><span>MECÂNICO</span><strong id="compartilharPecasMecanicoAdm">-</strong></div>
+          <div class="pecas-share-context-item"><span>QUANTIDADE</span><strong id="compartilharPecasQuantidadeAdm">0 PEÇAS</strong></div>
+        </div>
+        <label class="pecas-share-select-all" for="selecionarTodasPecasAdm">
+          <input id="selecionarTodasPecasAdm" type="checkbox" checked>
+          <span>SELECIONAR TODAS AS PEÇAS</span>
+        </label>
+        <div id="listaCompartilharPecasAdm" class="pecas-share-list"></div>
+      </div>
+      <footer class="pecas-share-actions">
+        <button id="cancelarCompartilharPecasAdm" type="button" class="pecas-share-cancel">CANCELAR</button>
+        <button id="enviarCompartilharPecasAdm" type="button" class="pecas-share-send">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20.5 11.5A8.5 8.5 0 0 1 7.9 18.9L3 20L4.2 15.4A8.5 8.5 0 1 1 20.5 11.5Z"></path><path d="M8.2 7.6C8.7 11.5 11.1 14 15 15.6"></path><path d="M8.2 7.6L9.8 7.3L11 9.9L10 11"></path><path d="M15 15.6L16.1 14.5L18.7 15.7L18.4 17.3"></path></svg>
+          COMPARTILHAR WHATSAPP
+        </button>
+      </footer>
+    </section>
+  </div>
+
+
+  <script id="lpa-modulo-pecas-experimental-v8-correcao-wa-script">
+  (() => {
+    "use strict";
+
+    let filtroPecasMecanicoAtual = "TODOS";
+    let filtroPecasStatusAtual = "TODOS";
+    const registrosCompartilharPecasAdm = new Map();
+    let registroCompartilharPecasAtualAdm = null;
+
+    function listaPecasDoServico(item) {
+      if (!Array.isArray(item?.pecas)) return [];
+      return item.pecas
+        .map(valor => String(valor || "").trim().toUpperCase())
+        .filter(Boolean);
+    }
+
+    function controleCompartilhamentoPecas(item) {
+      const controle = item?.pecas_compartilhamento_whatsapp;
+      const snapshot = Array.isArray(controle?.snapshot)
+        ? controle.snapshot.map(valor => String(valor || "").trim().toUpperCase()).filter(Boolean)
+        : [];
+      const indicesEnviados = Array.isArray(controle?.indicesEnviados)
+        ? controle.indicesEnviados.map(Number).filter(Number.isInteger)
+        : [];
+      const indicesReconhecidos = Array.isArray(controle?.indicesReconhecidos)
+        ? controle.indicesReconhecidos.map(Number).filter(Number.isInteger)
+        : [];
+      return { snapshot, indicesEnviados, indicesReconhecidos };
+    }
+
+    function contagemControlePecasPorValor(snapshot, indices) {
+      const contagem = new Map();
+      indices.forEach(indice => {
+        const valor = snapshot[indice];
+        if (!valor) return;
+        contagem.set(valor, (contagem.get(valor) || 0) + 1);
+      });
+      return contagem;
+    }
+
+    function estadosCompartilhamentoPecas(item) {
+      const pecas = listaPecasDoServico(item);
+      const controle = controleCompartilhamentoPecas(item);
+      const enviadosPorValor = contagemControlePecasPorValor(controle.snapshot, controle.indicesEnviados);
+      const reconhecidosPorValor = contagemControlePecasPorValor(controle.snapshot, controle.indicesReconhecidos);
+      const usadosEnviados = new Map();
+      const usadosReconhecidos = new Map();
+
+      return pecas.map((peca, indice) => {
+        const usadosEnvio = usadosEnviados.get(peca) || 0;
+        const totalEnviado = enviadosPorValor.get(peca) || 0;
+        const enviada = usadosEnvio < totalEnviado;
+        if (enviada) usadosEnviados.set(peca, usadosEnvio + 1);
+
+        const usadosBaixa = usadosReconhecidos.get(peca) || 0;
+        const totalReconhecido = reconhecidosPorValor.get(peca) || 0;
+        const reconhecida = !enviada && usadosBaixa < totalReconhecido;
+        if (reconhecida) usadosReconhecidos.set(peca, usadosBaixa + 1);
+
+        return { peca, indice, enviada, reconhecida, nova: !enviada && !reconhecida };
+      });
+    }
+
+    function idDocumentoVeiculoPecas(item) {
+      return String(item?.id || item?.docId || "").trim();
+    }
+
+    async function salvarControleEstadoPecas(item, opcoes = {}) {
+      const estadosAtuais = estadosCompartilhamentoPecas(item);
+      const pecasAtuais = estadosAtuais.map(estado => estado.peca);
+      const adicionarEnviados = Array.isArray(opcoes.indicesEnviadosAdicionar) ? opcoes.indicesEnviadosAdicionar : [];
+      const adicionarReconhecidos = Array.isArray(opcoes.indicesReconhecidosAdicionar) ? opcoes.indicesReconhecidosAdicionar : [];
+
+      const indicesEnviados = [...new Set([
+        ...estadosAtuais.filter(estado => estado.enviada).map(estado => estado.indice),
+        ...adicionarEnviados
+      ])]
+        .filter(indice => Number.isInteger(indice) && indice >= 0 && indice < pecasAtuais.length)
+        .sort((a,b) => a - b);
+
+      const enviadosSet = new Set(indicesEnviados);
+      const indicesReconhecidos = [...new Set([
+        ...estadosAtuais.filter(estado => estado.reconhecida).map(estado => estado.indice),
+        ...adicionarReconhecidos
+      ])]
+        .filter(indice => Number.isInteger(indice) && indice >= 0 && indice < pecasAtuais.length && !enviadosSet.has(indice))
+        .sort((a,b) => a - b);
+
+      const agora = new Date();
+      const controle = {
+        snapshot: pecasAtuais,
+        indicesEnviados,
+        indicesReconhecidos,
+        atualizadoEm: firebase.firestore.FieldValue.serverTimestamp(),
+        atualizadoEmISO: agora.toISOString(),
+        atualizadoPor: typeof usuarioPainelAtual === "function" ? usuarioPainelAtual() : "LPA",
+        ultimaAcao: String(opcoes.ultimaAcao || "ATUALIZACAO").toUpperCase()
+      };
+
+      const veiculoId = idDocumentoVeiculoPecas(item);
+      if (!veiculoId) throw new Error("VEICULO_SEM_ID_PARA_CONTROLE_DE_PECAS");
+
+      const lote = db.batch();
+      lote.update(db.collection("veiculos").doc(veiculoId), {
+        pecas_compartilhamento_whatsapp: controle
+      });
+
+      if (typeof referenciasListaGeralParaEdicao === "function") {
+        try {
+          const referencias = await referenciasListaGeralParaEdicao(item);
+          referencias.forEach(ref => lote.update(ref, {
+            pecas_compartilhamento_whatsapp: controle
+          }));
+        } catch (erroReferencias) {
+          console.warn("[LPA PEÇAS] Não foi possível localizar a Lista Geral para sincronizar o controle de peças:", erroReferencias);
+        }
+      }
+
+      await lote.commit();
+      item.pecas_compartilhamento_whatsapp = {
+        snapshot: pecasAtuais,
+        indicesEnviados,
+        indicesReconhecidos,
+        atualizadoEmISO: agora.toISOString(),
+        atualizadoPor: controle.atualizadoPor,
+        ultimaAcao: controle.ultimaAcao
+      };
+      return controle;
+    }
+
+    async function salvarControleCompartilhamentoPecas(item, indicesSelecionados) {
+      return salvarControleEstadoPecas(item, {
+        indicesEnviadosAdicionar:indicesSelecionados,
+        ultimaAcao:"COMPARTILHAMENTO_WHATSAPP"
+      });
+    }
+
+    function mecanicoAtualPecas(item) {
+      const nome = typeof nomeMecanicoCard === "function" ? nomeMecanicoCard(item, "") : (item?.mecanico_responsavel || item?.mecanicoResponsavel || item?.mecanico || "");
+      const canonico = typeof mecanicoCanonico === "function" ? mecanicoCanonico(nome) : String(nome || "").trim().toUpperCase();
+      return canonico || "SEM ATRIBUIÇÃO";
+    }
+
+    function timestampAtualizacaoPecas(item) {
+      const candidatos = [item?.ultima_modificacao_iso, item?.ultimaAtualizacaoISO, item?.dataEntradaISO];
+      for (const valor of candidatos) {
+        if (!valor) continue;
+        const data = new Date(valor);
+        if (!Number.isNaN(data.getTime())) return data.getTime();
+      }
+      const local = item?.ultima_modificacao || item?.dataEntrada || "";
+      const dataLocal = new Date(local);
+      return Number.isNaN(dataLocal.getTime()) ? 0 : dataLocal.getTime();
+    }
+
+    function formatarAtualizacaoPecas(item) {
+      const timestamp = timestampAtualizacaoPecas(item);
+      if (!timestamp) return "NÃO INFORMADA";
+      return new Date(timestamp).toLocaleString("pt-BR", {
+        day:"2-digit", month:"2-digit", year:"numeric", hour:"2-digit", minute:"2-digit"
+      });
+    }
+
+    function escaparPecas(valor) {
+      if (typeof escapar === "function") return escapar(valor);
+      return String(valor ?? "")
+        .replace(/&/g,"&amp;")
+        .replace(/</g,"&lt;")
+        .replace(/>/g,"&gt;")
+        .replace(/\"/g,"&quot;")
+        .replace(/'/g,"&#039;");
+    }
+
+    function chaveBuscaPecas(valor) {
+      return String(valor || "")
+        .normalize("NFD")
+        .replace(/[\u0300-\u036f]/g, "")
+        .toUpperCase()
+        .replace(/\s+/g, " ")
+        .trim();
+    }
+
+
+    function chaveRegistroCompartilharPecas(item, mecanico, indice) {
+      return String(
+        item?.id ||
+        item?.docId ||
+        item?.lista_geral_id ||
+        `${mecanico}-${item?.placa || "SEM-PLACA"}-${timestampAtualizacaoPecas(item)}-${indice}`
+      );
+    }
+
+    function fecharModalCompartilharPecasAdm() {
+      const modal = document.getElementById("modalCompartilharPecasAdm");
+      modal?.classList.remove("show");
+      document.body.classList.remove("pecas-share-modal-open");
+      registroCompartilharPecasAtualAdm = null;
+    }
+
+    function atualizarSelecionarTodasPecasAdm() {
+      const checks = [...document.querySelectorAll(".pecasCompartilharCheckAdm")];
+      const selecionarTodas = document.getElementById("selecionarTodasPecasAdm");
+      if (!selecionarTodas) return;
+      selecionarTodas.checked = checks.length > 0 && checks.every(check => check.checked);
+      selecionarTodas.indeterminate = checks.some(check => check.checked) && !checks.every(check => check.checked);
+    }
+
+    function abrirModalCompartilharPecasAdm(chave) {
+      const item = registrosCompartilharPecasAdm.get(String(chave || ""));
+      if (!item) {
+        if (typeof mostrarToast === "function") mostrarToast("REGISTRO DE PEÇAS NÃO ENCONTRADO.");
+        return;
+      }
+
+      const estadosPecas = estadosCompartilhamentoPecas(item);
+      const pecas = estadosPecas.map(estado => estado.peca);
+      if (!pecas.length) {
+        if (typeof mostrarToast === "function") mostrarToast("NENHUMA PEÇA DISPONÍVEL PARA COMPARTILHAR.");
+        return;
+      }
+
+      registroCompartilharPecasAtualAdm = item;
+      const preencher = (id, valor) => {
+        const elemento = document.getElementById(id);
+        if (elemento) elemento.textContent = String(valor || "-").toUpperCase();
+      };
+
+      preencher("compartilharPecasVeiculoAdm", item.veiculo || "VEÍCULO");
+      preencher("compartilharPecasPlacaAdm", item.placa || "-");
+      preencher("compartilharPecasMecanicoAdm", mecanicoAtualPecas(item).replaceAll("_", " "));
+      preencher("compartilharPecasQuantidadeAdm", `${pecas.length} ${pecas.length === 1 ? "PEÇA" : "PEÇAS"}`);
+
+      const lista = document.getElementById("listaCompartilharPecasAdm");
+      if (lista) {
+        lista.innerHTML = estadosPecas.map(estado => `
+          <label class="pecas-share-item" for="pecaCompartilharAdm_${estado.indice}">
+            <input id="pecaCompartilharAdm_${estado.indice}" class="pecasCompartilharCheckAdm" type="checkbox" value="${escaparPecas(estado.peca)}" data-peca-indice="${estado.indice}" checked>
+            <span class="pecas-share-item-text">${escaparPecas(estado.peca)}</span>
+            ${estado.nova ? '<span class="pecas-share-item-new">NOVA</span>' : ''}
+          </label>
+        `).join("");
+      }
+
+      const selecionarTodas = document.getElementById("selecionarTodasPecasAdm");
+      if (selecionarTodas) {
+        selecionarTodas.checked = true;
+        selecionarTodas.indeterminate = false;
+      }
+
+      const modal = document.getElementById("modalCompartilharPecasAdm");
+      modal?.classList.add("show");
+      document.body.classList.add("pecas-share-modal-open");
+      document.getElementById("fecharCompartilharPecasAdm")?.focus();
+    }
+
+    async function compartilharPecasSelecionadasAdm() {
+      const item = registroCompartilharPecasAtualAdm;
+      if (!item) return;
+
+      const checksSelecionados = [...document.querySelectorAll(".pecasCompartilharCheckAdm:checked")];
+      const selecionadas = checksSelecionados
+        .map(check => String(check.value || "").trim().toUpperCase())
+        .filter(Boolean);
+      const indicesSelecionados = checksSelecionados
+        .map(check => Number(check.dataset.pecaIndice))
+        .filter(Number.isInteger);
+
+      if (!selecionadas.length) {
+        alert("SELECIONE PELO MENOS UMA PEÇA PARA COMPARTILHAR.");
+        return;
+      }
+
+      const mecanico = mecanicoAtualPecas(item).replaceAll("_", " ");
+      const texto = `SOLICITAÇÃO DE PEÇAS
+
+VEÍCULO: ${String(item.veiculo || "-").toUpperCase()}
+PLACA: ${String(item.placa || "-").toUpperCase()}
+MECÂNICO: ${mecanico}
+
+PEÇAS:
+${selecionadas.map(peca => `• ${peca}`).join("\n")}`;
+      const url = `https://wa.me/?text=${encodeURIComponent(texto)}`;
+
+      // Abre o WhatsApp diretamente em uma nova aba/janela enquanto o clique
+      // ainda é uma ação do usuário. Nunca substitui a página atual do LPA.
+      const janela = window.open(url, "_blank");
+      if (!janela) {
+        alert("O NAVEGADOR BLOQUEOU A ABERTURA DO WHATSAPP. PERMITA POP-UPS PARA O LPA E TENTE NOVAMENTE.\n\nO VEÍCULO E AS PEÇAS NÃO FORAM ALTERADOS.");
+        return;
+      }
+      try { janela.opener = null; } catch (_) {}
+
+      const botaoEnviar = document.getElementById("enviarCompartilharPecasAdm");
+      if (botaoEnviar) botaoEnviar.disabled = true;
+
+      try {
+        await salvarControleCompartilhamentoPecas(item, indicesSelecionados);
+        fecharModalCompartilharPecasAdm();
+        window.renderizarModuloPecas?.();
+        if (typeof mostrarToast === "function") {
+          mostrarToast("PEÇAS REGISTRADAS COMO COMPARTILHADAS. O VEÍCULO PERMANECE NO MÓDULO.");
+        }
+      } catch (erro) {
+        console.error("[LPA PEÇAS] WhatsApp aberto, mas houve erro ao registrar as peças:", erro);
+        alert("O WHATSAPP FOI ABERTO, MAS NÃO FOI POSSÍVEL REGISTRAR O ENVIO.\n\nOS BADGES NOVA SERÃO MANTIDOS E O VEÍCULO NÃO SERÁ REMOVIDO.");
+      } finally {
+        if (botaoEnviar) botaoEnviar.disabled = false;
+      }
+    }
+
+    function atualizarChaveIndicativoNovasPecas(registros) {
+      const toggle = document.getElementById("toggleExibirNovasPecas");
+      const texto = document.getElementById("textoToggleNovasPecas");
+      const totalNovas = registros.reduce((total,item) => total + estadosCompartilhamentoPecas(item).filter(estado => estado.nova).length, 0);
+      if (toggle && !toggle.disabled) toggle.checked = totalNovas > 0;
+      if (texto) texto.textContent = totalNovas > 0 ? `ATIVAS (${totalNovas})` : "SEM NOVAS";
+      const controle = toggle?.closest(".pecas-new-toggle");
+      if (controle) controle.title = totalNovas > 0
+        ? `DESLIGUE PARA REMOVER ${totalNovas} INDICATIVO(S) NOVA SEM COMPARTILHAR PELO WHATSAPP`
+        : "NÃO HÁ INDICATIVOS NOVA";
+      return totalNovas;
+    }
+
+    async function eliminarIndicativosNovasPecasAdm() {
+      const registros = registrosModuloPecas();
+      const pendentes = registros
+        .map(item => ({ item, indices:estadosCompartilhamentoPecas(item).filter(estado => estado.nova).map(estado => estado.indice) }))
+        .filter(grupo => grupo.indices.length > 0);
+      const total = pendentes.reduce((soma,grupo) => soma + grupo.indices.length, 0);
+      const toggle = document.getElementById("toggleExibirNovasPecas");
+
+      if (!total) {
+        if (toggle) toggle.checked = false;
+        if (typeof mostrarToast === "function") mostrarToast("NÃO HÁ PEÇAS COM INDICATIVO NOVA.");
+        return;
+      }
+
+      const confirmar = confirm(`REMOVER O INDICATIVO NOVA DE ${total} ${total === 1 ? "PEÇA" : "PEÇAS"}?
+
+ESSA AÇÃO NÃO ENVIA, NÃO EXCLUI E NÃO ALTERA A LISTA DE PEÇAS.`);
+      if (!confirmar) {
+        if (toggle) toggle.checked = true;
+        return;
+      }
+
+      if (toggle) toggle.disabled = true;
+      try {
+        for (const grupo of pendentes) {
+          await salvarControleEstadoPecas(grupo.item, {
+            indicesReconhecidosAdicionar:grupo.indices,
+            ultimaAcao:"BAIXA_MANUAL_INDICATIVO_NOVA"
+          });
+        }
+        if (typeof mostrarToast === "function") mostrarToast(`${total} ${total === 1 ? "INDICATIVO REMOVIDO" : "INDICATIVOS REMOVIDOS"}.`);
+        window.renderizarModuloPecas?.();
+      } catch (erro) {
+        console.error("[LPA PEÇAS] Erro ao remover indicativos NOVA:", erro);
+        alert("NÃO FOI POSSÍVEL REMOVER OS INDICATIVOS NOVA. TENTE NOVAMENTE.");
+        if (toggle) toggle.checked = true;
+      } finally {
+        if (toggle) toggle.disabled = false;
+      }
+    }
+
+    function correspondeBuscaPecas(item, busca) {
+      const termos = chaveBuscaPecas(busca).split(" ").filter(Boolean);
+      if (!termos.length) return true;
+      const alvo = chaveBuscaPecas([
+        item?.veiculo,
+        item?.placa,
+        item?.descricao,
+        item?.origem,
+        item?.status,
+        mecanicoAtualPecas(item),
+        ...listaPecasDoServico(item)
+      ].join(" "));
+      return termos.every(termo => alvo.includes(termo));
+    }
+
+    function registrosModuloPecas() {
+      const fonte = Array.isArray(veiculosAtivosAdm) ? veiculosAtivosAdm : [];
+      return fonte
+        .filter(item => listaPecasDoServico(item).length > 0)
+        .sort((a,b) => timestampAtualizacaoPecas(b) - timestampAtualizacaoPecas(a));
+    }
+
+    function atualizarFiltrosModuloPecas(registros) {
+      const selectMecanico = document.getElementById("filtroPecasMecanico");
+      const selectStatus = document.getElementById("filtroPecasStatus");
+
+      const mecanicos = [...new Set(registros.map(mecanicoAtualPecas))].sort((a,b) => a.localeCompare(b,"pt-BR"));
+      const status = [...new Set(registros.map(item => String(item.status || "ATIVO").trim().toUpperCase()))].sort((a,b) => a.localeCompare(b,"pt-BR"));
+
+      if (selectMecanico) {
+        if (filtroPecasMecanicoAtual !== "TODOS" && !mecanicos.includes(filtroPecasMecanicoAtual)) filtroPecasMecanicoAtual = "TODOS";
+        selectMecanico.innerHTML = ['<option value="TODOS">TODOS</option>', ...mecanicos.map(nome => `<option value="${escaparPecas(nome)}">${escaparPecas(nome.replaceAll("_"," "))}</option>`)].join("");
+        selectMecanico.value = filtroPecasMecanicoAtual;
+      }
+
+      if (selectStatus) {
+        if (filtroPecasStatusAtual !== "TODOS" && !status.includes(filtroPecasStatusAtual)) filtroPecasStatusAtual = "TODOS";
+        selectStatus.innerHTML = ['<option value="TODOS">TODOS</option>', ...status.map(nome => `<option value="${escaparPecas(nome)}">${escaparPecas(typeof rotuloStatusOperacionalPainel === "function" ? rotuloStatusOperacionalPainel(nome) : nome)}</option>`)].join("");
+        selectStatus.value = filtroPecasStatusAtual;
+      }
+    }
+
+    window.alterarFiltroPecasMecanico = function(valor) {
+      filtroPecasMecanicoAtual = chaveBuscaPecas(valor) === "TODOS" ? "TODOS" : String(valor || "").trim().toUpperCase();
+      window.renderizarModuloPecas();
+    };
+
+    window.alterarFiltroPecasStatus = function(valor) {
+      filtroPecasStatusAtual = chaveBuscaPecas(valor) === "TODOS" ? "TODOS" : String(valor || "").trim().toUpperCase();
+      window.renderizarModuloPecas();
+    };
+
+    window.renderizarModuloPecas = function() {
+      const lista = document.getElementById("listaPecasModuloAdm");
+      if (!lista) return;
+
+      const todos = registrosModuloPecas();
+      registrosCompartilharPecasAdm.clear();
+      atualizarFiltrosModuloPecas(todos);
+      const busca = document.getElementById("buscaAdmin")?.value || "";
+      const filtrados = todos.filter(item => {
+        if (filtroPecasMecanicoAtual !== "TODOS" && mecanicoAtualPecas(item) !== filtroPecasMecanicoAtual) return false;
+        const status = String(item.status || "ATIVO").trim().toUpperCase();
+        if (filtroPecasStatusAtual !== "TODOS" && status !== filtroPecasStatusAtual) return false;
+        return correspondeBuscaPecas(item, busca);
+      });
+
+      atualizarChaveIndicativoNovasPecas(todos);
+      const totalItens = filtrados.reduce((total,item) => total + estadosCompartilhamentoPecas(item).length, 0);
+      const mecanicos = [...new Set(filtrados.map(mecanicoAtualPecas))];
+      const totais = {
+        totalServicosPecasModulo:filtrados.length,
+        statServicosPecas:filtrados.length,
+        statItensPecas:totalItens,
+        statMecanicosPecas:mecanicos.length
+      };
+      Object.entries(totais).forEach(([id,valor]) => {
+        const elemento = document.getElementById(id);
+        if (elemento) elemento.textContent = String(valor);
+      });
+
+      if (!filtrados.length) {
+        lista.innerHTML = '<div class="empty">NENHUMA PEÇA SOLICITADA NOS FILTROS ATUAIS.</div>';
+        return;
+      }
+
+      const grupos = new Map();
+      filtrados.forEach(item => {
+        const mecanico = mecanicoAtualPecas(item);
+        if (!grupos.has(mecanico)) grupos.set(mecanico, []);
+        grupos.get(mecanico).push(item);
+      });
+
+      lista.innerHTML = [...grupos.entries()]
+        .sort(([a],[b]) => a.localeCompare(b,"pt-BR"))
+        .map(([mecanico,itens]) => {
+          const iniciais = typeof iniciaisMecanico === "function" ? iniciaisMecanico(mecanico) : mecanico.substring(0,2);
+          const linhas = itens.map((item, itemIndex) => {
+            const estadosPecas = estadosCompartilhamentoPecas(item);
+            const pecas = estadosPecas.map(estado => estado.peca);
+            const chaveCompartilhar = chaveRegistroCompartilharPecas(item, mecanico, itemIndex);
+            registrosCompartilharPecasAdm.set(chaveCompartilhar, item);
+            const classeStatus = typeof classeStatusOperacionalPainel === "function" ? classeStatusOperacionalPainel(item.status) : "status-servico";
+            const statusNormalizado = chaveBuscaPecas(item.status);
+            const rotuloStatusBase = typeof rotuloStatusOperacionalPainel === "function" ? rotuloStatusOperacionalPainel(item.status) : (item.status || "ATIVO");
+            const rotuloStatus = statusNormalizado === "FORNECEDOR" ? "ESTÁ NO FORNECEDOR" : rotuloStatusBase;
+            return `<div class="pecas-row" title="${escaparPecas(item.descricao || "")}">
+              <span class="pecas-field vehicle" data-label="VEÍCULO">
+                <span class="pecas-value">
+                  <span class="pecas-vehicle-main">${escaparPecas(item.placa || "-")}</span>
+                  <span class="pecas-vehicle-model">${escaparPecas(item.veiculo || "VEÍCULO")}</span>
+                </span>
+              </span>
+              <span class="pecas-field service" data-label="SERVIÇO"><span class="pecas-value pecas-service-value">${escaparPecas(item.descricao || "SEM DESCRIÇÃO")}</span></span>
+              <span class="pecas-field parts" data-label="PEÇAS"><span class="pecas-value pecas-list-value">${estadosPecas.map(estado => `<span class="pecas-chip">${escaparPecas(estado.peca)}${estado.nova ? '<span class="pecas-chip-nova-badge">NOVA</span>' : ''}</span>`).join("")}</span></span>
+              <span class="pecas-field status" data-label="STATUS"><span class="pecas-value"><span class="pecas-status ${classeStatus}">${escaparPecas(rotuloStatus)}</span></span></span>
+              <span class="pecas-field origin" data-label="ORIGEM"><span class="pecas-value">${escaparPecas(item.origem || "-")}</span></span>
+              <span class="pecas-field update" data-label="ATUALIZAÇÃO"><span class="pecas-value">${escaparPecas(formatarAtualizacaoPecas(item))}</span></span>
+              <span class="pecas-field action">
+                <button type="button" class="pecas-wa-btn" data-pecas-share-key="${escaparPecas(chaveCompartilhar)}" title="Compartilhar veículo, placa, mecânico e peças" aria-label="Compartilhar peças deste veículo no WhatsApp">
+                  <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20.5 11.5A8.5 8.5 0 0 1 7.9 18.9L3 20L4.2 15.4A8.5 8.5 0 1 1 20.5 11.5Z"></path><path d="M8.2 7.6C8.7 11.5 11.1 14 15 15.6"></path><path d="M8.2 7.6L9.8 7.3L11 9.9L10 11"></path><path d="M15 15.6L16.1 14.5L18.7 15.7L18.4 17.3"></path></svg>
+                </button>
+              </span>
+            </div>`;
+          }).join("");
+
+          return `<article class="pecas-group-card">
+            <div class="pecas-group-head">
+              <span class="pecas-group-avatar">${escaparPecas(iniciais)}</span>
+              <span class="pecas-group-name">${escaparPecas(mecanico.replaceAll("_"," "))}</span>
+              <span class="pecas-group-count" title="SERVIÇOS COM PEÇAS">${itens.length}</span>
+            </div>
+            <div class="pecas-group-scroll">${linhas || '<div class="pecas-empty-group">SEM PEÇAS</div>'}</div>
+          </article>`;
+        }).join("");
+    };
+
+    const atualizarAbasAntesPecas = typeof window.atualizarAbasModulosLeCar === "function" ? window.atualizarAbasModulosLeCar : null;
+    window.atualizarAbasModulosLeCar = function() {
+      atualizarAbasAntesPecas?.apply(this, arguments);
+      const botaoPecas = document.getElementById("tabModuloPecas");
+      botaoPecas?.classList.toggle("active", moduloAtualLeCar === "PECAS");
+      if (moduloAtualLeCar === "PECAS") botaoPecas?.setAttribute("aria-current","page");
+      else botaoPecas?.removeAttribute("aria-current");
+    };
+
+    const selecionarModuloAntesPecas = typeof window.selecionarModuloLeCar === "function" ? window.selecionarModuloLeCar : null;
+    window.selecionarModuloLeCar = function(modulo) {
+      const destino = typeof normalizar === "function" ? normalizar(modulo) : String(modulo || "").trim().toUpperCase();
+      const mainPecas = document.getElementById("mainPecas");
+
+      if (destino !== "PECAS") {
+        if (mainPecas) mainPecas.hidden = true;
+        document.body.classList.remove("modulo-pecas-ativo");
+        selecionarModuloAntesPecas?.call(this, destino);
+        window.atualizarAbasModulosLeCar?.();
+        return;
+      }
+
+      moduloAtualLeCar = "PECAS";
+      filtroPecasMecanicoAtual = "TODOS";
+      filtroPecasStatusAtual = "TODOS";
+      const campoBusca = document.getElementById("buscaAdmin");
+      if (campoBusca) campoBusca.value = "";
+      if (typeof fecharResultadosBuscaGlobal === "function") fecharResultadosBuscaGlobal();
+
+      ["mainOficina","mainLavaRapido","mainPolimento","mainAcessorios"].forEach(id => {
+        const main = document.getElementById(id);
+        if (main) main.hidden = true;
+      });
+      if (mainPecas) mainPecas.hidden = false;
+      document.body.classList.add("modulo-pecas-ativo");
+      window.atualizarAbasModulosLeCar?.();
+      window.renderizarModuloPecas();
+      if (typeof atualizarEstadoBuscaModulo === "function") atualizarEstadoBuscaModulo();
+    };
+
+    const aoDigitarAntesPecas = typeof window.aoDigitarBuscaModulo === "function" ? window.aoDigitarBuscaModulo : null;
+    window.aoDigitarBuscaModulo = function() {
+      if (moduloAtualLeCar !== "PECAS") return aoDigitarAntesPecas?.apply(this, arguments);
+      if (typeof fecharResultadosBuscaGlobal === "function") fecharResultadosBuscaGlobal();
+      if (typeof atualizarEstadoBuscaModulo === "function") atualizarEstadoBuscaModulo();
+      window.renderizarModuloPecas();
+    };
+
+    const aoTeclarAntesPecas = typeof window.aoTeclarBuscaModulo === "function" ? window.aoTeclarBuscaModulo : null;
+    window.aoTeclarBuscaModulo = function(event) {
+      if (moduloAtualLeCar !== "PECAS") return aoTeclarAntesPecas?.apply(this, arguments);
+      if (event?.key === "Escape") {
+        event.preventDefault();
+        window.limparBuscaModulo?.();
+      }
+    };
+
+    const limparBuscaAntesPecas = typeof window.limparBuscaModulo === "function" ? window.limparBuscaModulo : null;
+    window.limparBuscaModulo = function() {
+      if (moduloAtualLeCar !== "PECAS") return limparBuscaAntesPecas?.apply(this, arguments);
+      const campo = document.getElementById("buscaAdmin");
+      if (campo) campo.value = "";
+      if (typeof atualizarEstadoBuscaModulo === "function") atualizarEstadoBuscaModulo();
+      window.renderizarModuloPecas();
+      campo?.focus();
+    };
+
+    const abrirCadastroAntesPecas = typeof window.abrirCadastroModulo === "function" ? window.abrirCadastroModulo : null;
+    window.abrirCadastroModulo = function() {
+      if (moduloAtualLeCar === "PECAS") {
+        if (typeof mostrarToast === "function") mostrarToast("MÓDULO PEÇAS EXPERIMENTAL: CADASTRO CONTINUA NO LGVO.");
+        return;
+      }
+      return abrirCadastroAntesPecas?.apply(this, arguments);
+    };
+
+
+    document.getElementById("toggleExibirNovasPecas")?.addEventListener("change", async event => {
+      if (event.target.checked === false) {
+        await eliminarIndicativosNovasPecasAdm();
+      } else {
+        window.renderizarModuloPecas();
+      }
+    });
+
+    document.getElementById("listaPecasModuloAdm")?.addEventListener("click", event => {
+      const botao = event.target.closest(".pecas-wa-btn");
+      if (!botao) return;
+      event.preventDefault();
+      event.stopPropagation();
+      abrirModalCompartilharPecasAdm(botao.dataset.pecasShareKey);
+    });
+
+    document.getElementById("fecharCompartilharPecasAdm")?.addEventListener("click", fecharModalCompartilharPecasAdm);
+    document.getElementById("cancelarCompartilharPecasAdm")?.addEventListener("click", fecharModalCompartilharPecasAdm);
+    document.getElementById("enviarCompartilharPecasAdm")?.addEventListener("click", compartilharPecasSelecionadasAdm);
+    document.getElementById("modalCompartilharPecasAdm")?.addEventListener("click", event => {
+      if (event.target.id === "modalCompartilharPecasAdm") fecharModalCompartilharPecasAdm();
+    });
+    document.getElementById("selecionarTodasPecasAdm")?.addEventListener("change", event => {
+      document.querySelectorAll(".pecasCompartilharCheckAdm").forEach(check => {
+        check.checked = event.target.checked;
+      });
+      event.target.indeterminate = false;
+    });
+    document.getElementById("listaCompartilharPecasAdm")?.addEventListener("change", event => {
+      if (event.target.classList.contains("pecasCompartilharCheckAdm")) atualizarSelecionarTodasPecasAdm();
+    });
+    document.addEventListener("keydown", event => {
+      if (event.key === "Escape" && document.getElementById("modalCompartilharPecasAdm")?.classList.contains("show")) {
+        event.preventDefault();
+        fecharModalCompartilharPecasAdm();
+      }
+    });
+
+    window.atualizarAbasModulosLeCar?.();
   })();
   </script>
 
