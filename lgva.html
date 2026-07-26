@@ -192,6 +192,24 @@
     .card-btn.warning { border:1px solid #fde68a; background:#fffbeb; color:#92400e; }
     .card-btn.success { border:1px solid #bbf7d0; background:#f0fdf4; color:#15803d; }
     .card-btn.danger { border:1px solid #fecaca; background:#fff1f2; color:#dc2626; }
+    .card-btn:disabled { opacity:.48; cursor:not-allowed; transform:none !important; }
+    .service-row.setor-bloqueado {
+      background:linear-gradient(180deg,#f8fafc 0%,#fff 62%) !important;
+      border-color:#cbd5e1 !important;
+      box-shadow:none;
+    }
+    .service-row.setor-bloqueado::before { background:#94a3b8 !important; }
+    .service-row.setor-bloqueado .service-bookmark,
+    .service-row.setor-bloqueado .service-main,
+    .service-row.setor-bloqueado .service-desc,
+    .service-row.setor-bloqueado .service-label-chip,
+    .service-row.setor-bloqueado .service-info { opacity:.72; }
+    .service-sector-lock {
+      margin-top:8px; padding:7px 8px; display:grid; gap:3px;
+      border:1px solid #cbd5e1; border-radius:9px; background:#f1f5f9; color:#475569;
+      font-size:.54rem; font-weight:850; line-height:1.3; text-transform:uppercase;
+    }
+    .service-sector-lock strong { color:#334155; font-weight:950; }
     .empty { grid-column:1/-1; padding:34px 16px; border:1px dashed #cbd5e1; border-radius:15px; color:#64748b; text-align:center; font-size:.75rem; font-weight:800; text-transform:uppercase; }
 
     /* BARRA INFERIOR — SOMENTE O QUE O LGVA USA */
@@ -459,6 +477,7 @@
       etiquetas: "etiquetas_acessorios",
       notificacoes: "notificacoes_lecar",
       usuarios: "usuarios_sistema",
+      bloqueios: "lpa_bloqueios_veiculos",
       // Dados operacionais exclusivos do aplicativo dos instaladores.
       pecas: "lgva_solicitacoes_pecas"
     });
@@ -499,6 +518,11 @@
     let unsubEtiquetas = null;
     let unsubPecas = null;
     let unsubNotificacoes = null;
+    let unsubBloqueios = null;
+    let bloqueiosSetoriais = new Map();
+    let bloqueiosCarregados = false;
+    let sincronizandoBloqueios = false;
+    let avisoBloqueioIndisponivelExibido = false;
 
     const $ = (id) => document.getElementById(id);
     const normalizar = (valor) => String(valor ?? "").trim().toUpperCase();
@@ -915,6 +939,153 @@
       return ({ AGUARDANDO:"aguardando", ANDAMENTO:"andamento", AGUARDANDO_PECAS:"pecas", FINALIZADO:"finalizado" })[status] || "aguardando";
     }
 
+    const SETOR_BLOQUEIO_LGVA = "ACESSORIOS";
+
+    function chavePlacaBloqueioLGVA(valor) {
+      return normalizar(valor).replace(/[^A-Z0-9]/g, "").slice(0, 10);
+    }
+
+    function setorCanonicoBloqueioLGVA(valor) {
+      const setor = normalizar(valor)
+        .normalize("NFD").replace(/[\u0300-\u036f]/g, "")
+        .replace(/[\s-]+/g, "_");
+      if (["OFICINA","MECANICA","LGVO"].includes(setor)) return "OFICINA";
+      if (["ACESSORIOS","LGVA"].includes(setor)) return "ACESSORIOS";
+      if (["POLIMENTO","LGVP"].includes(setor)) return "POLIMENTO";
+      if (["LAVA_RAPIDO","LAVARAPIDO","LGVL"].includes(setor)) return "LAVA_RAPIDO";
+      return setor;
+    }
+
+    function rotuloSetorBloqueioLGVA(valor) {
+      const setor = setorCanonicoBloqueioLGVA(valor);
+      if (setor === "ACESSORIOS") return "ACESSÓRIOS";
+      if (setor === "LAVA_RAPIDO") return "LAVA-RÁPIDO";
+      return setor || "OUTRO SETOR";
+    }
+
+    function bloqueioAtivoLGVA(item) {
+      return item?.ativo === true && normalizar(item?.status || "") === "OCUPADO";
+    }
+
+    function bloqueioDaPlacaLGVA(placa) {
+      const chave = chavePlacaBloqueioLGVA(placa);
+      return chave ? bloqueiosSetoriais.get(chave) || null : null;
+    }
+
+    function bloqueioOutroSetorLGVA(item) {
+      const bloqueio = bloqueioDaPlacaLGVA(item?.placa);
+      if (!bloqueioAtivoLGVA(bloqueio)) return null;
+      return setorCanonicoBloqueioLGVA(bloqueio.setorAtual || bloqueio.moduloAtual) === SETOR_BLOQUEIO_LGVA
+        ? null
+        : bloqueio;
+    }
+
+    function responsavelBloqueioLGVA(bloqueio) {
+      return normalizar(
+        bloqueio?.responsavelAtual
+        || bloqueio?.responsavel
+        || bloqueio?.usuarioQueAssumiu
+        || bloqueio?.assumidoPorUsuario
+        || "NÃO INFORMADO"
+      );
+    }
+
+    function mensagemBloqueioLGVA(bloqueio) {
+      return `VEÍCULO INDISPONÍVEL\nSETOR: ${rotuloSetorBloqueioLGVA(bloqueio?.setorAtual || bloqueio?.moduloAtual)}\nRESPONSÁVEL: ${responsavelBloqueioLGVA(bloqueio)}`;
+    }
+
+    function erroOutroSetorLGVA(bloqueio) {
+      const erro = new Error("VEICULO_OUTRO_SETOR");
+      erro.code = "VEICULO_OUTRO_SETOR";
+      erro.bloqueio = bloqueio || {};
+      return erro;
+    }
+
+    function tratarErroOperacaoBloqueioLGVA(erro, mensagemPadrao) {
+      if (erro?.code === "VEICULO_OUTRO_SETOR") {
+        alert(mensagemBloqueioLGVA(erro.bloqueio));
+        return;
+      }
+      if (erro?.code === "SERVICO_NAO_DISPONIVEL") {
+        mostrarToast("Serviço já iniciado ou indisponível");
+        return;
+      }
+      console.error("[LGVA BLOQUEIO CENTRAL]", erro);
+      tratarErroFirebase(erro);
+      if (mensagemPadrao) mostrarToast(mensagemPadrao);
+    }
+
+    function payloadBloqueioLGVA(item, bloqueioAtual = {}, origem = "LGVA") {
+      const agoraISO = new Date().toISOString();
+      const novo = !bloqueioAtivoLGVA(bloqueioAtual);
+      const chave = chavePlacaBloqueioLGVA(item?.placa);
+      const payload = {
+        placa:chave,
+        placaChave:chave,
+        veiculo:normalizar(item?.veiculo || bloqueioAtual?.veiculo || ""),
+        ativo:true,
+        status:"OCUPADO",
+        setorAtual:SETOR_BLOQUEIO_LGVA,
+        setorAtualRotulo:"ACESSÓRIOS",
+        moduloAtual:SETOR_BLOQUEIO_LGVA,
+        servicoId:String(item?.id || bloqueioAtual?.servicoId || ""),
+        colecaoServico:COLLECTIONS.servicos,
+        lgvcOrdemId:String(item?.lgvcOrdemId || bloqueioAtual?.lgvcOrdemId || ""),
+        responsavel:usuarioAtual,
+        responsavelAtual:usuarioAtual,
+        usuarioQueAssumiu:novo ? usuarioAtual : normalizar(bloqueioAtual?.usuarioQueAssumiu || bloqueioAtual?.assumidoPorUsuario || usuarioAtual),
+        assumidoPorUsuario:novo ? usuarioAtual : normalizar(bloqueioAtual?.assumidoPorUsuario || bloqueioAtual?.usuarioQueAssumiu || usuarioAtual),
+        origemUltimaAcao:origem,
+        atualizadoPor:usuarioAtual,
+        atualizadoEm:firebase.firestore.FieldValue.serverTimestamp(),
+        atualizadoEmISO:agoraISO
+      };
+      if (novo) {
+        payload.criadoPor = usuarioAtual;
+        payload.criadoEm = firebase.firestore.FieldValue.serverTimestamp();
+        payload.criadoEmISO = agoraISO;
+        payload.assumidoEm = firebase.firestore.FieldValue.serverTimestamp();
+        payload.assumidoEmISO = agoraISO;
+      }
+      return payload;
+    }
+
+    async function garantirBloqueioServicoEmAndamentoLGVA(item) {
+      const chave = chavePlacaBloqueioLGVA(item?.placa);
+      if (!db || !chave || statusInterno(item) !== "ANDAMENTO") return;
+      const bloqueioLocal = bloqueiosSetoriais.get(chave);
+      if (bloqueioAtivoLGVA(bloqueioLocal)) return;
+
+      const ref = db.collection(COLLECTIONS.bloqueios).doc(chave);
+      try {
+        let payloadGravado = null;
+        await db.runTransaction(async (transacao) => {
+          const snapshot = await transacao.get(ref);
+          const atual = snapshot.exists ? snapshot.data() || {} : {};
+          if (bloqueioAtivoLGVA(atual)) return;
+          payloadGravado = payloadBloqueioLGVA(item, atual, "SINCRONIZACAO_LGVA");
+          payloadGravado.responsavel = normalizar(item?.instalador || usuarioAtual);
+          payloadGravado.responsavelAtual = payloadGravado.responsavel;
+          transacao.set(ref, payloadGravado, { merge:true });
+        });
+        if (payloadGravado) bloqueiosSetoriais.set(chave, payloadGravado);
+      } catch (erro) {
+        console.warn("[LGVA] Não foi possível sincronizar bloqueio de serviço em andamento:", erro);
+      }
+    }
+
+    async function sincronizarBloqueiosServicosEmAndamentoLGVA() {
+      if (!db || !bloqueiosCarregados || sincronizandoBloqueios) return;
+      sincronizandoBloqueios = true;
+      try {
+        for (const item of servicos.filter((servico) => statusInterno(servico) === "ANDAMENTO")) {
+          await garantirBloqueioServicoEmAndamentoLGVA(item);
+        }
+      } finally {
+        sincronizandoBloqueios = false;
+      }
+    }
+
     function configurarFirebase() {
       try {
         if (!window.firebase) throw new Error("SDK do Firebase não carregado");
@@ -929,7 +1100,7 @@
     }
 
     function iniciarListeners() {
-      unsubServicos?.(); unsubEtiquetas?.(); unsubPecas?.(); unsubNotificacoes?.();
+      unsubServicos?.(); unsubEtiquetas?.(); unsubPecas?.(); unsubNotificacoes?.(); unsubBloqueios?.();
 
       unsubServicos = db.collection(COLLECTIONS.servicos)
         .onSnapshot((snapshot) => {
@@ -938,6 +1109,7 @@
             .filter((item) => item.excluido !== true)
             .sort((a,b) => timestampServico(b) - timestampServico(a));
           atualizarTudo();
+          sincronizarBloqueiosServicosEmAndamentoLGVA();
         }, tratarErroFirebase);
 
       unsubEtiquetas = db.collection(COLLECTIONS.etiquetas)
@@ -970,6 +1142,28 @@
             .filter(notificacaoVisivelLGVA);
           atualizarTudo();
         }, tratarErroFirebase);
+
+      unsubBloqueios = db.collection(COLLECTIONS.bloqueios)
+        .where("ativo", "==", true)
+        .onSnapshot((snapshot) => {
+          bloqueiosSetoriais = new Map();
+          snapshot.docs.forEach((doc) => {
+            const item = { id:doc.id, ...doc.data() };
+            if (!bloqueioAtivoLGVA(item)) return;
+            const chave = chavePlacaBloqueioLGVA(item.placa || item.placaChave || doc.id);
+            if (chave) bloqueiosSetoriais.set(chave, item);
+          });
+          bloqueiosCarregados = true;
+          atualizarTudo();
+          sincronizarBloqueiosServicosEmAndamentoLGVA();
+        }, (erro) => {
+          console.warn("[LGVA] Bloqueio central indisponível:", erro);
+          bloqueiosCarregados = false;
+          if (!avisoBloqueioIndisponivelExibido) {
+            avisoBloqueioIndisponivelExibido = true;
+            mostrarToast("Bloqueio central indisponível");
+          }
+        });
     }
 
     function tratarErroFirebase(erro) {
@@ -1063,15 +1257,27 @@
       const etiqueta = etiquetaDoServico(item);
       const observacoes = normalizar(item.observacoes);
       const pecasSalvas = pecasSalvasDoServico(item);
-      const classe = ["etiqueta-aplicada", statusAtual === "AGUARDANDO_PECAS" ? "status-pecas" : "", statusPrincipal === "FINALIZADO" ? "status-finalizado" : ""].join(" ");
+      const bloqueioExterno = bloqueioOutroSetorLGVA(item);
+      const classe = [
+        "etiqueta-aplicada",
+        statusAtual === "AGUARDANDO_PECAS" ? "status-pecas" : "",
+        statusPrincipal === "FINALIZADO" ? "status-finalizado" : "",
+        bloqueioExterno ? "setor-bloqueado" : ""
+      ].join(" ");
       let botoes = "";
-      if (statusPrincipal === "AGUARDANDO") {
+      if (bloqueioExterno) {
+        botoes = `<button class="card-btn primary" type="button" disabled>${statusPrincipal === "AGUARDANDO" ? "INICIAR" : "INDISPONÍVEL"}</button>`;
+      } else if (statusPrincipal === "AGUARDANDO") {
         botoes = `<button class="card-btn primary" onclick="iniciarServico('${item.id}')">INICIAR</button>`;
       } else if (statusPrincipal === "ANDAMENTO" && statusAtual !== "AGUARDANDO_PECAS") {
         botoes = `<button class="card-btn warning" onclick="abrirSolicitacaoPecas('${item.id}')">PEÇAS</button><button class="card-btn success" onclick="finalizarServico('${item.id}')">FINALIZAR</button>`;
       } else if (statusPrincipal === "ANDAMENTO" && statusAtual === "AGUARDANDO_PECAS") {
         botoes = `<button class="card-btn warning" onclick="abrirSolicitacaoPecas('${item.id}')">PEÇAS</button><button class="card-btn primary" onclick="retomarServico('${item.id}')">RETOMAR</button><button class="card-btn success" onclick="finalizarServico('${item.id}')">FINALIZAR</button>`;
       }
+
+      const avisoBloqueio = bloqueioExterno
+        ? `<div class="service-sector-lock"><strong>VEÍCULO EM OUTRO SETOR</strong><span>SETOR: ${escapar(rotuloSetorBloqueioLGVA(bloqueioExterno.setorAtual || bloqueioExterno.moduloAtual))}</span><span>RESPONSÁVEL: ${escapar(responsavelBloqueioLGVA(bloqueioExterno))}</span></div>`
+        : "";
 
       return `
         <article class="service-row ${classe}" style="${estiloEtiqueta(item)}">
@@ -1094,6 +1300,7 @@
             <div class="service-info-line"><svg viewBox="0 0 24 24"><path d="M12 21S18 15.7 18 10A6 6 0 1 0 6 10C6 15.7 12 21 12 21Z"></path><circle cx="12" cy="10" r="2"></circle></svg><span>ORIGEM: <strong>${escapar(operacaoServico(item))}</strong></span></div>
             <div class="service-info-line"><svg viewBox="0 0 24 24"><circle cx="9" cy="8" r="3"></circle><path d="M3.5 20V18A5.5 5.5 0 0 1 9 12.5A5.5 5.5 0 0 1 14.5 18V20"></path><path d="M16 8H21M18.5 5.5V10.5"></path></svg><span>INSTALADOR: <strong>${escapar(item.instalador || "NÃO ATRIBUÍDO")}</strong></span></div>
           </div>
+          ${avisoBloqueio}
           <div class="service-footer">
             <span class="status-badge ${statusClasse(statusAtual)}">${escapar(statusTexto(statusAtual))}</span>
             <div class="service-actions">${botoes}</div>
@@ -1194,53 +1401,128 @@
 
     async function iniciarServico(id) {
       if (!db) return;
+      const itemLocal = servicos.find((item) => item.id === id);
+      if (!itemLocal) return mostrarToast("Serviço não encontrado");
+      const bloqueioVisual = bloqueioOutroSetorLGVA(itemLocal);
+      if (bloqueioVisual) return alert(mensagemBloqueioLGVA(bloqueioVisual));
+
+      const chave = chavePlacaBloqueioLGVA(itemLocal.placa);
+      if (!chave) return mostrarToast("Placa inválida para bloqueio");
+      const servicoRef = db.collection(COLLECTIONS.servicos).doc(id);
+      const bloqueioRef = db.collection(COLLECTIONS.bloqueios).doc(chave);
+
       try {
-        const agoraISO = new Date().toISOString();
-        await db.collection(COLLECTIONS.servicos).doc(id).update({
-          status:"ANDAMENTO",
-          instalador:usuarioAtual,
-          instaladorUid:usuarioAutenticado?.uid || "",
-          instaladorEmail:usuarioAutenticado?.email || "",
-          assumidoPorUid:usuarioAutenticado?.uid || "",
-          aguardandoPecas:false,
-          iniciadoEm:firebase.firestore.FieldValue.serverTimestamp(),
-          assumidoEm:firebase.firestore.FieldValue.serverTimestamp(),
-          assumidoEmISO:agoraISO,
-          atualizadoEm:firebase.firestore.FieldValue.serverTimestamp(),
-          atualizadoEmISO:agoraISO
+        let bloqueioGravado = null;
+        await db.runTransaction(async (transacao) => {
+          const [servicoSnapshot, bloqueioSnapshot] = await Promise.all([
+            transacao.get(servicoRef),
+            transacao.get(bloqueioRef)
+          ]);
+          if (!servicoSnapshot.exists) throw new Error("SERVICO_NAO_ENCONTRADO");
+          const item = { id, ...servicoSnapshot.data() };
+          if (statusInterno(item) !== "AGUARDANDO") {
+            const erro = new Error("SERVICO_NAO_DISPONIVEL");
+            erro.code = "SERVICO_NAO_DISPONIVEL";
+            throw erro;
+          }
+
+          const bloqueioAtual = bloqueioSnapshot.exists ? bloqueioSnapshot.data() || {} : {};
+          const setorOcupante = setorCanonicoBloqueioLGVA(bloqueioAtual.setorAtual || bloqueioAtual.moduloAtual);
+          if (bloqueioAtivoLGVA(bloqueioAtual) && setorOcupante && setorOcupante !== SETOR_BLOQUEIO_LGVA) {
+            throw erroOutroSetorLGVA(bloqueioAtual);
+          }
+
+          const agoraISO = new Date().toISOString();
+          transacao.set(servicoRef, {
+            status:"ANDAMENTO",
+            instalador:usuarioAtual,
+            instaladorUid:usuarioAutenticado?.uid || "",
+            instaladorEmail:usuarioAutenticado?.email || "",
+            assumidoPorUid:usuarioAutenticado?.uid || "",
+            aguardandoPecas:false,
+            iniciadoEm:firebase.firestore.FieldValue.serverTimestamp(),
+            assumidoEm:firebase.firestore.FieldValue.serverTimestamp(),
+            assumidoEmISO:agoraISO,
+            atualizadoEm:firebase.firestore.FieldValue.serverTimestamp(),
+            atualizadoEmISO:agoraISO
+          }, { merge:true });
+
+          bloqueioGravado = payloadBloqueioLGVA(item, bloqueioAtual, "LGVA_INICIO_SERVICO");
+          transacao.set(bloqueioRef, bloqueioGravado, { merge:true });
         });
+
+        if (bloqueioGravado) bloqueiosSetoriais.set(chave, bloqueioGravado);
         selecionarVisao("ANDAMENTO");
         mostrarToast("Serviço iniciado");
-      } catch (erro) { tratarErroFirebase(erro); }
+      } catch (erro) {
+        tratarErroOperacaoBloqueioLGVA(erro, "Não foi possível iniciar o serviço");
+      }
     }
 
     async function retomarServico(id) {
       if (!db) return;
+      const itemLocal = servicos.find((item) => item.id === id);
+      if (!itemLocal) return mostrarToast("Serviço não encontrado");
+      const bloqueioVisual = bloqueioOutroSetorLGVA(itemLocal);
+      if (bloqueioVisual) return alert(mensagemBloqueioLGVA(bloqueioVisual));
+
+      const chave = chavePlacaBloqueioLGVA(itemLocal.placa);
+      if (!chave) return mostrarToast("Placa inválida para bloqueio");
+      const servicoRef = db.collection(COLLECTIONS.servicos).doc(id);
+      const bloqueioRef = db.collection(COLLECTIONS.bloqueios).doc(chave);
+
       try {
-        const agoraISO = new Date().toISOString();
-        await db.collection(COLLECTIONS.servicos).doc(id).update({
-          status:"ANDAMENTO",
-          aguardandoPecas:false,
-          atualizadoEm:firebase.firestore.FieldValue.serverTimestamp(),
-          atualizadoEmISO:agoraISO
+        let bloqueioGravado = null;
+        await db.runTransaction(async (transacao) => {
+          const [servicoSnapshot, bloqueioSnapshot] = await Promise.all([
+            transacao.get(servicoRef),
+            transacao.get(bloqueioRef)
+          ]);
+          if (!servicoSnapshot.exists) throw new Error("SERVICO_NAO_ENCONTRADO");
+          const item = { id, ...servicoSnapshot.data() };
+          const bloqueioAtual = bloqueioSnapshot.exists ? bloqueioSnapshot.data() || {} : {};
+          const setorOcupante = setorCanonicoBloqueioLGVA(bloqueioAtual.setorAtual || bloqueioAtual.moduloAtual);
+          if (bloqueioAtivoLGVA(bloqueioAtual) && setorOcupante && setorOcupante !== SETOR_BLOQUEIO_LGVA) {
+            throw erroOutroSetorLGVA(bloqueioAtual);
+          }
+
+          const agoraISO = new Date().toISOString();
+          transacao.set(servicoRef, {
+            status:"ANDAMENTO",
+            aguardandoPecas:false,
+            atualizadoEm:firebase.firestore.FieldValue.serverTimestamp(),
+            atualizadoEmISO:agoraISO
+          }, { merge:true });
+          bloqueioGravado = payloadBloqueioLGVA(item, bloqueioAtual, "LGVA_RETOMADA_SERVICO");
+          transacao.set(bloqueioRef, bloqueioGravado, { merge:true });
         });
+
+        if (bloqueioGravado) bloqueiosSetoriais.set(chave, bloqueioGravado);
         selecionarVisao("ANDAMENTO");
         mostrarToast("Serviço retomado");
-      } catch (erro) { tratarErroFirebase(erro); }
+      } catch (erro) {
+        tratarErroOperacaoBloqueioLGVA(erro, "Não foi possível retomar o serviço");
+      }
     }
 
     async function finalizarServico(id) {
       if (!db) return;
-      const item = servicos.find((s) => s.id === id);
-      if (!item) return;
-      if (!confirm(`FINALIZAR O SERVIÇO DO VEÍCULO ${item.placa}?`)) return;
+      const itemLocal = servicos.find((s) => s.id === id);
+      if (!itemLocal) return;
+      const bloqueioVisual = bloqueioOutroSetorLGVA(itemLocal);
+      if (bloqueioVisual) return alert(mensagemBloqueioLGVA(bloqueioVisual));
+      if (!confirm(`FINALIZAR O SERVIÇO DO VEÍCULO ${itemLocal.placa}?`)) return;
+
+      const chave = chavePlacaBloqueioLGVA(itemLocal.placa);
+      const servicoRef = db.collection(COLLECTIONS.servicos).doc(id);
+      const bloqueioRef = chave ? db.collection(COLLECTIONS.bloqueios).doc(chave) : null;
+
       try {
         const agoraISO = new Date().toISOString();
         const pendentes = solicitacoes.filter((solicitacao) =>
           String(solicitacao?.servicoId || solicitacao?.veiculoId || "") === String(id)
           && tokenStatus(solicitacao?.status) === "PENDENTE"
         );
-        const lote = db.batch();
         const movimentacoes = pendentes.map((solicitacao) => ({
           solicitacaoId:solicitacao.id,
           itens:Array.isArray(solicitacao.itens) ? solicitacao.itens.map(normalizar).filter(Boolean) : [],
@@ -1250,43 +1532,97 @@
           automatico:true,
           motivo:"FINALIZACAO_SERVICO"
         }));
+        let bloqueioLiberado = false;
 
-        pendentes.forEach((solicitacao) => {
-          lote.set(db.collection(COLLECTIONS.pecas).doc(solicitacao.id), {
-            status:"ATENDIDA",
-            atendidaPor:usuarioAtual,
-            atendidaEm:firebase.firestore.FieldValue.serverTimestamp(),
-            atendidaEmISO:agoraISO,
-            recebimentoAutomatico:true,
-            motivoRecebimento:"FINALIZACAO_SERVICO",
+        await db.runTransaction(async (transacao) => {
+          const servicoSnapshot = await transacao.get(servicoRef);
+          if (!servicoSnapshot.exists) throw new Error("SERVICO_NAO_ENCONTRADO");
+          const item = { id, ...servicoSnapshot.data() };
+          const bloqueioSnapshot = bloqueioRef ? await transacao.get(bloqueioRef) : null;
+          const bloqueioAtual = bloqueioSnapshot?.exists ? bloqueioSnapshot.data() || {} : {};
+          const setorOcupante = setorCanonicoBloqueioLGVA(bloqueioAtual.setorAtual || bloqueioAtual.moduloAtual);
+          if (bloqueioAtivoLGVA(bloqueioAtual) && setorOcupante && setorOcupante !== SETOR_BLOQUEIO_LGVA) {
+            throw erroOutroSetorLGVA(bloqueioAtual);
+          }
+
+          pendentes.forEach((solicitacao) => {
+            transacao.set(db.collection(COLLECTIONS.pecas).doc(solicitacao.id), {
+              status:"ATENDIDA",
+              atendidaPor:usuarioAtual,
+              atendidaEm:firebase.firestore.FieldValue.serverTimestamp(),
+              atendidaEmISO:agoraISO,
+              recebimentoAutomatico:true,
+              motivoRecebimento:"FINALIZACAO_SERVICO",
+              atualizadoEm:firebase.firestore.FieldValue.serverTimestamp(),
+              atualizadoEmISO:agoraISO
+            }, { merge:true });
+          });
+
+          const atualizacaoServico = {
+            status:"FINALIZADO",
+            aguardandoPecas:false,
+            statusPecasAtual:pendentes.length ? "ATENDIDA" : (item.statusPecasAtual || ""),
+            finalizadoPor:usuarioAtual,
+            finalizadoPorUid:usuarioAutenticado?.uid || "",
+            finalizadoPorEmail:usuarioAutenticado?.email || "",
+            finalizadoEm:firebase.firestore.FieldValue.serverTimestamp(),
+            finalizadoEmISO:agoraISO,
             atualizadoEm:firebase.firestore.FieldValue.serverTimestamp(),
             atualizadoEmISO:agoraISO
-          }, { merge:true });
+          };
+          if (movimentacoes.length) {
+            atualizacaoServico.historicoMovimentacaoPecas = firebase.firestore.FieldValue.arrayUnion(...movimentacoes);
+            atualizacaoServico.ultimaMovimentacaoPecas = movimentacoes[movimentacoes.length - 1];
+            atualizacaoServico.ultimaMovimentacaoPecasEmISO = agoraISO;
+            atualizacaoServico.ultimaMovimentacaoPecasPor = usuarioAtual;
+          }
+          transacao.set(servicoRef, atualizacaoServico, { merge:true });
+
+          const servicoBloqueadoId = String(bloqueioAtual.servicoId || "");
+          const podeLiberar = bloqueioRef
+            && bloqueioAtivoLGVA(bloqueioAtual)
+            && setorOcupante === SETOR_BLOQUEIO_LGVA
+            && (!servicoBloqueadoId || servicoBloqueadoId === String(id));
+          if (podeLiberar) {
+            bloqueioLiberado = true;
+            transacao.set(bloqueioRef, {
+              ativo:false,
+              status:"LIBERADO",
+              setorAnterior:SETOR_BLOQUEIO_LGVA,
+              setorAnteriorRotulo:"ACESSÓRIOS",
+              setorAtual:"",
+              setorAtualRotulo:"",
+              moduloAtual:"",
+              responsavelAnterior:normalizar(bloqueioAtual.responsavelAtual || bloqueioAtual.responsavel || usuarioAtual),
+              usuarioQueAssumiuAnterior:normalizar(bloqueioAtual.usuarioQueAssumiu || bloqueioAtual.assumidoPorUsuario || usuarioAtual),
+              responsavelAtual:"",
+              responsavel:"",
+              usuarioQueAssumiu:"",
+              assumidoPorUsuario:"",
+              servicoAnteriorId:String(id),
+              colecaoServicoAnterior:COLLECTIONS.servicos,
+              servicoId:"",
+              colecaoServico:"",
+              lgvcOrdemIdAnterior:String(bloqueioAtual.lgvcOrdemId || item.lgvcOrdemId || ""),
+              lgvcOrdemId:"",
+              motivoLiberacao:"FINALIZACAO_SERVICO",
+              liberadoPor:usuarioAtual,
+              liberadoEm:firebase.firestore.FieldValue.serverTimestamp(),
+              liberadoEmISO:agoraISO,
+              atualizadoPor:usuarioAtual,
+              atualizadoEm:firebase.firestore.FieldValue.serverTimestamp(),
+              atualizadoEmISO:agoraISO,
+              origemUltimaAcao:"LGVA_FINALIZACAO"
+            }, { merge:true });
+          }
         });
 
-        const atualizacaoServico = {
-          status:"FINALIZADO",
-          aguardandoPecas:false,
-          statusPecasAtual:pendentes.length ? "ATENDIDA" : (item.statusPecasAtual || ""),
-          finalizadoPor:usuarioAtual,
-          finalizadoPorUid:usuarioAutenticado?.uid || "",
-          finalizadoPorEmail:usuarioAutenticado?.email || "",
-          finalizadoEm:firebase.firestore.FieldValue.serverTimestamp(),
-          finalizadoEmISO:agoraISO,
-          atualizadoEm:firebase.firestore.FieldValue.serverTimestamp(),
-          atualizadoEmISO:agoraISO
-        };
-        if (movimentacoes.length) {
-          atualizacaoServico.historicoMovimentacaoPecas = firebase.firestore.FieldValue.arrayUnion(...movimentacoes);
-          atualizacaoServico.ultimaMovimentacaoPecas = movimentacoes[movimentacoes.length - 1];
-          atualizacaoServico.ultimaMovimentacaoPecasEmISO = agoraISO;
-          atualizacaoServico.ultimaMovimentacaoPecasPor = usuarioAtual;
-        }
-        lote.set(db.collection(COLLECTIONS.servicos).doc(id), atualizacaoServico, { merge:true });
-        await lote.commit();
+        if (bloqueioLiberado && chave) bloqueiosSetoriais.delete(chave);
         selecionarVisao("FINALIZADO");
         mostrarToast(pendentes.length ? "Serviço finalizado e peça marcada como recebida" : "Serviço finalizado");
-      } catch (erro) { tratarErroFirebase(erro); }
+      } catch (erro) {
+        tratarErroOperacaoBloqueioLGVA(erro, "Não foi possível finalizar o serviço");
+      }
     }
 
     function abrirSolicitacaoPecas(id) {
@@ -1576,7 +1912,7 @@ PEÇAS: ${pecasTexto}`;
     }
 
     async function encerrarSessao() {
-      unsubServicos?.(); unsubEtiquetas?.(); unsubPecas?.(); unsubNotificacoes?.();
+      unsubServicos?.(); unsubEtiquetas?.(); unsubPecas?.(); unsubNotificacoes?.(); unsubBloqueios?.();
       localStorage.removeItem(CHAVE_SESSAO);
       usuarioAutenticado = null; usuarioAtual = "";
       await auth?.signOut();

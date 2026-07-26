@@ -400,6 +400,32 @@
       .operation-btn,.completed-label { font-size:.47rem; }
       .bottom-nav-item { font-size:.46rem; }
     }
+
+    /* BLOQUEIO CENTRAL POR VEÍCULO — LGVP */
+    .service-card.bloqueado-outro-setor {
+      opacity:.72;
+      filter:saturate(.62);
+      border-style:dashed;
+    }
+    .service-card.bloqueado-outro-setor .operation-btn {
+      cursor:not-allowed;
+      opacity:.72;
+      box-shadow:none;
+    }
+    .bloqueio-setorial-info {
+      padding:6px 8px;
+      border:1px solid #fecaca;
+      border-radius:9px;
+      background:#fff7f7;
+      color:#991b1b;
+      align-items:flex-start;
+    }
+    .bloqueio-setorial-info svg { stroke:#dc2626; }
+    .bloqueio-setorial-info span {
+      white-space:normal;
+      line-height:1.3;
+      font-weight:900;
+    }
   </style>
 </head>
 <body>
@@ -526,6 +552,8 @@
 
     const COLECAO_SERVICOS = 'polimento_servicos';
     const COLECAO_ETIQUETAS = 'etiquetas_polimento';
+    const COLECAO_BLOQUEIOS_VEICULOS = 'lpa_bloqueios_veiculos';
+    const SETOR_BLOQUEIO_ATUAL = 'POLIMENTO';
     const CHAVE_SESSAO = 'sessao_lgvp';
     const CHAVE_POLIDORES = 'lgvp_polidores_salvos';
     const COLECAO_USUARIOS = 'usuarios_sistema';
@@ -546,6 +574,9 @@
     let servicoFinalizarId = null;
     let unsubscribeServicos = null;
     let unsubscribeEtiquetas = null;
+    let unsubscribeBloqueios = null;
+    let bloqueiosVeiculos = new Map();
+    const sincronizacoesBloqueioExecutadas = new Set();
     let toastTimer = null;
     let usuarioAutenticado = null;
     let aplicacaoIniciada = false;
@@ -797,6 +828,163 @@
       $('#drawer').setAttribute('aria-hidden','true');
     }
 
+
+    function placaChaveBloqueio(valor) {
+      return normalizar(valor).replace(/[^A-Z0-9]/g,'');
+    }
+
+    function setorCanonicoBloqueio(valor) {
+      const setor = normalizar(valor).replace(/[^A-Z0-9]+/g,'_').replace(/^_+|_+$/g,'');
+      const mapa = {
+        LGVO:'OFICINA',
+        OFICINA:'OFICINA',
+        MECANICA:'OFICINA',
+        MECANICO:'OFICINA',
+        LGVA:'ACESSORIOS',
+        ACESSORIOS:'ACESSORIOS',
+        LGVP:'POLIMENTO',
+        POLIMENTO:'POLIMENTO',
+        LGVL:'LAVA_RAPIDO',
+        LAVA_RAPIDO:'LAVA_RAPIDO',
+        LAVARAPIDO:'LAVA_RAPIDO',
+        LAVA:'LAVA_RAPIDO'
+      };
+      return mapa[setor] || setor;
+    }
+
+    function rotuloSetorBloqueio(valor) {
+      const setor = setorCanonicoBloqueio(valor);
+      const mapa = {
+        OFICINA:'OFICINA',
+        ACESSORIOS:'ACESSÓRIOS',
+        POLIMENTO:'POLIMENTO',
+        LAVA_RAPIDO:'LAVA-RÁPIDO'
+      };
+      return mapa[setor] || setor.replaceAll('_',' ') || 'OUTRO SETOR';
+    }
+
+    function bloqueioAtivoRegistro(item) {
+      return item?.ativo === true && normalizar(item?.status) === 'OCUPADO';
+    }
+
+    function responsavelBloqueio(item) {
+      return normalizar(
+        item?.responsavelAtual ||
+        item?.responsavel ||
+        item?.usuarioQueAssumiu ||
+        item?.assumidoPorUsuario ||
+        'NÃO INFORMADO'
+      );
+    }
+
+    function bloqueioDoServico(item) {
+      return bloqueiosVeiculos.get(placaChaveBloqueio(item?.placa)) || null;
+    }
+
+    function bloqueioDeOutroSetor(item) {
+      const bloqueio = bloqueioDoServico(item);
+      if (!bloqueioAtivoRegistro(bloqueio)) return null;
+      const setor = setorCanonicoBloqueio(bloqueio?.setorAtual || bloqueio?.moduloAtual);
+      return setor && setor !== SETOR_BLOQUEIO_ATUAL ? bloqueio : null;
+    }
+
+    function mensagemBloqueioOutroSetor(bloqueio) {
+      return `VEÍCULO EM OUTRO SETOR · SETOR: ${rotuloSetorBloqueio(bloqueio?.setorAtual || bloqueio?.moduloAtual)} · RESPONSÁVEL: ${responsavelBloqueio(bloqueio)}`;
+    }
+
+    function usuarioBloqueioAtual() {
+      return normalizar(
+        usuarioAutenticado?.nome ||
+        usuarioAutenticado?.usuario ||
+        usuarioAutenticado?.email ||
+        'USUÁRIO'
+      );
+    }
+
+    async function sincronizarServicoAndamentoComBloqueio(item) {
+      if (!item || statusServico(item) !== 'ANDAMENTO') return;
+      const placa = placaChaveBloqueio(item?.placa);
+      const servicoId = String(item?.id || '');
+      if (!placa || !servicoId) return;
+
+      const chaveExecucao = `${placa}:${servicoId}`;
+      if (sincronizacoesBloqueioExecutadas.has(chaveExecucao)) return;
+      sincronizacoesBloqueioExecutadas.add(chaveExecucao);
+
+      const refBloqueio = db.collection(COLECAO_BLOQUEIOS_VEICULOS).doc(placa);
+      const agora = new Date();
+      try {
+        await db.runTransaction(async transaction => {
+          const snapshot = await transaction.get(refBloqueio);
+          const atual = snapshot.exists ? snapshot.data() || {} : {};
+          const ativo = bloqueioAtivoRegistro(atual);
+          const setorAtual = setorCanonicoBloqueio(atual?.setorAtual || atual?.moduloAtual);
+
+          if (ativo && setorAtual && setorAtual !== SETOR_BLOQUEIO_ATUAL) return;
+
+          const polidor = polidorServico(item);
+          const usuario = usuarioBloqueioAtual();
+          transaction.set(refBloqueio, {
+            placa,
+            placaChave:placa,
+            veiculo:normalizar(item?.veiculo || atual?.veiculo || ''),
+            ativo:true,
+            status:'OCUPADO',
+            setorAtual:SETOR_BLOQUEIO_ATUAL,
+            setorAtualRotulo:'POLIMENTO',
+            moduloAtual:SETOR_BLOQUEIO_ATUAL,
+            servicoId,
+            colecaoServico:COLECAO_SERVICOS,
+            lgvcOrdemId:String(item?.lgvcOrdemId || atual?.lgvcOrdemId || ''),
+            responsavel:polidor,
+            responsavelAtual:polidor,
+            usuarioQueAssumiu:normalizar(atual?.usuarioQueAssumiu || atual?.assumidoPorUsuario || usuario),
+            assumidoPorUsuario:normalizar(atual?.assumidoPorUsuario || atual?.usuarioQueAssumiu || usuario),
+            origemUltimaAcao:'LGVP_RECONCILIACAO',
+            atualizadoPor:usuario,
+            atualizadoEm:firebase.firestore.FieldValue.serverTimestamp(),
+            atualizadoEmISO:agora.toISOString(),
+            ...(ativo ? {} : {
+              criadoPor:usuario,
+              criadoEm:firebase.firestore.FieldValue.serverTimestamp(),
+              criadoEmISO:agora.toISOString(),
+              assumidoEm:firebase.firestore.FieldValue.serverTimestamp(),
+              assumidoEmISO:agora.toISOString()
+            })
+          }, { merge:true });
+        });
+      } catch (erro) {
+        sincronizacoesBloqueioExecutadas.delete(chaveExecucao);
+        console.warn('[LGVP] Não foi possível reconciliar bloqueio de serviço em andamento:', erro);
+      }
+    }
+
+    function sincronizarServicosEmAndamentoComBloqueio() {
+      servicos
+        .filter(item => !item?.excluido && statusServico(item) === 'ANDAMENTO')
+        .forEach(item => sincronizarServicoAndamentoComBloqueio(item));
+    }
+
+    function iniciarBloqueios() {
+      if (typeof unsubscribeBloqueios === 'function') unsubscribeBloqueios();
+      unsubscribeBloqueios = db.collection(COLECAO_BLOQUEIOS_VEICULOS).onSnapshot(snapshot => {
+        const mapa = new Map();
+        snapshot.docs.forEach(doc => {
+          const item = { id:doc.id, ...doc.data() };
+          if (!bloqueioAtivoRegistro(item)) return;
+          const chave = placaChaveBloqueio(item?.placaChave || item?.placa || doc.id);
+          if (chave) mapa.set(chave, item);
+        });
+        bloqueiosVeiculos = mapa;
+        renderizar();
+        sincronizarServicosEmAndamentoComBloqueio();
+      }, erro => {
+        console.error('[LGVP] Erro ao carregar bloqueios centrais:', erro);
+        bloqueiosVeiculos = new Map();
+        renderizar();
+      });
+    }
+
     function atualizarResumo() {
       const ativos = servicos.filter(item => !item.excluido);
       const aguardando = ativos.filter(item => statusServico(item) === 'AGUARDANDO').length;
@@ -847,6 +1035,7 @@
       const motivo = motivoRetorno(item);
       const cor = corServico(item);
       const titulo = descricaoPolimento(item);
+      const bloqueioExterno = bloqueioDeOutroSetor(item);
       const statusConfig = {
         AGUARDANDO:{ classe:'status-agendamento', texto:'AGUARDANDO POLIDOR' },
         ANDAMENTO:{ classe:'status-execucao', texto:'EM POLIMENTO' },
@@ -854,7 +1043,12 @@
       }[status];
 
       let acao = '';
-      if (status === 'AGUARDANDO') {
+      if (bloqueioExterno && status !== 'FINALIZADO') {
+        acao = `<button class="operation-btn assume" type="button" disabled aria-disabled="true" title="${escapar(mensagemBloqueioOutroSetor(bloqueioExterno))}">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="10" width="14" height="10" rx="2"></rect><path d="M8 10V7A4 4 0 0 1 16 7V10"></path></svg>
+          <span>INDISPONÍVEL</span>
+        </button>`;
+      } else if (status === 'AGUARDANDO') {
         acao = `<button class="operation-btn assume" type="button" data-action="assumir" data-id="${escapar(item.id)}">
           <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 12L11 15L17 9"></path><circle cx="12" cy="12" r="9"></circle></svg>
           <span>ASSUMIR POLIMENTO</span>
@@ -873,8 +1067,15 @@
         ? `RETORNO: SIM${motivo ? ` · ${motivo}` : ''}`
         : 'RETORNO: NÃO';
 
+      const avisoBloqueio = bloqueioExterno
+        ? `<div class="meta-row bloqueio-setorial-info">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="10" width="14" height="10" rx="2"></rect><path d="M8 10V7A4 4 0 0 1 16 7V10"></path></svg>
+            <span>VEÍCULO EM OUTRO SETOR<br>SETOR: ${escapar(rotuloSetorBloqueio(bloqueioExterno?.setorAtual || bloqueioExterno?.moduloAtual))}<br>RESPONSÁVEL: ${escapar(responsavelBloqueio(bloqueioExterno))}</span>
+          </div>`
+        : '';
+
       return `
-        <article class="service-card" style="${estiloEtiqueta(item)}">
+        <article class="service-card${bloqueioExterno ? ' bloqueado-outro-setor' : ''}" style="${estiloEtiqueta(item)}">
           <div class="vehicle-side">
             <div class="brand-svg" aria-hidden="true">
               <svg viewBox="0 0 64 64"><path d="M18 30L23 18H41L46 30"></path><path d="M13 31H51C54 31 56 33 56 36V46H8V36C8 33 10 31 13 31Z"></path><path d="M14 46V51"></path><path d="M50 46V51"></path><circle cx="18" cy="38" r="3"></circle><circle cx="46" cy="38" r="3"></circle><path d="M24 26H40"></path></svg>
@@ -904,6 +1105,7 @@
               <div class="meta-row"><svg viewBox="0 0 24 24"><rect x="4" y="5" width="16" height="15" rx="2"></rect><path d="M8 3V7"></path><path d="M16 3V7"></path><path d="M4 10H20"></path></svg><span>${escapar(dataServico(item))}</span></div>
               <div class="meta-row"><svg viewBox="0 0 24 24"><path d="M4 12H20"></path><path d="M12 4V20"></path><circle cx="12" cy="12" r="8"></circle></svg><span>FAROL: ${farol ? 'SIM' : 'NÃO'}</span></div>
               <div class="meta-row"><svg viewBox="0 0 24 24"><path d="M4 7H15A5 5 0 0 1 20 12A5 5 0 0 1 15 17H7"></path><path d="M8 13L4 17L8 21"></path></svg><span title="${escapar(retornoTexto)}">${escapar(retornoTexto)}</span></div>
+              ${avisoBloqueio}
             </div>
 
             <div class="card-actions">${acao}</div>
@@ -937,6 +1139,13 @@
         mostrarToast('ESTE SERVIÇO JÁ FOI ASSUMIDO OU FINALIZADO.');
         return;
       }
+
+      const bloqueioExterno = bloqueioDeOutroSetor(item);
+      if (bloqueioExterno) {
+        alert(`AÇÃO BLOQUEADA.\n\nVEÍCULO EM OUTRO SETOR\nSETOR: ${rotuloSetorBloqueio(bloqueioExterno?.setorAtual || bloqueioExterno?.moduloAtual)}\nRESPONSÁVEL: ${responsavelBloqueio(bloqueioExterno)}`);
+        return;
+      }
+
       servicoAssumirId = id;
       preencherSelectPolidores();
       $('#novoPolidor').value = '';
@@ -963,14 +1172,37 @@ RETORNO: ${ehRetorno(item) ? 'SIM' : 'NÃO'}${motivoRetorno(item) ? ` · ${motiv
       const agora = new Date();
 
       try {
-        const ref = db.collection(COLECAO_SERVICOS).doc(id);
+        const refServico = db.collection(COLECAO_SERVICOS).doc(id);
+        const itemLocal = obterServico(id);
+        const placaLocal = placaChaveBloqueio(itemLocal?.placa);
+        if (!placaLocal) throw new Error('PLACA_INVALIDA');
+        const refBloqueio = db.collection(COLECAO_BLOQUEIOS_VEICULOS).doc(placaLocal);
+        const refAuditoria = db.collection('auditoria_lecar').doc();
+
         await db.runTransaction(async transaction => {
-          const snapshot = await transaction.get(ref);
-          if (!snapshot.exists) throw new Error('SERVICO_NAO_ENCONTRADO');
-          const atual = snapshot.data();
+          const [snapshotServico, snapshotBloqueio] = await Promise.all([
+            transaction.get(refServico),
+            transaction.get(refBloqueio)
+          ]);
+
+          if (!snapshotServico.exists) throw new Error('SERVICO_NAO_ENCONTRADO');
+          const atual = snapshotServico.data() || {};
           if (statusServico(atual) !== 'AGUARDANDO') throw new Error('SERVICO_JA_ASSUMIDO');
 
-          transaction.update(ref, {
+          const placa = placaChaveBloqueio(atual?.placa || placaLocal);
+          const bloqueioAtual = snapshotBloqueio.exists ? snapshotBloqueio.data() || {} : {};
+          const ativo = bloqueioAtivoRegistro(bloqueioAtual);
+          const setorOcupante = setorCanonicoBloqueio(bloqueioAtual?.setorAtual || bloqueioAtual?.moduloAtual);
+
+          if (ativo && setorOcupante && setorOcupante !== SETOR_BLOQUEIO_ATUAL) {
+            const erro = new Error('VEICULO_OCUPADO_OUTRO_SETOR');
+            erro.bloqueio = bloqueioAtual;
+            throw erro;
+          }
+
+          const usuario = usuarioBloqueioAtual();
+          const novoBloqueio = !ativo;
+          transaction.update(refServico, {
             status:'EM ANDAMENTO',
             statusOperacional:'EM POLIMENTO',
             status_operacional:'EM POLIMENTO',
@@ -987,6 +1219,49 @@ RETORNO: ${ehRetorno(item) ? 'SIM' : 'NÃO'}${motivoRetorno(item) ? ` · ${motiv
             atualizadoEm:firebase.firestore.FieldValue.serverTimestamp(),
             atualizadoEmISO:agora.toISOString()
           });
+
+          transaction.set(refBloqueio, {
+            placa,
+            placaChave:placa,
+            veiculo:normalizar(atual?.veiculo || bloqueioAtual?.veiculo || ''),
+            ativo:true,
+            status:'OCUPADO',
+            setorAtual:SETOR_BLOQUEIO_ATUAL,
+            setorAtualRotulo:'POLIMENTO',
+            moduloAtual:SETOR_BLOQUEIO_ATUAL,
+            servicoId:id,
+            colecaoServico:COLECAO_SERVICOS,
+            lgvcOrdemId:String(atual?.lgvcOrdemId || bloqueioAtual?.lgvcOrdemId || ''),
+            responsavel:polidor,
+            responsavelAtual:polidor,
+            usuarioQueAssumiu:novoBloqueio ? usuario : normalizar(bloqueioAtual?.usuarioQueAssumiu || bloqueioAtual?.assumidoPorUsuario || usuario),
+            assumidoPorUsuario:novoBloqueio ? usuario : normalizar(bloqueioAtual?.assumidoPorUsuario || bloqueioAtual?.usuarioQueAssumiu || usuario),
+            origemUltimaAcao:'LGVP',
+            atualizadoPor:usuario,
+            atualizadoEm:firebase.firestore.FieldValue.serverTimestamp(),
+            atualizadoEmISO:agora.toISOString(),
+            ...(novoBloqueio ? {
+              criadoPor:usuario,
+              criadoEm:firebase.firestore.FieldValue.serverTimestamp(),
+              criadoEmISO:agora.toISOString(),
+              assumidoEm:firebase.firestore.FieldValue.serverTimestamp(),
+              assumidoEmISO:agora.toISOString()
+            } : {})
+          }, { merge:true });
+
+          transaction.set(refAuditoria, {
+            tipo:novoBloqueio ? 'VEICULO_BLOQUEADO_SETOR_LGVP' : 'BLOQUEIO_SETOR_LGVP_CONFIRMADO',
+            modulo:'LGVP',
+            usuario,
+            placa,
+            veiculo:normalizar(atual?.veiculo || ''),
+            setor:SETOR_BLOQUEIO_ATUAL,
+            responsavel:polidor,
+            servicoId:id,
+            colecaoServico:COLECAO_SERVICOS,
+            criadoEm:firebase.firestore.FieldValue.serverTimestamp(),
+            criadoEmISO:agora.toISOString()
+          });
         });
 
         salvarPolidor(polidor);
@@ -998,6 +1273,9 @@ RETORNO: ${ehRetorno(item) ? 'SIM' : 'NÃO'}${motivoRetorno(item) ? ` · ${motiv
         console.error('Erro ao assumir serviço:', erro);
         if (erro.message === 'SERVICO_JA_ASSUMIDO') {
           alert('ESTE SERVIÇO JÁ FOI ASSUMIDO POR OUTRO POLIDOR.');
+        } else if (erro.message === 'VEICULO_OCUPADO_OUTRO_SETOR') {
+          const bloqueio = erro.bloqueio || {};
+          alert(`AÇÃO BLOQUEADA.\n\nVEÍCULO EM OUTRO SETOR\nSETOR: ${rotuloSetorBloqueio(bloqueio?.setorAtual || bloqueio?.moduloAtual)}\nRESPONSÁVEL: ${responsavelBloqueio(bloqueio)}`);
         } else {
           alert('NÃO FOI POSSÍVEL ASSUMIR O SERVIÇO. CONFIRA A CONEXÃO E AS REGRAS DO FIREBASE.');
         }
@@ -1013,6 +1291,13 @@ RETORNO: ${ehRetorno(item) ? 'SIM' : 'NÃO'}${motivoRetorno(item) ? ` · ${motiv
         mostrarToast('ESTE SERVIÇO NÃO ESTÁ EM ANDAMENTO.');
         return;
       }
+
+      const bloqueioExterno = bloqueioDeOutroSetor(item);
+      if (bloqueioExterno) {
+        alert(`AÇÃO BLOQUEADA.\n\nVEÍCULO EM OUTRO SETOR\nSETOR: ${rotuloSetorBloqueio(bloqueioExterno?.setorAtual || bloqueioExterno?.moduloAtual)}\nRESPONSÁVEL: ${responsavelBloqueio(bloqueioExterno)}`);
+        return;
+      }
+
       servicoFinalizarId = id;
       $('#contextoFinalizar').textContent = `${item.placa || 'SEM PLACA'} · ${item.veiculo || 'VEÍCULO'}
 POLIDOR: ${polidorServico(item) || 'NÃO INFORMADO'}
@@ -1031,14 +1316,24 @@ RETORNO: ${ehRetorno(item) ? 'SIM' : 'NÃO'}${motivoRetorno(item) ? ` · ${motiv
       const agora = new Date();
 
       try {
-        const ref = db.collection(COLECAO_SERVICOS).doc(id);
+        const refServico = db.collection(COLECAO_SERVICOS).doc(id);
+        const itemLocal = obterServico(id);
+        const placaLocal = placaChaveBloqueio(itemLocal?.placa);
+        if (!placaLocal) throw new Error('PLACA_INVALIDA');
+        const refBloqueio = db.collection(COLECAO_BLOQUEIOS_VEICULOS).doc(placaLocal);
+        const refAuditoria = db.collection('auditoria_lecar').doc();
+
         await db.runTransaction(async transaction => {
-          const snapshot = await transaction.get(ref);
-          if (!snapshot.exists) throw new Error('SERVICO_NAO_ENCONTRADO');
-          const atual = snapshot.data();
+          const [snapshotServico, snapshotBloqueio] = await Promise.all([
+            transaction.get(refServico),
+            transaction.get(refBloqueio)
+          ]);
+
+          if (!snapshotServico.exists) throw new Error('SERVICO_NAO_ENCONTRADO');
+          const atual = snapshotServico.data() || {};
           if (statusServico(atual) !== 'ANDAMENTO') throw new Error('SERVICO_NAO_ESTA_EM_ANDAMENTO');
 
-          transaction.update(ref, {
+          transaction.update(refServico, {
             status:'FINALIZADO',
             statusOperacional:'FINALIZADO',
             status_operacional:'FINALIZADO',
@@ -1050,15 +1345,68 @@ RETORNO: ${ehRetorno(item) ? 'SIM' : 'NÃO'}${motivoRetorno(item) ? ` · ${motiv
             atualizadoEm:firebase.firestore.FieldValue.serverTimestamp(),
             atualizadoEmISO:agora.toISOString()
           });
+
+          const bloqueioAtual = snapshotBloqueio.exists ? snapshotBloqueio.data() || {} : {};
+          const setorOcupante = setorCanonicoBloqueio(bloqueioAtual?.setorAtual || bloqueioAtual?.moduloAtual);
+          if (bloqueioAtivoRegistro(bloqueioAtual) && setorOcupante && setorOcupante !== SETOR_BLOQUEIO_ATUAL) {
+            const erro = new Error('VEICULO_OCUPADO_OUTRO_SETOR');
+            erro.bloqueio = bloqueioAtual;
+            throw erro;
+          }
+
+          const servicoBloqueadoId = String(bloqueioAtual?.servicoId || '');
+          const podeLiberar = bloqueioAtivoRegistro(bloqueioAtual)
+            && setorOcupante === SETOR_BLOQUEIO_ATUAL
+            && (!servicoBloqueadoId || servicoBloqueadoId === id);
+
+          if (podeLiberar) {
+            const usuario = usuarioBloqueioAtual();
+            transaction.set(refBloqueio, {
+              ativo:false,
+              status:'LIBERADO',
+              setorAnterior:SETOR_BLOQUEIO_ATUAL,
+              setorAnteriorRotulo:'POLIMENTO',
+              responsavelAnterior:normalizar(bloqueioAtual?.responsavelAtual || bloqueioAtual?.responsavel || polidorServico(atual)),
+              servicoAnteriorId:id,
+              motivoLiberacao:'FINALIZADO',
+              liberadoPor:usuario,
+              liberadoEm:firebase.firestore.FieldValue.serverTimestamp(),
+              liberadoEmISO:agora.toISOString(),
+              atualizadoPor:usuario,
+              atualizadoEm:firebase.firestore.FieldValue.serverTimestamp(),
+              atualizadoEmISO:agora.toISOString(),
+              origemUltimaAcao:'LGVP'
+            }, { merge:true });
+
+            transaction.set(refAuditoria, {
+              tipo:'VEICULO_LIBERADO_SETOR_LGVP',
+              modulo:'LGVP',
+              usuario,
+              placa:placaLocal,
+              veiculo:normalizar(atual?.veiculo || ''),
+              setor:SETOR_BLOQUEIO_ATUAL,
+              responsavel:polidorServico(atual),
+              servicoId:id,
+              colecaoServico:COLECAO_SERVICOS,
+              motivo:'FINALIZADO',
+              criadoEm:firebase.firestore.FieldValue.serverTimestamp(),
+              criadoEmISO:agora.toISOString()
+            });
+          }
         });
 
         fecharModal('#modalFinalizar');
         servicoFinalizarId = null;
         mudarVisao('FINALIZADOS');
-        mostrarToast('POLIMENTO FINALIZADO E LPA ATUALIZADO.');
+        mostrarToast('POLIMENTO FINALIZADO E VEÍCULO LIBERADO.');
       } catch (erro) {
         console.error('Erro ao finalizar serviço:', erro);
-        alert('NÃO FOI POSSÍVEL FINALIZAR O POLIMENTO. CONFIRA A CONEXÃO E AS REGRAS DO FIREBASE.');
+        if (erro.message === 'VEICULO_OCUPADO_OUTRO_SETOR') {
+          const bloqueio = erro.bloqueio || {};
+          alert(`AÇÃO BLOQUEADA.\n\nVEÍCULO EM OUTRO SETOR\nSETOR: ${rotuloSetorBloqueio(bloqueio?.setorAtual || bloqueio?.moduloAtual)}\nRESPONSÁVEL: ${responsavelBloqueio(bloqueio)}`);
+        } else {
+          alert('NÃO FOI POSSÍVEL FINALIZAR O POLIMENTO. CONFIRA A CONEXÃO E AS REGRAS DO FIREBASE.');
+        }
       } finally {
         botao.disabled = false;
         botao.textContent = 'FINALIZAR';
@@ -1086,6 +1434,7 @@ RETORNO: ${ehRetorno(item) ? 'SIM' : 'NÃO'}${motivoRetorno(item) ? ` · ${motiv
         servicos = snapshot.docs.map(doc => ({ id:doc.id, ...doc.data() }));
         definirConexao('online','ONLINE');
         renderizar();
+        sincronizarServicosEmAndamentoComBloqueio();
       }, erro => {
         console.error('Erro ao carregar serviços:', erro);
         definirConexao('error','ERRO');
@@ -1121,6 +1470,7 @@ RETORNO: ${ehRetorno(item) ? 'SIM' : 'NÃO'}${motivoRetorno(item) ? ` · ${motiv
         aplicacaoIniciada = true;
         iniciarEtiquetas();
         iniciarServicos();
+        iniciarBloqueios();
         mudarVisao('AGUARDANDO');
       }
     }
@@ -1153,6 +1503,9 @@ RETORNO: ${ehRetorno(item) ? 'SIM' : 'NÃO'}${motivoRetorno(item) ? ` · ${motiv
       if (!confirm('DESEJA REALMENTE SAIR DO SISTEMA?')) return;
       if (typeof unsubscribeServicos === 'function') unsubscribeServicos();
       if (typeof unsubscribeEtiquetas === 'function') unsubscribeEtiquetas();
+      if (typeof unsubscribeBloqueios === 'function') unsubscribeBloqueios();
+      bloqueiosVeiculos = new Map();
+      sincronizacoesBloqueioExecutadas.clear();
       localStorage.removeItem(CHAVE_SESSAO);
       usuarioAutenticado = null;
       await auth.signOut();
