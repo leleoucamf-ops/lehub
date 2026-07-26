@@ -485,7 +485,7 @@
         display:flex;
         align-items:center;
         justify-content:space-between;
-        gap:12px;
+        gap:10px;
         padding:10px 0;
         border-bottom:1px solid #e2e8f0;
         font-size:0.95rem;
@@ -493,23 +493,49 @@
         color:#1e293b;
       }
 
+      #listaPecas .peca-list-text {
+        flex:1 1 auto;
+        min-width:0;
+        overflow-wrap:anywhere;
+      }
+
+      #listaPecas .peca-list-actions {
+        display:flex;
+        align-items:center;
+        justify-content:flex-end;
+        gap:6px;
+        flex:0 0 auto;
+      }
+
       #listaPecas li button {
-        width:42px;
         height:34px;
-        min-width:42px;
-        max-width:42px;
-        padding:0;
+        min-height:34px;
+        padding:0 10px;
         margin:0;
         border:none;
         border-radius:8px;
-        background:#ef4444;
         color:#ffffff;
-        font-size:18px;
-        font-weight:700;
+        font-size:0.76rem;
+        font-weight:800;
         line-height:1;
-        display:flex;
+        display:inline-flex;
         align-items:center;
         justify-content:center;
+        cursor:pointer;
+      }
+
+      #listaPecas .peca-action-edit {
+        min-width:62px;
+        background:#2563eb;
+      }
+
+      #listaPecas .peca-action-delete {
+        width:38px;
+        min-width:38px;
+        max-width:38px;
+        padding:0;
+        background:#ef4444;
+        font-size:17px;
       }
 
       .modal-row {
@@ -11114,20 +11140,49 @@ async function salvar() {
         if (indicePecasAtual !== i || !dados[i]) return;
 
         listaPecas.innerHTML = "";
-        normalizarListaPecasLGVO(dados[i].pecas).forEach((p, j) => {
+        const pecasCadastradas = normalizarListaPecasLGVO(dados[i].pecas);
+        dados[i].pecas = [...pecasCadastradas];
+
+        pecasCadastradas.forEach((p, j) => {
           const li = document.createElement("li");
-          li.textContent = p;
-          const btn = document.createElement("button");
-          btn.textContent = "X";
-          btn.onclick = () => {
+
+          const texto = document.createElement("span");
+          texto.className = "peca-list-text";
+          texto.textContent = p;
+
+          const acoes = document.createElement("div");
+          acoes.className = "peca-list-actions";
+
+          const editar = document.createElement("button");
+          editar.type = "button";
+          editar.className = "peca-action-edit";
+          editar.textContent = "EDITAR";
+          editar.title = "Editar peça";
+          editar.setAttribute("aria-label", `Editar peça ${p}`);
+          editar.onclick = () => {
+            navegar("editar_peca_" + j);
+            editarPeca(j);
+          };
+
+          const excluir = document.createElement("button");
+          excluir.type = "button";
+          excluir.className = "peca-action-delete";
+          excluir.textContent = "X";
+          excluir.title = "Excluir peça";
+          excluir.setAttribute("aria-label", `Excluir peça ${p}`);
+          excluir.onclick = () => {
             navegar("remover_peca_" + j);
             removerPeca(j);
           };
-          li.appendChild(btn);
+
+          acoes.appendChild(editar);
+          acoes.appendChild(excluir);
+          li.appendChild(texto);
+          li.appendChild(acoes);
           listaPecas.appendChild(li);
         });
 
-        if (!normalizarListaPecasLGVO(dados[i].pecas).length) {
+        if (!pecasCadastradas.length) {
           const li = document.createElement("li");
           li.textContent = "NENHUMA PEÇA CADASTRADA";
           li.style.justifyContent = "center";
@@ -11153,6 +11208,37 @@ async function salvar() {
           abrirModal(indicePecasAtual);
           novaPeca.value = "";
         }
+      }
+
+      async function editarPeca(i) {
+        if (indicePecasAtual === null) return;
+
+        const pecasAtuais = normalizarListaPecasLGVO(dados[indicePecasAtual]?.pecas);
+        const valorAtual = pecasAtuais[i];
+        if (!valorAtual) return;
+
+        const valorInformado = window.prompt("EDITAR PEÇA CADASTRADA:", valorAtual);
+        if (valorInformado === null) return;
+
+        const novoValor = normalizarTextoBusca(valorInformado);
+        if (!novoValor) {
+          alert("INFORME UMA DESCRIÇÃO VÁLIDA PARA A PEÇA.");
+          return;
+        }
+
+        const duplicada = pecasAtuais.some((peca, indice) => indice !== i && normalizarTextoBusca(peca) === novoValor);
+        if (duplicada) {
+          alert("ESTA PEÇA JÁ ESTÁ CADASTRADA.");
+          return;
+        }
+
+        if (novoValor === valorAtual) return;
+
+        pecasAtuais[i] = novoValor;
+        dados[indicePecasAtual].pecas = pecasAtuais;
+
+        const salvou = await salvarPecasNoFirebase({ alterarStatusAutomatico: false });
+        if (salvou) abrirModal(indicePecasAtual);
       }
 
       async function removerPeca(i) {
