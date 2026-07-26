@@ -1,5 +1,5 @@
 <!doctype html>
-<!-- LGVO — CORREÇÃO DE PEÇAS NA REATRIBUIÇÃO V1 / 2026-07-26 -->
+<!-- LGVO — CORREÇÃO DE PEÇAS + KM + DESCRIÇÃO AMPLIADA + ETIQUETA SOB STATUS V4 / 2026-07-26 -->
 <html lang="pt-BR" translate="no">
   <head>
     <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
@@ -3586,17 +3586,46 @@
         min-height: 36px;
       }
 
+      .service-status-stack {
+        display: inline-flex !important;
+        flex-direction: column !important;
+        align-items: stretch !important;
+        justify-content: flex-start !important;
+        width: max-content !important;
+        max-width: 100% !important;
+        gap: 4px !important;
+        min-width: 0 !important;
+      }
+
       .service-head.status-only .status-pill {
         position: static !important;
-        width: auto !important;
-        min-width: 168px !important;
-        max-width: none !important;
+        width: 100% !important;
+        min-width: 0 !important;
+        max-width: 100% !important;
         height: 32px !important;
         padding: 0 13px !important;
         font-size: .58rem !important;
         overflow: visible !important;
-        text-overflow: initial !important;
+        text-overflow: clip !important;
         white-space: nowrap !important;
+        box-sizing: border-box !important;
+      }
+
+      .service-status-stack .vehicle-etiqueta-badge,
+      .service-status-stack .lista-geral-prioridade {
+        width: 100% !important;
+        max-width: 100% !important;
+        min-width: 0 !important;
+        height: 32px !important;
+        min-height: 32px !important;
+        margin: 0 !important;
+        padding: 0 13px !important;
+        display: inline-flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        box-sizing: border-box !important;
+        font-size: .58rem !important;
+        line-height: 1 !important;
       }
 
       @media (max-width: 600px) {
@@ -3654,17 +3683,31 @@
           min-height: 31px !important;
         }
 
+        .service-status-stack {
+          width: max-content !important;
+          max-width: 100% !important;
+          gap: 3px !important;
+        }
+
         .service-head.status-only .status-pill {
           position: static !important;
-          width: auto !important;
-          min-width: 132px !important;
-          max-width: 146px !important;
+          width: 100% !important;
+          min-width: 0 !important;
+          max-width: 100% !important;
           height: 28px !important;
           padding: 0 8px !important;
           gap: 5px !important;
           font-size: .43rem !important;
           letter-spacing: .01em !important;
           white-space: nowrap !important;
+        }
+
+        .service-status-stack .vehicle-etiqueta-badge,
+        .service-status-stack .lista-geral-prioridade {
+          height: 28px !important;
+          min-height: 28px !important;
+          padding: 0 8px !important;
+          font-size: .43rem !important;
         }
 
         .service-head.status-only .status-dot {
@@ -3695,12 +3738,23 @@
           min-height: 174px !important;
         }
 
+        .service-status-stack {
+          width: max-content !important;
+        }
+
         .service-head.status-only .status-pill {
-          min-width: 120px !important;
-          max-width: 130px !important;
+          min-width: 0 !important;
+          max-width: 100% !important;
           height: 26px !important;
           font-size: .38rem !important;
           padding: 0 6px !important;
+        }
+
+        .service-status-stack .vehicle-etiqueta-badge,
+        .service-status-stack .lista-geral-prioridade {
+          height: 26px !important;
+          min-height: 26px !important;
+          font-size: .38rem !important;
         }
 
         .service-title-left {
@@ -4067,23 +4121,24 @@
 
 
 
-      /* ========== AJUSTE V3.15 - BADGE AZUL DO SERVIÇO ABRE MODAL DE PEÇAS ========== */
+      /* ========== AJUSTE V3.16 - DESCRIÇÃO MAIS COMPLETA NO BADGE DE PEÇAS ========== */
       .service-description-left {
         display: inline-flex !important;
-        align-items: center !important;
-        justify-content: center !important;
+        align-items: flex-start !important;
+        justify-content: flex-start !important;
         width: fit-content !important;
         max-width: 100% !important;
         min-width: 0 !important;
         margin-top: 12px !important;
         padding: 7px 12px !important;
-        border-radius: 999px !important;
+        border-radius: 14px !important;
         background: linear-gradient(135deg, #2563eb, #0ea5e9) !important;
         color: #ffffff !important;
         cursor: pointer !important;
         box-shadow: 0 5px 14px rgba(37, 99, 235, 0.28) !important;
         transition: 0.18s ease !important;
         border: 1px solid rgba(255,255,255,0.38) !important;
+        box-sizing: border-box !important;
       }
 
       .service-description-left:hover {
@@ -4093,34 +4148,39 @@
       }
 
       .service-description-left:active {
-        transform: scale(0.96) !important;
+        transform: scale(0.97) !important;
       }
 
       .service-title-left {
         color: #ffffff !important;
         font-weight: 950 !important;
-        font-size: 0.68rem !important;
-        line-height: 1.1 !important;
-        letter-spacing: 0.02em !important;
+        font-size: 0.66rem !important;
+        line-height: 1.2 !important;
+        letter-spacing: 0.015em !important;
         text-transform: uppercase !important;
-        white-space: nowrap !important;
+        white-space: normal !important;
         overflow: hidden !important;
         text-overflow: ellipsis !important;
-        display: block !important;
-        max-width: 170px !important;
-        -webkit-line-clamp: initial !important;
-        -webkit-box-orient: initial !important;
+        display: -webkit-box !important;
+        -webkit-line-clamp: 2 !important;
+        -webkit-box-orient: vertical !important;
+        max-width: 220px !important;
+        overflow-wrap: anywhere !important;
+        text-align: left !important;
       }
 
       @media (max-width: 600px) {
         .service-description-left {
           margin-top: 10px !important;
-          padding: 6px 10px !important;
+          padding: 6px 9px !important;
+          border-radius: 12px !important;
         }
 
         .service-title-left {
-          max-width: 132px !important;
-          font-size: 0.58rem !important;
+          max-width: 100% !important;
+          font-size: 0.57rem !important;
+          line-height: 1.18 !important;
+          -webkit-line-clamp: 2 !important;
         }
       }
 
@@ -6715,10 +6775,12 @@
     display: inline-flex;
     align-items: center;
     justify-content: center;
+    width: 100%;
     max-width: 100%;
-    min-height: 24px;
-    margin-top: 10px;
+    min-height: 23px;
+    margin: 0;
     padding: 0 9px;
+    box-sizing: border-box;
     border: 1px solid var(--etiqueta-borda, #bfdbfe);
     border-radius: 999px;
     background: rgba(255,255,255,.78);
@@ -6928,10 +6990,10 @@
 
   @media (max-width: 600px) {
     .vehicle-etiqueta-badge {
-      min-height: 21px;
-      margin-top: 8px;
+      min-height: 20px;
+      margin: 0;
       padding: 0 7px;
-      font-size: .46rem;
+      font-size: .43rem;
     }
 
     .lista-geral-acoes {
@@ -9016,7 +9078,7 @@ function sincronizarFirebase() {
         const dataHora = formatarDataServicoListaGeral(v);
         const resumo = gerarResumoServico(v.descricao);
         const kmCard = renderizarKmCard(v);
-        const prioridade = normalizarTextoBusca(v.prioridade || "NORMAL");
+        const consultorCard = renderizarConsultorTecnicoCardLGVO(v);
         const statusOperacional = v.statusServico || "AGUARDANDO ORÇAMENTO";
         const corClass = obterClasseStatusOperacional(statusOperacional);
         const visualEtiqueta = visualEtiquetaCardLeCar(v);
@@ -9052,16 +9114,18 @@ function sincronizarFirebase() {
                 <div class="service-description-left" title="${escaparHTML(v.descricao || "")}">
                   <span class="service-title-left">${escaparHTML(resumo)}</span>
                 </div>
-                ${visualEtiqueta.badge}
               </div>
             </section>
             <section class="service-side">
               <div class="service-head status-only">
-                <span class="status-pill ${corClass}"><span class="status-dot"></span>${escaparHTML(obterStatusCurto(statusOperacional))}</span>
-                ${prioridade === "URGENTE" ? '<span class="lista-geral-prioridade">URGENTE</span>' : ""}
+                <div class="service-status-stack">
+                  <span class="status-pill ${corClass}"><span class="status-dot"></span>${escaparHTML(obterStatusCurto(statusOperacional))}</span>
+                  ${visualEtiqueta.badge}
+                </div>
               </div>
               <div class="service-meta">
                 <div class="meta-row"><svg class="ui-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M21 10C21 16 12 22 12 22C12 22 3 16 3 10A9 9 0 0 1 21 10Z"></path><circle cx="12" cy="10" r="3"></circle></svg><span>${escaparHTML(v.origem || "-")}</span></div>
+                ${consultorCard}
                 ${kmCard}
                 <div class="meta-row"><svg class="ui-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M16 2V6"></path><path d="M8 2V6"></path><path d="M3 10H21"></path><path d="M5 4H19C20.1 4 21 4.9 21 6V20C21 21.1 20.1 22 19 22H5C3.9 22 3 21.1 3 20V6C3 4.9 3.9 4 5 4Z"></path></svg><span>${escaparHTML(dataHora.data)} • ${escaparHTML(dataHora.hora)}</span></div>
                 ${avisoBloqueio}
@@ -9265,10 +9329,13 @@ function sincronizarFirebase() {
 
             const descricaoServico = normalizarTextoBusca(servico.descricao || "");
             const etiquetaServico = resolverEtiquetaServicoLeCar(servico);
+            const consultorTecnico = obterConsultorTecnicoCardLGVO(servico);
             const payloadVeiculo = {
               veiculo:normalizarTextoBusca(servico.veiculo || ""),
               placa:normalizarTextoBusca(servico.placa || ""),
               descricao:descricaoServico,
+              consultorTecnico,
+              consultor_tecnico:consultorTecnico,
               trocaOleo:descricaoEhTrocaOleo(descricaoServico),
               kmAtual:obterKmAtualVeiculo(servico),
               kmAtualOleo:obterKmAtualVeiculo(servico),
@@ -9826,38 +9893,20 @@ async function salvar() {
       }
 
       function gerarResumoServico(texto) {
-        const conteudo = String(texto || "").toUpperCase();
-        const categorias = [];
+        const descricaoCompleta = String(texto || "")
+          .toUpperCase()
+          .replace(/\s+/g, " ")
+          .trim();
 
-        const mapaCategorias = [
-          ["SUSPENSÃO", ["AVARIA SUSPENSÃO", "SUSPENSAO"]],
-          ["FREIOS", ["AVARIA FREIOS", "FREIO"]],
-          ["MOTOR", ["AVARIA MOTOR"]],
-          ["INJEÇÃO", ["AVARIA INJEÇÃO", "AVARIA INJECAO", "INJEÇÃO ELETRÔNICA", "INJECAO ELETRONICA"]],
-          ["ARREFECIMENTO", ["AVARIA ARREFECIMENTO", "TEMPERATURA ALTA", "SUPERAQUECIMENTO"]],
-          ["EMBREAGEM", ["AVARIA EMBREAGEM"]],
-          ["CÂMBIO", ["AVARIA CÂMBIO", "AVARIA CAMBIO"]],
-          ["VAZAMENTOS", ["AVARIA VAZAMENTOS", "VAZAMENTO"]],
-          ["DIAGNÓSTICO", ["DIAGNÓSTICO", "DIAGNOSTICO"]],
-          ["TROCA DE ÓLEO", ["TROCA DE ÓLEO", "TROCA DE OLEO"]]
-        ];
+        if (!descricaoCompleta) return "-";
 
-        mapaCategorias.forEach(([nome, termos]) => {
-          if (termos.some(termo => conteudo.includes(termo)) && !categorias.includes(nome)) {
-            categorias.push(nome);
-          }
-        });
+        const limiteCard = 92;
+        if (descricaoCompleta.length <= limiteCard) return descricaoCompleta;
 
-        if (categorias.length > 3) {
-          return `${categorias.length} AVARIAS`;
-        }
-
-        if (categorias.length > 0) {
-          return categorias.join(" + ");
-        }
-
-        const resumoManual = conteudo.replace(/\s+/g, " ").trim();
-        return resumoManual.length > 38 ? resumoManual.substring(0, 38) + "..." : (resumoManual || "-");
+        const recorte = descricaoCompleta.substring(0, limiteCard + 1);
+        const ultimoEspaco = recorte.lastIndexOf(" ");
+        const pontoCorte = ultimoEspaco >= 64 ? ultimoEspaco : limiteCard;
+        return `${descricaoCompleta.substring(0, pontoCorte).trimEnd()}…`;
       }
 
 
@@ -9952,6 +10001,32 @@ async function salvar() {
         return `<div class="meta-row meta-row-km"><svg class="ui-icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"></circle><path d="M7 15A5 5 0 0 1 17 15"></path><path d="M12 12L15 9"></path><path d="M8 9H8.01"></path><path d="M16 9H16.01"></path></svg><span>${escaparHTML(km)} KM</span></div>`;
       }
 
+      function obterConsultorTecnicoCardLGVO(v) {
+        const candidatos = [
+          v?.consultorTecnico,
+          v?.consultor_tecnico,
+          v?.consultor,
+          v?.consultorTecnicoNome,
+          v?.consultor_tecnico_nome,
+          v?.consultorNome,
+          v?.consultor_nome
+        ];
+
+        for (const valor of candidatos) {
+          const consultor = normalizarTextoBusca(valor || "");
+          if (consultor && consultor !== "NAO INFORMADO" && consultor !== "NÃO INFORMADO" && consultor !== "-") {
+            return consultor;
+          }
+        }
+        return "";
+      }
+
+      function renderizarConsultorTecnicoCardLGVO(v) {
+        const consultor = obterConsultorTecnicoCardLGVO(v);
+        if (!consultor) return "";
+        return `<div class="meta-row meta-row-consultor"><svg class="ui-icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="4"></circle><path d="M4 21V19A6 6 0 0 1 10 13H14A6 6 0 0 1 20 19V21"></path></svg><span>CONSULTOR: ${escaparHTML(consultor)}</span></div>`;
+      }
+
       function obterPartesData(dataEntrada) {
         const texto = String(dataEntrada || "-");
         const partes = texto.split(",");
@@ -9962,7 +10037,7 @@ async function salvar() {
 
       function obterClasseStatusOperacional(status) {
         const chave = normalizarTextoBusca(status);
-        if (chave === "AGUARDANDO ORCAMENTO") return "status-agendamento";
+        if (chave.includes("AGUARDANDO ORCAMENTO")) return "status-agendamento";
         if (chave === "AGUARDANDO PECAS") return "status-pecas";
         if (chave === "AGUARDANDO SERVICO") return "status-servico";
         if (chave === "FORNECEDOR" || chave === "ENVIAR PARA TERCEIROS") return "status-fornecedor";
@@ -9972,7 +10047,7 @@ async function salvar() {
 
       function obterStatusCurto(status) {
         const chave = normalizarTextoBusca(status);
-        if (chave === "AGUARDANDO ORCAMENTO") return "AGUARDANDO ORÇAMENTO";
+        if (chave.includes("AGUARDANDO ORCAMENTO")) return "AGUARDANDO ORÇAMENTO";
         if (chave === "AGUARDANDO PECAS") return "AGUARDANDO PEÇAS";
         if (chave === "AGUARDANDO SERVICO") return "AGUARDANDO SERVIÇO";
         if (chave === "VEICULO FINALIZADO") return "VEÍCULO FINALIZADO";
@@ -9986,6 +10061,7 @@ async function salvar() {
         const dataHora = obterPartesData(finalizado ? (v.dataFinalizacao || v.ultima_modificacao || v.dataEntrada) : (v.dataEntrada || v.ultima_modificacao || v.dataFinalizacao));
         const resumo = gerarResumoServico(v.descricao);
         const kmCard = renderizarKmCard(v);
+        const consultorCard = renderizarConsultorTecnicoCardLGVO(v);
         const corClass = obterClasseStatusOperacional(v.status);
         const visualEtiqueta = visualEtiquetaCardLeCar(v);
         const cardClick = finalizado ? `onclick="navegar('abrir_finalizado_${v.iOriginal}'); abrirModalFinalizado(${v.iOriginal})"` : "";
@@ -10001,15 +10077,18 @@ async function salvar() {
                 <div class="service-description-left" title="${escaparHTML(v.descricao || '')}" onclick="abrirModalPecasPeloBadge(event, ${v.iOriginal})">
                   <span class="service-title-left">${escaparHTML(resumo)}</span>
                 </div>
-                ${visualEtiqueta.badge}
               </div>
             </section>
             <section class="service-side">
               <div class="service-head status-only">
-                <button type="button" class="status-pill ${corClass}" ${statusClick}><span class="status-dot"></span>${escaparHTML(obterStatusCurto(v.status))}</button>
+                <div class="service-status-stack">
+                  <button type="button" class="status-pill ${corClass}" ${statusClick}><span class="status-dot"></span>${escaparHTML(obterStatusCurto(v.status))}</button>
+                  ${visualEtiqueta.badge}
+                </div>
               </div>
               <div class="service-meta">
                 <div class="meta-row"><svg class="ui-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M21 10C21 16 12 22 12 22C12 22 3 16 3 10A9 9 0 0 1 21 10Z"></path><circle cx="12" cy="10" r="3"></circle></svg><span>${escaparHTML(v.origem || '-')}</span></div>
+                ${consultorCard}
                 ${kmCard}
                 <div class="meta-row"><svg class="ui-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M16 2V6"></path><path d="M8 2V6"></path><path d="M3 10H21"></path><path d="M5 4H19C20.1 4 21 4.9 21 6V20C21 21.1 20.1 22 19 22H5C3.9 22 3 21.1 3 20V6C3 4.9 3.9 4 5 4Z"></path></svg><span>${escaparHTML(dataHora.data)}</span></div>
                 <div class="meta-row"><svg class="ui-icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"></circle><path d="M12 7V12L15 14"></path></svg><span>${escaparHTML(dataHora.hora)}</span></div>
