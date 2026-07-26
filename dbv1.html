@@ -83,7 +83,7 @@
       .dashboard-shell {
         width: min(1680px, 100%);
         margin: 0 auto;
-        padding: calc(var(--filterbar-height, 176px) + 18px) 24px 24px;
+        padding: calc(var(--filterbar-height, 72px) + 16px) 24px 24px;
       }
 
       .filters-card {
@@ -109,22 +109,22 @@
         width: min(1680px, calc(100% - 48px));
         min-width: 1192px;
         margin: 0 auto;
-        padding: 12px 0 7px;
+        padding: 9px 0 6px;
       }
 
       .filters-all-row {
         display: grid;
-        grid-template-columns: 116px 116px 144px 174px 156px 120px 64px 104px 112px;
-        gap: 8px;
+        grid-template-columns: 216px minmax(620px, 1fr) auto;
+        gap: 10px;
         align-items: end;
-        justify-content: center;
+        justify-content: stretch;
         min-width: 0;
       }
 
       .filters-all-row > .date-fields,
       .filters-all-row > .filters-grid,
       .filters-all-row > .filter-actions {
-        display: contents;
+        min-width: 0;
       }
 
       .filters-identity {
@@ -158,14 +158,14 @@
       .date-mode-control,
       .field {
         display: grid;
-        gap: 5px;
+        gap: 4px;
         min-width: 0;
       }
 
       .date-mode-label,
       .field label {
         color: #526175;
-        font-size: .61rem;
+        font-size: .58rem;
         font-weight: 900;
         line-height: 1;
         letter-spacing: .075em;
@@ -176,8 +176,8 @@
       .date-mode-switch {
         display: grid;
         grid-template-columns: 1.16fr .84fr .84fr;
-        height: 34px;
-        padding: 3px;
+        height: 30px;
+        padding: 2px;
         overflow: hidden;
         border: 1px solid #ccd5e1;
         border-radius: 9px;
@@ -215,8 +215,8 @@
 
       .date-fields {
         display: grid;
-        grid-template-columns: repeat(2, minmax(132px, 1fr));
-        gap: 10px;
+        grid-template-columns: repeat(2, minmax(0, 104px));
+        gap: 8px;
         min-width: 0;
       }
 
@@ -227,7 +227,7 @@
       .today-date-display {
         display: flex;
         align-items: center;
-        height: 34px;
+        height: 30px;
         border: 1px solid #ccd5e1;
         border-radius: 8px;
         background: linear-gradient(180deg, #ffffff, #f8fafc);
@@ -245,12 +245,12 @@
       .field select {
         width: 100%;
         min-width: 0;
-        height: 34px;
+        height: 30px;
         border: 1px solid #ccd5e1;
-        border-radius: 8px;
+        border-radius: 7px;
         background: #fff;
         color: #172033;
-        padding: 0 11px;
+        padding: 0 9px;
         outline: none;
         font-size: .75rem;
         font-weight: 720;
@@ -279,17 +279,20 @@
 
       .filter-actions {
         display: grid;
-        grid-template-columns: 82px minmax(132px, 1fr);
-        gap: 8px;
+        grid-template-columns: 66px 112px 118px;
+        gap: 7px;
+        align-items: end;
         min-width: 0;
+        padding-left: 10px;
+        border-left: 1px solid #d7dee8;
       }
 
       .btn {
-        height: 34px;
+        height: 30px;
         border: 1px solid transparent;
-        border-radius: 8px;
-        padding: 0 13px;
-        font-size: .65rem;
+        border-radius: 7px;
+        padding: 0 10px;
+        font-size: .61rem;
         font-weight: 900;
         line-height: 1;
         letter-spacing: .045em;
@@ -331,8 +334,8 @@
         color: var(--blue-900);
         background: var(--blue-50);
         border-color: #bfdbfe;
-        padding-inline: 9px;
-        font-size: .59rem;
+        padding-inline: 8px;
+        font-size: .56rem;
       }
 
       .btn-compare:hover {
@@ -357,8 +360,8 @@
 
       .filters-grid {
         display: grid;
-        grid-template-columns: 1.02fr 1.3fr 1.18fr .84fr;
-        gap: 10px;
+        grid-template-columns: minmax(130px, .95fr) minmax(170px, 1.2fr) minmax(150px, 1.05fr) minmax(116px, .8fr);
+        gap: 8px;
         align-items: end;
         min-width: 0;
       }
