@@ -6,6 +6,9 @@
   <meta name="color-scheme" content="light" />
   <title>LECAR — DASHBOARD V1</title>
 
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
 
   <style>
       :root {
@@ -1139,308 +1142,6 @@
         color: var(--slate);
       }
   
-      .panorama-panel {
-        position: relative;
-        overflow: hidden;
-        margin-top: 14px;
-        background: var(--surface);
-        border: 1px solid var(--border);
-        border-radius: var(--radius-lg);
-        box-shadow: var(--shadow-soft);
-      }
-
-      .panorama-panel::before {
-        content: "";
-        position: absolute;
-        inset: 0 0 auto 0;
-        height: 4px;
-        background: linear-gradient(90deg, var(--blue-950), var(--blue-700) 58%, var(--blue-500));
-      }
-
-      .panorama-head {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        gap: 24px;
-        padding: 22px 22px 18px;
-        border-bottom: 1px solid #e8edf3;
-      }
-
-      .panorama-title-block {
-        min-width: 0;
-      }
-
-      .panorama-eyebrow {
-        display: block;
-        margin-bottom: 6px;
-        color: var(--blue-700);
-        font-size: .6rem;
-        font-weight: 900;
-        line-height: 1;
-        letter-spacing: .11em;
-        text-transform: uppercase;
-      }
-
-      .panorama-title-block h2 {
-        margin: 0;
-        color: #1f2a3d;
-        font-size: 1.08rem;
-        font-weight: 900;
-        line-height: 1.2;
-        letter-spacing: -.018em;
-      }
-
-      .panorama-title-block p {
-        margin: 5px 0 0;
-        color: var(--muted);
-        font-size: .71rem;
-        font-weight: 620;
-        line-height: 1.45;
-      }
-
-      .panorama-actions {
-        display: flex;
-        flex: 0 0 auto;
-        align-items: center;
-        gap: 8px;
-      }
-
-      .panorama-actions .btn {
-        min-width: 104px;
-      }
-
-      .panorama-actions .panorama-generate {
-        min-width: 148px;
-      }
-
-      .panorama-actions .btn:disabled {
-        cursor: not-allowed;
-        opacity: .58;
-        transform: none;
-        box-shadow: none;
-      }
-
-      .panorama-actions .btn:disabled:hover {
-        transform: none;
-      }
-
-      .panorama-body {
-        padding: 18px 22px 20px;
-        background: linear-gradient(180deg, #fff, #fbfcfe);
-      }
-
-      .panorama-filter-context {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        gap: 16px;
-        margin-bottom: 12px;
-        border: 1px solid #d9e2ed;
-        border-radius: 9px;
-        background: #f8fafc;
-        color: #526175;
-        padding: 9px 12px;
-        font-size: .64rem;
-        font-weight: 720;
-        line-height: 1.4;
-      }
-
-      .panorama-filter-context strong {
-        color: #243247;
-        font-weight: 900;
-      }
-
-      .panorama-grid {
-        display: grid;
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-        gap: 14px;
-        align-items: stretch;
-      }
-
-      .panorama-card {
-        min-width: 0;
-        min-height: 286px;
-        border: 1px solid var(--border);
-        border-radius: 10px;
-        background: #fff;
-        padding: 17px;
-        box-shadow: 0 1px 3px rgba(15, 23, 42, .035);
-      }
-
-      .panorama-card-head {
-        display: flex;
-        align-items: flex-start;
-        justify-content: space-between;
-        gap: 12px;
-        margin-bottom: 14px;
-        padding-bottom: 11px;
-        border-bottom: 1px solid #e8edf3;
-      }
-
-      .panorama-card-head h3 {
-        margin: 0;
-        color: #243247;
-        font-size: .82rem;
-        font-weight: 900;
-        line-height: 1.25;
-      }
-
-      .panorama-card-head span {
-        flex: 0 0 auto;
-        border: 1px solid #d9e2ed;
-        border-radius: 999px;
-        background: #f8fafc;
-        color: var(--blue-900);
-        padding: 4px 8px;
-        font-size: .56rem;
-        font-weight: 900;
-        letter-spacing: .04em;
-        text-transform: uppercase;
-      }
-
-      .panorama-metrics {
-        display: grid;
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-        gap: 8px;
-        margin-bottom: 14px;
-      }
-
-      .panorama-metric {
-        border: 1px solid #e1e7ef;
-        border-radius: 8px;
-        background: #f8fafc;
-        padding: 10px 11px;
-      }
-
-      .panorama-metric span {
-        display: block;
-        color: #718096;
-        font-size: .56rem;
-        font-weight: 850;
-        letter-spacing: .045em;
-        line-height: 1.2;
-        text-transform: uppercase;
-      }
-
-      .panorama-metric strong {
-        display: block;
-        margin-top: 6px;
-        color: #1f2a3d;
-        font-size: 1.12rem;
-        font-weight: 900;
-        line-height: 1;
-      }
-
-      .panorama-section + .panorama-section {
-        margin-top: 12px;
-      }
-
-      .panorama-section h4 {
-        margin: 0 0 6px;
-        color: #526175;
-        font-size: .59rem;
-        font-weight: 900;
-        letter-spacing: .055em;
-        line-height: 1.2;
-        text-transform: uppercase;
-      }
-
-      .panorama-section p {
-        margin: 0;
-        color: #334155;
-        font-size: .7rem;
-        font-weight: 620;
-        line-height: 1.52;
-      }
-
-      .panorama-list {
-        display: grid;
-        gap: 7px;
-        margin: 0;
-        padding: 0;
-        list-style: none;
-      }
-
-      .panorama-list li {
-        position: relative;
-        color: #334155;
-        padding-left: 14px;
-        font-size: .69rem;
-        font-weight: 620;
-        line-height: 1.45;
-      }
-
-      .panorama-list li::before {
-        content: "";
-        position: absolute;
-        top: .48em;
-        left: 0;
-        width: 6px;
-        height: 6px;
-        border-radius: 50%;
-        background: var(--blue-700);
-      }
-
-      .panorama-card.attention .panorama-list li::before {
-        background: var(--amber);
-      }
-
-      .panorama-placeholder-card {
-        display: grid;
-        place-items: center;
-        min-height: 286px;
-        border-style: dashed;
-        background: #f8fafc;
-        text-align: center;
-      }
-
-      .panorama-placeholder-copy strong {
-        display: block;
-        color: #263246;
-        font-size: .78rem;
-        font-weight: 900;
-      }
-
-      .panorama-placeholder-copy p {
-        max-width: 360px;
-        margin: 6px auto 0;
-        color: var(--muted);
-        font-size: .69rem;
-        font-weight: 620;
-        line-height: 1.45;
-      }
-
-      .panorama-foot {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        gap: 16px;
-        margin-top: 12px;
-        color: #718096;
-        font-size: .62rem;
-        font-weight: 700;
-      }
-
-      .panorama-status {
-        display: inline-flex;
-        align-items: center;
-        gap: 7px;
-      }
-
-      .panorama-status::before {
-        content: "";
-        width: 6px;
-        height: 6px;
-        border-radius: 50%;
-        background: var(--amber);
-        box-shadow: 0 0 0 3px rgba(183, 121, 31, .11);
-      }
-
-      .panorama-status.ready::before {
-        background: var(--green);
-        box-shadow: 0 0 0 3px rgba(47, 133, 90, .11);
-      }
-
       .footer-note {
         margin: 16px 0 4px;
         color: #718096;
@@ -1450,6 +1151,285 @@
         font-weight: 650;
       }
   
+
+
+      /* GRÁFICO OPERACIONAL — CARD INDEPENDENTE */
+      .operational-chart-card {
+        position: relative;
+        overflow: hidden;
+        margin-bottom: 14px;
+        border: 1px solid #30343a;
+        border-radius: 14px;
+        background: #202224;
+        box-shadow: 0 14px 32px rgba(15, 23, 42, .18);
+        color: #f8fafc;
+      }
+
+      .operational-chart-card::before {
+        content: "";
+        position: absolute;
+        inset: 0 0 auto;
+        z-index: 1;
+        height: 3px;
+        background: linear-gradient(90deg, #4f8df7 0%, #4f8df7 58%, #ff5b9c 78%, #d98200 100%);
+      }
+
+      .operational-chart-head {
+        position: relative;
+        z-index: 2;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 20px;
+        min-height: 68px;
+        padding: 15px 18px 13px;
+        border-bottom: 1px solid #30343a;
+        background: #222426;
+      }
+
+      .operational-chart-title {
+        min-width: 0;
+      }
+
+      .operational-chart-kicker {
+        display: block;
+        margin-bottom: 5px;
+        color: #77a7ff;
+        font-size: .58rem;
+        font-weight: 900;
+        line-height: 1;
+        letter-spacing: .12em;
+        text-transform: uppercase;
+      }
+
+      .operational-chart-title h2 {
+        margin: 0;
+        color: #f8fafc;
+        font-size: 1rem;
+        font-weight: 900;
+        line-height: 1.18;
+        letter-spacing: -.015em;
+      }
+
+      .operational-chart-title p {
+        margin: 5px 0 0;
+        overflow: hidden;
+        color: #9ca3af;
+        font-size: .68rem;
+        font-weight: 650;
+        line-height: 1.35;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+
+      .operational-chart-toggle {
+        flex: 0 0 auto;
+        width: 38px;
+        height: 38px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        border: 1px solid #41464d;
+        border-radius: 9px;
+        background: #292c2f;
+        color: #dbeafe;
+        box-shadow: inset 0 1px 0 rgba(255,255,255,.04);
+        transition: background .16s ease, border-color .16s ease, transform .16s ease;
+      }
+
+      .operational-chart-toggle:hover {
+        border-color: #5b6572;
+        background: #30343a;
+      }
+
+      .operational-chart-toggle svg {
+        width: 20px;
+        height: 20px;
+        fill: none;
+        stroke: currentColor;
+        stroke-width: 2;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+        transition: transform .18s ease;
+      }
+
+      .operational-chart-card.collapsed .operational-chart-toggle svg {
+        transform: rotate(180deg);
+      }
+
+      .operational-chart-body {
+        padding: 14px 18px 18px;
+        background: #202224;
+      }
+
+      .operational-chart-card.collapsed .operational-chart-body {
+        display: none;
+      }
+
+      .operational-chart-controls {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(148px, 1fr));
+        gap: 9px;
+        align-items: end;
+        margin-bottom: 13px;
+        padding: 11px;
+        border: 1px solid #30343a;
+        border-radius: 10px;
+        background: #252729;
+      }
+
+      .operational-chart-field {
+        display: grid;
+        gap: 5px;
+        min-width: 0;
+      }
+
+      .operational-chart-field label {
+        color: #9ca3af;
+        font-size: .56rem;
+        font-weight: 900;
+        line-height: 1;
+        letter-spacing: .075em;
+        text-transform: uppercase;
+        white-space: nowrap;
+      }
+
+      .operational-chart-field select,
+      .operational-chart-field input {
+        width: 100%;
+        min-width: 0;
+        height: 32px;
+        border: 1px solid #41464d;
+        border-radius: 7px;
+        outline: none;
+        background: #1d1f21;
+        color: #f1f5f9;
+        padding: 0 9px;
+        font-size: .69rem;
+        font-weight: 760;
+        color-scheme: dark;
+        transition: border-color .15s ease, box-shadow .15s ease, background .15s ease;
+      }
+
+      .operational-chart-field select:hover,
+      .operational-chart-field input:hover {
+        border-color: #5b6572;
+        background: #212326;
+      }
+
+      .operational-chart-field select:focus,
+      .operational-chart-field input:focus {
+        border-color: #4f8df7;
+        box-shadow: 0 0 0 3px rgba(79, 141, 247, .14);
+      }
+
+      .operational-chart-custom-range {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(140px, 1fr));
+        gap: 9px;
+      }
+
+      .operational-chart-custom-range[hidden] {
+        display: none !important;
+      }
+
+      .operational-chart-meta {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 16px;
+        margin-bottom: 8px;
+        color: #8f98a5;
+        font-size: .61rem;
+        font-weight: 700;
+      }
+
+      .operational-chart-legend {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 12px;
+        min-width: 0;
+      }
+
+      .operational-chart-legend-item {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        color: #cbd5e1;
+        white-space: nowrap;
+      }
+
+      .operational-chart-legend-dot {
+        width: 9px;
+        height: 9px;
+        border-radius: 50%;
+        background: var(--series-color);
+        box-shadow: 0 0 0 3px rgba(79, 141, 247, .12);
+      }
+
+      .operational-chart-status {
+        flex: 0 0 auto;
+        color: #9ca3af;
+        white-space: nowrap;
+      }
+
+      .operational-chart-plot {
+        position: relative;
+        min-height: 342px;
+        overflow: hidden;
+        border: 1px solid #2c3035;
+        border-radius: 11px;
+        background: #202224;
+      }
+
+      .operational-chart-plot svg {
+        display: block;
+        width: 100%;
+        height: 342px;
+      }
+
+      .operational-chart-empty {
+        min-height: 342px;
+        display: grid;
+        place-items: center;
+        color: #7f8895;
+        font-size: .72rem;
+        font-weight: 750;
+        text-align: center;
+      }
+
+      .operational-chart-axis-label {
+        fill: #7f8895;
+        font-size: 11px;
+        font-weight: 700;
+      }
+
+      .operational-chart-grid-line {
+        stroke: #2c3035;
+        stroke-width: 1;
+      }
+
+      .operational-chart-zero-line {
+        stroke: #3b4047;
+        stroke-width: 1;
+      }
+
+      .operational-chart-point {
+        stroke: #202224;
+        stroke-width: 2;
+      }
+
+      @media (max-width: 1360px) {
+        .operational-chart-controls {
+          grid-template-columns: repeat(5, minmax(0, 1fr));
+        }
+
+        .operational-chart-custom-range {
+          grid-column: span 2;
+        }
+      }
+
       @media (prefers-reduced-motion: reduce) {
         *, *::before, *::after {
           scroll-behavior: auto !important;
@@ -1477,7 +1457,7 @@
   <div id="loadingScreen" class="loading-screen">
     <div class="loading-card">
       <h1>LECAR</h1>
-      <p>Carregando e auditando os registros do <strong>data.js</strong>...</p>
+      <p>Conectando ao Firebase e auditando os registros finalizados...</p>
     </div>
   </div>
 
@@ -1540,6 +1520,90 @@
           </div>
         </div>
 
+      </div>
+    </section>
+
+
+
+    <section id="operationalChartCard" class="operational-chart-card collapsed" aria-labelledby="operationalChartTitle">
+      <header class="operational-chart-head">
+        <div class="operational-chart-title">
+          <span class="operational-chart-kicker">Leitura gráfica independente</span>
+          <h2 id="operationalChartTitle">Evolução operacional</h2>
+          <p id="operationalChartSummary">Últimos 30 dias • carros finalizados • agrupado por dia</p>
+        </div>
+        <button id="toggleOperationalChart" class="operational-chart-toggle" type="button" aria-expanded="false" title="Maximizar gráfico" aria-label="Maximizar gráfico">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 15L12 9L18 15"></path></svg>
+        </button>
+      </header>
+
+      <div id="operationalChartBody" class="operational-chart-body">
+        <div class="operational-chart-controls" aria-label="Configuração exclusiva do gráfico">
+          <div class="operational-chart-field">
+            <label for="graphPeriod">Período</label>
+            <select id="graphPeriod">
+              <option value="LAST_7">Últimos 7 dias</option>
+              <option value="LAST_15">Últimos 15 dias</option>
+              <option value="LAST_30" selected>Últimos 30 dias</option>
+              <option value="CURRENT_MONTH">Mês atual</option>
+              <option value="CUSTOM">Personalizado</option>
+            </select>
+          </div>
+
+          <div id="graphCustomRange" class="operational-chart-custom-range" hidden>
+            <div class="operational-chart-field">
+              <label for="graphDateStart">Data inicial</label>
+              <input id="graphDateStart" type="date" />
+            </div>
+            <div class="operational-chart-field">
+              <label for="graphDateEnd">Data final</label>
+              <input id="graphDateEnd" type="date" />
+            </div>
+          </div>
+
+          <div class="operational-chart-field">
+            <label for="graphMetric">Indicador</label>
+            <select id="graphMetric">
+              <option value="CARS" selected>Carros finalizados</option>
+              <option value="SERVICES">Ocorrências de serviços</option>
+              <option value="THIRD">Enviados para terceiro</option>
+              <option value="RECURRING">Visitas de placas recorrentes</option>
+            </select>
+          </div>
+
+          <div class="operational-chart-field">
+            <label for="graphGrouping">Agrupamento</label>
+            <select id="graphGrouping">
+              <option value="DAY" selected>Por dia</option>
+              <option value="WEEK">Por semana</option>
+              <option value="MONTH">Por mês</option>
+            </select>
+          </div>
+
+          <div class="operational-chart-field">
+            <label for="graphComparison">Comparação</label>
+            <select id="graphComparison">
+              <option value="TOTAL" selected>Total</option>
+              <option value="RESULT">Interno × terceiro</option>
+              <option value="MECHANICS">Top 3 mecânicos</option>
+            </select>
+          </div>
+
+          <div class="operational-chart-field">
+            <label for="graphType">Visualização</label>
+            <select id="graphType">
+              <option value="LINE" selected>Linha</option>
+              <option value="BAR">Barras</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="operational-chart-meta">
+          <div id="operationalChartLegend" class="operational-chart-legend"></div>
+          <span id="operationalChartStatus" class="operational-chart-status">Aguardando dados...</span>
+        </div>
+
+        <div id="operationalChartPlot" class="operational-chart-plot" aria-live="polite"></div>
       </div>
     </section>
 
@@ -1689,51 +1753,8 @@
       </article>
     </section>
 
-    <section class="panorama-panel" aria-labelledby="panoramaTitle">
-      <header class="panorama-head">
-        <div class="panorama-title-block">
-          <span class="panorama-eyebrow">Leitura gerencial</span>
-          <h2 id="panoramaTitle">Panorama Operacional</h2>
-          <p>Análise objetiva dos dados correspondentes ao período e aos filtros aplicados.</p>
-        </div>
-
-        <div class="panorama-actions" aria-label="Ações do panorama operacional">
-          <button id="generatePanorama" class="btn btn-primary panorama-generate" type="button">Gerar panorama</button>
-          <button id="generatePanoramaPdf" class="btn btn-secondary" type="button" disabled>Gerar PDF</button>
-          <button id="printPanorama" class="btn btn-secondary" type="button" disabled>Imprimir</button>
-        </div>
-      </header>
-
-      <div class="panorama-body">
-        <div id="panoramaFilterContext" class="panorama-filter-context">
-          <span><strong>Base da análise:</strong> filtros iniciais do dashboard.</span>
-          <span>Altere os filtros e clique em gerar.</span>
-        </div>
-
-        <div id="panoramaContent" class="panorama-grid" aria-live="polite">
-          <article class="panorama-card panorama-placeholder-card">
-            <div class="panorama-placeholder-copy">
-              <strong>Síntese operacional</strong>
-              <p>Produção, média diária, volume de serviços e principais destaques do filtro.</p>
-            </div>
-          </article>
-          <article class="panorama-card panorama-placeholder-card">
-            <div class="panorama-placeholder-copy">
-              <strong>Pontos de atenção</strong>
-              <p>Terceirizações, recorrências e qualidade dos dados serão exibidas após o clique.</p>
-            </div>
-          </article>
-        </div>
-
-        <div class="panorama-foot">
-          <span id="panoramaStatus" class="panorama-status">Modelo local pronto para gerar</span>
-          <span id="panoramaMeta">Geração somente sob demanda.</span>
-        </div>
-      </div>
-    </section>
-
     <p class="footer-note">
-      Fonte operacional: <strong>LECAR_DATA.veiculos</strong>. A lista geral não é somada novamente. Serviços “não executados internamente” são apenas os registros com finalização explícita para terceiro.
+      Fonte operacional: <strong>Firebase Firestore — coleção veiculos</strong>, com atualização em tempo real. Serviços “não executados internamente” são apenas os registros com finalização explícita para terceiro.
     </p>
   </main>
 
@@ -1750,12 +1771,24 @@
     </section>
   </div>
 
-  <!-- O data.js deve ficar na mesma pasta deste arquivo. -->
-  <script src="./data.js"></script>
-
   <script>
     (() => {
       "use strict";
+
+      const firebaseConfig = {
+        apiKey: "AIzaSyDjMGX595VvyAj6Nk-I4Pj4VGlipJNovPw",
+        authDomain: "lehub-lecar.firebaseapp.com",
+        projectId: "lehub-lecar",
+        storageBucket: "lehub-lecar.firebasestorage.app",
+        messagingSenderId: "338216307290",
+        appId: "1:338216307290:web:bb31d3710098866094e663"
+      };
+
+      if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
+      const db = firebase.firestore();
+      const auth = firebase.auth();
+      let unsubscribeFinalizados = null;
+      let unsubscribeAuth = null;
 
       const CATEGORY_CATALOG = {
         TROCA_OLEO_FILTROS: "TROCA DE ÓLEO E FILTROS",
@@ -1823,7 +1856,9 @@
           compareRecords: []
         },
         filters: {},
-        detailContext: null
+        detailContext: null,
+        dataLoaded: false,
+        graphPreferencesLoaded: false
       };
 
       const el = (id) => document.getElementById(id);
@@ -2005,13 +2040,9 @@
         return records.reduce((total, record) => total + record.categories.length, 0);
       }
 
-      function buildDataset() {
-        const source = window.LECAR_DATA;
-        if (!source || !Array.isArray(source.veiculos)) {
-          throw new Error("O arquivo data.js não definiu window.LECAR_DATA.veiculos.");
-        }
-
-        const canonical = source.veiculos
+      function buildDataset(rawRecords) {
+        const source = Array.isArray(rawRecords) ? rawRecords : [];
+        const canonical = source
           .filter(isFinalized)
           .map(canonicalRecord);
 
@@ -2022,7 +2053,18 @@
         state.maxDate = validDates.at(-1) || "";
       }
 
-      function populateFilters() {
+      function populateFilters({ preserve = false, followLatest = false } = {}) {
+        const previous = preserve ? {
+          dateStart: el("dateStart").value,
+          dateEnd: el("dateEnd").value,
+          monthBase: el("monthBase").value,
+          monthCompare: el("monthCompare").value,
+          mechanic: el("mechanicFilter").value,
+          category: el("categoryFilter").value,
+          result: el("resultFilter").value,
+          origin: el("originFilter").value
+        } : null;
+
         const mechanics = [...new Set(state.allRecords.map((record) => record.mechanic))].sort((a, b) => a.localeCompare(b, "pt-BR"));
         const categories = [...new Set(state.allRecords.flatMap((record) => record.categories))]
           .sort((a, b) => (CATEGORY_CATALOG[a] || a).localeCompare(CATEGORY_CATALOG[b] || b, "pt-BR"));
@@ -2039,24 +2081,46 @@
           input.max = state.maxDate;
         });
 
-        el("dateStart").value = state.minDate;
-        el("dateEnd").value = state.maxDate;
+        const clampDate = (value, fallback) => {
+          if (!value) return fallback;
+          if (state.minDate && value < state.minDate) return state.minDate;
+          if (state.maxDate && value > state.maxDate) return state.maxDate;
+          return value;
+        };
+
+        el("dateStart").value = preserve ? clampDate(previous.dateStart, state.minDate) : state.minDate;
+        el("dateEnd").value = preserve && !followLatest ? clampDate(previous.dateEnd, state.maxDate) : state.maxDate;
 
         const availableMonths = [...new Set(state.allRecords.map((record) => monthKeyFromDateKey(record.dateKey)).filter(Boolean))].sort();
-        const compareMonth = availableMonths.at(-1) || monthKeyFromDateKey(state.maxDate);
-        const baseMonth = availableMonths.at(-2) || compareMonth;
-        state.comparison.baseMonth = baseMonth;
-        state.comparison.compareMonth = compareMonth;
+        const defaultCompareMonth = availableMonths.at(-1) || monthKeyFromDateKey(state.maxDate);
+        const defaultBaseMonth = availableMonths.at(-2) || defaultCompareMonth;
+        const monthExists = (value) => Boolean(value && availableMonths.includes(value));
+
+        state.comparison.baseMonth = preserve && monthExists(previous.monthBase) ? previous.monthBase : defaultBaseMonth;
+        state.comparison.compareMonth = preserve && monthExists(previous.monthCompare) ? previous.monthCompare : defaultCompareMonth;
 
         [el("monthBase"), el("monthCompare")].forEach((input) => {
           input.min = availableMonths[0] || monthKeyFromDateKey(state.minDate);
           input.max = availableMonths.at(-1) || monthKeyFromDateKey(state.maxDate);
         });
-        el("monthBase").value = baseMonth;
-        el("monthCompare").value = compareMonth;
+        el("monthBase").value = state.comparison.baseMonth;
+        el("monthCompare").value = state.comparison.compareMonth;
+
+        const restoreSelect = (id, value) => {
+          const input = el(id);
+          if (!preserve || !value) {
+            input.value = "";
+            return;
+          }
+          input.value = [...input.options].some((option) => option.value === value) ? value : "";
+        };
+
+        restoreSelect("mechanicFilter", previous?.mechanic);
+        restoreSelect("categoryFilter", previous?.category);
+        restoreSelect("originFilter", previous?.origin);
+        el("resultFilter").value = preserve ? previous.result : "";
         requestAnimationFrame(syncFilterBarHeight);
       }
-
       function readFilters() {
         return {
           dateMode: state.comparisonMode ? "COMPARACAO_MENSAL" : "PERIODO",
@@ -2099,7 +2163,6 @@
           state.filteredRecords = state.comparison.compareRecords;
           renderAll();
           renderMonthlyComparison();
-          resetPanorama();
           return;
         }
 
@@ -2120,7 +2183,6 @@
 
         el("monthlyComparisonPanel").hidden = true;
         renderAll();
-        resetPanorama();
       }
 
       function toggleMonthlyComparison() {
@@ -2637,155 +2699,381 @@
         el("comparisonCurrentNote").textContent = `Os demais cards do dashboard refletem ${formatMonthKey(state.comparison.compareMonth)}.`;
       }
 
-      function panoramaFilterDescription() {
-        const filters = state.filters || {};
-        const periodDescription = state.comparisonMode
-          ? `Comparação: ${formatMonthKey(filters.monthBase || state.comparison.baseMonth)} × ${formatMonthKey(filters.monthCompare || state.comparison.compareMonth)} (leitura do mês comparado)`
-          : `Período: ${formatDateKey(filters.dateStart || state.minDate)} a ${formatDateKey(filters.dateEnd || state.maxDate)}`;
-        const parts = [
-          periodDescription,
-          `Mecânico: ${filters.mechanic || "Todos"}`,
-          `Categoria: ${filters.category ? (CATEGORY_CATALOG[filters.category] || filters.category) : "Todas"}`,
-          `Resultado: ${filters.result === "INTERNO" ? "Executado internamente" : filters.result === "TERCEIRO" ? "Enviado para terceiro" : "Todos"}`,
-          `Origem: ${filters.origin || "Todas"}`
-        ];
-        return parts.join(" • ");
+
+
+      const GRAPH_COLORS = ["#4f8df7", "#ff5b9c", "#d98200", "#2fbf71"];
+      const GRAPH_METRIC_LABELS = {
+        CARS: "Carros finalizados",
+        SERVICES: "Ocorrências de serviços",
+        THIRD: "Enviados para terceiro",
+        RECURRING: "Visitas de placas recorrentes"
+      };
+      const GRAPH_GROUP_LABELS = { DAY: "por dia", WEEK: "por semana", MONTH: "por mês" };
+      const GRAPH_COMPARISON_LABELS = { TOTAL: "total", RESULT: "interno × terceiro", MECHANICS: "top 3 mecânicos" };
+
+      function graphStorageKey() {
+        return `lecar:dashboard:grafico:${auth.currentUser?.uid || "usuario"}`;
       }
 
-      function resetPanorama() {
-        const content = el("panoramaContent");
-        if (!content) return;
-
-        el("panoramaFilterContext").innerHTML = `
-          <span><strong>Base da análise:</strong> ${escapeHtml(panoramaFilterDescription())}</span>
-          <span>Clique em gerar para atualizar o modelo.</span>`;
-
-        content.innerHTML = `
-          <article class="panorama-card panorama-placeholder-card">
-            <div class="panorama-placeholder-copy">
-              <strong>Síntese operacional</strong>
-              <p>Produção, média diária, volume de serviços e principais destaques do filtro.</p>
-            </div>
-          </article>
-          <article class="panorama-card panorama-placeholder-card">
-            <div class="panorama-placeholder-copy">
-              <strong>Pontos de atenção</strong>
-              <p>Terceirizações, recorrências e qualidade dos dados serão exibidas após o clique.</p>
-            </div>
-          </article>`;
-
-        el("panoramaStatus").classList.remove("ready");
-        el("panoramaStatus").textContent = "Modelo local pronto para gerar";
-        el("panoramaMeta").textContent = "Geração somente sob demanda.";
+      function dateFromKeyLocal(dateKey) {
+        const match = String(dateKey || "").match(/^(\d{4})-(\d{2})-(\d{2})$/);
+        if (!match) return null;
+        const date = new Date(Number(match[1]), Number(match[2]) - 1, Number(match[3]), 12, 0, 0, 0);
+        return Number.isNaN(date.getTime()) ? null : date;
       }
 
-      function generatePanoramaModel() {
-        const records = state.filteredRecords;
-        const days = operationalDays(records);
-        const services = serviceOccurrences(records);
-        const average = days ? records.length / days : 0;
-        const third = records.filter((record) => record.result === "TERCEIRO");
-        const thirdRate = records.length ? third.length / records.length * 100 : 0;
-        const recurring = recurringGroups(records);
-        const recurringVisits = recurring.reduce((sum, group) => sum + group.count, 0);
-        const missingCategory = records.filter((record) => !record.categories.length).length;
-        const missingPlate = records.filter((record) => record.plate === "SEMPLACA").length;
-
-        const mechanicGroups = [...groupBy(records, (record) => record.mechanic).entries()]
-          .map(([mechanic, items]) => ({ mechanic, count: items.length }))
-          .sort((a, b) => b.count - a.count || a.mechanic.localeCompare(b.mechanic, "pt-BR"));
-
-        const topMechanic = mechanicGroups[0];
-        const internalCategories = categoryGroups(records.filter((record) => record.result === "INTERNO"));
-        const thirdCategories = categoryGroups(third);
-        const topInternal = internalCategories[0];
-        const topThird = thirdCategories[0];
-
-        const summaryText = records.length
-          ? `${formatNumber(records.length)} finalizações foram identificadas em ${formatNumber(days)} dia(s) operacional(is), com média de ${formatDecimal(average)} carro(s) por dia e ${formatNumber(services)} ocorrência(s) de serviço.`
-          : "Nenhum registro foi encontrado para os filtros selecionados.";
-
-        const productionHighlight = topMechanic
-          ? state.filters.mechanic
-            ? `${topMechanic.mechanic} registrou ${formatNumber(topMechanic.count)} finalização(ões) no período selecionado.`
-            : `${topMechanic.mechanic} apresentou o maior volume do filtro, com ${formatNumber(topMechanic.count)} finalização(ões).`
-          : "Não há produção registrada para destacar.";
-
-        const serviceHighlight = topInternal
-          ? `${topInternal.name} foi a categoria interna mais frequente, com ${formatNumber(topInternal.count)} ocorrência(s).`
-          : "Nenhuma categoria executada internamente foi identificada.";
-
-        const attentionItems = [];
-        attentionItems.push(`${formatNumber(third.length)} finalização(ões) foram enviadas para terceiro, equivalentes a ${formatDecimal(thirdRate)}% do total filtrado.`);
-        attentionItems.push(recurring.length
-          ? `${formatNumber(recurring.length)} placa(s) apresentou(aram) recorrência, somando ${formatNumber(recurringVisits)} visita(s).`
-          : "Nenhuma placa recorrente foi identificada no filtro.");
-        attentionItems.push(topThird
-          ? `${topThird.name} foi a categoria mais frequente entre os envios para terceiro, com ${formatNumber(topThird.count)} ocorrência(s).`
-          : "Nenhuma categoria de envio para terceiro foi identificada.");
-        attentionItems.push(missingCategory || missingPlate
-          ? `Qualidade dos dados: ${formatNumber(missingCategory)} registro(s) sem categoria e ${formatNumber(missingPlate)} sem placa.`
-          : "Os registros filtrados não apresentam ausência de categoria ou placa.");
-
-        el("panoramaFilterContext").innerHTML = `
-          <span><strong>Base da análise:</strong> ${escapeHtml(panoramaFilterDescription())}</span>
-          <span>${formatNumber(records.length)} registro(s) analisado(s)</span>`;
-
-        el("panoramaContent").innerHTML = `
-          <article class="panorama-card">
-            <div class="panorama-card-head">
-              <h3>Síntese operacional</h3>
-              <span>Visão geral</span>
-            </div>
-
-            <div class="panorama-metrics">
-              <div class="panorama-metric"><span>Finalizações</span><strong>${formatNumber(records.length)}</strong></div>
-              <div class="panorama-metric"><span>Média por dia</span><strong>${formatDecimal(average)}</strong></div>
-              <div class="panorama-metric"><span>Serviços</span><strong>${formatNumber(services)}</strong></div>
-              <div class="panorama-metric"><span>Dias operacionais</span><strong>${formatNumber(days)}</strong></div>
-            </div>
-
-            <div class="panorama-section">
-              <h4>Resumo do período</h4>
-              <p>${escapeHtml(summaryText)}</p>
-            </div>
-            <div class="panorama-section">
-              <h4>Destaque de produção</h4>
-              <p>${escapeHtml(productionHighlight)}</p>
-            </div>
-            <div class="panorama-section">
-              <h4>Serviço predominante</h4>
-              <p>${escapeHtml(serviceHighlight)}</p>
-            </div>
-          </article>
-
-          <article class="panorama-card attention">
-            <div class="panorama-card-head">
-              <h3>Pontos de atenção</h3>
-              <span>Leitura objetiva</span>
-            </div>
-
-            <div class="panorama-metrics">
-              <div class="panorama-metric"><span>Terceiros</span><strong>${formatNumber(third.length)}</strong></div>
-              <div class="panorama-metric"><span>Participação</span><strong>${formatDecimal(thirdRate)}%</strong></div>
-              <div class="panorama-metric"><span>Placas recorrentes</span><strong>${formatNumber(recurring.length)}</strong></div>
-              <div class="panorama-metric"><span>Visitas recorrentes</span><strong>${formatNumber(recurringVisits)}</strong></div>
-            </div>
-
-            <div class="panorama-section">
-              <h4>Leitura do filtro</h4>
-              <ul class="panorama-list">
-                ${attentionItems.map((item) => `<li>${escapeHtml(item)}</li>`).join("")}
-              </ul>
-            </div>
-          </article>`;
-
-        el("panoramaStatus").classList.add("ready");
-        el("panoramaStatus").textContent = "Panorama local gerado";
-        el("panoramaMeta").textContent = "Modelo demonstrativo sem uso de API.";
+      function dateKeyLocal(date) {
+        if (!(date instanceof Date) || Number.isNaN(date.getTime())) return "";
+        const year = date.getFullYear();
+        const month = String(date.getMonth() + 1).padStart(2, "0");
+        const day = String(date.getDate()).padStart(2, "0");
+        return `${year}-${month}-${day}`;
       }
+
+      function addDaysLocal(dateKey, amount) {
+        const date = dateFromKeyLocal(dateKey);
+        if (!date) return "";
+        date.setDate(date.getDate() + Number(amount || 0));
+        return dateKeyLocal(date);
+      }
+
+      function startOfWeekKey(dateKey) {
+        const date = dateFromKeyLocal(dateKey);
+        if (!date) return "";
+        const day = date.getDay();
+        const offset = day === 0 ? -6 : 1 - day;
+        date.setDate(date.getDate() + offset);
+        return dateKeyLocal(date);
+      }
+
+      function graphPeriodRange() {
+        const mode = el("graphPeriod").value;
+        const today = state.todayDate || todayKeyInSaoPaulo() || state.maxDate;
+        let start = today;
+        let end = today;
+
+        if (mode === "LAST_7") start = addDaysLocal(today, -6);
+        if (mode === "LAST_15") start = addDaysLocal(today, -14);
+        if (mode === "LAST_30") start = addDaysLocal(today, -29);
+        if (mode === "CURRENT_MONTH") start = `${String(today).slice(0, 7)}-01`;
+        if (mode === "CUSTOM") {
+          start = el("graphDateStart").value || state.minDate || today;
+          end = el("graphDateEnd").value || today;
+        }
+
+        if (start && end && start > end) [start, end] = [end, start];
+        return { start, end, mode };
+      }
+
+      function graphPeriodLabel(range) {
+        const labels = {
+          LAST_7: "Últimos 7 dias",
+          LAST_15: "Últimos 15 dias",
+          LAST_30: "Últimos 30 dias",
+          CURRENT_MONTH: "Mês atual"
+        };
+        if (range.mode !== "CUSTOM") return labels[range.mode] || "Período";
+        return `${formatDateKey(range.start)} a ${formatDateKey(range.end)}`;
+      }
+
+      function graphBucketLabel(key, grouping) {
+        if (grouping === "MONTH") {
+          const [year, month] = String(key).split("-");
+          const date = new Date(Number(year), Number(month) - 1, 1);
+          return new Intl.DateTimeFormat("pt-BR", { month: "short", year: "2-digit" }).format(date).replace(" de ", "/").toUpperCase();
+        }
+        if (grouping === "WEEK") return `SEM ${formatDateKey(key).slice(0, 5)}`;
+        return formatDateKey(key).slice(0, 5);
+      }
+
+      function buildGraphBuckets(start, end, grouping) {
+        const buckets = [];
+        if (!start || !end) return buckets;
+
+        if (grouping === "MONTH") {
+          let cursor = String(start).slice(0, 7);
+          const last = String(end).slice(0, 7);
+          let guard = 0;
+          while (cursor <= last && guard < 240) {
+            buckets.push({ key: cursor, label: graphBucketLabel(cursor, grouping), records: [] });
+            const [year, month] = cursor.split("-").map(Number);
+            const next = new Date(year, month, 1, 12);
+            cursor = `${next.getFullYear()}-${String(next.getMonth() + 1).padStart(2, "0")}`;
+            guard += 1;
+          }
+          return buckets;
+        }
+
+        if (grouping === "WEEK") {
+          let cursor = startOfWeekKey(start);
+          const last = startOfWeekKey(end);
+          let guard = 0;
+          while (cursor <= last && guard < 520) {
+            buckets.push({ key: cursor, label: graphBucketLabel(cursor, grouping), records: [] });
+            cursor = addDaysLocal(cursor, 7);
+            guard += 1;
+          }
+          return buckets;
+        }
+
+        let cursor = start;
+        let guard = 0;
+        while (cursor <= end && guard < 1500) {
+          buckets.push({ key: cursor, label: graphBucketLabel(cursor, grouping), records: [] });
+          cursor = addDaysLocal(cursor, 1);
+          guard += 1;
+        }
+        return buckets;
+      }
+
+      function graphBucketKey(record, grouping) {
+        if (grouping === "MONTH") return monthKeyFromDateKey(record.dateKey);
+        if (grouping === "WEEK") return startOfWeekKey(record.dateKey);
+        return record.dateKey;
+      }
+
+      function graphMetricValue(records, metric, recurringPlates) {
+        if (metric === "SERVICES") return serviceOccurrences(records);
+        if (metric === "THIRD") return records.filter((record) => record.result === "TERCEIRO").length;
+        if (metric === "RECURRING") return records.filter((record) => recurringPlates.has(record.plate)).length;
+        return records.length;
+      }
+
+      function graphTopMechanics(records, metric, recurringPlates) {
+        return [...groupBy(records, (record) => record.mechanic).entries()]
+          .map(([mechanic, items]) => ({ mechanic, value: graphMetricValue(items, metric, recurringPlates) }))
+          .filter((item) => item.value > 0)
+          .sort((a, b) => b.value - a.value || a.mechanic.localeCompare(b.mechanic, "pt-BR"))
+          .slice(0, 3)
+          .map((item) => item.mechanic);
+      }
+
+      function graphNiceMax(value) {
+        const max = Math.max(1, Number(value || 0));
+        if (max <= 5) return 5;
+        const magnitude = 10 ** Math.floor(Math.log10(max));
+        const normalized = max / magnitude;
+        const factor = normalized <= 1 ? 1 : normalized <= 2 ? 2 : normalized <= 5 ? 5 : 10;
+        return factor * magnitude;
+      }
+
+      function graphSvgLine(points, color, index, singleSeries) {
+        if (!points.length) return "";
+        const path = points.map((point, pointIndex) => `${pointIndex ? "L" : "M"}${point.x.toFixed(2)},${point.y.toFixed(2)}`).join(" ");
+        const area = singleSeries
+          ? `<path d="${path} L${points.at(-1).x.toFixed(2)},294 L${points[0].x.toFixed(2)},294 Z" fill="url(#graphArea${index})" opacity=".42"></path>`
+          : "";
+        const circles = points.length <= 62
+          ? points.map((point) => `<circle class="operational-chart-point" cx="${point.x.toFixed(2)}" cy="${point.y.toFixed(2)}" r="3.4" fill="${color}"><title>${escapeHtml(point.label)}: ${formatNumber(point.value)}</title></circle>`).join("")
+          : `<circle class="operational-chart-point" cx="${points.at(-1).x.toFixed(2)}" cy="${points.at(-1).y.toFixed(2)}" r="4.2" fill="${color}"><title>${escapeHtml(points.at(-1).label)}: ${formatNumber(points.at(-1).value)}</title></circle>`;
+        return `${area}<path d="${path}" fill="none" stroke="${color}" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" filter="url(#graphGlow)"></path>${circles}`;
+      }
+
+      function renderGraphSvg(buckets, series, type) {
+        const width = 1200;
+        const height = 342;
+        const margin = { top: 22, right: 24, bottom: 48, left: 52 };
+        const plotWidth = width - margin.left - margin.right;
+        const plotHeight = height - margin.top - margin.bottom;
+        const maxValue = Math.max(0, ...series.flatMap((item) => item.values));
+        const yMax = graphNiceMax(maxValue);
+        const gridCount = 5;
+        const xStep = buckets.length > 1 ? plotWidth / (buckets.length - 1) : plotWidth;
+        const tickEvery = Math.max(1, Math.ceil(buckets.length / 11));
+
+        const grids = Array.from({ length: gridCount + 1 }, (_, index) => {
+          const ratio = index / gridCount;
+          const y = margin.top + plotHeight * ratio;
+          const value = Math.round(yMax * (1 - ratio));
+          return `<line class="operational-chart-grid-line" x1="${margin.left}" y1="${y}" x2="${width - margin.right}" y2="${y}"></line><text class="operational-chart-axis-label" x="${margin.left - 10}" y="${y + 4}" text-anchor="end">${formatNumber(value)}</text>`;
+        }).join("");
+
+        const xLabels = buckets.map((bucket, index) => {
+          if (index % tickEvery !== 0 && index !== buckets.length - 1) return "";
+          const x = type === "BAR"
+            ? margin.left + (plotWidth / Math.max(1, buckets.length)) * index + (plotWidth / Math.max(1, buckets.length)) / 2
+            : buckets.length > 1 ? margin.left + xStep * index : margin.left + plotWidth / 2;
+          return `<text class="operational-chart-axis-label" x="${x}" y="${height - 18}" text-anchor="middle">${escapeHtml(bucket.label)}</text>`;
+        }).join("");
+
+        let seriesMarkup = "";
+        if (type === "BAR") {
+          const slot = plotWidth / Math.max(1, buckets.length);
+          const groupWidth = Math.min(slot * .72, 48);
+          const barGap = 3;
+          const barWidth = Math.max(2, (groupWidth - barGap * Math.max(0, series.length - 1)) / Math.max(1, series.length));
+          series.forEach((item, seriesIndex) => {
+            item.values.forEach((value, bucketIndex) => {
+              const heightValue = yMax ? value / yMax * plotHeight : 0;
+              const groupX = margin.left + slot * bucketIndex + (slot - groupWidth) / 2;
+              const x = groupX + seriesIndex * (barWidth + barGap);
+              const y = margin.top + plotHeight - heightValue;
+              seriesMarkup += `<rect x="${x.toFixed(2)}" y="${y.toFixed(2)}" width="${barWidth.toFixed(2)}" height="${Math.max(0, heightValue).toFixed(2)}" rx="2" fill="${item.color}" opacity=".92"><title>${escapeHtml(buckets[bucketIndex].label)} • ${escapeHtml(item.label)}: ${formatNumber(value)}</title></rect>`;
+            });
+          });
+        } else {
+          series.forEach((item, seriesIndex) => {
+            const points = item.values.map((value, index) => ({
+              x: buckets.length > 1 ? margin.left + xStep * index : margin.left + plotWidth / 2,
+              y: margin.top + plotHeight - (yMax ? value / yMax * plotHeight : 0),
+              value,
+              label: `${buckets[index].label} • ${item.label}`
+            }));
+            seriesMarkup += graphSvgLine(points, item.color, seriesIndex, series.length === 1);
+          });
+        }
+
+        const gradients = series.map((item, index) => `<linearGradient id="graphArea${index}" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="${item.color}" stop-opacity=".34"></stop><stop offset="100%" stop-color="${item.color}" stop-opacity="0"></stop></linearGradient>`).join("");
+
+        return `<svg viewBox="0 0 ${width} ${height}" role="img" aria-label="Gráfico de evolução operacional">
+          <defs>${gradients}<filter id="graphGlow" x="-10%" y="-20%" width="120%" height="140%"><feGaussianBlur stdDeviation="1.2" result="blur"></feGaussianBlur><feMerge><feMergeNode in="blur"></feMergeNode><feMergeNode in="SourceGraphic"></feMergeNode></feMerge></filter></defs>
+          ${grids}
+          <line class="operational-chart-zero-line" x1="${margin.left}" y1="${margin.top + plotHeight}" x2="${width - margin.right}" y2="${margin.top + plotHeight}"></line>
+          ${seriesMarkup}
+          ${xLabels}
+        </svg>`;
+      }
+
+      function syncGraphComparisonOptions() {
+        const metric = el("graphMetric").value;
+        const comparison = el("graphComparison");
+        const resultOption = [...comparison.options].find((option) => option.value === "RESULT");
+        const resultAllowed = metric === "CARS" || metric === "SERVICES";
+        if (resultOption) resultOption.disabled = !resultAllowed;
+        if (!resultAllowed && comparison.value === "RESULT") comparison.value = "TOTAL";
+      }
+
+      function syncGraphControls() {
+        const range = graphPeriodRange();
+        const custom = range.mode === "CUSTOM";
+        el("graphCustomRange").hidden = !custom;
+        syncGraphComparisonOptions();
+        const min = state.minDate || "";
+        const max = state.todayDate || state.maxDate || "";
+        [el("graphDateStart"), el("graphDateEnd")].forEach((input) => {
+          input.min = min;
+          input.max = max;
+        });
+      }
+
+      function saveGraphPreferences() {
+        try {
+          const card = el("operationalChartCard");
+          localStorage.setItem(graphStorageKey(), JSON.stringify({
+            period: el("graphPeriod").value,
+            dateStart: el("graphDateStart").value,
+            dateEnd: el("graphDateEnd").value,
+            metric: el("graphMetric").value,
+            grouping: el("graphGrouping").value,
+            comparison: el("graphComparison").value,
+            type: el("graphType").value,
+            collapsed: card.classList.contains("collapsed")
+          }));
+        } catch (error) {
+          console.warn("[LECAR DASHBOARD][GRÁFICO] Não foi possível salvar a preferência.", error);
+        }
+      }
+
+      function restoreGraphPreferences() {
+        if (state.graphPreferencesLoaded) return;
+        state.graphPreferencesLoaded = true;
+        const today = state.todayDate || todayKeyInSaoPaulo() || state.maxDate;
+        el("graphDateEnd").value = today;
+        el("graphDateStart").value = addDaysLocal(today, -29);
+
+        try {
+          const saved = JSON.parse(localStorage.getItem(graphStorageKey()) || "null");
+          if (saved && typeof saved === "object") {
+            const assignSelect = (id, value) => {
+              const input = el(id);
+              if ([...input.options].some((option) => option.value === value)) input.value = value;
+            };
+            assignSelect("graphPeriod", saved.period);
+            assignSelect("graphMetric", saved.metric);
+            assignSelect("graphGrouping", saved.grouping);
+            assignSelect("graphComparison", saved.comparison);
+            assignSelect("graphType", saved.type);
+            if (saved.dateStart) el("graphDateStart").value = saved.dateStart;
+            if (saved.dateEnd) el("graphDateEnd").value = saved.dateEnd;
+            el("operationalChartCard").classList.toggle("collapsed", Boolean(saved.collapsed));
+          }
+        } catch (error) {
+          console.warn("[LECAR DASHBOARD][GRÁFICO] Preferência anterior inválida.", error);
+        }
+
+        const collapsed = el("operationalChartCard").classList.contains("collapsed");
+        el("toggleOperationalChart").setAttribute("aria-expanded", String(!collapsed));
+        el("toggleOperationalChart").title = collapsed ? "Maximizar gráfico" : "Minimizar gráfico";
+        el("toggleOperationalChart").setAttribute("aria-label", collapsed ? "Maximizar gráfico" : "Minimizar gráfico");
+        syncGraphControls();
+      }
+
+      function renderOperationalChart() {
+        restoreGraphPreferences();
+        syncGraphControls();
+
+        const range = graphPeriodRange();
+        const grouping = el("graphGrouping").value;
+        const metric = el("graphMetric").value;
+        const comparison = el("graphComparison").value;
+        const type = el("graphType").value;
+        const periodRecords = state.allRecords.filter((record) => record.dateKey && record.dateKey >= range.start && record.dateKey <= range.end);
+        const recurringPlates = new Set(recurringGroups(periodRecords).map((group) => group.plate));
+        const buckets = buildGraphBuckets(range.start, range.end, grouping);
+        const bucketMap = new Map(buckets.map((bucket) => [bucket.key, bucket]));
+
+        periodRecords.forEach((record) => {
+          const bucket = bucketMap.get(graphBucketKey(record, grouping));
+          if (bucket) bucket.records.push(record);
+        });
+
+        let definitions = [];
+        if (comparison === "RESULT") {
+          definitions = [
+            { label: "Executado internamente", filter: (record) => record.result === "INTERNO" },
+            { label: "Enviado para terceiro", filter: (record) => record.result === "TERCEIRO" }
+          ];
+        } else if (comparison === "MECHANICS") {
+          definitions = graphTopMechanics(periodRecords, metric, recurringPlates).map((mechanic) => ({
+            label: mechanic,
+            filter: (record) => record.mechanic === mechanic
+          }));
+        } else {
+          definitions = [{ label: GRAPH_METRIC_LABELS[metric], filter: () => true }];
+        }
+
+        const series = definitions.map((definition, index) => ({
+          label: definition.label,
+          color: GRAPH_COLORS[index % GRAPH_COLORS.length],
+          values: buckets.map((bucket) => graphMetricValue(bucket.records.filter(definition.filter), metric, recurringPlates))
+        }));
+
+        const summary = `${graphPeriodLabel(range)} • ${GRAPH_METRIC_LABELS[metric].toLowerCase()} • ${GRAPH_GROUP_LABELS[grouping]} • ${GRAPH_COMPARISON_LABELS[comparison]}`;
+        el("operationalChartSummary").textContent = summary;
+        el("operationalChartStatus").textContent = `${formatNumber(periodRecords.length)} finalização(ões) na base do gráfico`;
+        el("operationalChartLegend").innerHTML = series.map((item) => `<span class="operational-chart-legend-item"><span class="operational-chart-legend-dot" style="--series-color:${item.color}"></span>${escapeHtml(item.label)}</span>`).join("");
+
+        if (!buckets.length || !series.length) {
+          el("operationalChartPlot").innerHTML = `<div class="operational-chart-empty">Nenhum dado disponível para esta configuração.</div>`;
+          return;
+        }
+
+        el("operationalChartPlot").innerHTML = renderGraphSvg(buckets, series, type);
+      }
+
+      function toggleOperationalChart() {
+        const card = el("operationalChartCard");
+        const collapsed = !card.classList.contains("collapsed");
+        card.classList.toggle("collapsed", collapsed);
+        el("toggleOperationalChart").setAttribute("aria-expanded", String(!collapsed));
+        el("toggleOperationalChart").title = collapsed ? "Maximizar gráfico" : "Minimizar gráfico";
+        el("toggleOperationalChart").setAttribute("aria-label", collapsed ? "Maximizar gráfico" : "Minimizar gráfico");
+        saveGraphPreferences();
+      }
+
 
       function renderAll() {
+        renderOperationalChart();
         renderKpis();
         renderMechanicTable();
         renderServiceCharts();
@@ -2799,7 +3087,15 @@
         el("applyFilters").addEventListener("click", applyFilters);
         el("clearFilters").addEventListener("click", clearFilters);
         el("toggleMonthlyComparison").addEventListener("click", toggleMonthlyComparison);
-        el("generatePanorama").addEventListener("click", generatePanoramaModel);
+        el("toggleOperationalChart").addEventListener("click", toggleOperationalChart);
+
+        ["graphPeriod", "graphMetric", "graphGrouping", "graphComparison", "graphType", "graphDateStart", "graphDateEnd"].forEach((id) => {
+          el(id).addEventListener("change", () => {
+            syncGraphControls();
+            renderOperationalChart();
+            saveGraphPreferences();
+          });
+        });
 
         ["dateStart", "dateEnd", "monthBase", "monthCompare", "mechanicFilter", "categoryFilter", "resultFilter", "originFilter"].forEach((id) => {
           el(id).addEventListener("change", applyFilters);
@@ -2845,26 +3141,78 @@
       }
 
       function showError(error) {
+        if (typeof unsubscribeFinalizados === "function") {
+          unsubscribeFinalizados();
+          unsubscribeFinalizados = null;
+        }
         document.body.innerHTML = `
           <div class="error-screen">
             <div class="error-card">
               <h1>Não foi possível abrir o dashboard</h1>
               <p>${escapeHtml(error?.message || String(error))}</p>
-              <p>Confirme que o arquivo <strong>data.js</strong> está na mesma pasta e contém <strong>window.LECAR_DATA</strong>.</p>
+              <p>Confirme a sessão do Firebase e a permissão de leitura da coleção <strong>veiculos</strong>.</p>
             </div>
           </div>`;
       }
 
+      function showDashboard() {
+        el("loadingScreen")?.remove();
+        if (el("app")) el("app").hidden = false;
+        requestAnimationFrame(syncFilterBarHeight);
+      }
+
+      function stopFirebaseListeners() {
+        if (typeof unsubscribeFinalizados === "function") {
+          unsubscribeFinalizados();
+          unsubscribeFinalizados = null;
+        }
+        if (typeof unsubscribeAuth === "function") {
+          unsubscribeAuth();
+          unsubscribeAuth = null;
+        }
+      }
+
+      function startFinalizedListener() {
+        if (typeof unsubscribeFinalizados === "function") return;
+
+        unsubscribeFinalizados = db.collection("veiculos")
+          .where("status", "==", "VEÍCULO FINALIZADO")
+          .onSnapshot((snapshot) => {
+            const preserve = state.dataLoaded;
+            const previousMaxDate = state.maxDate;
+            const previousDateEnd = el("dateEnd").value;
+            const followLatest = !preserve || !previousDateEnd || previousDateEnd === previousMaxDate;
+            const records = snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
+
+            buildDataset(records);
+            populateFilters({ preserve, followLatest });
+            applyFilters();
+            state.dataLoaded = true;
+            validateKnownCheckpoint();
+            showDashboard();
+          }, (error) => {
+            console.error("[LECAR DASHBOARD][FIRESTORE]", error);
+            const message = error?.code === "permission-denied"
+              ? "A sessão atual não possui permissão para ler os veículos finalizados."
+              : `Falha ao acompanhar os veículos finalizados: ${error?.message || error}`;
+            showError(new Error(message));
+          });
+      }
+
       function init() {
         try {
-          buildDataset();
-          populateFilters();
           bindEvents();
-          applyFilters();
-          validateKnownCheckpoint();
-          el("loadingScreen").remove();
-          el("app").hidden = false;
-          requestAnimationFrame(syncFilterBarHeight);
+          unsubscribeAuth = auth.onAuthStateChanged((user) => {
+            if (!user) {
+              showError(new Error("Nenhuma sessão Firebase ativa. Entre no LeCar antes de abrir o dashboard."));
+              return;
+            }
+            startFinalizedListener();
+          }, (error) => {
+            console.error("[LECAR DASHBOARD][AUTH]", error);
+            showError(new Error(`Falha ao validar a sessão Firebase: ${error?.message || error}`));
+          });
+          window.addEventListener("pagehide", stopFirebaseListeners, { once: true });
         } catch (error) {
           console.error("[LECAR DASHBOARD]", error);
           showError(error);
