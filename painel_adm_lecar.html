@@ -9589,9 +9589,12 @@ REALIZADO POR: ${autor}`,
     }
 
     function itemPassaFiltroMecanicos(item) {
-      const referencia = item.__finalizadoMecanicos
-        ? (timestampFinalizadoMecanicos(item) || timestampAssumidoMecanicos(item))
-        : timestampAssumidoMecanicos(item);
+      // Veículos ativos precisam permanecer visíveis enquanto estiverem em andamento,
+      // independentemente da data em que o mecânico assumiu o serviço.
+      if (!item?.__finalizadoMecanicos) return true;
+
+      // O filtro de data/período é aplicado somente ao histórico finalizado.
+      const referencia = timestampFinalizadoMecanicos(item) || timestampAssumidoMecanicos(item);
       const dataItem = dataLocalISO(referencia);
       if (!dataItem) return false;
 
