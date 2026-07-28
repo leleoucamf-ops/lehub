@@ -1,5 +1,5 @@
 <!doctype html>
-<!-- LEHUB LPA V8.9 — CONSULTOR TÉCNICO NOS CARDS / FILTRO DE MECÂNICO EM EM ANDAMENTO -->
+<!-- LEHUB LPA V8.10 — PERSISTÊNCIA GLOBAL DE PREFERÊNCIAS POR USUÁRIO -->
 <html lang="pt-BR" translate="no">
 <head>
   <meta charset="UTF-8">
@@ -9934,9 +9934,12 @@ REALIZADO POR: ${autor}`,
     function alterarFiltroOrigemPainel(valor) {
       if (!VISOES_COM_FILTRO_ORIGEM.includes(visaoPainelAtual)) return;
       const valorNormalizado = normalizar(valor);
-      filtrosOrigemPorVisao[visaoPainelAtual] = ["TODOS","ATM","BOLSAO"].includes(valorNormalizado)
+      const novoFiltro = ["TODOS","ATM","BOLSAO"].includes(valorNormalizado)
         ? valorNormalizado
         : "TODOS";
+      Object.keys(filtrosOrigemPorVisao).forEach(visao => {
+        filtrosOrigemPorVisao[visao] = novoFiltro;
+      });
       renderizarServicos();
     }
 
@@ -13210,8 +13213,11 @@ REALIZADO POR: ${autor}`,
 
     function alterarFiltroOrigemLavaRapido(valor) {
       if (!VISOES_LAVA_COM_FILTRO_ORIGEM.includes(visaoLavaRapidoAtual)) return;
-      const novo = normalizar(valor);
-      filtrosOrigemLavaPorVisao[visaoLavaRapidoAtual] = ["TODOS","ATM","BOLSAO"].includes(novo) ? novo : "TODOS";
+      const normalizado = normalizar(valor);
+      const novoFiltro = ["TODOS","ATM","BOLSAO"].includes(normalizado) ? normalizado : "TODOS";
+      Object.keys(filtrosOrigemLavaPorVisao).forEach(visao => {
+        filtrosOrigemLavaPorVisao[visao] = novoFiltro;
+      });
       renderizarLavaRapido();
     }
 
@@ -13379,6 +13385,7 @@ REALIZADO POR: ${autor}`,
       const comCera = Boolean(document.getElementById("lavaComCera")?.checked);
       const etiquetaId = document.getElementById("lavaEtiqueta")?.value || "normal";
       const etiqueta = etiquetasDisponiveisLava().find(item => item.id === etiquetaId) || etiquetaLavaPorNome("NORMAL");
+      const operacao = filtroOrigemLavaAtual() === "ATM" ? "ATM" : "BOLSÃO";
 
       if (!veiculo || !placa || !["SIMPLES","COMPLETA","LH"].includes(tipoLavagem)) {
         return alert("PREENCHA VEÍCULO, PLACA E TIPO DE LAVAGEM.");
@@ -13400,7 +13407,8 @@ REALIZADO POR: ${autor}`,
           comCera,
           com_cera:comCera,
           descricao:`LAVAGEM ${tipoLavagem}${comCera ? " + CERA" : ""}`,
-          origem:"BOLSÃO",
+          origem:operacao,
+          operacao,
           prioridade:etiqueta.nome,
           etiqueta:etiqueta.nome,
           etiquetaId:etiqueta.id,
@@ -14204,6 +14212,7 @@ REALIZADO POR: ${autor}`,
       const retorno = Boolean(document.getElementById("polimentoRetorno")?.checked);
       const motivoRetorno = normalizar(document.getElementById("polimentoMotivoRetorno")?.value);
       const etiqueta = etiquetaPolimentoPorId(document.getElementById("polimentoEtiqueta")?.value || "normal");
+      const operacao = filtroOrigemPolimentoAtual === "ATM" ? "ATM" : "BOLSÃO";
 
       if (!veiculo || !placa || !cor) {
         alert("PREENCHA VEÍCULO, PLACA E COR.");
@@ -14241,8 +14250,8 @@ REALIZADO POR: ${autor}`,
           motivoRetorno:retorno ? motivoRetorno : "",
           motivo_retorno:retorno ? motivoRetorno : "",
           descricao:`POLIMENTO${farol ? " + FAROL" : ""}${retorno ? " — RETORNO" : ""}`,
-          origem:"BOLSÃO",
-          operacao:"BOLSÃO",
+          origem:operacao,
+          operacao,
           prioridade:etiqueta.nome,
           etiqueta:etiqueta.nome,
           etiquetaId:etiqueta.id,
@@ -19634,6 +19643,395 @@ ESSA AÇÃO NÃO ENVIA, NÃO EXCLUI E NÃO ALTERA A LISTA DE PEÇAS.`);
     });
 
     window.atualizarAbasModulosLeCar?.();
+  })();
+  </script>
+
+
+  <script id="lpa-persistencia-preferencias-usuario-v1">
+  (() => {
+    "use strict";
+
+    const PREFIXO_PREFERENCIAS_LPA = "lecar_preferencias_usuario_v1";
+    const MODULOS_PERSISTIVEIS_LPA = Object.freeze(["OFICINA","ACESSORIOS","POLIMENTO","LAVA_RAPIDO","PECAS"]);
+    const MAPA_ABAS_ACESSORIOS_LPA = Object.freeze({
+      AGUARDANDO:"AGUARDANDO",
+      ANDAMENTO:"ANDAMENTO",
+      FINALIZADO:"FINALIZADOS",
+      FINALIZADOS:"FINALIZADOS",
+      URGENTE:"URGENTE",
+      INSTALADORES:"MECANICOS",
+      LIXEIRA:"LIXEIRA"
+    });
+
+    let restaurandoPreferenciasLPA = false;
+    let timerSalvarPreferenciasLPA = null;
+
+    function normalizarPreferenciaLPA(valor) {
+      return String(valor || "").trim().toUpperCase();
+    }
+
+    function identificadorPreferenciasLPA() {
+      const uid = String(window.usuarioAutenticado?.uid || sessionStorage.getItem("uid_lecar_admin") || "").trim();
+      const usuario = typeof usuarioPainelAtual === "function" ? String(usuarioPainelAtual() || "").trim() : "";
+      return (uid || usuario || "PADRAO").replace(/[^a-zA-Z0-9_-]/g, "_").slice(0, 160);
+    }
+
+    function chavePreferenciasLPA() {
+      return `${PREFIXO_PREFERENCIAS_LPA}_${identificadorPreferenciasLPA()}`;
+    }
+
+    function lerPreferenciasLPA() {
+      try {
+        const dados = JSON.parse(localStorage.getItem(chavePreferenciasLPA()) || "null");
+        return dados && typeof dados === "object" && !Array.isArray(dados) ? dados : {};
+      } catch (erro) {
+        console.warn("[LPA PREFERÊNCIAS] Não foi possível ler as preferências locais:", erro);
+        return {};
+      }
+    }
+
+    function gravarPreferenciasLPA(preferencias) {
+      try {
+        localStorage.setItem(chavePreferenciasLPA(), JSON.stringify({
+          versao:1,
+          atualizadoEmISO:new Date().toISOString(),
+          ...preferencias
+        }));
+      } catch (erro) {
+        console.warn("[LPA PREFERÊNCIAS] Não foi possível salvar as preferências locais:", erro);
+      }
+    }
+
+    function valorSelectLPA(id, fallback = "") {
+      return document.getElementById(id)?.value || fallback;
+    }
+
+    function valorCheckboxLPA(id, fallback = false) {
+      const campo = document.getElementById(id);
+      return campo ? Boolean(campo.checked) : fallback;
+    }
+
+    function abaAtivaAcessoriosLPA() {
+      const mapa = {
+        navAguardando:"AGUARDANDO",
+        navAndamento:"ANDAMENTO",
+        navFinalizados:"FINALIZADO",
+        navUrgente:"URGENTE",
+        navMecanicos:"INSTALADORES",
+        navLixeira:"LIXEIRA"
+      };
+      const ativo = Object.keys(mapa).find(id => document.getElementById(id)?.classList.contains("active"));
+      return mapa[ativo] || "AGUARDANDO";
+    }
+
+    function copiarObjetoSeguroLPA(valor, fallback = {}) {
+      if (!valor || typeof valor !== "object" || Array.isArray(valor)) return { ...fallback };
+      return { ...fallback, ...valor };
+    }
+
+    function capturarPreferenciasLPA() {
+      if (restaurandoPreferenciasLPA) return;
+
+      const anteriores = lerPreferenciasLPA();
+      const modulosAnteriores = copiarObjetoSeguroLPA(anteriores.modulos);
+      const moduloAtual = MODULOS_PERSISTIVEIS_LPA.includes(normalizarPreferenciaLPA(typeof moduloAtualLeCar !== "undefined" ? moduloAtualLeCar : ""))
+        ? normalizarPreferenciaLPA(moduloAtualLeCar)
+        : "OFICINA";
+
+      const preferencias = {
+        global:{
+          ...copiarObjetoSeguroLPA(anteriores.global),
+          moduloAtivo:moduloAtual
+        },
+        modulos:{
+          ...modulosAnteriores,
+          OFICINA:{
+            visao:typeof visaoPainelAtual !== "undefined" ? visaoPainelAtual : "AGUARDANDO",
+            operacao:typeof filtroOrigemAtual === "function" ? filtroOrigemAtual() : valorSelectLPA("selectFiltroOrigemPainel", "TODOS"),
+            filtrosOrigem:typeof filtrosOrigemPorVisao !== "undefined" ? { ...filtrosOrigemPorVisao } : {},
+            mecanicoAndamento:typeof filtroMecanicoAndamento !== "undefined" ? filtroMecanicoAndamento : "TODOS",
+            finalizados:{
+              modo:typeof filtroFinalizadosModo !== "undefined" ? filtroFinalizadosModo : "HOJE",
+              data:typeof filtroFinalizadosData !== "undefined" ? filtroFinalizadosData : "",
+              inicio:typeof filtroFinalizadosInicio !== "undefined" ? filtroFinalizadosInicio : "",
+              fim:typeof filtroFinalizadosFim !== "undefined" ? filtroFinalizadosFim : ""
+            },
+            equipe:{
+              modo:typeof filtroMecanicosModo !== "undefined" ? filtroMecanicosModo : "HOJE",
+              data:typeof filtroMecanicosData !== "undefined" ? filtroMecanicosData : "",
+              inicio:typeof filtroMecanicosInicio !== "undefined" ? filtroMecanicosInicio : "",
+              fim:typeof filtroMecanicosFim !== "undefined" ? filtroMecanicosFim : ""
+            }
+          },
+          LAVA_RAPIDO:{
+            visao:typeof visaoLavaRapidoAtual !== "undefined" ? visaoLavaRapidoAtual : "AGUARDANDO",
+            operacao:typeof filtroOrigemLavaAtual === "function" ? filtroOrigemLavaAtual() : valorSelectLPA("selectFiltroOrigemLavaRapido", "TODOS"),
+            filtrosOrigem:typeof filtrosOrigemLavaPorVisao !== "undefined" ? { ...filtrosOrigemLavaPorVisao } : {},
+            finalizados:{
+              modo:typeof filtroFinalizadosLavaModo !== "undefined" ? filtroFinalizadosLavaModo : "HOJE",
+              data:typeof filtroFinalizadosLavaData !== "undefined" ? filtroFinalizadosLavaData : "",
+              inicio:typeof filtroFinalizadosLavaInicio !== "undefined" ? filtroFinalizadosLavaInicio : "",
+              fim:typeof filtroFinalizadosLavaFim !== "undefined" ? filtroFinalizadosLavaFim : ""
+            },
+            equipe:{
+              modo:typeof filtroLavadoresLavaModo !== "undefined" ? filtroLavadoresLavaModo : "HOJE",
+              data:typeof filtroLavadoresLavaData !== "undefined" ? filtroLavadoresLavaData : "",
+              inicio:typeof filtroLavadoresLavaInicio !== "undefined" ? filtroLavadoresLavaInicio : "",
+              fim:typeof filtroLavadoresLavaFim !== "undefined" ? filtroLavadoresLavaFim : ""
+            }
+          },
+          POLIMENTO:{
+            visao:typeof visaoPolimentoAtual !== "undefined" ? visaoPolimentoAtual : "AGUARDANDO",
+            operacao:typeof filtroOrigemPolimentoAtual !== "undefined" ? filtroOrigemPolimentoAtual : valorSelectLPA("selectFiltroOrigemPolimento", "TODOS"),
+            finalizados:{
+              modo:typeof filtroFinalizadosPolimentoModo !== "undefined" ? filtroFinalizadosPolimentoModo : "HOJE",
+              data:typeof filtroFinalizadosPolimentoData !== "undefined" ? filtroFinalizadosPolimentoData : "",
+              inicio:typeof filtroFinalizadosPolimentoInicio !== "undefined" ? filtroFinalizadosPolimentoInicio : "",
+              fim:typeof filtroFinalizadosPolimentoFim !== "undefined" ? filtroFinalizadosPolimentoFim : ""
+            },
+            equipe:{
+              modo:typeof filtroPolidoresModo !== "undefined" ? filtroPolidoresModo : "HOJE",
+              data:typeof filtroPolidoresData !== "undefined" ? filtroPolidoresData : "",
+              inicio:typeof filtroPolidoresInicio !== "undefined" ? filtroPolidoresInicio : "",
+              fim:typeof filtroPolidoresFim !== "undefined" ? filtroPolidoresFim : ""
+            }
+          }
+        }
+      };
+
+      if (moduloAtual === "ACESSORIOS") {
+        preferencias.modulos.ACESSORIOS = {
+          ...copiarObjetoSeguroLPA(modulosAnteriores.ACESSORIOS),
+          visao:abaAtivaAcessoriosLPA(),
+          operacao:valorSelectLPA("selectFiltroOperacaoAcessorios", "TODOS")
+        };
+      }
+
+      if (moduloAtual === "PECAS") {
+        preferencias.modulos.PECAS = {
+          ...copiarObjetoSeguroLPA(modulosAnteriores.PECAS),
+          mecanico:valorSelectLPA("filtroPecasMecanico", "TODOS"),
+          status:valorSelectLPA("filtroPecasStatus", "TODOS")
+        };
+      }
+
+      gravarPreferenciasLPA(preferencias);
+    }
+
+    function agendarCapturaPreferenciasLPA() {
+      if (restaurandoPreferenciasLPA) return;
+      window.clearTimeout(timerSalvarPreferenciasLPA);
+      timerSalvarPreferenciasLPA = window.setTimeout(capturarPreferenciasLPA, 30);
+    }
+
+    function normalizarModoDataLPA(valor) {
+      const modo = normalizarPreferenciaLPA(valor);
+      return ["HOJE","DATA","PERIODO"].includes(modo) ? modo : "HOJE";
+    }
+
+    function normalizarOperacaoLPA(valor) {
+      const operacao = normalizarPreferenciaLPA(valor);
+      return ["TODOS","ATM","BOLSAO"].includes(operacao) ? operacao : "TODOS";
+    }
+
+    function aplicarPreferenciasGlobaisLPA(preferencias) {
+      const oficina = copiarObjetoSeguroLPA(preferencias?.modulos?.OFICINA);
+      const operacaoOficina = normalizarOperacaoLPA(oficina.operacao);
+      if (typeof filtrosOrigemPorVisao !== "undefined") {
+        Object.keys(filtrosOrigemPorVisao).forEach(visao => {
+          filtrosOrigemPorVisao[visao] = operacaoOficina;
+        });
+      }
+      if (typeof filtroMecanicoAndamento !== "undefined") filtroMecanicoAndamento = oficina.mecanicoAndamento || "TODOS";
+      if (typeof filtroFinalizadosModo !== "undefined") filtroFinalizadosModo = normalizarModoDataLPA(oficina.finalizados?.modo);
+      if (typeof filtroFinalizadosData !== "undefined") filtroFinalizadosData = oficina.finalizados?.data || hojeLocalISO();
+      if (typeof filtroFinalizadosInicio !== "undefined") filtroFinalizadosInicio = oficina.finalizados?.inicio || hojeLocalISO();
+      if (typeof filtroFinalizadosFim !== "undefined") filtroFinalizadosFim = oficina.finalizados?.fim || hojeLocalISO();
+      if (typeof filtroMecanicosModo !== "undefined") filtroMecanicosModo = normalizarModoDataLPA(oficina.equipe?.modo);
+      if (typeof filtroMecanicosData !== "undefined") filtroMecanicosData = oficina.equipe?.data || hojeLocalISO();
+      if (typeof filtroMecanicosInicio !== "undefined") filtroMecanicosInicio = oficina.equipe?.inicio || hojeLocalISO();
+      if (typeof filtroMecanicosFim !== "undefined") filtroMecanicosFim = oficina.equipe?.fim || hojeLocalISO();
+
+      const lava = copiarObjetoSeguroLPA(preferencias?.modulos?.LAVA_RAPIDO);
+      const operacaoLava = normalizarOperacaoLPA(lava.operacao);
+      if (typeof filtrosOrigemLavaPorVisao !== "undefined") {
+        Object.keys(filtrosOrigemLavaPorVisao).forEach(visao => {
+          filtrosOrigemLavaPorVisao[visao] = operacaoLava;
+        });
+      }
+      if (typeof filtroFinalizadosLavaModo !== "undefined") filtroFinalizadosLavaModo = normalizarModoDataLPA(lava.finalizados?.modo);
+      if (typeof filtroFinalizadosLavaData !== "undefined") filtroFinalizadosLavaData = lava.finalizados?.data || hojeLocalISO();
+      if (typeof filtroFinalizadosLavaInicio !== "undefined") filtroFinalizadosLavaInicio = lava.finalizados?.inicio || hojeLocalISO();
+      if (typeof filtroFinalizadosLavaFim !== "undefined") filtroFinalizadosLavaFim = lava.finalizados?.fim || hojeLocalISO();
+      if (typeof filtroLavadoresLavaModo !== "undefined") filtroLavadoresLavaModo = normalizarModoDataLPA(lava.equipe?.modo);
+      if (typeof filtroLavadoresLavaData !== "undefined") filtroLavadoresLavaData = lava.equipe?.data || hojeLocalISO();
+      if (typeof filtroLavadoresLavaInicio !== "undefined") filtroLavadoresLavaInicio = lava.equipe?.inicio || hojeLocalISO();
+      if (typeof filtroLavadoresLavaFim !== "undefined") filtroLavadoresLavaFim = lava.equipe?.fim || hojeLocalISO();
+
+      const polimento = copiarObjetoSeguroLPA(preferencias?.modulos?.POLIMENTO);
+      if (typeof filtroOrigemPolimentoAtual !== "undefined") filtroOrigemPolimentoAtual = normalizarOperacaoLPA(polimento.operacao);
+      if (typeof filtroFinalizadosPolimentoModo !== "undefined") filtroFinalizadosPolimentoModo = normalizarModoDataLPA(polimento.finalizados?.modo);
+      if (typeof filtroFinalizadosPolimentoData !== "undefined") filtroFinalizadosPolimentoData = polimento.finalizados?.data || hojeLocalISO();
+      if (typeof filtroFinalizadosPolimentoInicio !== "undefined") filtroFinalizadosPolimentoInicio = polimento.finalizados?.inicio || hojeLocalISO();
+      if (typeof filtroFinalizadosPolimentoFim !== "undefined") filtroFinalizadosPolimentoFim = polimento.finalizados?.fim || hojeLocalISO();
+      if (typeof filtroPolidoresModo !== "undefined") filtroPolidoresModo = normalizarModoDataLPA(polimento.equipe?.modo);
+      if (typeof filtroPolidoresData !== "undefined") filtroPolidoresData = polimento.equipe?.data || hojeLocalISO();
+      if (typeof filtroPolidoresInicio !== "undefined") filtroPolidoresInicio = polimento.equipe?.inicio || hojeLocalISO();
+      if (typeof filtroPolidoresFim !== "undefined") filtroPolidoresFim = polimento.equipe?.fim || hojeLocalISO();
+    }
+
+    function moduloDisponivelLPA(modulo) {
+      const mapa = {
+        OFICINA:"tabModuloOficina",
+        ACESSORIOS:"tabModuloAcessorios",
+        POLIMENTO:"tabModuloPolimento",
+        LAVA_RAPIDO:"tabModuloLavaRapido",
+        PECAS:"tabModuloPecas"
+      };
+      const botao = document.getElementById(mapa[modulo]);
+      if (!botao || botao.hidden || botao.getAttribute("aria-disabled") === "true") return false;
+      const estilo = window.getComputedStyle(botao);
+      return estilo.display !== "none" && estilo.visibility !== "hidden";
+    }
+
+    function aplicarPreferenciasModuloLPA(modulo, preferencias) {
+      const dados = copiarObjetoSeguroLPA(preferencias?.modulos?.[modulo]);
+
+      if (modulo === "OFICINA") {
+        const visao = ["AGUARDANDO","ANDAMENTO","FINALIZADOS","URGENTE","MECANICOS","LIXEIRA"].includes(dados.visao)
+          ? dados.visao
+          : "AGUARDANDO";
+        if (typeof selecionarVisaoPainel === "function") selecionarVisaoPainel(visao);
+        else if (typeof renderizarServicos === "function") renderizarServicos();
+        return;
+      }
+
+      if (modulo === "LAVA_RAPIDO") {
+        const visao = ["AGUARDANDO","ANDAMENTO","FINALIZADOS","URGENTE","LAVADORES","LIXEIRA"].includes(dados.visao)
+          ? dados.visao
+          : "AGUARDANDO";
+        if (typeof selecionarVisaoLavaRapido === "function") selecionarVisaoLavaRapido(visao);
+        else if (typeof renderizarLavaRapido === "function") renderizarLavaRapido();
+        return;
+      }
+
+      if (modulo === "POLIMENTO") {
+        const visao = ["AGUARDANDO","ANDAMENTO","FINALIZADOS","URGENTE","POLIDORES","LIXEIRA"].includes(dados.visao)
+          ? dados.visao
+          : "AGUARDANDO";
+        if (typeof selecionarVisaoPolimento === "function") selecionarVisaoPolimento(visao);
+        else if (typeof renderizarPolimento === "function") renderizarPolimento();
+        return;
+      }
+
+      if (modulo === "ACESSORIOS") {
+        const visao = MAPA_ABAS_ACESSORIOS_LPA[dados.visao] || "AGUARDANDO";
+        if (typeof window.alterarFiltroOperacaoAcessorios === "function") {
+          window.alterarFiltroOperacaoAcessorios(normalizarOperacaoLPA(dados.operacao));
+        }
+        if (typeof window.selecionarVisaoModulo === "function") window.selecionarVisaoModulo(visao);
+        return;
+      }
+
+      if (modulo === "PECAS") {
+        if (typeof window.alterarFiltroPecasMecanico === "function") {
+          window.alterarFiltroPecasMecanico(dados.mecanico || "TODOS");
+        }
+        if (typeof window.alterarFiltroPecasStatus === "function") {
+          window.alterarFiltroPecasStatus(dados.status || "TODOS");
+        }
+      }
+    }
+
+    function restaurarModuloLPA(modulo, preferencias = lerPreferenciasLPA()) {
+      aplicarPreferenciasGlobaisLPA(preferencias);
+      aplicarPreferenciasModuloLPA(modulo, preferencias);
+    }
+
+    function restaurarPreferenciasLPA() {
+      const app = document.getElementById("app");
+      if (!app || app.style.display !== "block") return;
+
+      const preferencias = lerPreferenciasLPA();
+      if (!preferencias.global && !preferencias.modulos) {
+        capturarPreferenciasLPA();
+        return;
+      }
+
+      restaurandoPreferenciasLPA = true;
+      try {
+        aplicarPreferenciasGlobaisLPA(preferencias);
+        const solicitado = normalizarPreferenciaLPA(preferencias?.global?.moduloAtivo);
+        const destino = MODULOS_PERSISTIVEIS_LPA.includes(solicitado) && moduloDisponivelLPA(solicitado)
+          ? solicitado
+          : "OFICINA";
+
+        if (typeof window.selecionarModuloLeCar === "function") {
+          window.selecionarModuloLeCar(destino);
+        }
+        aplicarPreferenciasGlobaisLPA(preferencias);
+        aplicarPreferenciasModuloLPA(destino, preferencias);
+      } finally {
+        restaurandoPreferenciasLPA = false;
+        agendarCapturaPreferenciasLPA();
+      }
+    }
+
+    const selecionarModuloOriginalLPA = typeof window.selecionarModuloLeCar === "function"
+      ? window.selecionarModuloLeCar
+      : null;
+
+    if (selecionarModuloOriginalLPA) {
+      const selecionarModuloPersistenteLPA = function(modulo) {
+        const destino = normalizarPreferenciaLPA(modulo);
+        if (!restaurandoPreferenciasLPA) capturarPreferenciasLPA();
+        const resultado = selecionarModuloOriginalLPA.apply(this, arguments);
+        if (!restaurandoPreferenciasLPA && MODULOS_PERSISTIVEIS_LPA.includes(destino)) {
+          restaurandoPreferenciasLPA = true;
+          try {
+            restaurarModuloLPA(destino);
+          } finally {
+            restaurandoPreferenciasLPA = false;
+            agendarCapturaPreferenciasLPA();
+          }
+        }
+        return resultado;
+      };
+      window.selecionarModuloLeCar = selecionarModuloPersistenteLPA;
+      try { selecionarModuloLeCar = selecionarModuloPersistenteLPA; } catch (erro) {}
+    }
+
+    const abrirAplicacaoOriginalPreferenciasLPA = typeof abrirAplicacao === "function" ? abrirAplicacao : null;
+    if (abrirAplicacaoOriginalPreferenciasLPA) {
+      abrirAplicacao = function() {
+        const resultado = abrirAplicacaoOriginalPreferenciasLPA.apply(this, arguments);
+        window.setTimeout(restaurarPreferenciasLPA, 0);
+        return resultado;
+      };
+    }
+
+    document.addEventListener("change", event => {
+      if (!event.target?.matches?.("select,input[type='date'],input[type='checkbox'],input[type='radio']")) return;
+      if (!event.target.closest("#app")) return;
+      agendarCapturaPreferenciasLPA();
+    });
+
+    document.addEventListener("click", event => {
+      const alvo = event.target?.closest?.(".system-tab,.lpa-taskbar-item,.finalizados-filter-btn,.operation-filter-shell button");
+      if (!alvo) return;
+      window.setTimeout(agendarCapturaPreferenciasLPA, 0);
+    });
+
+    window.addEventListener("pagehide", capturarPreferenciasLPA);
+    document.addEventListener("visibilitychange", () => {
+      if (document.visibilityState === "hidden") capturarPreferenciasLPA();
+    });
+
+    window.preferenciasUsuarioLPA = Object.freeze({
+      salvar:capturarPreferenciasLPA,
+      restaurar:restaurarPreferenciasLPA,
+      chave:chavePreferenciasLPA
+    });
   })();
   </script>
 
