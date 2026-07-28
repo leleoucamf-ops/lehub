@@ -197,6 +197,11 @@
 
     .main { position:relative; z-index:2; width:100%; max-width:720px; margin:0 auto; padding:72px 14px calc(92px + var(--safe-bottom)); }
 
+    .finalizados-filtro { display:none; grid-template-columns:repeat(2,minmax(0,1fr)); gap:8px; margin:0 6px 12px; padding:5px; border:1px solid #dbeafe; border-radius:14px; background:#fff; box-shadow:0 7px 18px rgba(15,23,42,.06); }
+    .finalizados-filtro.show { display:grid; }
+    .finalizados-filtro-btn { min-height:38px; padding:0 10px; border:1px solid transparent; border-radius:10px; background:#eef2f7; color:#475569; font-size:.66rem; font-weight:950; text-transform:uppercase; }
+    .finalizados-filtro-btn.active { border-color:#93c5fd; background:#dbeafe; color:#1d4ed8; box-shadow:0 4px 10px rgba(37,99,235,.12); }
+
     .services-list { display:grid; gap:12px; padding:0 6px 8px; }
     .service-card { --label-color:#2563eb; position:relative; display:grid; grid-template-columns:40% 60%; min-height:194px; border:1px solid rgba(226,232,240,.96); border-radius:22px; background:var(--app-card); overflow:hidden; box-shadow:0 12px 28px rgba(15,23,42,.105); }
     .service-card::before { content:""; position:absolute; left:0; top:0; bottom:0; width:7px; background:linear-gradient(180deg,var(--label-color),var(--label-dark)); }
@@ -484,6 +489,10 @@
     </aside>
 
     <main class="main">
+      <div id="filtroFinalizados" class="finalizados-filtro" aria-label="Filtro de serviços finalizados">
+        <button type="button" class="finalizados-filtro-btn active" data-finalizados-filtro="HOJE">Mostrar hoje</button>
+        <button type="button" class="finalizados-filtro-btn" data-finalizados-filtro="TODOS">Mostrar todos</button>
+      </div>
       <section id="listaServicos" class="services-list" aria-live="polite"></section>
     </main>
 
@@ -575,7 +584,8 @@
     let servicos = [];
     let etiquetas = ETIQUETAS_PADRAO.map(item => ({ ...item }));
     let visaoAtual = 'AGUARDANDO';
-        let servicoAssumirId = null;
+    let filtroFinalizados = 'HOJE';
+    let servicoAssumirId = null;
     let servicoFinalizarId = null;
     let unsubscribeServicos = null;
     let unsubscribeEtiquetas = null;
@@ -970,11 +980,23 @@
       return true;
     }
 
+    function timestampEhHoje(timestamp) {
+      if (!timestamp) return false;
+      const data = new Date(timestamp);
+      const hoje = new Date();
+      return data.getFullYear() === hoje.getFullYear()
+        && data.getMonth() === hoje.getMonth()
+        && data.getDate() === hoje.getDate();
+    }
+
     function servicosDaVisao() {
       let lista = servicos.filter(item => !item.excluido);
       if (visaoAtual === 'AGUARDANDO') lista = lista.filter(item => statusServico(item) === 'AGUARDANDO');
       if (visaoAtual === 'ANDAMENTO') lista = lista.filter(item => statusServico(item) === 'ANDAMENTO');
-      if (visaoAtual === 'FINALIZADOS') lista = lista.filter(item => statusServico(item) === 'FINALIZADO');
+      if (visaoAtual === 'FINALIZADOS') {
+        lista = lista.filter(item => statusServico(item) === 'FINALIZADO');
+        if (filtroFinalizados === 'HOJE') lista = lista.filter(item => timestampEhHoje(timestampServico(item)));
+      }
       return lista.sort((a,b) => timestampServico(b) - timestampServico(a));
     }
 
@@ -1068,6 +1090,12 @@
     function renderizar() {
       atualizarResumo();
       $$('.bottom-nav-item[data-view]').forEach(botao => botao.classList.toggle('active', botao.dataset.view === visaoAtual));
+
+      const filtro = $('#filtroFinalizados');
+      if (filtro) filtro.classList.toggle('show', visaoAtual === 'FINALIZADOS');
+      $$('.finalizados-filtro-btn').forEach(botao => {
+        botao.classList.toggle('active', botao.dataset.finalizadosFiltro === filtroFinalizados);
+      });
 
       const lista = servicosDaVisao();
       $('#listaServicos').innerHTML = lista.length
@@ -1492,6 +1520,11 @@
     $('#loginForm').addEventListener('submit', realizarLogin);
 
     $$('.bottom-nav-item[data-view]').forEach(botao => botao.addEventListener('click', () => mudarVisao(botao.dataset.view)));
+    $$('.finalizados-filtro-btn').forEach(botao => botao.addEventListener('click', () => {
+      filtroFinalizados = botao.dataset.finalizadosFiltro === 'TODOS' ? 'TODOS' : 'HOJE';
+      renderizar();
+      window.scrollTo({ top:0, behavior:'smooth' });
+    }));
     $('#btnMenu').addEventListener('click', abrirMenu);
     $('#btnFecharMenu').addEventListener('click', fecharMenu);
     $('#drawerOverlay').addEventListener('click', fecharMenu);
