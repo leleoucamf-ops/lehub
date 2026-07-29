@@ -4652,7 +4652,7 @@
       min-height: 220px !important;
       max-height: 220px !important;
       display: grid !important;
-      grid-template-columns: minmax(1220px, 1fr) !important;
+      grid-template-columns: minmax(1290px, 1fr) !important;
       grid-auto-rows: 31px !important;
       gap: 5px !important;
       overflow-x: auto !important;
@@ -4668,7 +4668,7 @@
     .team-horizontal-view .mechanic-vehicle-row.has-delete,
     .team-horizontal-view .mechanic-vehicle-row:not(.has-delete) {
       width: 100% !important;
-      min-width: 1220px !important;
+      min-width: 1290px !important;
       height: 31px !important;
       min-height: 31px !important;
       max-height: 31px !important;
@@ -6717,6 +6717,16 @@
           </div>
         </div>
         <div class="field">
+          <label for="lavaObservacao">Observação</label>
+          <textarea id="lavaObservacao" placeholder="INFORMAÇÕES ADICIONAIS (OPCIONAL)" oninput="this.value=this.value.toUpperCase()"></textarea>
+        </div>
+        <div class="field">
+          <label for="lavaConsultor">Consultor</label>
+          <select id="lavaConsultor" data-consultor-global required>
+            <option value="">NÃO INFORMADO</option>
+          </select>
+        </div>
+        <div class="field">
           <label for="lavaEtiqueta">Etiqueta do serviço</label>
           <select id="lavaEtiqueta">
             <option value="normal">NORMAL</option>
@@ -6781,6 +6791,12 @@
           <label for="polimentoMotivoRetorno">Motivo do retorno</label>
           <textarea id="polimentoMotivoRetorno" placeholder="INFORME O MOTIVO DO RETORNO" oninput="this.value=this.value.toUpperCase()"></textarea>
         </div>
+        <div class="field">
+          <label for="polimentoConsultor">Consultor</label>
+          <select id="polimentoConsultor" data-consultor-global required>
+            <option value="">NÃO INFORMADO</option>
+          </select>
+        </div>
         <button id="btnPublicarPolimento" class="submit-btn" type="submit">PUBLICAR PARA OS POLIDORES</button>
         <p class="lava-version-note">O SERVIÇO SERÁ PUBLICADO COMO AGUARDANDO. PARA O TESTE, O CARD PODERÁ SER ASSUMIDO POR LEANDRO.</p>
       </form>
@@ -6812,7 +6828,7 @@
         <div class="field-grid">
           <div class="field">
             <label for="admOrigem">Origem</label>
-            <select id="admOrigem" required>
+            <select id="admOrigem" required onchange="atualizarConsultorCadastroOficina()">
               <option value="BOLSAO" selected>BOLSÃO</option>
               <option value="ATM">ATM</option>
             </select>
@@ -6828,19 +6844,27 @@
             </select>
           </div>
         </div>
-        <div class="field">
-          <label for="admMecanico">Atribuir serviço para mecânico</label>
-          <select id="admMecanico" onchange="atualizarAcaoCadastro()">
-            <option value="">LISTA GERAL — SEM ATRIBUIÇÃO</option>
-            <option value="LEANDRO">LEANDRO</option>
-            <option value="ABRAÃO">ABRAÃO</option>
-            <option value="PEDRO">PEDRO</option>
-            <option value="MAICON">MAICON</option>
-            <option value="DOUGLAS">DOUGLAS</option>
-            <option value="HARON">HARON</option>
-            <option value="JONAS">JONAS</option>
-            <option value="IGOR">IGOR</option>
-          </select>
+        <div class="field-grid">
+          <div class="field">
+            <label for="admConsultor">Consultor</label>
+            <select id="admConsultor" data-consultor-global required>
+              <option value="">SELECIONE O CONSULTOR</option>
+            </select>
+          </div>
+          <div class="field">
+            <label for="admMecanico">Atribuir serviço para mecânico</label>
+            <select id="admMecanico" onchange="atualizarAcaoCadastro()">
+              <option value="">LISTA GERAL — SEM ATRIBUIÇÃO</option>
+              <option value="LEANDRO">LEANDRO</option>
+              <option value="ABRAÃO">ABRAÃO</option>
+              <option value="PEDRO">PEDRO</option>
+              <option value="MAICON">MAICON</option>
+              <option value="DOUGLAS">DOUGLAS</option>
+              <option value="HARON">HARON</option>
+              <option value="JONAS">JONAS</option>
+              <option value="IGOR">IGOR</option>
+            </select>
+          </div>
         </div>
         <button id="btnPublicar" class="submit-btn" type="submit">Publicar na Lista Geral</button>
       </form>
@@ -6872,7 +6896,7 @@
         <div class="field-grid">
           <div class="field">
             <label for="editOrigem">Origem</label>
-            <select id="editOrigem" required>
+            <select id="editOrigem" required onchange="atualizarConsultorEdicaoOficina()">
               <option value="BOLSAO">BOLSÃO</option>
               <option value="ATM">ATM</option>
             </select>
@@ -6887,6 +6911,12 @@
               <option value="ENVIAR PARA TERCEIROS">ENVIAR PARA TERCEIROS</option>
             </select>
           </div>
+        </div>
+        <div class="field">
+          <label for="editConsultor">Consultor</label>
+          <select id="editConsultor" data-consultor-global>
+            <option value="">NÃO INFORMADO</option>
+          </select>
         </div>
         <div class="field-grid">
           <div class="field">
@@ -7401,6 +7431,14 @@
     let lendoImportacaoPlanilha = false;
     let cadastrandoImportacaoPlanilha = new Set();
     const USUARIOS_BLOQUEADOS = Object.freeze(["JUNINHO", "JUNINHO_DEL", "ARON"]);
+    const CONSULTORES_POR_OPERACAO = Object.freeze({
+      BOLSAO:Object.freeze(["JORGE", "RUDNEY", "JOÃO PAULO", "PROMESSA", "REPREPARAÇÃO"]),
+      ATM:Object.freeze(["MATHEUS SILVA", "MAGNO", "JOÃO"])
+    });
+    const CONSULTORES_GLOBAIS = Object.freeze([
+      ...CONSULTORES_POR_OPERACAO.BOLSAO,
+      ...CONSULTORES_POR_OPERACAO.ATM
+    ]);
 
     function normalizar(valor) {
       return String(valor || "")
@@ -7410,6 +7448,103 @@
         .replace(/\s+/g, " ")
         .trim();
     }
+
+    function operacaoConsultorCanonica(valor) {
+      return normalizar(valor) === "ATM" ? "ATM" : "BOLSAO";
+    }
+
+    function consultoresDaOperacao(valor) {
+      return CONSULTORES_POR_OPERACAO[operacaoConsultorCanonica(valor)];
+    }
+
+    function consultorGlobalCanonico(valor, fallback = "") {
+      const nome = normalizar(valor).replaceAll("_", " ");
+      if (!nome) return fallback;
+      return CONSULTORES_GLOBAIS.find(consultor => normalizar(consultor) === nome) || nome;
+    }
+
+    function consultorValidoParaOperacao(valor, operacao) {
+      const consultor = consultorGlobalCanonico(valor, "");
+      return Boolean(consultor) && consultoresDaOperacao(operacao)
+        .some(nome => normalizar(nome) === normalizar(consultor));
+    }
+
+    function preencherSelectConsultorGlobal(select, valorAtual = "", operacao = "BOLSAO", preservarLegado = true) {
+      if (!select) return;
+      const atual = consultorGlobalCanonico(valorAtual || select.value || "", "");
+      const consultores = consultoresDaOperacao(operacao);
+      const atualPermitido = consultores.some(consultor => normalizar(consultor) === normalizar(atual));
+      const valorFinal = atualPermitido || preservarLegado ? atual : "";
+      select.replaceChildren();
+
+      const vazio = document.createElement("option");
+      vazio.value = "";
+      vazio.textContent = select.required ? "SELECIONE O CONSULTOR" : "NÃO INFORMADO";
+      vazio.disabled = Boolean(select.required);
+      select.appendChild(vazio);
+
+      consultores.forEach(consultor => {
+        const option = document.createElement("option");
+        option.value = consultor;
+        option.textContent = consultor;
+        select.appendChild(option);
+      });
+
+      if (valorFinal && ![...select.options].some(option => normalizar(option.value) === normalizar(valorFinal))) {
+        const legado = document.createElement("option");
+        legado.value = valorFinal;
+        legado.textContent = valorFinal;
+        select.appendChild(legado);
+      }
+      select.value = valorFinal;
+    }
+
+    function atualizarSelectConsultorPorOperacao(selectId, operacao, preservarLegado = false) {
+      const select = document.getElementById(selectId);
+      if (!select) return;
+      preencherSelectConsultorGlobal(select, select.value || "", operacao, preservarLegado);
+    }
+
+    function atualizarConsultorCadastroOficina() {
+      atualizarSelectConsultorPorOperacao("admConsultor", document.getElementById("admOrigem")?.value || "BOLSAO", false);
+    }
+
+    function atualizarConsultorEdicaoOficina() {
+      atualizarSelectConsultorPorOperacao("editConsultor", document.getElementById("editOrigem")?.value || "BOLSAO", true);
+    }
+
+    function atualizarConsultorCadastroAcessorios() {
+      atualizarSelectConsultorPorOperacao("acessoriosConsultor", document.getElementById("acessoriosOperacao")?.value || "BOLSAO", false);
+    }
+
+    function atualizarConsultorEdicaoAcessorios() {
+      atualizarSelectConsultorPorOperacao("edicaoAcessoriosConsultor", document.getElementById("edicaoAcessoriosOperacao")?.value || "BOLSAO", true);
+    }
+
+    function validarConsultorCadastro(selectId, operacao) {
+      const select = document.getElementById(selectId);
+      const consultor = consultorGlobalCanonico(select?.value || "", "");
+      if (!consultor) {
+        alert("SELECIONE O CONSULTOR.");
+        select?.focus();
+        return false;
+      }
+      if (!consultorValidoParaOperacao(consultor, operacao)) {
+        preencherSelectConsultorGlobal(select, "", operacao, false);
+        alert("SELECIONE UM CONSULTOR VÁLIDO PARA A ORIGEM INFORMADA.");
+        select?.focus();
+        return false;
+      }
+      return true;
+    }
+
+    function preencherSelectsConsultoresGlobais() {
+      document.querySelectorAll("select[data-consultor-global]").forEach(select => {
+        preencherSelectConsultorGlobal(select, select.value || "", "BOLSAO", true);
+      });
+    }
+
+    preencherSelectsConsultoresGlobais();
 
     function termosBuscaAdmin(valor) {
       return normalizar(valor)
@@ -9250,7 +9385,7 @@
       ];
 
       for (const valor of candidatos) {
-        const nome = normalizar(valor).replaceAll("_", " ");
+        const nome = consultorGlobalCanonico(valor, "");
         if (nome) return nome;
       }
 
@@ -10494,12 +10629,15 @@ REALIZADO POR: ${autor}`,
         ? "AGUARDANDO ORÇAMENTO"
         : statusCanonicoEdicao(item.status || "AGUARDANDO ORÇAMENTO");
       const prioridade = prioridadeServico(item);
+      const consultor = nomeConsultorTecnicoCard(item, "");
+      const selectConsultor = document.getElementById("editConsultor");
       const selectMecanico = document.getElementById("editMecanico");
       const selectStatus = document.getElementById("editStatus");
       const selectPrioridade = document.getElementById("editPrioridade");
       const titulo = document.getElementById("tituloEdicaoServico");
       const contexto = document.getElementById("edicaoContextoServico");
 
+      preencherSelectConsultorGlobal(selectConsultor, consultor, normalizar(item.origem || "BOLSAO"), true);
       garantirOpcaoSelect(selectMecanico, mecanico, mecanico);
       garantirOpcaoSelect(selectStatus, status, status);
       garantirOpcaoSelect(selectPrioridade, prioridade, prioridade);
@@ -10510,6 +10648,7 @@ REALIZADO POR: ${autor}`,
       document.getElementById("editOrigem").value = ["ATM","BOLSAO"].includes(normalizar(item.origem)) ? normalizar(item.origem) : "BOLSAO";
       selectStatus.value = status;
       selectPrioridade.value = prioridade;
+      selectConsultor.value = consultorGlobalCanonico(consultor, "");
       selectMecanico.value = mecanico;
 
       selectStatus.disabled = aguardando;
@@ -10595,6 +10734,7 @@ REALIZADO POR: ${autor}`,
       const origem = normalizar(document.getElementById("editOrigem")?.value || "");
       const etiquetaSelecionada = etiquetaPorNomeLPA(document.getElementById("editPrioridade")?.value || item.prioridade || "NORMAL");
       const prioridade = etiquetaSelecionada.nome;
+      const consultor = consultorGlobalCanonico(document.getElementById("editConsultor")?.value || "", "");
       const status = aguardando
         ? statusCanonicoEdicao(item.statusServico || "AGUARDANDO ORÇAMENTO")
         : statusCanonicoEdicao(document.getElementById("editStatus")?.value || item.status);
@@ -10658,6 +10798,8 @@ REALIZADO POR: ${autor}`,
               veiculo,
               placa,
               descricao,
+              consultorTecnico:consultor,
+              consultor_tecnico:consultor,
               origem,
               prioridade,
               etiquetaId:etiquetaSelecionada.id,
@@ -10682,8 +10824,8 @@ REALIZADO POR: ${autor}`,
               veiculo,
               placa,
               descricao,
-              consultorTecnico:nomeConsultorTecnicoCard(item, "") || "",
-              consultor_tecnico:nomeConsultorTecnicoCard(item, "") || "",
+              consultorTecnico:consultor,
+              consultor_tecnico:consultor,
               trocaOleo:descricaoEhTrocaOleoLPA(descricao),
               kmAtualOleo:item.kmAtualOleo || "",
               origem,
@@ -10754,6 +10896,8 @@ REALIZADO POR: ${autor}`,
             veiculo,
             placa,
             descricao,
+            consultorTecnico:consultor,
+            consultor_tecnico:consultor,
             origem,
             prioridade,
             etiquetaId:etiquetaSelecionada.id,
@@ -10791,6 +10935,8 @@ REALIZADO POR: ${autor}`,
           veiculo,
           placa,
           descricao,
+          consultorTecnico:consultor,
+          consultor_tecnico:consultor,
           trocaOleo:descricaoEhTrocaOleoLPA(descricao),
           pecas:Array.isArray(item.pecas) ? [...item.pecas] : [],
             pecas_compartilhamento_whatsapp:item.pecas_compartilhamento_whatsapp || null,
@@ -10811,6 +10957,8 @@ REALIZADO POR: ${autor}`,
           veiculo,
           placa,
           descricao,
+          consultorTecnico:consultor,
+          consultor_tecnico:consultor,
           origem,
           prioridade,
           etiquetaId:etiquetaSelecionada.id,
@@ -10837,6 +10985,8 @@ REALIZADO POR: ${autor}`,
             veiculo,
             placa,
             descricao,
+            consultorTecnico:consultor,
+            consultor_tecnico:consultor,
             origem,
             prioridade,
             etiquetaId:etiquetaSelecionada.id,
@@ -10869,6 +11019,8 @@ REALIZADO POR: ${autor}`,
               veiculo,
               placa,
               descricao,
+              consultorTecnico:consultor,
+              consultor_tecnico:consultor,
               origem,
               prioridade,
               etiquetaId:etiquetaSelecionada.id,
@@ -11029,6 +11181,7 @@ REALIZADO POR: ${autor}`,
       if (!modal) return;
       const campoOrigem = document.getElementById("admOrigem");
       if (campoOrigem) campoOrigem.value = origemPadraoCadastroServico();
+      atualizarConsultorCadastroOficina();
       modal.classList.add("open");
       document.body.classList.add("cadastro-modal-open");
       window.setTimeout(() => document.getElementById("admVeiculo")?.focus(), 40);
@@ -11058,6 +11211,7 @@ REALIZADO POR: ${autor}`,
       const origem = normalizar(document.getElementById("admOrigem").value || "");
       const etiquetaSelecionada = etiquetaPorNomeLPA(document.getElementById("admPrioridade").value || "NORMAL");
       const prioridade = etiquetaSelecionada.nome;
+      const consultor = consultorGlobalCanonico(document.getElementById("admConsultor")?.value || "", "");
       const mecanicoAtribuido = mecanicoCanonico(document.getElementById("admMecanico")?.value || "");
 
       if (usuarioBloqueado(document.getElementById("admMecanico")?.value || "")) {
@@ -11076,6 +11230,8 @@ REALIZADO POR: ${autor}`,
         return;
       }
 
+      if (!validarConsultorCadastro("admConsultor", origem)) return;
+
       publicando = true;
       const botao = document.getElementById("btnPublicar");
       botao.disabled = true;
@@ -11088,6 +11244,8 @@ REALIZADO POR: ${autor}`,
         veiculo,
         placa,
         descricao,
+        consultorTecnico:consultor,
+        consultor_tecnico:consultor,
         origem,
         prioridade,
         etiquetaId:etiquetaSelecionada.id,
@@ -11134,6 +11292,8 @@ REALIZADO POR: ${autor}`,
             veiculo,
             placa,
             descricao,
+            consultorTecnico:consultor,
+            consultor_tecnico:consultor,
             trocaOleo:descricaoEhTrocaOleoLPA(descricao),
             kmAtualOleo:"",
             origem,
@@ -11158,6 +11318,7 @@ REALIZADO POR: ${autor}`,
         document.getElementById("formNovoServico").reset();
         document.getElementById("admOrigem").value = origemPadraoCadastroServico();
         document.getElementById("admPrioridade").value = etiquetaPorNomeLPA("NORMAL").nome;
+        preencherSelectConsultorGlobal(document.getElementById("admConsultor"), "", document.getElementById("admOrigem")?.value || "BOLSAO", false);
         document.getElementById("admMecanico").value = "";
         mostrarToast(mecanicoAtribuido
           ? `SERVIÇO ATRIBUÍDO PARA ${mecanicoAtribuido} E ENVIADO À ABA SERVIÇOS.`
@@ -12893,6 +13054,8 @@ REALIZADO POR: ${autor}`,
       const placa = normalizar(document.getElementById("lavaPlaca")?.value).replace(/[^A-Z0-9]/g, "");
       const tipoLavagem = normalizar(document.getElementById("lavaTipoLavagem")?.value);
       const comCera = Boolean(document.getElementById("lavaComCera")?.checked);
+      const observacao = normalizar(document.getElementById("lavaObservacao")?.value || "");
+      const consultor = consultorGlobalCanonico(document.getElementById("lavaConsultor")?.value || "", "");
       const etiquetaId = document.getElementById("lavaEtiqueta")?.value || "normal";
       const etiqueta = etiquetasDisponiveisLava().find(item => item.id === etiquetaId) || etiquetaLavaPorNome("NORMAL");
       const operacao = filtroOrigemLavaAtual() === "ATM" ? "ATM" : "BOLSÃO";
@@ -12900,6 +13063,7 @@ REALIZADO POR: ${autor}`,
       if (!veiculo || !placa || !["SIMPLES","COMPLETA","LH"].includes(tipoLavagem)) {
         return alert("PREENCHA VEÍCULO, PLACA E TIPO DE LAVAGEM.");
       }
+      if (!validarConsultorCadastro("lavaConsultor", operacao)) return;
       const duplicado = servicosLavaRapido.find(item => normalizar(item.placa).replace(/[^A-Z0-9]/g, "") === placa && !item.excluido && statusLavaRapido(item) !== "FINALIZADO");
       if (duplicado) return alert("AÇÃO BLOQUEADA: ESTE VEÍCULO JÁ POSSUI UMA LAVAGEM EM ABERTO.");
 
@@ -12916,6 +13080,9 @@ REALIZADO POR: ${autor}`,
           tipo_lavagem:tipoLavagem,
           comCera,
           com_cera:comCera,
+          observacao,
+          consultorTecnico:consultor,
+          consultor_tecnico:consultor,
           descricao:`LAVAGEM ${tipoLavagem}${comCera ? " + CERA" : ""}`,
           origem:operacao,
           operacao,
@@ -12991,6 +13158,7 @@ REALIZADO POR: ${autor}`,
         item.tipoLavagem,
         item.tipo_lavagem,
         item.comCera ? "COM CERA" : "SEM CERA",
+        item.observacao,
         lavadorLavaRapido(item),
         statusLavaRapido(item),
         origemLavaRapido(item),
@@ -13721,6 +13889,7 @@ REALIZADO POR: ${autor}`,
       const farol = Boolean(document.getElementById("polimentoFarol")?.checked);
       const retorno = Boolean(document.getElementById("polimentoRetorno")?.checked);
       const motivoRetorno = normalizar(document.getElementById("polimentoMotivoRetorno")?.value);
+      const consultor = consultorGlobalCanonico(document.getElementById("polimentoConsultor")?.value || "", "");
       const etiqueta = etiquetaPolimentoPorId(document.getElementById("polimentoEtiqueta")?.value || "normal");
       const operacao = filtroOrigemPolimentoAtual === "ATM" ? "ATM" : "BOLSÃO";
 
@@ -13728,6 +13897,7 @@ REALIZADO POR: ${autor}`,
         alert("PREENCHA VEÍCULO, PLACA E COR.");
         return;
       }
+      if (!validarConsultorCadastro("polimentoConsultor", operacao)) return;
       if (retorno && !motivoRetorno) {
         alert("INFORME O MOTIVO DO RETORNO.");
         document.getElementById("polimentoMotivoRetorno")?.focus();
@@ -13759,6 +13929,8 @@ REALIZADO POR: ${autor}`,
           retorno,
           motivoRetorno:retorno ? motivoRetorno : "",
           motivo_retorno:retorno ? motivoRetorno : "",
+          consultorTecnico:consultor,
+          consultor_tecnico:consultor,
           descricao:`POLIMENTO${farol ? " + FAROL" : ""}${retorno ? " — RETORNO" : ""}`,
           origem:operacao,
           operacao,
@@ -14459,6 +14631,9 @@ REALIZADO POR: ${autor}`,
     function prepararModalLavaRapidoNovoPadrao() {
       edicaoLavaRapidoPadraoId = "";
       document.getElementById("formNovoServicoLavaRapido")?.reset();
+      const selectConsultor = document.getElementById("lavaConsultor");
+      if (selectConsultor) selectConsultor.required = true;
+      preencherSelectConsultorGlobal(selectConsultor, "", filtroOrigemLavaAtual() === "ATM" ? "ATM" : "BOLSAO", false);
       const titulo = document.getElementById("tituloCadastroLavaRapido");
       const botao = document.getElementById("btnPublicarLavaRapido");
       const nota = document.querySelector("#formNovoServicoLavaRapido .lava-version-note");
@@ -14490,6 +14665,10 @@ REALIZADO POR: ${autor}`,
       document.getElementById("lavaPlaca").value = normalizar(item.placa || "").replace(/[^A-Z0-9]/g, "");
       document.getElementById("lavaTipoLavagem").value = normalizar(item.tipoLavagem || item.tipo_lavagem || "SIMPLES");
       document.getElementById("lavaComCera").checked = Boolean(item.comCera ?? item.com_cera);
+      document.getElementById("lavaObservacao").value = normalizar(item.observacao || "");
+      const selectConsultor = document.getElementById("lavaConsultor");
+      if (selectConsultor) selectConsultor.required = false;
+      preencherSelectConsultorGlobal(selectConsultor, nomeConsultorTecnicoCard(item, ""), origemLavaRapido(item), true);
       const etiqueta = etiquetaLavaDoServico(item);
       garantirOpcaoSelect(document.getElementById("lavaEtiqueta"), etiqueta.id, etiqueta.nome);
       document.getElementById("lavaEtiqueta").value = etiqueta.id;
@@ -14517,6 +14696,8 @@ REALIZADO POR: ${autor}`,
       const placa = normalizar(document.getElementById("lavaPlaca")?.value).replace(/[^A-Z0-9]/g, "");
       const tipoLavagem = normalizar(document.getElementById("lavaTipoLavagem")?.value);
       const comCera = Boolean(document.getElementById("lavaComCera")?.checked);
+      const observacao = normalizar(document.getElementById("lavaObservacao")?.value || "");
+      const consultor = consultorGlobalCanonico(document.getElementById("lavaConsultor")?.value || "", "");
       const etiqueta = etiquetaLavaDoServico({ etiquetaId:document.getElementById("lavaEtiqueta")?.value || "normal" });
 
       if (!veiculo || !placa || !["SIMPLES","COMPLETA","LH"].includes(tipoLavagem)) {
@@ -14540,6 +14721,9 @@ REALIZADO POR: ${autor}`,
           tipo_lavagem:tipoLavagem,
           comCera,
           com_cera:comCera,
+          observacao,
+          consultorTecnico:consultor,
+          consultor_tecnico:consultor,
           descricao:`LAVAGEM ${tipoLavagem}${comCera ? " + CERA" : ""}`,
           prioridade:etiqueta.nome,
           etiqueta:etiqueta.nome,
@@ -14578,6 +14762,9 @@ REALIZADO POR: ${autor}`,
       edicaoPolimentoPadraoId = "";
       document.getElementById("formNovoServicoPolimento")?.reset();
       alternarMotivoRetornoPolimento();
+      const selectConsultor = document.getElementById("polimentoConsultor");
+      if (selectConsultor) selectConsultor.required = true;
+      preencherSelectConsultorGlobal(selectConsultor, "", filtroOrigemPolimentoAtual === "ATM" ? "ATM" : "BOLSAO", false);
       const titulo = document.getElementById("tituloCadastroPolimento");
       const botao = document.getElementById("btnPublicarPolimento");
       const nota = document.querySelector("#formNovoServicoPolimento .lava-version-note");
@@ -14609,6 +14796,9 @@ REALIZADO POR: ${autor}`,
       document.getElementById("polimentoFarol").checked = Boolean(item.farol ?? item.polirFarol);
       document.getElementById("polimentoRetorno").checked = Boolean(item.retorno);
       document.getElementById("polimentoMotivoRetorno").value = normalizar(item.motivoRetorno || item.motivo_retorno || "");
+      const selectConsultor = document.getElementById("polimentoConsultor");
+      if (selectConsultor) selectConsultor.required = false;
+      preencherSelectConsultorGlobal(selectConsultor, nomeConsultorTecnicoCard(item, ""), origemPolimento(item), true);
       const etiqueta = etiquetaPolimentoDoServico(item);
       garantirOpcaoSelect(document.getElementById("polimentoEtiqueta"), etiqueta.id, etiqueta.nome);
       document.getElementById("polimentoEtiqueta").value = etiqueta.id;
@@ -14639,6 +14829,7 @@ REALIZADO POR: ${autor}`,
       const farol = Boolean(document.getElementById("polimentoFarol")?.checked);
       const retorno = Boolean(document.getElementById("polimentoRetorno")?.checked);
       const motivoRetorno = normalizar(document.getElementById("polimentoMotivoRetorno")?.value);
+      const consultor = consultorGlobalCanonico(document.getElementById("polimentoConsultor")?.value || "", "");
       const etiqueta = etiquetaPolimentoPorId(document.getElementById("polimentoEtiqueta")?.value || "normal");
 
       if (!veiculo || !placa || !cor) return alert("PREENCHA VEÍCULO, PLACA E COR.");
@@ -14662,6 +14853,8 @@ REALIZADO POR: ${autor}`,
           retorno,
           motivoRetorno:retorno ? motivoRetorno : "",
           motivo_retorno:retorno ? motivoRetorno : "",
+          consultorTecnico:consultor,
+          consultor_tecnico:consultor,
           descricao:`POLIMENTO${farol ? " + FAROL" : ""}${retorno ? " — RETORNO" : ""}`,
           prioridade:etiqueta.nome,
           etiqueta:etiqueta.nome,
@@ -14736,10 +14929,13 @@ REALIZADO POR: ${autor}`,
       edicaoServicoAtualId = id;
       edicaoServicoAtualOrigem = "VEICULO_FINALIZADO";
       const mecanico = nomeMecanicoCard(item, "");
+      const consultor = nomeConsultorTecnicoCard(item, "");
       const prioridade = prioridadeServico(item);
+      const selectConsultor = document.getElementById("editConsultor");
       const selectMecanico = document.getElementById("editMecanico");
       const selectStatus = document.getElementById("editStatus");
       const selectPrioridade = document.getElementById("editPrioridade");
+      preencherSelectConsultorGlobal(selectConsultor, consultor, normalizar(item.origem || "BOLSAO"), true);
       garantirOpcaoSelect(selectMecanico, mecanico, mecanico);
       garantirOpcaoSelect(selectPrioridade, prioridade, prioridade);
       garantirOpcaoSelect(selectStatus, "VEÍCULO FINALIZADO", "VEÍCULO FINALIZADO");
@@ -14750,6 +14946,7 @@ REALIZADO POR: ${autor}`,
       document.getElementById("editOrigem").value = ["ATM","BOLSAO"].includes(normalizar(item.origem)) ? normalizar(item.origem) : "BOLSAO";
       selectStatus.value = "VEÍCULO FINALIZADO";
       selectPrioridade.value = prioridade;
+      selectConsultor.value = consultorGlobalCanonico(consultor, "");
       selectMecanico.value = mecanico;
       selectStatus.disabled = true;
       selectMecanico.disabled = false;
@@ -14779,6 +14976,7 @@ REALIZADO POR: ${autor}`,
       const descricao = normalizar(document.getElementById("editDescricao")?.value || "");
       const origem = normalizar(document.getElementById("editOrigem")?.value || "");
       const etiqueta = etiquetaPorNomeLPA(document.getElementById("editPrioridade")?.value || prioridadeServico(item));
+      const consultor = consultorGlobalCanonico(document.getElementById("editConsultor")?.value || "", "");
       const mecanico = mecanicoCanonico(document.getElementById("editMecanico")?.value || nomeMecanicoCard(item, ""));
       if (!veiculo || !placa || !descricao) return alert("PREENCHA VEÍCULO, PLACA E DESCRIÇÃO.");
       if (!["ATM", "BOLSAO"].includes(origem)) {
@@ -14795,6 +14993,8 @@ REALIZADO POR: ${autor}`,
           veiculo,
           placa,
           descricao,
+          consultorTecnico:consultor,
+          consultor_tecnico:consultor,
           origem,
           prioridade:etiqueta.nome,
           etiqueta:etiqueta.nome,
@@ -14826,10 +15026,13 @@ REALIZADO POR: ${autor}`,
       const cera = Boolean(item.comCera ?? item.com_cera);
       const etiqueta = etiquetaLavaDoServico(item);
       const origem = origemLavaRapido(item);
+      const consultor = nomeConsultorTecnicoCard(item, "NÃO INFORMADO");
       const statusClasse = status === "FINALIZADO" ? "finalizado" : status === "ANDAMENTO" ? "assumido" : status === "EXCLUIDO" ? "excluido" : "disponivel";
       const statusTexto = status === "FINALIZADO" ? "FINALIZADO" : status === "ANDAMENTO" ? "EM LAVAGEM" : status === "EXCLUIDO" ? "EXCLUÍDO" : "DISPONÍVEL";
       const profissional = lavador || "NÃO ASSUMIDO";
-      const descricaoCard = `LAVAGEM ${tipo} • ${cera ? "COM CERA" : "SEM CERA"}`;
+      const observacao = normalizar(item.observacao || "");
+      const descricaoBase = `LAVAGEM ${tipo} • ${cera ? "COM CERA" : "SEM CERA"}`;
+      const descricaoCard = observacao ? `${descricaoBase} • OBS: ${observacao}` : descricaoBase;
       const acoes = status === "EXCLUIDO"
         ? `${botaoRestaurarPadrao(`restaurarServicoLavaRapido('${escapar(item.id)}')`)}${botaoExcluirPadrao(`apagarServicoLavaRapido('${escapar(item.id)}')`, "APAGAR DEFINITIVAMENTE")}`
         : `${botaoEditarPadrao(`abrirEdicaoLavaRapidoPadrao('${escapar(item.id)}')`, "EDITAR SERVIÇO")}${botaoExcluirPadrao(`moverServicoLavaRapidoParaLixeira('${escapar(item.id)}')`)}`;
@@ -14855,6 +15058,10 @@ REALIZADO POR: ${autor}`,
             <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 21V4"></path><path d="M5 5H17L15 9L17 13H5"></path></svg>
             <span><span class="service-info-label">ORIGEM: </span><strong>${escapar(origem)}</strong></span>
           </div>
+          <div class="service-info-line service-consultant" title="${escaparAtributo(consultor)}">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="3"></circle><path d="M6 20A6 6 0 0 1 18 20"></path><path d="M17 7V9A5 5 0 0 1 12 14"></path></svg>
+            <span><span class="service-info-label">CONSULTOR: </span><strong>${escapar(consultor)}</strong></span>
+          </div>
           <div class="service-info-line service-mechanic" title="${escaparAtributo(profissional)}">
             <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 12A4 4 0 1 0 12 4A4 4 0 0 0 12 12Z"></path><path d="M4 21A8 8 0 0 1 20 21"></path></svg>
             <span><span class="service-info-label">LAVADOR: </span><strong>${escapar(profissional)}</strong></span>
@@ -14877,6 +15084,7 @@ REALIZADO POR: ${autor}`,
       const retorno = Boolean(item.retorno);
       const motivo = normalizar(item.motivoRetorno || item.motivo_retorno || "");
       const origem = origemPolimento(item);
+      const consultor = nomeConsultorTecnicoCard(item, "NÃO INFORMADO");
       const cor = normalizar(item.cor || "NÃO INFORMADA");
       const statusClasse = status === "FINALIZADO" ? "finalizado" : status === "ANDAMENTO" ? "assumido" : status === "EXCLUIDO" ? "excluido" : "disponivel";
       const statusTexto = status === "FINALIZADO" ? "FINALIZADO" : status === "ANDAMENTO" ? "EM POLIMENTO" : status === "EXCLUIDO" ? "EXCLUÍDO" : "DISPONÍVEL";
@@ -14913,6 +15121,10 @@ REALIZADO POR: ${autor}`,
           <div class="service-info-line service-origin-priority">
             <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 21V4"></path><path d="M5 5H17L15 9L17 13H5"></path></svg>
             <span><span class="service-info-label">ORIGEM: </span><strong>${escapar(origem)}</strong></span>
+          </div>
+          <div class="service-info-line service-consultant" title="${escaparAtributo(consultor)}">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="3"></circle><path d="M6 20A6 6 0 0 1 18 20"></path><path d="M17 7V9A5 5 0 0 1 12 14"></path></svg>
+            <span><span class="service-info-label">CONSULTOR: </span><strong>${escapar(consultor)}</strong></span>
           </div>
           <div class="service-info-line service-mechanic" title="${escaparAtributo(profissional)}">
             <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 12A4 4 0 1 0 12 4A4 4 0 0 0 12 12Z"></path><path d="M4 21A8 8 0 0 1 20 21"></path></svg>
@@ -15124,9 +15336,10 @@ REALIZADO POR: ${autor}`,
                   </div>
                   <div class="field"><label for="acessoriosDescricao">Acessório / instalação</label><textarea id="acessoriosDescricao" placeholder="INFORME O ACESSÓRIO OU SERVIÇO DE INSTALAÇÃO" oninput="this.value=this.value.toUpperCase()" required></textarea></div>
                   <div class="field-grid">
-                    <div class="field"><label for="acessoriosOperacao">Operação</label><select id="acessoriosOperacao" required><option value="BOLSAO">BOLSÃO</option><option value="ATM">ATM</option></select></div>
+                    <div class="field"><label for="acessoriosOperacao">Operação</label><select id="acessoriosOperacao" required onchange="atualizarConsultorCadastroAcessorios()"><option value="BOLSAO">BOLSÃO</option><option value="ATM">ATM</option></select></div>
                     <div class="field"><label for="acessoriosEtiqueta">Etiqueta do serviço</label><select id="acessoriosEtiqueta" required><option value="normal">NORMAL</option></select></div>
                   </div>
+                  <div class="field"><label for="acessoriosConsultor">Consultor</label><select id="acessoriosConsultor" data-consultor-global required><option value="">SELECIONE O CONSULTOR</option></select></div>
                   <div class="field"><label for="acessoriosObservacoes">Observações</label><textarea id="acessoriosObservacoes" placeholder="OPCIONAL" oninput="this.value=this.value.toUpperCase()"></textarea></div>
                   <button id="btnPublicarAcessorios" class="submit-btn" type="submit">PUBLICAR PARA OS INSTALADORES</button>
                 </form>
@@ -15148,9 +15361,10 @@ REALIZADO POR: ${autor}`,
                   <div class="field"><label for="edicaoAcessoriosDescricao">Acessório / instalação</label><textarea id="edicaoAcessoriosDescricao" oninput="this.value=this.value.toUpperCase()" required></textarea></div>
                   <div class="field-grid">
                     <div class="field"><label for="edicaoAcessoriosStatus">Status operacional</label><select id="edicaoAcessoriosStatus" class="acessorios-status-select" required></select></div>
-                    <div class="field"><label for="edicaoAcessoriosOperacao">Operação</label><select id="edicaoAcessoriosOperacao" required><option value="BOLSAO">BOLSÃO</option><option value="ATM">ATM</option></select></div>
+                    <div class="field"><label for="edicaoAcessoriosOperacao">Operação</label><select id="edicaoAcessoriosOperacao" required onchange="atualizarConsultorEdicaoAcessorios()"><option value="BOLSAO">BOLSÃO</option><option value="ATM">ATM</option></select></div>
                   </div>
                   <div class="field"><label for="edicaoAcessoriosEtiqueta">Etiqueta do serviço</label><select id="edicaoAcessoriosEtiqueta" required><option value="normal">NORMAL</option></select></div>
+                  <div class="field"><label for="edicaoAcessoriosConsultor">Consultor</label><select id="edicaoAcessoriosConsultor" data-consultor-global><option value="">NÃO INFORMADO</option></select></div>
                   <div class="field"><label for="edicaoAcessoriosObservacoes">Observações</label><textarea id="edicaoAcessoriosObservacoes" placeholder="OPCIONAL" oninput="this.value=this.value.toUpperCase()"></textarea></div>
                   <div class="edicao-modal-actions">
                     <button type="button" class="edicao-cancel-btn" onclick="fecharEdicaoAcessorios()">CANCELAR</button>
@@ -15180,6 +15394,7 @@ REALIZADO POR: ${autor}`,
 
         preencherSelectStatusAcessorios();
         renderizarSelectsEtiquetasAcessorios();
+        preencherSelectsConsultoresGlobais();
       }
 
       function prepararModuloAcessorios() {
@@ -15362,6 +15577,7 @@ REALIZADO POR: ${autor}`,
         const observacoes = normalizar(item.observacoes);
         const excluido = Boolean(item.excluido);
         const origem = operacaoAcessorios(item);
+        const consultor = nomeConsultorTecnicoCard(item, "NÃO INFORMADO");
         const profissional = instalador || "NÃO ASSUMIDO";
         const descricao = normalizar(item.descricao) || "SEM DESCRIÇÃO";
         const descricaoCard = observacoes ? `${descricao} • OBS: ${observacoes}` : descricao;
@@ -15391,6 +15607,10 @@ REALIZADO POR: ${autor}`,
             <div class="service-info-line service-origin-priority">
               <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 21V4"></path><path d="M5 5H17L15 9L17 13H5"></path></svg>
               <span><span class="service-info-label">ORIGEM: </span><strong>${escapar(origem)}</strong></span>
+            </div>
+            <div class="service-info-line service-consultant" title="${escaparAtributo(consultor)}">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="3"></circle><path d="M6 20A6 6 0 0 1 18 20"></path><path d="M17 7V9A5 5 0 0 1 12 14"></path></svg>
+              <span><span class="service-info-label">CONSULTOR: </span><strong>${escapar(consultor)}</strong></span>
             </div>
             <div class="service-info-line service-mechanic" title="${escaparAtributo(profissional)}">
               <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 12A4 4 0 1 0 12 4A4 4 0 0 0 12 12Z"></path><path d="M4 21A8 8 0 0 1 20 21"></path></svg>
@@ -15495,6 +15715,7 @@ REALIZADO POR: ${autor}`,
         document.getElementById("formNovoServicoAcessorios")?.reset();
         renderizarSelectsEtiquetasAcessorios();
         const op=document.getElementById("acessoriosOperacao"); if(op) op.value=filtroOperacaoAcessorios==="ATM"?"ATM":"BOLSAO";
+        atualizarConsultorCadastroAcessorios();
         document.getElementById("modalCadastroAcessorios")?.classList.add("open"); document.body.classList.add("cadastro-modal-open");
         setTimeout(()=>document.getElementById("acessoriosVeiculo")?.focus(),40);
       };
@@ -15508,12 +15729,13 @@ REALIZADO POR: ${autor}`,
         event.preventDefault(); if(publicandoAcessorios||!acessoAdminValido()) return;
         const veiculo=normalizar(document.getElementById("acessoriosVeiculo")?.value), placa=normalizar(document.getElementById("acessoriosPlaca")?.value).replace(/[^A-Z0-9]/g,"");
         const descricao=normalizar(document.getElementById("acessoriosDescricao")?.value), operacao=document.getElementById("acessoriosOperacao")?.value==="ATM"?"ATM":"BOLSÃO";
-        const instalador="", observacoes=normalizar(document.getElementById("acessoriosObservacoes")?.value), etiqueta=etiquetaSelecionadaAcessorios("acessoriosEtiqueta");
+        const instalador="", consultor=consultorGlobalCanonico(document.getElementById("acessoriosConsultor")?.value||"", ""), observacoes=normalizar(document.getElementById("acessoriosObservacoes")?.value), etiqueta=etiquetaSelecionadaAcessorios("acessoriosEtiqueta");
         if(!veiculo||placa.length<6||!descricao) return mostrarToast("PREENCHA VEÍCULO, PLACA E ACESSÓRIO / INSTALAÇÃO.");
+        if(!validarConsultorCadastro("acessoriosConsultor", operacao)) return;
         publicandoAcessorios=true; const botao=document.getElementById("btnPublicarAcessorios"); if(botao){botao.disabled=true;botao.textContent="PUBLICANDO...";}
         const agoraISO=new Date().toISOString();
         try{
-          const dados={veiculo,placa,descricao,operacao,instalador,observacoes,status:"AGUARDANDO",prioridade:etiqueta.nome,etiqueta:etiqueta.nome,etiquetaId:etiqueta.id,etiquetaCor:etiqueta.cor,criadoEm:firebase.firestore.FieldValue.serverTimestamp(),criadoEmISO:agoraISO,atualizadoEm:firebase.firestore.FieldValue.serverTimestamp(),atualizadoEmISO:agoraISO,criadoPor:normalizar(usuarioPainelAtual()||"ADMIN"),excluido:false};
+          const dados={veiculo,placa,descricao,operacao,instalador,consultorTecnico:consultor,consultor_tecnico:consultor,observacoes,status:"AGUARDANDO",prioridade:etiqueta.nome,etiqueta:etiqueta.nome,etiquetaId:etiqueta.id,etiquetaCor:etiqueta.cor,criadoEm:firebase.firestore.FieldValue.serverTimestamp(),criadoEmISO:agoraISO,atualizadoEm:firebase.firestore.FieldValue.serverTimestamp(),atualizadoEmISO:agoraISO,criadoPor:normalizar(usuarioPainelAtual()||"ADMIN"),excluido:false};
           await db.collection(COLECAO_ACESSORIOS).add(dados);
           window.registrarAtividadeLeCar?.({modulo:"ACESSÓRIOS",acao:"CADASTROU",usuario:usuarioPainelAtual(),veiculo,placa,statusNovo:"AGUARDANDO",detalhe:descricao});
           fecharCadastroAcessorios(); document.getElementById("formNovoServicoAcessorios")?.reset(); selecionarVisaoAcessorios("AGUARDANDO"); mostrarToast("SERVIÇO DE ACESSÓRIOS PUBLICADO.");
@@ -15528,6 +15750,7 @@ REALIZADO POR: ${autor}`,
         document.getElementById("edicaoAcessoriosVeiculo").value=normalizar(item.veiculo); document.getElementById("edicaoAcessoriosPlaca").value=normalizar(item.placa);
         document.getElementById("edicaoAcessoriosDescricao").value=normalizar(item.descricao); document.getElementById("edicaoAcessoriosStatus").value=statusAcessorios(item);
         document.getElementById("edicaoAcessoriosOperacao").value=operacaoAcessorios(item)==="ATM"?"ATM":"BOLSAO"; document.getElementById("edicaoAcessoriosEtiqueta").value=etiquetaDoServicoAcessorios(item).id;
+        preencherSelectConsultorGlobal(document.getElementById("edicaoAcessoriosConsultor"), nomeConsultorTecnicoCard(item, ""), origemAcessorios(item), true);
         document.getElementById("edicaoAcessoriosObservacoes").value=normalizar(item.observacoes);
         document.getElementById("modalEdicaoAcessorios")?.classList.add("open"); document.body.classList.add("cadastro-modal-open"); setTimeout(()=>document.getElementById("edicaoAcessoriosDescricao")?.focus(),40);
       };
@@ -15541,10 +15764,10 @@ REALIZADO POR: ${autor}`,
         event.preventDefault(); const item=servicosAcessorios.find(registro=>registro.id===edicaoAcessoriosId); if(!item||publicandoAcessorios||!acessoAdminValido()) return;
         const veiculo=normalizar(document.getElementById("edicaoAcessoriosVeiculo")?.value), placa=normalizar(document.getElementById("edicaoAcessoriosPlaca")?.value).replace(/[^A-Z0-9]/g,"");
         const descricao=normalizar(document.getElementById("edicaoAcessoriosDescricao")?.value), status=normalizarStatusAcessorios(document.getElementById("edicaoAcessoriosStatus")?.value);
-        const operacao=document.getElementById("edicaoAcessoriosOperacao")?.value==="ATM"?"ATM":"BOLSÃO", observacoes=normalizar(document.getElementById("edicaoAcessoriosObservacoes")?.value), etiqueta=etiquetaSelecionadaAcessorios("edicaoAcessoriosEtiqueta");
+        const operacao=document.getElementById("edicaoAcessoriosOperacao")?.value==="ATM"?"ATM":"BOLSÃO", consultor=consultorGlobalCanonico(document.getElementById("edicaoAcessoriosConsultor")?.value||"", ""), observacoes=normalizar(document.getElementById("edicaoAcessoriosObservacoes")?.value), etiqueta=etiquetaSelecionadaAcessorios("edicaoAcessoriosEtiqueta");
         if(!veiculo||placa.length<6||!descricao) return mostrarToast("PREENCHA VEÍCULO, PLACA E ACESSÓRIO / INSTALAÇÃO.");
         publicandoAcessorios=true; const botao=document.getElementById("btnSalvarEdicaoAcessorios"); if(botao){botao.disabled=true;botao.textContent="SALVANDO...";} const agoraISO=new Date().toISOString();
-        const atualizacao={veiculo,placa,descricao,status,operacao,observacoes,prioridade:etiqueta.nome,etiqueta:etiqueta.nome,etiquetaId:etiqueta.id,etiquetaCor:etiqueta.cor,atualizadoEm:firebase.firestore.FieldValue.serverTimestamp(),atualizadoEmISO:agoraISO,atualizadoPor:normalizar(usuarioPainelAtual()||"ADMIN")};
+        const atualizacao={veiculo,placa,descricao,status,operacao,consultorTecnico:consultor,consultor_tecnico:consultor,observacoes,prioridade:etiqueta.nome,etiqueta:etiqueta.nome,etiquetaId:etiqueta.id,etiquetaCor:etiqueta.cor,atualizadoEm:firebase.firestore.FieldValue.serverTimestamp(),atualizadoEmISO:agoraISO,atualizadoPor:normalizar(usuarioPainelAtual()||"ADMIN")};
         if(status==="FINALIZADO"&&statusAcessorios(item)!=="FINALIZADO"){atualizacao.finalizadoEm=firebase.firestore.FieldValue.serverTimestamp();atualizacao.finalizadoEmISO=agoraISO;}
         if(status!=="FINALIZADO"&&statusAcessorios(item)==="FINALIZADO"){atualizacao.finalizadoEm=null;atualizacao.finalizadoEmISO="";}
         try{await db.collection(COLECAO_ACESSORIOS).doc(item.id).set(atualizacao,{merge:true});const statusAnterior=statusAcessorios(item);const acao=status==="FINALIZADO"&&statusAnterior!=="FINALIZADO"?"FINALIZOU":status!==statusAnterior?"ALTEROU STATUS":"EDITOU";window.registrarAtividadeLeCar?.({modulo:"ACESSÓRIOS",acao,profissional:normalizar(item.instalador),usuario:usuarioPainelAtual(),veiculo,placa,statusAnterior,statusNovo:status,detalhe:descricao});fecharEdicaoAcessorios();mostrarToast("SERVIÇO DE ACESSÓRIOS ATUALIZADO.");}
