@@ -1,928 +1,614 @@
-<!DOCTYPE html>
-<html lang="pt-BR" class="scroll-smooth">
+<!doctype html>
+<!-- LEHUB — CONSOLE DE ATIVIDADES V2 SEM TOPBAR / PUBLICAR COMO console-atividades.html -->
+<html lang="pt-BR" translate="no">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta
-    name="description"
-    content="LEHUB — Inteligência em dados e fluxos operacionais. Sistemas sob medida para organizar, integrar e otimizar operações."
-  />
-  <meta name="theme-color" content="#05070b" />
-
-  <title>LEHUB — Inteligência em Dados e Fluxos Operacionais</title>
-
-  <!-- Tailwind CSS via CDN -->
-  <script src="https://cdn.tailwindcss.com"></script>
-
-  <!-- Fontes modernas -->
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link
-    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Manrope:wght@500;600;700;800&display=swap"
-    rel="stylesheet"
-  />
-
-  <script>
-    tailwind.config = {
-      theme: {
-        extend: {
-          colors: {
-            ink: {
-              950: "#05070b",
-              900: "#080b11",
-              850: "#0c1018",
-              800: "#111722"
-            },
-            brand: {
-              400: "#60a5fa",
-              500: "#3b82f6",
-              600: "#2563eb",
-              700: "#1d4ed8"
-            }
-          },
-          fontFamily: {
-            sans: ["Inter", "sans-serif"],
-            display: ["Manrope", "sans-serif"]
-          },
-          boxShadow: {
-            soft: "0 20px 60px rgba(0,0,0,.35)",
-            line: "0 0 0 1px rgba(255,255,255,.06)"
-          },
-          backgroundImage: {
-            "hero-grid":
-              "linear-gradient(rgba(255,255,255,.025) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,.025) 1px, transparent 1px)"
-          }
-        }
-      }
-    };
-  </script>
-
+  <meta charset="UTF-8">
+  <meta name="google" content="notranslate">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>LECAR — CONSOLE DE ATIVIDADES</title>
+  <link rel="icon" type="image/x-icon" href="favicon.ico">
+  <link rel="apple-touch-icon" href="apple-touch-icon.png">
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
   <style>
     :root {
-      color-scheme: dark;
+      --blue-900:#1e3a8a;
+      --blue-700:#1d4ed8;
+      --blue-600:#2563eb;
+      --blue-500:#3b82f6;
+      --bg:#e9eef6;
+      --panel:#ffffff;
+      --text:#0f172a;
+      --muted:#64748b;
+      --border:#dbe3ef;
+      --terminal:#07111f;
+      --terminal-2:#0d1b2e;
+      --green:#22c55e;
+      --red:#ef4444;
+      --amber:#f59e0b;
     }
+    * { box-sizing:border-box; margin:0; padding:0; font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif; }
+    body { min-height:100vh; background:linear-gradient(145deg,#dfe8f5,#f8fafc 58%,#e6edf7); color:var(--text); }
+    button,input,select { font:inherit; }
+    button { cursor:pointer; }
+    [hidden] { display:none !important; }
 
-    body {
-      background:
-        radial-gradient(circle at 80% 10%, rgba(37, 99, 235, 0.10), transparent 26rem),
-        radial-gradient(circle at 10% 35%, rgba(37, 99, 235, 0.06), transparent 22rem),
-        #05070b;
+    .auth-gate {
+      position:fixed; inset:0; z-index:1000; display:grid; place-items:center; padding:20px;
+      background:linear-gradient(145deg,#0b1d3a,#173f82 55%,#2563eb);
     }
-
-    ::selection {
-      background: rgba(37, 99, 235, 0.85);
-      color: #ffffff;
+    .auth-card {
+      width:min(420px,100%); padding:26px; border:1px solid rgba(255,255,255,.25); border-radius:22px;
+      background:rgba(8,24,53,.82); color:#fff; text-align:center; box-shadow:0 24px 70px rgba(0,0,0,.34); backdrop-filter:blur(18px);
     }
+    .auth-card img { width:210px; max-width:75%; margin-bottom:18px; filter:drop-shadow(0 8px 18px rgba(0,0,0,.4)); }
+    .auth-card h1 { font-size:1rem; letter-spacing:.04em; }
+    .auth-card p { margin-top:10px; color:#cbd5e1; font-size:.72rem; font-weight:700; line-height:1.55; }
+    .auth-card button { margin-top:18px; min-height:44px; padding:0 18px; border:0; border-radius:12px; background:#fff; color:#1e3a8a; font-weight:900; }
 
-    .noise {
-      background-image:
-        url("data:image/svg+xml,%3Csvg viewBox='0 0 180 180' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.035'/%3E%3C/svg%3E");
+    .page { min-height:100vh; display:grid; grid-template-rows:auto minmax(0,1fr); }
+
+    .filters {
+      padding:12px clamp(12px,2.4vw,28px); display:grid; grid-template-columns:minmax(210px,1.4fr) repeat(2,minmax(160px,.8fr)) minmax(150px,.7fr) auto;
+      gap:9px; border-bottom:1px solid var(--border); background:rgba(255,255,255,.94); box-shadow:0 7px 20px rgba(15,23,42,.07);
     }
-
-    .reveal {
-      opacity: 0;
-      transform: translateY(18px);
-      transition: opacity 700ms ease, transform 700ms ease;
+    .field { display:grid; gap:4px; min-width:0; }
+    .field span { color:#475569; font-size:.49rem; font-weight:900; letter-spacing:.05em; text-transform:uppercase; }
+    .field input,.field select {
+      width:100%; min-height:40px; padding:0 11px; border:1px solid #cbd5e1; border-radius:10px; outline:none; background:#fff; color:#172033;
+      font-size:.67rem; font-weight:800;
     }
+    .field input:focus,.field select:focus { border-color:#3b82f6; box-shadow:0 0 0 3px rgba(59,130,246,.13); }
+    .filter-actions { display:flex; align-items:end; gap:7px; }
+    .filter-btn { min-height:40px; padding:0 12px; border:0; border-radius:10px; background:#1d4ed8; color:#fff; font-size:.58rem; font-weight:900; text-transform:uppercase; }
+    .filter-btn.secondary { border:1px solid #bfdbfe; background:#eff6ff; color:#1d4ed8; }
 
-    .reveal.visible {
-      opacity: 1;
-      transform: translateY(0);
+    .workspace { min-height:0; padding:12px clamp(12px,2.4vw,28px) 22px; display:grid; grid-template-rows:auto auto minmax(0,1fr); gap:10px; }
+    .quick-row { display:flex; align-items:center; gap:7px; overflow-x:auto; scrollbar-width:thin; padding-bottom:2px; }
+    .quick-btn { flex:0 0 auto; min-height:34px; padding:0 11px; border:1px solid #cbd5e1; border-radius:999px; background:#fff; color:#334155; font-size:.55rem; font-weight:900; text-transform:uppercase; }
+    .quick-btn.active { border-color:#2563eb; background:#dbeafe; color:#1d4ed8; }
+    .quick-spacer { flex:1 0 12px; }
+    .quick-btn.action { border-color:#bfdbfe; background:#eff6ff; color:#1d4ed8; }
+
+    .summary { display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:9px; }
+    .metric { padding:11px 13px; border:1px solid var(--border); border-radius:14px; background:rgba(255,255,255,.94); box-shadow:0 7px 20px rgba(15,23,42,.05); }
+    .metric span { display:block; color:#64748b; font-size:.49rem; font-weight:900; text-transform:uppercase; }
+    .metric strong { display:block; margin-top:4px; color:#172554; font-size:1.05rem; font-weight:950; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+    .metric strong.small { font-size:.7rem; line-height:1.35; }
+
+    .console {
+      min-height:0; display:grid; grid-template-rows:auto minmax(0,1fr) auto; overflow:hidden; border:1px solid rgba(71,85,105,.55); border-radius:17px;
+      background:linear-gradient(165deg,var(--terminal),var(--terminal-2)); box-shadow:0 20px 50px rgba(15,23,42,.2);
     }
+    .console-head { min-height:45px; padding:0 13px; display:flex; align-items:center; justify-content:space-between; gap:12px; border-bottom:1px solid rgba(148,163,184,.15); background:rgba(15,23,42,.58); }
+    .live { display:flex; align-items:center; gap:8px; color:#e2e8f0; font-size:.58rem; font-weight:900; text-transform:uppercase; }
+    .dot { width:8px; height:8px; border-radius:50%; background:#94a3b8; box-shadow:0 0 0 4px rgba(148,163,184,.12); }
+    .dot.online { background:#4ade80; box-shadow:0 0 10px rgba(74,222,128,.72); }
+    .dot.partial { background:#fbbf24; box-shadow:0 0 10px rgba(251,191,36,.62); }
+    .dot.offline { background:#fb7185; box-shadow:0 0 10px rgba(251,113,133,.62); }
+    .console-context { color:#94a3b8; font-size:.5rem; font-weight:800; text-transform:uppercase; text-align:right; }
+    .entries { min-height:0; overflow:auto; padding:8px 0; scrollbar-color:#334155 transparent; }
+    .entry { display:grid; grid-template-columns:76px 104px minmax(0,1fr); gap:9px; padding:7px 13px; border-bottom:1px solid rgba(148,163,184,.08); color:#dbeafe; font:700 .66rem/1.45 Consolas,'Courier New',monospace; }
+    .entry:hover { background:rgba(59,130,246,.08); }
+    .entry-time { color:#64748b; }
+    .entry-module { font-weight:950; text-transform:uppercase; }
+    .module-lgvc { color:#c084fc; }
+    .module-oficina { color:#60a5fa; }
+    .module-lava-rapido { color:#22d3ee; }
+    .module-polimento { color:#f472b6; }
+    .module-acessorios { color:#fbbf24; }
+    .module-sistema { color:#94a3b8; }
+    .entry-main { min-width:0; overflow-wrap:anywhere; }
+    .entry-action { color:#f8fafc; font-weight:950; }
+    .entry-meta { color:#94a3b8; }
+    .entry-status { color:#86efac; }
+    .entry-plate { color:#fef08a; font-weight:950; }
+    .entry-source { color:#64748b; font-size:.55rem; }
+    .empty { padding:44px 18px; color:#64748b; font-size:.64rem; font-weight:900; text-align:center; text-transform:uppercase; }
+    .console-footer { min-height:36px; padding:0 13px; display:flex; align-items:center; justify-content:space-between; gap:10px; border-top:1px solid rgba(148,163,184,.14); color:#64748b; font-size:.49rem; font-weight:850; text-transform:uppercase; }
 
-    .data-line {
-      position: relative;
-      overflow: hidden;
+    @media (max-width:980px) {
+      .filters { grid-template-columns:1fr 1fr; }
+      .filter-actions { align-items:end; }
+      .summary { grid-template-columns:1fr 1fr; }
     }
-
-    .data-line::after {
-      content: "";
-      position: absolute;
-      inset: 0;
-      background: linear-gradient(
-        90deg,
-        transparent,
-        rgba(96, 165, 250, 0.38),
-        transparent
-      );
-      transform: translateX(-100%);
-      animation: flow 4.8s linear infinite;
+    @media (max-width:620px) {
+      .filters { grid-template-columns:1fr; padding:10px; }
+      .filter-actions { display:grid; grid-template-columns:1fr 1fr; }
+      .summary { grid-template-columns:1fr 1fr; gap:7px; }
+      .metric { padding:9px 10px; }
+      .entry { grid-template-columns:64px minmax(0,1fr); gap:6px; padding:8px 10px; font-size:.58rem; }
+      .entry-module { grid-column:2; grid-row:1; }
+      .entry-main { grid-column:1 / -1; grid-row:2; }
+      .console-context { display:none; }
+      .workspace { padding:9px 9px 15px; }
     }
-
-    @keyframes flow {
-      to {
-        transform: translateX(100%);
-      }
-    }
-
-    .user-area-modal {
-      visibility: hidden;
-      opacity: 0;
-      pointer-events: none;
-      transition:
-        opacity 220ms ease,
-        visibility 0s linear 220ms;
-    }
-
-    .user-area-modal.is-open {
-      visibility: visible;
-      opacity: 1;
-      pointer-events: auto;
-      transition-delay: 0s;
-    }
-
-    .user-area-backdrop {
-      opacity: 0;
-      transition: opacity 220ms ease;
-    }
-
-    .user-area-modal.is-open .user-area-backdrop {
-      opacity: 1;
-    }
-
-    .user-area-panel {
-      opacity: 0;
-      transform: translateY(12px) scale(0.98);
-      transition:
-        opacity 220ms ease,
-        transform 220ms ease;
-    }
-
-    .user-area-modal.is-open .user-area-panel {
-      opacity: 1;
-      transform: translateY(0) scale(1);
-    }
-
-    @media (prefers-reduced-motion: reduce) {
-      *,
-      *::before,
-      *::after {
-        scroll-behavior: auto !important;
-        animation-duration: 0.01ms !important;
-        animation-iteration-count: 1 !important;
-        transition-duration: 0.01ms !important;
-      }
-
-      .reveal {
-        opacity: 1;
-        transform: none;
-      }
-    }
-
   </style>
 </head>
-
-<body class="overflow-x-hidden font-sans text-white antialiased">
-  <div class="noise pointer-events-none fixed inset-0 z-50"></div>
-
-  <!-- Cabeçalho -->
-  <header class="fixed inset-x-0 top-0 z-40 border-b border-white/[0.06] bg-ink-950/80 backdrop-blur-xl">
-    <div class="mx-auto flex h-20 max-w-7xl items-center justify-between px-5 sm:px-8 lg:px-10">
-      <a href="#inicio" class="flex items-center" aria-label="Página inicial da LEHUB">
-        <img
-          src="lehub.png"
-          alt="LEHUB — Inteligência em Dados e Fluxos Operacionais"
-          class="h-10 w-auto object-contain sm:h-11"
-        />
-      </a>
-
-      <nav class="hidden items-center gap-8 text-sm text-zinc-300 xl:flex" aria-label="Navegação principal">
-        <a href="#manifesto" class="transition hover:text-white">Manifesto</a>
-        <a href="#solucao" class="transition hover:text-white">Solução</a>
-        <a href="#diferenciais" class="transition hover:text-white">Diferenciais</a>
-        <a href="#contato" class="transition hover:text-white">Contato</a>
-      </nav>
-
-      <button
-        type="button"
-        class="user-area-trigger hidden h-10 items-center justify-center rounded-lg border border-brand-500/50 bg-brand-600/[0.06] px-4 text-sm font-normal text-brand-400 transition hover:border-brand-400/70 hover:bg-brand-500/[0.10] hover:text-brand-300 xl:inline-flex"
-        aria-haspopup="dialog"
-        aria-controls="userAreaModal"
-      >
-        Área do usuário
-      </button>
-
-      <button
-        id="menuButton"
-        type="button"
-        class="inline-flex h-11 w-11 items-center justify-center rounded-lg border border-white/10 text-white xl:hidden"
-        aria-expanded="false"
-        aria-controls="mobileMenu"
-        aria-label="Abrir menu"
-      >
-        <svg viewBox="0 0 24 24" class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="1.8">
-          <path d="M4 7h16M4 12h16M4 17h16" stroke-linecap="round" />
-        </svg>
-      </button>
+<body>
+  <section id="authGate" class="auth-gate">
+    <div class="auth-card">
+      <img src="logo.png" alt="LECAR">
+      <h1 id="authTitle">VALIDANDO ACESSO</h1>
+      <p id="authMessage">AGUARDE A CONFIRMAÇÃO DA SESSÃO DO FIREBASE.</p>
+      <button id="authBack" type="button" hidden onclick="voltarAoLPA()">VOLTAR AO LPA</button>
     </div>
+  </section>
 
-    <div id="mobileMenu" class="hidden border-t border-white/[0.06] bg-ink-950 px-5 py-5 xl:hidden">
-      <nav class="flex flex-col gap-4 text-sm text-zinc-300">
-        <a href="#manifesto" class="mobile-link">Manifesto</a>
-        <a href="#solucao" class="mobile-link">Solução</a>
-        <a href="#diferenciais" class="mobile-link">Diferenciais</a>
-        <a href="#contato" class="mobile-link">Contato</a>
-      </nav>
-
-      <div class="mt-5 border-t border-white/[0.06] pt-5">
-        <button
-          type="button"
-          class="user-area-trigger inline-flex h-10 w-full items-center justify-center rounded-lg border border-brand-500/50 bg-brand-600/[0.06] px-4 text-sm font-normal text-brand-400 transition hover:border-brand-400/70 hover:bg-brand-500/[0.10] hover:text-brand-300"
-          aria-haspopup="dialog"
-          aria-controls="userAreaModal"
-        >
-          Área do usuário
-        </button>
-      </div>
-    </div>
-  </header>
-
-  <!-- Modal visual da área do usuário: sem autenticação nesta etapa -->
-  <div
-    id="userAreaModal"
-    class="user-area-modal fixed inset-0 z-[60] flex items-center justify-center px-5"
-    role="dialog"
-    aria-modal="true"
-    aria-hidden="true"
-    aria-labelledby="userAreaModalTitle"
-  >
-    <button
-      id="userAreaBackdrop"
-      type="button"
-      class="user-area-backdrop absolute inset-0 bg-black/75 backdrop-blur-sm"
-      aria-label="Fechar área do usuário"
-    ></button>
-
-    <div class="user-area-panel relative w-full max-w-sm rounded-2xl border border-white/[0.09] bg-ink-900 p-6 shadow-soft sm:p-7">
-      <div class="flex items-start justify-between gap-5">
-        <div>
-          <p class="text-xs font-normal uppercase tracking-[0.18em] text-brand-400">Acesso</p>
-          <h2 id="userAreaModalTitle" class="mt-2 font-display text-2xl font-semibold text-white">
-            Área do usuário
-          </h2>
-        </div>
-
-        <button
-          id="closeUserAreaModal"
-          type="button"
-          class="inline-flex h-10 w-10 items-center justify-center rounded-lg border border-white/10 text-zinc-400 transition hover:border-white/20 hover:text-white"
-          aria-label="Fechar modal"
-        >
-          <svg viewBox="0 0 24 24" class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="1.8">
-            <path d="M6 6l12 12M18 6L6 18" stroke-linecap="round" />
-          </svg>
-        </button>
-      </div>
-
-      <div class="mt-7 space-y-4">
-        <div>
-          <label for="userLogin" class="mb-2 block text-sm font-normal text-zinc-300">Login</label>
-          <input
-            id="userLogin"
-            type="text"
-            placeholder="Digite seu login"
-            autocomplete="username"
-            class="h-11 w-full rounded-lg border border-white/10 bg-black/25 px-4 text-sm font-normal text-white outline-none transition placeholder:text-zinc-600 focus:border-brand-500/70"
-          />
-        </div>
-
-        <div>
-          <label for="userPassword" class="mb-2 block text-sm font-normal text-zinc-300">Senha</label>
-          <input
-            id="userPassword"
-            type="password"
-            placeholder="Digite sua senha"
-            autocomplete="current-password"
-            class="h-11 w-full rounded-lg border border-white/10 bg-black/25 px-4 text-sm font-normal text-white outline-none transition placeholder:text-zinc-600 focus:border-brand-500/70"
-          />
-        </div>
-
-        <button
-          type="button"
-          class="mt-2 inline-flex h-11 w-full items-center justify-center rounded-lg bg-brand-600 px-5 text-sm font-normal text-white transition hover:bg-brand-500"
-        >
-          Entrar
-        </button>
-      </div>
-    </div>
-  </div>
-
-  <main>
-    <!-- Hero -->
-    <section
-      id="inicio"
-      class="relative overflow-hidden border-b border-white/[0.06] pt-20"
-    >
-      <div class="absolute inset-0 bg-hero-grid bg-[size:48px_48px] [mask-image:linear-gradient(to_bottom,black,transparent_90%)]"></div>
-      <div class="absolute right-[8%] top-[18%] h-72 w-72 rounded-full bg-brand-600/10 blur-3xl"></div>
-
-      <div class="relative mx-auto grid w-full max-w-7xl gap-14 px-5 pb-14 pt-7 sm:px-8 lg:grid-cols-[1.05fr_.95fr] lg:px-10 lg:pb-20 lg:pt-10">
-        <div class="reveal flex max-w-3xl flex-col justify-center">
-          <span class="mb-6 inline-flex w-fit items-center gap-2 rounded-full border border-brand-500/25 bg-brand-500/[0.07] px-4 py-2 text-[11px] font-semibold uppercase tracking-[0.22em] text-brand-400">
-            Soluções inteligentes sob demanda
-          </span>
-
-          <h1 class="font-display text-3xl font-semibold leading-[1.08] tracking-[-0.04em] text-white sm:text-4xl lg:text-6xl">
-            Entendemos a operação antes de criar a solução.
-          </h1>
-
-          <p class="mt-7 max-w-2xl text-sm leading-7 text-zinc-400 sm:text-base">
-            Por meio de uma consultoria prática, analisamos os desafios reais de cada empresa
-            e implementamos soluções inteligentes sob demanda para centralizar dados, pessoas
-            e processos em um único ecossistema operacional. Atendemos pequenas, médias e grandes empresas.
-          </p>
-
-          <div class="mt-9 flex flex-col gap-3 sm:flex-row">
-            <a
-              href="#solucao"
-              class="inline-flex items-center justify-center gap-3 rounded-lg bg-white px-6 py-3.5 text-[13px] font-bold text-black transition hover:bg-zinc-200"
-            >
-              Conheça nossa abordagem
-              <svg viewBox="0 0 24 24" class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="2">
-                <path d="M5 12h14M13 6l6 6-6 6" stroke-linecap="round" stroke-linejoin="round" />
-              </svg>
-            </a>
-
-            <a
-              href="#contato"
-              class="inline-flex items-center justify-center gap-3 rounded-lg border border-white/15 px-6 py-3.5 text-[13px] font-semibold text-white transition hover:border-brand-500/60 hover:bg-white/[0.03]"
-            >
-              Fale sobre sua operação
-            </a>
-          </div>
-
-          <div class="mt-12 flex flex-wrap gap-x-8 gap-y-4 text-[11px] uppercase tracking-[0.18em] text-zinc-500">
-            <span>Consultoria</span>
-            <span>Integração</span>
-            <span>Automação</span>
-            <span>Inteligência</span>
-          </div>
-        </div>
-
-        <div class="reveal relative flex items-start justify-center">
-          <div class="relative w-full max-w-xl rounded-2xl border border-white/[0.08] bg-white/[0.025] p-4 shadow-soft backdrop-blur">
-            <div class="rounded-xl border border-white/[0.08] bg-ink-900 p-5 sm:p-7">
-              <div class="mb-7 flex items-center justify-between">
-                <div>
-                  <p class="text-[11px] uppercase tracking-[0.2em] text-zinc-500">Visão operacional</p>
-                  <h2 class="mt-2 font-display text-lg font-semibold">Ecossistema conectado</h2>
-                </div>
-
-                <div class="flex gap-1.5">
-                  <span class="h-2 w-2 rounded-full bg-zinc-700"></span>
-                  <span class="h-2 w-2 rounded-full bg-zinc-700"></span>
-                  <span class="h-2 w-2 rounded-full bg-brand-500"></span>
-                </div>
-              </div>
-
-              <div class="space-y-4">
-                <div class="grid grid-cols-[auto_1fr_auto] items-center gap-4 rounded-xl border border-white/[0.07] bg-black/20 p-4">
-                  <div class="flex h-10 w-10 items-center justify-center rounded-lg border border-white/10">
-                    <svg viewBox="0 0 24 24" class="h-5 w-5 text-brand-400" fill="none" stroke="currentColor" stroke-width="1.6">
-                      <ellipse cx="12" cy="5" rx="7" ry="3" />
-                      <path d="M5 5v6c0 1.7 3.1 3 7 3s7-1.3 7-3V5M5 11v6c0 1.7 3.1 3 7 3s7-1.3 7-3v-6" />
-                    </svg>
-                  </div>
-                  <div>
-                    <p class="text-[13px] font-semibold">Dados centralizados</p>
-                    <p class="mt-1 text-[11px] text-zinc-500">Uma fonte confiável para toda a operação.</p>
-                  </div>
-                  <span class="h-2.5 w-2.5 rounded-full bg-brand-500 shadow-[0_0_16px_rgba(59,130,246,.7)]"></span>
-                </div>
-
-                <div class="data-line h-px bg-white/[0.07]"></div>
-
-                <div class="grid grid-cols-[auto_1fr_auto] items-center gap-4 rounded-xl border border-white/[0.07] bg-black/20 p-4">
-                  <div class="flex h-10 w-10 items-center justify-center rounded-lg border border-white/10">
-                    <svg viewBox="0 0 24 24" class="h-5 w-5 text-brand-400" fill="none" stroke="currentColor" stroke-width="1.6">
-                      <circle cx="5" cy="12" r="2.5" />
-                      <circle cx="19" cy="5" r="2.5" />
-                      <circle cx="19" cy="19" r="2.5" />
-                      <path d="M7.5 12h4M13 12l4-5M13 12l4 5" />
-                    </svg>
-                  </div>
-                  <div>
-                    <p class="text-[13px] font-semibold">Pessoas e processos conectados</p>
-                    <p class="mt-1 text-[11px] text-zinc-500">Áreas trabalhando dentro do mesmo fluxo.</p>
-                  </div>
-                  <span class="h-2.5 w-2.5 rounded-full bg-brand-500 shadow-[0_0_16px_rgba(59,130,246,.7)]"></span>
-                </div>
-
-                <div class="data-line h-px bg-white/[0.07]"></div>
-
-                <div class="grid grid-cols-[auto_1fr_auto] items-center gap-4 rounded-xl border border-white/[0.07] bg-black/20 p-4">
-                  <div class="flex h-10 w-10 items-center justify-center rounded-lg border border-white/10">
-                    <svg viewBox="0 0 24 24" class="h-5 w-5 text-brand-400" fill="none" stroke="currentColor" stroke-width="1.6">
-                      <path d="M4 19V9M10 19V5M16 19v-7M22 19H2" />
-                    </svg>
-                  </div>
-                  <div>
-                    <p class="text-[13px] font-semibold">Gestão orientada por dados</p>
-                    <p class="mt-1 text-[11px] text-zinc-500">Visibilidade para decidir com segurança.</p>
-                  </div>
-                  <span class="h-2.5 w-2.5 rounded-full bg-brand-500 shadow-[0_0_16px_rgba(59,130,246,.7)]"></span>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
+  <main id="page" class="page" hidden>
+    <section class="filters" aria-label="Filtros do console">
+      <label class="field"><span>Buscar</span><input id="busca" type="search" placeholder="AÇÃO, USUÁRIO, VEÍCULO OU PLACA" autocomplete="off"></label>
+      <label class="field"><span>Início</span><input id="inicio" type="datetime-local"></label>
+      <label class="field"><span>Fim</span><input id="fim" type="datetime-local"></label>
+      <label class="field"><span>Módulo</span><select id="modulo"><option value="TODOS">TODOS</option><option value="LGVC">LGVC</option><option value="OFICINA">OFICINA</option><option value="LAVA RÁPIDO">LAVA RÁPIDO</option><option value="POLIMENTO">POLIMENTO</option><option value="ACESSÓRIOS">ACESSÓRIOS</option><option value="SISTEMA">SISTEMA</option></select></label>
+      <div class="filter-actions"><button class="filter-btn" type="button" onclick="aplicarFiltroPersonalizado()">APLICAR</button><button class="filter-btn secondary" type="button" onclick="definirJanela(60)">ÚLTIMA HORA</button></div>
     </section>
 
-    <!-- Manifesto -->
-    <section id="manifesto" class="border-b border-white/[0.06] py-24 sm:py-32">
-      <div class="mx-auto grid max-w-7xl gap-14 px-5 sm:px-8 lg:grid-cols-[.75fr_1.25fr] lg:px-10">
-        <div class="reveal">
-          <p class="text-xs font-semibold uppercase tracking-[0.22em] text-brand-400">Da análise à implementação</p>
-          <h2 class="mt-5 font-display text-3xl font-semibold tracking-[-0.035em] sm:text-4xl">
-            Toda a operação conectada em um único ecossistema.
-          </h2>
-        </div>
-
-        <div class="reveal space-y-8">
-          <p class="text-xl leading-9 text-zinc-300 sm:text-2xl sm:leading-10">
-            Processos fragmentados dificultam a comunicação, aumentam o retrabalho
-            e reduzem a clareza da gestão.
-          </p>
-
-          <p class="max-w-3xl leading-8 text-zinc-500">
-            A LEHUB analisa o funcionamento real da empresa e estrutura soluções sob demanda
-            para centralizar informações, integrar fluxos e organizar toda a operação
-            em um único ecossistema.
-          </p>
-
-          <div class="grid gap-px overflow-hidden rounded-xl border border-white/[0.07] bg-white/[0.07] sm:grid-cols-3">
-            <div class="bg-ink-950 p-6">
-              <span class="font-display text-3xl font-semibold text-white">01</span>
-              <p class="mt-4 text-sm font-semibold">Diagnóstico real</p>
-              <p class="mt-2 text-sm leading-6 text-zinc-500">Entendimento dos desafios, gargalos e necessidades da operação.</p>
-            </div>
-
-            <div class="bg-ink-950 p-6">
-              <span class="font-display text-3xl font-semibold text-white">02</span>
-              <p class="mt-4 text-sm font-semibold">Integração dos fluxos</p>
-              <p class="mt-2 text-sm leading-6 text-zinc-500">Conexão entre dados, pessoas, setores e processos.</p>
-            </div>
-
-            <div class="bg-ink-950 p-6">
-              <span class="font-display text-3xl font-semibold text-white">03</span>
-              <p class="mt-4 text-sm font-semibold">Implementação inteligente</p>
-              <p class="mt-2 text-sm leading-6 text-zinc-500">Soluções objetivas, modulares e compatíveis com o porte da empresa.</p>
-            </div>
-          </div>
-        </div>
+    <section class="workspace">
+      <div class="quick-row" aria-label="Janelas rápidas">
+        <button class="quick-btn" data-minutos="15" type="button" onclick="definirJanela(15)">15 MIN</button>
+        <button class="quick-btn" data-minutos="30" type="button" onclick="definirJanela(30)">30 MIN</button>
+        <button class="quick-btn active" data-minutos="60" type="button" onclick="definirJanela(60)">1 HORA</button>
+        <button class="quick-btn" data-minutos="120" type="button" onclick="definirJanela(120)">2 HORAS</button>
+        <button class="quick-btn" data-minutos="240" type="button" onclick="definirJanela(240)">4 HORAS</button>
+        <button class="quick-btn" data-minutos="HOJE" type="button" onclick="definirHoje()">HOJE</button>
+        <span class="quick-spacer" aria-hidden="true"></span>
+        <button class="quick-btn action" type="button" onclick="atualizarAgora()">ATUALIZAR</button>
+        <button class="quick-btn action" type="button" onclick="voltarAoLPA()">VOLTAR</button>
       </div>
-    </section>
 
-    <!-- Solução -->
-    <section id="solucao" class="relative overflow-hidden border-b border-white/[0.06] py-24 sm:py-32">
-      <div class="absolute left-1/2 top-0 h-96 w-96 -translate-x-1/2 rounded-full bg-brand-600/[0.06] blur-3xl"></div>
-
-      <div class="relative mx-auto max-w-7xl px-5 sm:px-8 lg:px-10">
-        <div class="reveal mx-auto max-w-3xl text-center">
-          <p class="text-xs font-semibold uppercase tracking-[0.22em] text-brand-400">Ecossistema de dados</p>
-          <h2 class="mt-5 font-display text-3xl font-semibold tracking-[-0.035em] sm:text-5xl">
-            Uma operação conectada de ponta a ponta.
-          </h2>
-          <p class="mt-6 text-base leading-8 text-zinc-500 sm:text-lg">
-            A LEHUB centraliza informações, organiza processos e transforma dados
-            operacionais em decisões claras, rastreáveis e acionáveis.
-          </p>
-        </div>
-
-        <div class="mt-16 grid gap-5 lg:grid-cols-3">
-          <article class="reveal rounded-2xl border border-white/[0.08] bg-white/[0.025] p-7">
-            <span class="flex h-11 w-11 items-center justify-center rounded-lg border border-brand-500/30 bg-brand-500/[0.08] text-brand-400">
-              <svg viewBox="0 0 24 24" class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="1.7">
-                <ellipse cx="12" cy="5" rx="7" ry="3" />
-                <path d="M5 5v6c0 1.7 3.1 3 7 3s7-1.3 7-3V5M5 11v6c0 1.7 3.1 3 7 3s7-1.3 7-3v-6" />
-              </svg>
-            </span>
-
-            <h3 class="mt-7 font-display text-xl font-semibold">Centralização</h3>
-            <p class="mt-4 text-sm leading-7 text-zinc-500">
-              Informações estruturadas em um único ambiente, com acesso controlado,
-              histórico e consistência entre áreas.
-            </p>
-          </article>
-
-          <article class="reveal rounded-2xl border border-white/[0.08] bg-white/[0.025] p-7">
-            <span class="flex h-11 w-11 items-center justify-center rounded-lg border border-brand-500/30 bg-brand-500/[0.08] text-brand-400">
-              <svg viewBox="0 0 24 24" class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="1.7">
-                <circle cx="5" cy="12" r="2.5" />
-                <circle cx="19" cy="5" r="2.5" />
-                <circle cx="19" cy="19" r="2.5" />
-                <path d="M7.5 12h4M13 12l4-5M13 12l4 5" />
-              </svg>
-            </span>
-
-            <h3 class="mt-7 font-display text-xl font-semibold">Orquestração</h3>
-            <p class="mt-4 text-sm leading-7 text-zinc-500">
-              Fluxos desenhados para reduzir retrabalho, padronizar etapas e garantir
-              que cada informação chegue ao ponto correto.
-            </p>
-          </article>
-
-          <article class="reveal rounded-2xl border border-white/[0.08] bg-white/[0.025] p-7">
-            <span class="flex h-11 w-11 items-center justify-center rounded-lg border border-brand-500/30 bg-brand-500/[0.08] text-brand-400">
-              <svg viewBox="0 0 24 24" class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="1.7">
-                <path d="M4 19V9M10 19V5M16 19v-7M22 19H2" />
-              </svg>
-            </span>
-
-            <h3 class="mt-7 font-display text-xl font-semibold">Inteligência</h3>
-            <p class="mt-4 text-sm leading-7 text-zinc-500">
-              Indicadores e análises construídos a partir da realidade da operação,
-              sem dashboards genéricos ou informações desconectadas.
-            </p>
-          </article>
-        </div>
-
-        <div class="reveal mt-12 rounded-2xl border border-white/[0.08] bg-ink-900 p-6 sm:p-10">
-          <div class="grid gap-8 lg:grid-cols-[.85fr_1.15fr] lg:items-center">
-            <div>
-              <p class="text-xs font-semibold uppercase tracking-[0.22em] text-brand-400">Do dado à ação</p>
-              <h3 class="mt-4 font-display text-2xl font-semibold sm:text-3xl">
-                Controle absoluto sem complicar a operação.
-              </h3>
-              <p class="mt-5 max-w-xl text-sm leading-7 text-zinc-500">
-                A tecnologia deve reduzir atritos, não criar novos. Por isso, cada
-                solução é construída para se adaptar ao fluxo real de trabalho.
-              </p>
-            </div>
-
-            <div class="grid gap-3 sm:grid-cols-3">
-              <div class="rounded-xl border border-white/[0.07] bg-black/20 p-5">
-                <span class="text-xs uppercase tracking-[0.18em] text-zinc-600">Entrada</span>
-                <p class="mt-3 text-sm font-semibold">Dados confiáveis</p>
-              </div>
-
-              <div class="rounded-xl border border-brand-500/25 bg-brand-500/[0.07] p-5">
-                <span class="text-xs uppercase tracking-[0.18em] text-brand-400">Processamento</span>
-                <p class="mt-3 text-sm font-semibold">Regras e automações</p>
-              </div>
-
-              <div class="rounded-xl border border-white/[0.07] bg-black/20 p-5">
-                <span class="text-xs uppercase tracking-[0.18em] text-zinc-600">Resultado</span>
-                <p class="mt-3 text-sm font-semibold">Decisão e controle</p>
-              </div>
-            </div>
-          </div>
-        </div>
+      <div class="summary">
+        <div class="metric"><span>Atividades</span><strong id="totalAtividades">0</strong></div>
+        <div class="metric"><span>Módulos ativos</span><strong id="totalModulos">0</strong></div>
+        <div class="metric"><span>Última atividade</span><strong id="ultimaAtividade" class="small">—</strong></div>
+        <div class="metric"><span>Sessão</span><strong id="usuarioSessao" class="small">—</strong></div>
       </div>
-    </section>
 
-    <!-- Diferenciais -->
-    <section id="diferenciais" class="border-b border-white/[0.06] py-24 sm:py-32">
-      <div class="mx-auto max-w-7xl px-5 sm:px-8 lg:px-10">
-        <div class="reveal max-w-3xl">
-          <p class="text-xs font-semibold uppercase tracking-[0.22em] text-brand-400">Pilares da LEHUB</p>
-          <h2 class="mt-5 font-display text-3xl font-semibold tracking-[-0.035em] sm:text-5xl">
-            Tecnologia construída para sustentar, integrar e evoluir a operação.
-          </h2>
-          <p class="mt-6 max-w-3xl text-base leading-8 text-zinc-500 sm:text-lg">
-            A LEHUB desenvolve soluções com foco na realidade operacional de cada empresa,
-            unindo estrutura técnica, agilidade, personalização e inteligência para transformar
-            processos dispersos em um ecossistema mais claro, conectado e eficiente.
-          </p>
-        </div>
-
-        <div class="mt-16 grid gap-px overflow-hidden rounded-2xl border border-white/[0.07] bg-white/[0.07] md:grid-cols-2">
-          <article class="reveal bg-ink-950 p-7 sm:p-9">
-            <div class="flex items-start justify-between gap-5">
-              <span class="font-display text-sm font-semibold text-brand-400">01</span>
-              <span class="h-2 w-2 rounded-full bg-brand-500"></span>
-            </div>
-            <h3 class="mt-12 font-display text-xl font-semibold">Arquitetura robusta</h3>
-            <p class="mt-4 max-w-xl text-sm leading-7 text-zinc-500">
-              Projetamos soluções com estrutura organizada, segura e preparada para crescer.
-              Cada operação pode ter regras, dados, permissões e fluxos bem definidos, evitando
-              mistura de informações e reduzindo riscos técnicos no dia a dia.
-            </p>
-          </article>
-
-          <article class="reveal bg-ink-950 p-7 sm:p-9">
-            <div class="flex items-start justify-between gap-5">
-              <span class="font-display text-sm font-semibold text-brand-400">02</span>
-              <span class="h-2 w-2 rounded-full bg-brand-500"></span>
-            </div>
-            <h3 class="mt-12 font-display text-xl font-semibold">Velocidade de processamento</h3>
-            <p class="mt-4 max-w-xl text-sm leading-7 text-zinc-500">
-              Criamos interfaces rápidas e fluxos objetivos para reduzir etapas desnecessárias,
-              retrabalho e perda de tempo. O foco é dar mais agilidade para a equipe e tornar a
-              execução mais simples, fluida e eficiente.
-            </p>
-          </article>
-
-          <article class="reveal bg-ink-950 p-7 sm:p-9">
-            <div class="flex items-start justify-between gap-5">
-              <span class="font-display text-sm font-semibold text-brand-400">03</span>
-              <span class="h-2 w-2 rounded-full bg-brand-500"></span>
-            </div>
-            <h3 class="mt-12 font-display text-xl font-semibold">Customização sob medida</h3>
-            <p class="mt-4 max-w-xl text-sm leading-7 text-zinc-500">
-              Cada solução é desenhada a partir do processo real da empresa. Em vez de forçar
-              a operação a se adaptar a sistemas genéricos, estruturamos ferramentas compatíveis
-              com a rotina, o porte e a necessidade de cada negócio.
-            </p>
-          </article>
-
-          <article class="reveal bg-ink-950 p-7 sm:p-9">
-            <div class="flex items-start justify-between gap-5">
-              <span class="font-display text-sm font-semibold text-brand-400">04</span>
-              <span class="h-2 w-2 rounded-full bg-brand-500"></span>
-            </div>
-            <h3 class="mt-12 font-display text-xl font-semibold">Clareza analítica</h3>
-            <p class="mt-4 max-w-xl text-sm leading-7 text-zinc-500">
-              Transformamos dados operacionais em informações confiáveis para apoiar a gestão.
-              Isso permite acompanhar processos, identificar gargalos, enxergar oportunidades de
-              melhoria e tomar decisões com mais segurança.
-            </p>
-          </article>
-        </div>
-      </div>
-    </section>
-
-    <!-- Multiplataforma -->
-    <section id="multiplataforma" class="border-b border-white/[0.06] py-24 sm:py-32">
-      <div class="mx-auto max-w-7xl px-5 sm:px-8 lg:px-10">
-        <div class="reveal max-w-3xl">
-          <p class="text-xs font-semibold uppercase tracking-[0.22em] text-brand-400">Multiplataforma</p>
-          <h2 class="mt-5 font-display text-3xl font-semibold tracking-[-0.035em] sm:text-5xl">
-            Aplicações conectadas em tempo real entre desktop e dispositivos móveis.
-          </h2>
-          <p class="mt-6 max-w-3xl text-base leading-8 text-zinc-500 sm:text-lg">
-            A LEHUB estrutura soluções que operam em um único ecossistema, com aplicações interagindo em tempo real entre desktop e mobile. O desktop amplia a gestão, a visualização e o controle. O mobile leva execução, consulta e atualização para a rotina da equipe, sem quebrar o fluxo da operação.
-          </p>
-        </div>
-
-        <div class="mt-16 grid gap-12 lg:grid-cols-[.9fr_1.1fr] lg:items-stretch">
-          <div class="reveal flex h-full flex-col gap-5">
-            <div class="flex-1 rounded-2xl border border-white/[0.08] bg-white/[0.025] p-6">
-              <div class="inline-flex items-center gap-2 rounded-full border border-brand-500/25 bg-brand-500/[0.08] px-4 py-2 text-[11px] font-semibold uppercase tracking-[0.18em] text-brand-400">
-                Tempo real
-              </div>
-              <h3 class="mt-5 font-display text-2xl font-semibold text-white">Uma única operação, vários pontos de acesso.</h3>
-              <p class="mt-4 text-sm leading-7 text-zinc-500">
-                A mesma solução pode ser acompanhada no desktop e executada no celular, mantendo dados, etapas e informações sincronizadas para toda a equipe.
-              </p>
-            </div>
-
-            <div class="grid gap-4 sm:grid-cols-3">
-              <div class="rounded-2xl border border-white/[0.08] bg-black/20 p-5">
-                <p class="text-xs uppercase tracking-[0.18em] text-zinc-600">Desktop</p>
-                <p class="mt-3 text-sm font-semibold text-white">Gestão e visão ampla</p>
-              </div>
-              <div class="rounded-2xl border border-brand-500/25 bg-brand-500/[0.07] p-5">
-                <p class="text-xs uppercase tracking-[0.18em] text-brand-400">Integração</p>
-                <p class="mt-3 text-sm font-semibold text-white">Tudo no mesmo fluxo</p>
-              </div>
-              <div class="rounded-2xl border border-white/[0.08] bg-black/20 p-5">
-                <p class="text-xs uppercase tracking-[0.18em] text-zinc-600">Mobile</p>
-                <p class="mt-3 text-sm font-semibold text-white">Execução com mobilidade</p>
-              </div>
-            </div>
-          </div>
-
-          <div class="reveal mx-auto h-full w-full max-w-4xl">
-            <div class="flex h-full items-center justify-center rounded-3xl border border-white/[0.08] bg-white/[0.025] p-4 shadow-soft backdrop-blur sm:p-6">
-              <img src="mp.png" alt="Visual demonstrativo multiplataforma da aplicação em desktop e mobile" class="mx-auto h-auto w-full max-w-4xl object-contain" />
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- Base tecnológica -->
-    <section id="tecnologias" class="border-b border-white/[0.06] py-24 sm:py-32">
-      <div class="mx-auto max-w-7xl px-5 sm:px-8 lg:px-10">
-        <div class="reveal max-w-3xl">
-          <p class="text-xs font-semibold uppercase tracking-[0.22em] text-brand-400">Base tecnológica</p>
-          <h2 class="mt-5 font-display text-3xl font-semibold tracking-[-0.035em] sm:text-5xl">
-            Tecnologias que sustentam nossas soluções.
-          </h2>
-          <p class="mt-6 max-w-3xl text-base leading-8 text-zinc-500 sm:text-lg">
-            Utilizamos tecnologias modernas e escaláveis para estruturar soluções seguras, integradas e preparadas para evoluir com a operação.
-          </p>
-        </div>
-
-        <div class="mt-16 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
-          <article class="reveal rounded-2xl border border-white/[0.08] bg-white/[0.025] p-6">
-            <div class="flex items-center gap-4">
-              <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/html5/html5-original.svg" alt="HTML5" class="h-11 w-11 object-contain" />
-              <div>
-                <h3 class="text-base font-semibold text-white">HTML5</h3>
-                <p class="mt-1 text-sm text-zinc-500">Estrutura semântica e sólida.</p>
-              </div>
-            </div>
-          </article>
-
-          <article class="reveal rounded-2xl border border-white/[0.08] bg-white/[0.025] p-6">
-            <div class="flex items-center gap-4">
-              <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/css3/css3-original.svg" alt="CSS3" class="h-11 w-11 object-contain" />
-              <div>
-                <h3 class="text-base font-semibold text-white">CSS3</h3>
-                <p class="mt-1 text-sm text-zinc-500">Estilo, responsividade e refinamento visual.</p>
-              </div>
-            </div>
-          </article>
-
-          <article class="reveal rounded-2xl border border-white/[0.08] bg-white/[0.025] p-6">
-            <div class="flex items-center gap-4">
-              <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/javascript/javascript-original.svg" alt="JavaScript" class="h-11 w-11 object-contain" />
-              <div>
-                <h3 class="text-base font-semibold text-white">JavaScript</h3>
-                <p class="mt-1 text-sm text-zinc-500">Lógica, interação e automação do front.</p>
-              </div>
-            </div>
-          </article>
-
-          <article class="reveal rounded-2xl border border-white/[0.08] bg-white/[0.025] p-6">
-            <div class="flex items-center gap-4">
-              <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/tailwindcss/tailwindcss-original.svg" alt="Tailwind CSS" class="h-11 w-11 object-contain" />
-              <div>
-                <h3 class="text-base font-semibold text-white">Tailwind CSS</h3>
-                <p class="mt-1 text-sm text-zinc-500">Padronização visual com agilidade.</p>
-              </div>
-            </div>
-          </article>
-
-          <article class="reveal rounded-2xl border border-white/[0.08] bg-white/[0.025] p-6">
-            <div class="flex items-center gap-4">
-              <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/firebase/firebase-plain.svg" alt="Firebase" class="h-11 w-11 object-contain" />
-              <div>
-                <h3 class="text-base font-semibold text-white">Firebase</h3>
-                <p class="mt-1 text-sm text-zinc-500">Dados, hospedagem e serviços integrados.</p>
-              </div>
-            </div>
-          </article>
-
-          <article class="reveal rounded-2xl border border-white/[0.08] bg-white/[0.025] p-6">
-            <div class="flex items-center gap-4">
-              <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/python/python-original.svg" alt="Python" class="h-11 w-11 object-contain" />
-              <div>
-                <h3 class="text-base font-semibold text-white">Python</h3>
-                <p class="mt-1 text-sm text-zinc-500">Base estratégica para automações, análise de dados e soluções inteligentes.</p>
-              </div>
-            </div>
-          </article>
-        </div>
-      </div>
-    </section>
-
-    <!-- CTA -->
-    <section id="contato" class="py-24 sm:py-32">
-      <div class="mx-auto max-w-7xl px-5 sm:px-8 lg:px-10">
-        <div class="reveal relative overflow-hidden rounded-3xl border border-white/[0.09] bg-white/[0.035] px-6 py-14 shadow-soft sm:px-12 sm:py-16 lg:px-16">
-          <div class="absolute -right-24 -top-24 h-72 w-72 rounded-full bg-brand-600/10 blur-3xl"></div>
-
-          <div class="relative grid gap-10 lg:grid-cols-[1fr_auto] lg:items-end">
-            <div>
-              <p class="text-xs font-semibold uppercase tracking-[0.22em] text-brand-400">Converse com a LEHUB</p>
-              <h2 class="mt-5 max-w-3xl font-display text-3xl font-semibold tracking-[-0.035em] sm:text-5xl">
-                Sua operação não precisa continuar dependendo de improvisos.
-              </h2>
-              <p class="mt-6 max-w-2xl text-base leading-8 text-zinc-500">
-                Vamos analisar o fluxo atual, identificar os principais gargalos e
-                estruturar uma solução objetiva para a realidade da sua empresa.
-              </p>
-            </div>
-
-            <a
-              href="https://wa.me/5515996335375"
-              target="_blank"
-              rel="noopener noreferrer"
-              class="inline-flex w-full items-center justify-center gap-3 rounded-lg bg-white px-7 py-4 text-sm font-bold text-black transition hover:bg-zinc-200 sm:w-auto"
-            >
-              Iniciar conversa
-              <svg viewBox="0 0 24 24" class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="2">
-                <path d="M5 12h14M13 6l6 6-6 6" stroke-linecap="round" stroke-linejoin="round" />
-              </svg>
-            </a>
-          </div>
-        </div>
-      </div>
+      <section class="console" aria-label="Atividades do sistema">
+        <header class="console-head">
+          <div class="live"><i id="statusDot" class="dot"></i><span id="statusTexto">CONECTANDO</span></div>
+          <span id="contextoJanela" class="console-context">ÚLTIMA HORA</span>
+        </header>
+        <div id="lista" class="entries" aria-live="polite"><div class="empty">CARREGANDO ATIVIDADES...</div></div>
+        <footer class="console-footer"><span id="fontesStatus">FIREBASE: CONECTANDO</span><span id="relogio">--:--:--</span></footer>
+      </section>
     </section>
   </main>
 
-  <!-- Rodapé -->
-  <footer class="border-t border-white/[0.06] bg-black/20">
-    <div class="mx-auto max-w-7xl px-5 py-12 sm:px-8 lg:px-10">
-      <div class="grid gap-10 border-b border-white/[0.06] pb-10 md:grid-cols-[1.2fr_.8fr_.8fr]">
-        <div>
-          <img
-            src="lehub.png"
-            alt="LEHUB"
-            class="h-11 w-auto object-contain"
-          />
-          <p class="mt-5 max-w-sm text-sm leading-7 text-zinc-600">
-            Inteligência em dados e fluxos operacionais para empresas que precisam
-            de mais controle, velocidade e clareza.
-          </p>
-        </div>
-
-        <div>
-          <h3 class="text-xs font-semibold uppercase tracking-[0.18em] text-zinc-400">Navegação</h3>
-          <div class="mt-5 flex flex-col gap-3 text-sm text-zinc-600">
-            <a href="#manifesto" class="transition hover:text-white">Manifesto</a>
-            <a href="#solucao" class="transition hover:text-white">Solução</a>
-            <a href="#diferenciais" class="transition hover:text-white">Diferenciais</a>
-          </div>
-        </div>
-
-        <div>
-          <h3 class="text-xs font-semibold uppercase tracking-[0.18em] text-zinc-400">Institucional</h3>
-          <div class="mt-5 space-y-3 text-sm text-zinc-600">
-            <p>(15) 99662-5567</p>
-            <p>Brasil</p>
-          </div>
-        </div>
-      </div>
-
-      <div class="flex flex-col gap-4 pt-7 text-xs text-zinc-700 sm:flex-row sm:items-center sm:justify-between">
-        <p>© <span id="currentYear"></span> LEHUB. Todos os direitos reservados.</p>
-        <div class="flex gap-5">
-          <a href="#" class="transition hover:text-zinc-400">Política de Privacidade</a>
-          <a href="#" class="transition hover:text-zinc-400">Termos de Uso</a>
-        </div>
-      </div>
-    </div>
-  </footer>
-
   <script>
-    const menuButton = document.getElementById("menuButton");
-    const mobileMenu = document.getElementById("mobileMenu");
-    const mobileLinks = document.querySelectorAll(".mobile-link");
-    const userAreaModal = document.getElementById("userAreaModal");
-    const userAreaTriggers = document.querySelectorAll(".user-area-trigger");
-    const closeUserAreaModal = document.getElementById("closeUserAreaModal");
-    const userAreaBackdrop = document.getElementById("userAreaBackdrop");
-    const userLogin = document.getElementById("userLogin");
-
-    const openUserArea = () => {
-      userAreaModal.classList.add("is-open");
-      userAreaModal.setAttribute("aria-hidden", "false");
-      document.body.classList.add("overflow-hidden");
-      requestAnimationFrame(() => userLogin.focus());
+    const firebaseConfig = {
+      apiKey: "AIzaSyDjMGX595VvyAj6Nk-I4Pj4VGlipJNovPw",
+      authDomain: "lehub-lecar.firebaseapp.com",
+      projectId: "lehub-lecar",
+      storageBucket: "lehub-lecar.firebasestorage.app",
+      messagingSenderId: "338216307290",
+      appId: "1:338216307290:web:bb31d3710098866094e663"
     };
 
-    const closeUserArea = () => {
-      userAreaModal.classList.remove("is-open");
-      userAreaModal.setAttribute("aria-hidden", "true");
-      document.body.classList.remove("overflow-hidden");
-    };
+    firebase.initializeApp(firebaseConfig);
+    const auth = firebase.auth();
+    const db = firebase.firestore();
+    const PAGINA_LPA = "./index.html";
+    const COLECAO_PERFIS = "usuarios_sistema";
+    const EMAIL_ADMIN_RECUPERACAO = "leleoucamf@gmail.com";
+    const LIMITE_POR_FONTE = 250;
 
-    userAreaTriggers.forEach((trigger) => {
-      trigger.addEventListener("click", () => {
-        mobileMenu.classList.add("hidden");
-        menuButton.setAttribute("aria-expanded", "false");
-        openUserArea();
+    const FONTES = Object.freeze([
+      {nome:"auditoria_lecar",modulo:"SISTEMA",campoTempo:"criadoEmISO",tipo:"AUDITORIA",prioridade:3},
+      {nome:"lgvc_ordens_servico",modulo:"LGVC",campoTempo:"atualizadoEmISO",tipo:"LGVC_ORDEM",prioridade:2},
+      {nome:"lgvc_veiculos",modulo:"LGVC",campoTempo:"atualizadoEmISO",tipo:"LGVC_VEICULO",prioridade:2},
+      {nome:"servicos_lista_geral",modulo:"OFICINA",campoTempo:"ultimaAtualizacaoISO",tipo:"OPERACIONAL",prioridade:1},
+      {nome:"veiculos",modulo:"OFICINA",campoTempo:"ultima_modificacao_iso",tipo:"OPERACIONAL",prioridade:1},
+      {nome:"lava_rapido_servicos",modulo:"LAVA RÁPIDO",campoTempo:"atualizadoEmISO",tipo:"OPERACIONAL",prioridade:1},
+      {nome:"polimento_servicos",modulo:"POLIMENTO",campoTempo:"atualizadoEmISO",tipo:"OPERACIONAL",prioridade:1},
+      {nome:"acessorios_servicos",modulo:"ACESSÓRIOS",campoTempo:"atualizadoEmISO",tipo:"OPERACIONAL",prioridade:1}
+    ]);
+
+    let usuarioAtual = null;
+    let perfilAtual = null;
+    let inicioJanela = new Date(Date.now()-60*60*1000);
+    let fimJanela = new Date();
+    let janelaRapidaAtual = 60;
+    let unsubscribes = [];
+    let atividadesPorFonte = new Map();
+    let fontesConectadas = new Set();
+    let fontesFalha = new Map();
+    let estadosDocumentos = new Map();
+
+    function normalizar(valor,limite=220) {
+      return String(valor ?? "").trim().replace(/\s+/g," ").toUpperCase().slice(0,limite);
+    }
+
+    function semAcentos(valor) {
+      return normalizar(valor).normalize("NFD").replace(/[\u0300-\u036f]/g,"");
+    }
+
+    function escapar(valor) {
+      return String(valor ?? "").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;").replace(/'/g,"&#039;");
+    }
+
+    function dataValida(valor) {
+      if (valor?.toDate) return valor.toDate();
+      if (valor instanceof Date) return valor;
+      const data = new Date(valor || 0);
+      return Number.isFinite(data.getTime()) ? data : null;
+    }
+
+    function obterData(dados={},campoPreferencial="") {
+      const campos = [campoPreferencial,"criadoEmISO","atualizadoEmISO","ultimaAtualizacaoISO","ultima_modificacao_iso","dataHoraISO","criadoEm","atualizadoEm","ultimaAtualizacao"];
+      for (const campo of campos) {
+        if (!campo || dados?.[campo] == null || dados?.[campo] === "") continue;
+        const data = dataValida(dados[campo]);
+        if (data) return data;
+      }
+      return new Date(0);
+    }
+
+    function primeiro(dados={},campos=[]) {
+      for (const campo of campos) {
+        const valor = dados?.[campo];
+        if (valor !== undefined && valor !== null && String(valor).trim() !== "") return valor;
+      }
+      return "";
+    }
+
+    function moduloCanonico(valor,fallback="SISTEMA") {
+      const chave = semAcentos(valor || fallback).replaceAll("_"," ");
+      if (chave.includes("LGVC")) return "LGVC";
+      if (chave.includes("LAVA")) return "LAVA RÁPIDO";
+      if (chave.includes("POLIMENTO")) return "POLIMENTO";
+      if (chave.includes("ACESS")) return "ACESSÓRIOS";
+      if (chave.includes("OFICINA") || chave.includes("MECAN")) return "OFICINA";
+      return "SISTEMA";
+    }
+
+    function statusDocumento(dados={}) {
+      return normalizar(primeiro(dados,["statusNovo","status","statusServico","statusDistribuicao","situacao","estado"]),60);
+    }
+
+    function responsavelDocumento(dados={}) {
+      return normalizar(primeiro(dados,["profissional","mecanicoResponsavel","mecanico_responsavel","instalador","polidorResponsavel","polidor_responsavel","lavadorResponsavel","lavador_responsavel","responsavel"]),50);
+    }
+
+    function usuarioDocumento(dados={}) {
+      return normalizar(primeiro(dados,["usuario","atualizadoPor","criadoPor","alteradoPor","excluidoPor"]),50);
+    }
+
+    function acaoOperacional(dados={},anterior=null,tipo="OPERACIONAL") {
+      if (tipo === "LGVC_ORDEM") {
+        const status = statusDocumento(dados) || "ATUALIZADA";
+        return anterior ? `ATUALIZOU ORDEM • ${status}` : `ORDEM ${status}`;
+      }
+      if (tipo === "LGVC_VEICULO") return anterior ? "ATUALIZOU VEÍCULO LGVC" : "VEÍCULO LGVC ATUALIZADO";
+      const statusAtual = statusDocumento(dados);
+      const statusAntes = anterior ? statusDocumento(anterior) : "";
+      const respAtual = responsavelDocumento(dados);
+      const respAntes = anterior ? responsavelDocumento(anterior) : "";
+      if (anterior && respAtual !== respAntes) return respAtual ? "ATRIBUIU RESPONSÁVEL" : "REMOVEU RESPONSÁVEL";
+      if (anterior && statusAtual && statusAntes && statusAtual !== statusAntes) {
+        if (semAcentos(statusAtual).includes("FINAL")) return "FINALIZOU";
+        return "ALTEROU STATUS";
+      }
+      if (!anterior && semAcentos(statusAtual).includes("FINAL")) return "FINALIZADO";
+      return anterior ? "ATUALIZOU" : "ATUALIZAÇÃO REGISTRADA";
+    }
+
+    function converterAuditoria(docId,dados,fonte) {
+      const detalhes = dados?.detalhes && typeof dados.detalhes === "object" ? dados.detalhes : {};
+      const internos = dados?.dados && typeof dados.dados === "object" ? dados.dados : {};
+      const depois = dados?.depois && typeof dados.depois === "object" ? dados.depois : {};
+      const unido = {...internos,...detalhes,...depois,...dados};
+      const tipo = normalizar(dados.tipo,70);
+      let acao = normalizar(dados.acao,90);
+      if (!acao) {
+        if (tipo === "CADASTRO_GERAL_LGVC") acao = "CADASTROU ORDEM GERAL";
+        else if (tipo.includes("EXCLUIDO")) acao = "MOVEU PARA LIXEIRA";
+        else if (tipo.includes("RESTAUR")) acao = "RESTAUROU";
+        else acao = tipo.replaceAll("_"," ") || "ATUALIZAÇÃO DE SISTEMA";
+      }
+      const setores = Array.isArray(dados.setores) ? dados.setores.join(", ") : "";
+      return {
+        id:`${fonte.nome}:${docId}`,
+        fonte:fonte.nome,
+        prioridade:fonte.prioridade,
+        data:obterData(dados,fonte.campoTempo),
+        modulo:moduloCanonico(dados.modulo || (tipo.includes("LGVC") ? "LGVC" : fonte.modulo)),
+        acao,
+        usuario:usuarioDocumento(unido),
+        profissional:responsavelDocumento(unido),
+        veiculo:normalizar(primeiro(unido,["veiculo","modelo","nomeVeiculo"]),80),
+        placa:normalizar(primeiro(unido,["placa","placaVeiculo","veiculoId"]),16).replace(/[^A-Z0-9]/g,""),
+        statusAnterior:normalizar(primeiro(unido,["statusAnterior","situacaoAnterior","statusAntes"]),60),
+        statusNovo:normalizar(primeiro(unido,["statusNovo","status","statusServico","situacaoNova"]),60),
+        detalhe:normalizar(primeiro(unido,["detalhe","descricao","observacoes"]) || (setores ? `SETORES: ${setores}` : ""),220)
+      };
+    }
+
+    function converterOperacional(docId,dados,fonte,anterior=null) {
+      const modulo = moduloCanonico(dados.modulo || fonte.modulo,fonte.modulo);
+      const statusAnterior = anterior ? statusDocumento(anterior) : "";
+      const statusNovo = statusDocumento(dados);
+      const setores = Array.isArray(dados.setores) ? dados.setores.join(", ") : "";
+      return {
+        id:`${fonte.nome}:${docId}`,
+        fonte:fonte.nome,
+        prioridade:fonte.prioridade,
+        data:obterData(dados,fonte.campoTempo),
+        modulo,
+        acao:acaoOperacional(dados,anterior,fonte.tipo),
+        usuario:usuarioDocumento(dados),
+        profissional:responsavelDocumento(dados),
+        veiculo:normalizar(primeiro(dados,["veiculo","modelo","nomeVeiculo"]),80),
+        placa:normalizar(primeiro(dados,["placa","placaVeiculo","veiculoId"]),16).replace(/[^A-Z0-9]/g,""),
+        statusAnterior,
+        statusNovo,
+        detalhe:normalizar(primeiro(dados,["descricao","observacoes","motivoRetorno"]) || (setores ? `SETORES: ${setores}` : ""),220)
+      };
+    }
+
+    function atividadeEquivalente(a,b) {
+      if (a.modulo !== b.modulo) return false;
+      if (a.placa && b.placa && a.placa !== b.placa) return false;
+      if (Math.abs(a.data.getTime()-b.data.getTime()) > 15000) return false;
+      const aa = semAcentos(a.acao);
+      const ab = semAcentos(b.acao);
+      return aa === ab || aa.includes(ab) || ab.includes(aa) || (aa.includes("ATUALIZ") && ab.includes("ATUALIZ"));
+    }
+
+    function todasAtividades() {
+      const lista = [...atividadesPorFonte.values()].flat();
+      const ordenada = lista
+        .filter(item => item.data >= inicioJanela && item.data <= fimJanela)
+        .sort((a,b) => b.data-a.data || b.prioridade-a.prioridade);
+      const finais = [];
+      for (const item of ordenada) {
+        const equivalente = finais.find(existente => atividadeEquivalente(existente,item));
+        if (!equivalente) finais.push(item);
+        else if (item.prioridade > equivalente.prioridade) finais[finais.indexOf(equivalente)] = item;
+      }
+      return finais.sort((a,b) => b.data-a.data);
+    }
+
+    function classeModulo(modulo) {
+      return `module-${semAcentos(modulo).toLowerCase().replace(/[^a-z0-9]+/g,"-").replace(/^-|-$/g,"")}`;
+    }
+
+    function formatarDataHora(data) {
+      return data.toLocaleString("pt-BR",{day:"2-digit",month:"2-digit",hour:"2-digit",minute:"2-digit",second:"2-digit",hour12:false});
+    }
+
+    function renderizar() {
+      const busca = semAcentos(document.getElementById("busca").value);
+      const modulo = document.getElementById("modulo").value;
+      const atividades = todasAtividades().filter(item => {
+        if (modulo !== "TODOS" && item.modulo !== modulo) return false;
+        if (!busca) return true;
+        return semAcentos([item.modulo,item.acao,item.usuario,item.profissional,item.veiculo,item.placa,item.statusAnterior,item.statusNovo,item.detalhe,item.fonte].join(" ")).includes(busca);
       });
-    });
 
-    closeUserAreaModal.addEventListener("click", closeUserArea);
-    userAreaBackdrop.addEventListener("click", closeUserArea);
+      const lista = document.getElementById("lista");
+      if (!atividades.length) {
+        lista.innerHTML = '<div class="empty">NENHUMA ATIVIDADE ENCONTRADA NESTE PERÍODO.</div>';
+      } else {
+        lista.innerHTML = atividades.map(item => {
+          const segmentos = [];
+          if (item.usuario) segmentos.push(`USUÁRIO: ${escapar(item.usuario)}`);
+          if (item.profissional) segmentos.push(`RESPONSÁVEL: ${escapar(item.profissional)}`);
+          if (item.veiculo) segmentos.push(escapar(item.veiculo));
+          if (item.placa) segmentos.push(`<span class="entry-plate">${escapar(item.placa)}</span>`);
+          if (item.statusAnterior || item.statusNovo) segmentos.push(`<span class="entry-status">${escapar(item.statusAnterior || "—")} → ${escapar(item.statusNovo || "—")}</span>`);
+          if (item.detalhe) segmentos.push(escapar(item.detalhe));
+          return `<article class="entry"><time class="entry-time">${escapar(formatarDataHora(item.data))}</time><span class="entry-module ${classeModulo(item.modulo)}">${escapar(item.modulo)}</span><div class="entry-main"><span class="entry-action">${escapar(item.acao)}</span>${segmentos.length ? ` <span class="entry-meta">• ${segmentos.join(" • ")}</span>` : ""} <span class="entry-source">[${escapar(item.fonte)}]</span></div></article>`;
+        }).join("");
+      }
 
-    document.addEventListener("keydown", (event) => {
-      if (event.key === "Escape" && userAreaModal.classList.contains("is-open")) {
-        closeUserArea();
+      document.getElementById("totalAtividades").textContent = String(atividades.length);
+      document.getElementById("totalModulos").textContent = String(new Set(atividades.map(item => item.modulo)).size);
+      document.getElementById("ultimaAtividade").textContent = atividades[0] ? formatarDataHora(atividades[0].data) : "—";
+      atualizarStatusConexao();
+    }
+
+    function atualizarStatusConexao() {
+      const total = FONTES.length;
+      const conectadas = fontesConectadas.size;
+      const falhas = fontesFalha.size;
+      const dot = document.getElementById("statusDot");
+      const texto = document.getElementById("statusTexto");
+      const fontes = document.getElementById("fontesStatus");
+      dot.className = "dot";
+      if (!navigator.onLine || conectadas === 0 && falhas === total) {
+        dot.classList.add("offline"); texto.textContent = "SEM CONEXÃO";
+      } else if (falhas > 0) {
+        dot.classList.add("partial"); texto.textContent = "CONEXÃO PARCIAL";
+      } else if (conectadas === total) {
+        dot.classList.add("online"); texto.textContent = "TEMPO REAL ATIVO";
+      } else {
+        texto.textContent = "CONECTANDO";
+      }
+      fontes.textContent = `FONTES: ${conectadas}/${total}${falhas ? ` • FALHAS: ${falhas}` : ""}`;
+    }
+
+    function encerrarListeners() {
+      unsubscribes.forEach(unsubscribe => { try { unsubscribe?.(); } catch (_) {} });
+      unsubscribes = [];
+      fontesConectadas.clear();
+      fontesFalha.clear();
+      estadosDocumentos.clear();
+    }
+
+    function consultaFonte(fonte) {
+      let consulta = db.collection(fonte.nome)
+        .where(fonte.campoTempo,">=",inicioJanela.toISOString());
+      if (janelaRapidaAtual === "PERSONALIZADO") {
+        consulta = consulta.where(fonte.campoTempo,"<=",fimJanela.toISOString());
+      }
+      return consulta.orderBy(fonte.campoTempo,"desc").limit(LIMITE_POR_FONTE);
+    }
+
+    function iniciarFonte(fonte) {
+      const estado = new Map();
+      estadosDocumentos.set(fonte.nome,estado);
+      const unsubscribe = consultaFonte(fonte).onSnapshot(snapshot => {
+        fontesConectadas.add(fonte.nome);
+        fontesFalha.delete(fonte.nome);
+        const primeiraCarga = estado.size === 0;
+        const listaAtual = [];
+        snapshot.docs.forEach(doc => {
+          const dados = doc.data() || {};
+          const anterior = estado.get(doc.id) || null;
+          const atividade = fonte.tipo === "AUDITORIA"
+            ? converterAuditoria(doc.id,dados,fonte)
+            : converterOperacional(doc.id,dados,fonte,primeiraCarga ? null : anterior);
+          listaAtual.push(atividade);
+          estado.set(doc.id,dados);
+        });
+        atividadesPorFonte.set(fonte.nome,listaAtual);
+        renderizar();
+      },erro => {
+        fontesConectadas.delete(fonte.nome);
+        fontesFalha.set(fonte.nome,String(erro?.code || erro?.message || erro));
+        atividadesPorFonte.set(fonte.nome,[]);
+        console.warn(`[CONSOLE] Fonte ${fonte.nome} indisponível:`,erro?.code || erro);
+        renderizar();
+      });
+      unsubscribes.push(unsubscribe);
+    }
+
+    function iniciarTempoReal() {
+      encerrarListeners();
+      atividadesPorFonte = new Map();
+      document.getElementById("lista").innerHTML = '<div class="empty">CARREGANDO ATIVIDADES...</div>';
+      FONTES.forEach(iniciarFonte);
+      atualizarStatusConexao();
+    }
+
+    function paraInputData(data) {
+      const local = new Date(data.getTime()-data.getTimezoneOffset()*60000);
+      return local.toISOString().slice(0,16);
+    }
+
+    function atualizarCamposPeriodo() {
+      document.getElementById("inicio").value = paraInputData(inicioJanela);
+      document.getElementById("fim").value = paraInputData(fimJanela);
+      document.getElementById("contextoJanela").textContent = `${formatarDataHora(inicioJanela)} → ${formatarDataHora(fimJanela)}`;
+      document.querySelectorAll(".quick-btn").forEach(btn => btn.classList.toggle("active",String(btn.dataset.minutos) === String(janelaRapidaAtual)));
+    }
+
+    window.definirJanela = function(minutos) {
+      const valor = Math.max(1,Number(minutos || 60));
+      fimJanela = new Date();
+      inicioJanela = new Date(fimJanela.getTime()-valor*60000);
+      janelaRapidaAtual = valor;
+      atualizarCamposPeriodo();
+      iniciarTempoReal();
+    };
+
+    window.definirHoje = function() {
+      const agora = new Date();
+      inicioJanela = new Date(agora.getFullYear(),agora.getMonth(),agora.getDate(),0,0,0,0);
+      fimJanela = agora;
+      janelaRapidaAtual = "HOJE";
+      atualizarCamposPeriodo();
+      iniciarTempoReal();
+    };
+
+    window.aplicarFiltroPersonalizado = function() {
+      const inicio = dataValida(document.getElementById("inicio").value);
+      const fim = dataValida(document.getElementById("fim").value);
+      if (!inicio || !fim || inicio >= fim) {
+        alert("INFORME UM PERÍODO VÁLIDO.");
+        return;
+      }
+      inicioJanela = inicio;
+      fimJanela = fim;
+      janelaRapidaAtual = "PERSONALIZADO";
+      atualizarCamposPeriodo();
+      iniciarTempoReal();
+    };
+
+    function atualizarJanelaMovel() {
+      if (janelaRapidaAtual === "PERSONALIZADO") return;
+      const agora = new Date();
+      fimJanela = agora;
+      if (janelaRapidaAtual === "HOJE") {
+        inicioJanela = new Date(agora.getFullYear(),agora.getMonth(),agora.getDate(),0,0,0,0);
+      } else {
+        inicioJanela = new Date(agora.getTime()-Number(janelaRapidaAtual || 60)*60000);
+      }
+      atualizarCamposPeriodo();
+      renderizar();
+    }
+
+    window.atualizarAgora = function() {
+      if (janelaRapidaAtual !== "PERSONALIZADO" && janelaRapidaAtual !== "HOJE") {
+        definirJanela(Number(janelaRapidaAtual || 60));
+      } else if (janelaRapidaAtual === "HOJE") {
+        definirHoje();
+      } else {
+        iniciarTempoReal();
+      }
+    };
+
+    window.voltarAoLPA = function() {
+      window.location.href = PAGINA_LPA;
+    };
+
+    function negarAcesso(mensagem) {
+      encerrarListeners();
+      document.getElementById("page").hidden = true;
+      document.getElementById("authGate").hidden = false;
+      document.getElementById("authTitle").textContent = "ACESSO BLOQUEADO";
+      document.getElementById("authMessage").textContent = mensagem;
+      document.getElementById("authBack").hidden = false;
+    }
+
+    function ehAdministrador(perfil,user) {
+      if (String(user?.email || "").toLowerCase() === EMAIL_ADMIN_RECUPERACAO) return true;
+      return perfil?.ativo !== false && (
+        normalizar(perfil?.perfil,30) === "ADMINISTRADOR" ||
+        perfil?.permissoes?.gerenciarUsuarios === true ||
+        perfil?.permissoes?.acessarPainelAdministrativo === true
+      );
+    }
+
+    async function carregarPerfil(user) {
+      const doc = await db.collection(COLECAO_PERFIS).doc(user.uid).get();
+      return doc.exists ? {uid:user.uid,email:user.email || "",...doc.data()} : null;
+    }
+
+    auth.onAuthStateChanged(async user => {
+      if (!user) {
+        negarAcesso("É NECESSÁRIO ENTRAR NO LPA ANTES DE ABRIR ESTA PÁGINA.");
+        return;
+      }
+      try {
+        const perfil = await carregarPerfil(user);
+        if (!ehAdministrador(perfil,user)) {
+          negarAcesso("ESTA PÁGINA É RESTRITA A USUÁRIOS ADMINISTRADORES AUTENTICADOS.");
+          return;
+        }
+        usuarioAtual = user;
+        perfilAtual = perfil || {nome:"LEANDRO",usuario:"LEANDRO",perfil:"ADMINISTRADOR",ativo:true};
+        document.getElementById("usuarioSessao").textContent = normalizar(perfilAtual.nome || perfilAtual.usuario || user.email,60);
+        document.getElementById("authGate").hidden = true;
+        document.getElementById("page").hidden = false;
+        definirJanela(60);
+      } catch (erro) {
+        console.error("Falha ao validar perfil:",erro);
+        negarAcesso("NÃO FOI POSSÍVEL VALIDAR O PERFIL NO FIREBASE.");
       }
     });
 
-    menuButton.addEventListener("click", () => {
-      const isOpen = menuButton.getAttribute("aria-expanded") === "true";
-      menuButton.setAttribute("aria-expanded", String(!isOpen));
-      mobileMenu.classList.toggle("hidden");
-    });
-
-    mobileLinks.forEach((link) => {
-      link.addEventListener("click", () => {
-        menuButton.setAttribute("aria-expanded", "false");
-        mobileMenu.classList.add("hidden");
-      });
-    });
-
-    document.getElementById("currentYear").textContent = new Date().getFullYear();
-
-    const revealElements = document.querySelectorAll(".reveal");
-
-    if ("IntersectionObserver" in window) {
-      const observer = new IntersectionObserver(
-        (entries) => {
-          entries.forEach((entry) => {
-            if (entry.isIntersecting) {
-              entry.target.classList.add("visible");
-              observer.unobserve(entry.target);
-            }
-          });
-        },
-        { threshold: 0.12 }
-      );
-
-      revealElements.forEach((element) => observer.observe(element));
-    } else {
-      revealElements.forEach((element) => element.classList.add("visible"));
-    }
+    document.getElementById("busca").addEventListener("input",renderizar);
+    document.getElementById("modulo").addEventListener("change",renderizar);
+    window.addEventListener("online",atualizarAgora);
+    window.addEventListener("offline",atualizarStatusConexao);
+    window.addEventListener("pagehide",encerrarListeners);
+    setInterval(() => {
+      document.getElementById("relogio").textContent = new Date().toLocaleTimeString("pt-BR",{hour12:false});
+    },1000);
+    setInterval(atualizarJanelaMovel,30000);
   </script>
 </body>
 </html>
