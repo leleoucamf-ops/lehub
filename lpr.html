@@ -1,0 +1,1793 @@
+<!doctype html>
+<!-- LPR V1.8 — MOVIMENTAÇÕES PERSISTENTES + FINALIZAÇÃO LGVO NORMALIZADA / 2026-08-11 -->
+<!-- LECAR LPR V1.6 — NORMALIZAÇÃO DE DATAS / CORTE OPERACIONAL 12-08-2026 -->
+<!--
+  REGRA OPERACIONAL:
+  - LÊ LGVA, LGVL, LGVP E LGVO.
+  - ATRIBUIÇÃO DE PROFISSIONAL = SAÍDA NO LPR.
+  - FINALIZAÇÃO = ENTRADA NO LPR.
+  - CONFIRMAÇÃO DA PORTARIA É SOMENTE INDICADOR VISUAL.
+  - NÃO ALTERA O STATUS DOS MÓDULOS DE ORIGEM.
+  - GRAVA SOMENTE A VALIDAÇÃO EM lpr_validacoes.
+-->
+<html lang="pt-BR" translate="no">
+<head>
+  <meta charset="UTF-8">
+  <meta name="google" content="notranslate">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>LECAR — LPR · PORTARIA</title>
+  <link rel="icon" type="image/x-icon" href="favicon.ico">
+  <link rel="apple-touch-icon" href="apple-touch-icon.png">
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+  <style>
+
+    :root{
+      --blue-900:#1e3a8a;
+      --blue-700:#1d4ed8;
+      --blue-600:#2563eb;
+      --blue-500:#3b82f6;
+      --bg:#eef2f7;
+      --card:#ffffff;
+      --text:#0f172a;
+      --muted:#64748b;
+      --border:#dbe3ef;
+      --safe-bottom:env(safe-area-inset-bottom,0px);
+    }
+
+    *{box-sizing:border-box;margin:0;padding:0;font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif}
+    body{min-height:100vh;background:var(--bg);color:var(--text)}
+    button,input{font:inherit}
+    button{cursor:pointer}
+    [hidden]{display:none!important}
+
+    /* LOGIN — BASE VISUAL LGVP */
+    .login-page{
+      min-height:100vh;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      padding:24px;
+      background:linear-gradient(135deg,#0d47a1,#2196f3);
+    }
+    .login-card{
+      width:340px;
+      max-width:100%;
+      padding:30px;
+      border-radius:22px;
+      background:rgba(255,255,255,.10);
+      backdrop-filter:blur(12px);
+      box-shadow:0 18px 45px rgba(0,0,0,.28);
+      text-align:center;
+    }
+    .login-logo{
+      width:250px;
+      max-width:92%;
+      filter:drop-shadow(0 8px 18px rgba(0,0,0,.42));
+      margin-bottom:22px;
+    }
+    .login-card input{
+      width:100%;
+      min-height:46px;
+      margin:6px 0;
+      padding:0 13px;
+      border:1px solid rgba(255,255,255,.24);
+      border-radius:12px;
+      outline:none;
+      background:rgba(255,255,255,.14);
+      color:#fff;
+      text-transform:none;
+    }
+    .login-card input::placeholder{color:rgba(255,255,255,.72)}
+    .login-card button{
+      width:100%;
+      min-height:46px;
+      margin-top:10px;
+      border:0;
+      border-radius:12px;
+      background:linear-gradient(90deg,#00c6ff,#0072ff);
+      color:#fff;
+      font-weight:900;
+      text-transform:uppercase;
+    }
+    .login-brand-signature{
+      margin-top:13px;
+      color:rgba(255,255,255,.72);
+      font-size:.55rem;
+      font-weight:800;
+      letter-spacing:.05em;
+      text-transform:uppercase;
+    }
+    .login-error{
+      display:none;
+      margin-top:12px;
+      color:#fecaca;
+      font-size:.72rem;
+      font-weight:800;
+      line-height:1.35;
+      text-transform:uppercase;
+    }
+
+    /* APP / TOPBAR — BASE LGVP */
+    .app{display:none;min-height:100vh;padding-bottom:calc(92px + var(--safe-bottom))}
+    .topbar.app-topbar-clean{
+      position:fixed;
+      top:0;left:0;right:0;
+      z-index:100;
+      min-height:54px;
+      height:54px;
+      padding:5px 18px;
+      display:flex;
+      align-items:center;
+      gap:12px;
+      color:#fff;
+      background:linear-gradient(90deg,#1e3a8a,#2563eb,#3b82f6);
+      background-size:200% 200%;
+      animation:gradientMove 6s ease infinite;
+      box-shadow:0 4px 12px rgba(0,0,0,.15);
+      border-bottom-left-radius:10px;
+      border-bottom-right-radius:10px;
+    }
+    @keyframes gradientMove{0%{background-position:0 50%}50%{background-position:100% 50%}100%{background-position:0 50%}}
+    .logo-img{
+      height:12px;
+      width:auto;
+      display:block;
+      object-fit:contain;
+      filter:drop-shadow(0 4px 10px rgba(0,0,0,.8));
+      flex:0 0 auto;
+    }
+    .topbar-spacer{margin-left:auto}
+    .topbar-tools{display:flex;align-items:center;gap:5px;position:relative}
+    .topbar-icon-btn{
+      width:34px;height:34px;min-width:34px;
+      padding:0;
+      border:1px solid rgba(255,255,255,.28);
+      border-radius:10px;
+      background:rgba(255,255,255,.12);
+      color:#fff;
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+    }
+    .topbar-icon-btn:hover{background:rgba(255,255,255,.22)}
+    .topbar-icon-btn svg{
+      width:20px;height:20px;
+      fill:none;stroke:currentColor;stroke-width:2.2;
+      stroke-linecap:round;stroke-linejoin:round;
+    }
+
+
+    /* MAIN / PAINEL — MESMA GEOMETRIA DO LGVP */
+    .main{
+      width:calc(100% - 30px);
+      max-width:none;
+      margin:0 15px;
+      padding-top:66px;
+      padding-bottom:14px;
+    }
+    .layout{width:100%;display:block}
+    .panel{
+      width:100%;
+      border:1px solid var(--border);
+      border-radius:14px;
+      background:#fff;
+      box-shadow:0 9px 24px rgba(15,23,42,.065);
+      overflow:hidden;
+    }
+    .services-panel-head{
+      min-height:48px;
+      padding:10px 14px;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:12px;
+      border-bottom:1px solid #e2e8f0;
+      background:linear-gradient(90deg,#f8fafc,#eef4ff);
+    }
+    .services-panel-head h2{
+      min-width:0;
+      color:#0f2748;
+      font-size:.82rem;
+      font-weight:950;
+      text-transform:uppercase;
+      white-space:nowrap;
+      overflow:hidden;
+      text-overflow:ellipsis;
+    }
+    .lpr-date-filter{
+      margin-left:auto;
+      display:flex;
+      align-items:center;
+      justify-content:flex-end;
+      gap:7px;
+      min-width:0;
+    }
+    .lpr-date-filter select,
+    .lpr-date-filter input{
+      height:30px;
+      border:1px solid #cbd5e1;
+      border-radius:9px;
+      background:#fff;
+      color:#0f2748;
+      padding:0 9px;
+      font-size:.62rem;
+      font-weight:900;
+      text-transform:uppercase;
+      outline:none;
+    }
+    .lpr-date-filter select:focus,
+    .lpr-date-filter input:focus{border-color:#93c5fd;box-shadow:0 0 0 2px rgba(37,99,235,.10)}
+    .lpr-period-range{display:flex;align-items:center;gap:6px;min-width:0}
+    .lpr-period-range[hidden]{display:none !important}
+    .lpr-period-range span{
+      color:#64748b;
+      font-size:.56rem;
+      font-weight:900;
+      text-transform:uppercase;
+      white-space:nowrap;
+    }
+    .services-view-summary{
+      display:inline-flex;
+      align-items:center;
+      gap:7px;
+      color:#64748b;
+      font-size:.64rem;
+      font-weight:800;
+      text-transform:uppercase;
+    }
+    .services-view-summary strong{
+      min-width:26px;height:24px;padding:0 8px;
+      border-radius:999px;
+      background:#eaf2ff;color:#1d4ed8;
+      display:inline-flex;align-items:center;justify-content:center;
+      font-size:.62rem;font-weight:950;
+    }
+    .services-panel-body{padding:10px}
+    .source-warning{
+      display:none;
+      margin-bottom:9px;
+      padding:8px 10px;
+      border:1px solid #fde68a;
+      border-radius:10px;
+      background:#fffbeb;
+      color:#92400e;
+      font-size:.58rem;
+      font-weight:800;
+      line-height:1.35;
+      text-transform:uppercase;
+    }
+    .source-warning.show{display:block}
+
+    .services-list.view-cards{
+      display:grid;
+      grid-template-columns:repeat(auto-fill,minmax(215px,230px));
+      align-items:start;
+      justify-content:start;
+      gap:10px;
+    }
+    .service-row{
+      position:relative;
+      width:100%;
+      min-width:0;
+      min-height:230px;
+      height:230px;
+      padding:12px 13px;
+      display:flex;
+      flex-direction:column;
+      border:1px solid #dbe3ef;
+      border-top:4px solid #64748b;
+      border-radius:14px;
+      background:linear-gradient(180deg,#f8fafc 0%,#fff 62%);
+      box-shadow:0 5px 14px rgba(15,23,42,.07);
+      overflow:hidden;
+    }
+    .service-row.saida{border-top-color:#f59e0b}
+    .service-row.entrada{border-top-color:#2563eb}
+    .service-row.pending{
+      border-color:#fecaca;
+      border-top-color:#ef4444;
+      background:linear-gradient(180deg,#fff1f2 0%,#ffffff 68%);
+    }
+    .service-row.validated{
+      border-color:#bbf7d0;
+      border-top-color:#22c55e;
+      background:linear-gradient(180deg,#f0fdf4 0%,#ffffff 68%);
+    }
+
+    .service-card-head{
+      min-height:24px;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:8px;
+    }
+    .service-date{
+      min-width:0;
+      display:inline-flex;
+      align-items:center;
+      gap:6px;
+      color:#475569;
+      font-size:.58rem;
+      font-weight:800;
+      white-space:nowrap;
+    }
+    .service-date svg,
+    .service-info-line svg{
+      width:15px;height:15px;min-width:15px;
+      fill:none;stroke:#2563eb;stroke-width:2;
+      stroke-linecap:round;stroke-linejoin:round;
+    }
+    .movement-type{
+      min-height:23px;
+      padding:0 8px;
+      border-radius:999px;
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      font-size:.5rem;
+      font-weight:950;
+      white-space:nowrap;
+      text-transform:uppercase;
+    }
+    .movement-type.saida{background:#fef3c7;border:1px solid #fde68a;color:#92400e}
+    .movement-type.entrada{background:#dbeafe;border:1px solid #bfdbfe;color:#1d4ed8}
+
+    .service-main{margin-top:12px;min-width:0}
+    .service-plate{
+      color:#0f172a;
+      font-size:1.25rem;
+      font-weight:950;
+      line-height:1;
+      letter-spacing:-.025em;
+    }
+    .service-vehicle{
+      margin-top:5px;
+      color:#334155;
+      font-size:.68rem;
+      font-weight:750;
+      line-height:1.2;
+      white-space:nowrap;
+      overflow:hidden;
+      text-overflow:ellipsis;
+    }
+    .service-desc{
+      min-height:0;
+      margin-top:10px;
+      display:block;
+      color:#475569;
+      font-size:.64rem;
+      font-weight:750;
+      line-height:1.35;
+      white-space:nowrap;
+      overflow:hidden;
+      text-overflow:ellipsis;
+    }
+    .service-info{
+      margin-top:10px;
+      display:grid;
+      gap:6px;
+      min-width:0;
+    }
+    .service-info-line{
+      min-width:0;
+      display:flex;
+      align-items:center;
+      gap:7px;
+      color:#475569;
+      font-size:.58rem;
+      line-height:1.2;
+      text-transform:uppercase;
+    }
+    .service-info-line>span{
+      min-width:0;
+      white-space:nowrap;
+      overflow:hidden;
+      text-overflow:ellipsis;
+    }
+    .service-info-line strong{color:#0f172a;font-weight:850}
+    .service-info-label{font-weight:700;color:#64748b}
+
+    .service-footer{
+      min-height:36px;
+      margin-top:auto;
+      padding-top:10px;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:8px;
+      border-top:1px solid #e2e8f0;
+    }
+    .status-badge{
+      min-height:23px;
+      padding:0 8px;
+      border-radius:999px;
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      font-size:.5rem;
+      font-weight:950;
+      white-space:nowrap;
+      text-transform:uppercase;
+    }
+    .status-badge.pendente{background:#fff7ed;border:1px solid #fdba74;color:#c2410c}
+    .status-badge.validado{background:#dcfce7;border:1px solid #86efac;color:#166534}
+    .service-actions{
+      margin:0;padding:0;
+      display:flex;align-items:center;justify-content:flex-end;gap:6px;
+    }
+    .confirm-btn{
+      min-height:28px;
+      padding:0 9px;
+      border:1px solid #2563eb;
+      border-radius:8px;
+      background:#eff6ff;
+      color:#1d4ed8;
+      font-size:.5rem;
+      font-weight:950;
+      text-transform:uppercase;
+      white-space:nowrap;
+    }
+    .confirm-btn:hover{background:#dbeafe}
+    .confirm-btn:disabled{opacity:.55;cursor:not-allowed}
+    .validated-by{
+      width:28px;height:28px;
+      display:inline-flex;align-items:center;justify-content:center;
+      border:1px solid #86efac;border-radius:8px;
+      background:#f0fdf4;color:#15803d;
+      font-size:.52rem;font-weight:950;
+    }
+    .empty{
+      grid-column:1/-1;
+      padding:34px 16px;
+      border:1px dashed #cbd5e1;
+      border-radius:15px;
+      color:#64748b;
+      text-align:center;
+      font-size:.72rem;
+      font-weight:800;
+      text-transform:uppercase;
+    }
+
+    /* BARRA INFERIOR — 2 ABAS OPERACIONAIS: ENTRADA / SAÍDA */
+    .lpr-taskbar{
+      position:fixed;
+      left:50%;
+      bottom:12px;
+      z-index:1260;
+      width:min(440px,calc(100% - 30px));
+      height:66px;
+      transform:translateX(-50%);
+      display:grid;
+      grid-template-columns:repeat(2,minmax(0,1fr));
+      align-items:stretch;
+      padding:6px 10px;
+      border:1px solid rgba(203,213,225,.92);
+      border-radius:20px;
+      background:rgba(255,255,255,.96);
+      box-shadow:0 14px 38px rgba(15,23,42,.20);
+      backdrop-filter:blur(14px);
+    }
+    .lpr-taskbar-item{
+      position:relative;
+      min-width:0;
+      height:54px;
+      padding:5px 8px;
+      border:0;
+      border-radius:14px;
+      background:transparent;
+      color:#64748b;
+      display:flex;
+      flex-direction:column;
+      align-items:center;
+      justify-content:center;
+      gap:3px;
+    }
+    .lpr-taskbar-item:hover{background:#eef4ff;color:#1e3a8a}
+    .lpr-taskbar-item.active{
+      background:linear-gradient(180deg,#eef4ff,#dbeafe);
+      color:#1d4ed8;
+      box-shadow:inset 0 0 0 1px #bfdbfe;
+    }
+    .lpr-taskbar-item svg{
+      width:24px;height:24px;
+      fill:none;stroke:currentColor;stroke-width:1.9;
+      stroke-linecap:round;stroke-linejoin:round;
+    }
+    .lpr-taskbar-label{
+      max-width:100%;
+      overflow:hidden;
+      text-overflow:ellipsis;
+      white-space:nowrap;
+      font-size:.58rem;
+      line-height:1;
+      font-weight:900;
+      letter-spacing:.045em;
+      text-transform:uppercase;
+    }
+    .lpr-taskbar-count{
+      position:absolute;
+      top:4px;
+      right:28px;
+      min-width:23px;height:23px;padding:0 5px;
+      border-radius:999px;
+      background:#dc2626;color:#fff;
+      display:inline-flex;align-items:center;justify-content:center;
+      font-size:.5rem;font-weight:950;line-height:1;
+      border:2px solid #fff;
+      box-shadow:0 2px 6px rgba(220,38,38,.28);
+    }
+    .lpr-taskbar-count.zero{background:#94a3b8;box-shadow:none}
+    .lpr-taskbar-item.active .lpr-taskbar-count{background:#dc2626;color:#fff}
+    .lpr-taskbar-item.active .lpr-taskbar-count.zero{background:#94a3b8;color:#fff}
+
+    /* DRAWER */
+    .drawer-overlay{
+      display:none;
+      position:fixed;inset:0;z-index:180;
+      background:rgba(15,23,42,.48);
+    }
+    .drawer-overlay.show{display:block}
+    .drawer{
+      position:fixed;
+      top:0;right:-340px;z-index:190;
+      width:320px;max-width:88vw;height:100dvh;
+      padding:18px;
+      background:#fff;
+      box-shadow:-18px 0 40px rgba(15,23,42,.25);
+      transition:right .23s ease;
+    }
+    .drawer.show{right:0}
+    .drawer-head{
+      display:flex;align-items:center;justify-content:space-between;
+      padding-bottom:14px;border-bottom:1px solid #e2e8f0;
+    }
+    .drawer-head strong{color:#0f2748;text-transform:uppercase}
+    .drawer-close{
+      width:38px;height:38px;
+      border:1px solid #cbd5e1;border-radius:11px;
+      background:#fff;color:#334155;font-size:1.2rem;
+    }
+    .drawer-user{
+      margin:14px 0;padding:13px;
+      border:1px solid #dbeafe;border-radius:13px;
+      background:#eff6ff;
+    }
+    .drawer-user strong{color:#1e3a8a;font-size:.84rem}
+    .drawer-user span{display:block;margin-top:3px;color:#64748b;font-size:.65rem;font-weight:800;text-transform:uppercase}
+    .drawer-btn{
+      width:100%;min-height:45px;
+      padding:0 12px;
+      border:1px solid #fecdd3;border-radius:12px;
+      background:#fff1f2;color:#dc2626;
+      font-size:.72rem;font-weight:900;text-align:left;text-transform:uppercase;
+    }
+
+    .toast{
+      position:fixed;
+      left:50%;
+      bottom:calc(90px + var(--safe-bottom));
+      z-index:1400;
+      transform:translate(-50%,30px);
+      max-width:min(520px,calc(100% - 24px));
+      padding:12px 15px;
+      border-radius:12px;
+      background:#0f172a;
+      color:#fff;
+      font-size:.7rem;
+      font-weight:850;
+      text-align:center;
+      opacity:0;
+      pointer-events:none;
+      transition:.2s;
+      text-transform:uppercase;
+      box-shadow:0 10px 28px rgba(15,23,42,.28);
+    }
+    .toast.show{opacity:1;transform:translate(-50%,0)}
+
+    @media(max-width:760px){
+      .topbar.app-topbar-clean{height:50px;min-height:50px;padding:5px 10px;gap:8px}
+      .logo-img{height:12px}
+      .topbar-icon-btn{width:31px;height:31px;min-width:31px}
+      .topbar-icon-btn svg{width:18px;height:18px}
+      .main{width:calc(100% - 18px);margin:0 9px;padding-top:60px}
+      .services-panel-head{min-height:52px;padding:10px 11px;flex-wrap:wrap}
+      .lpr-date-filter{order:3;width:100%;justify-content:flex-start}
+      .lpr-period-range{flex:1}
+      .lpr-date-filter input{min-width:0;max-width:145px;width:100%}
+      .services-panel-body{padding:8px}
+      .services-list.view-cards{grid-template-columns:minmax(0,1fr);gap:9px}
+      .service-row{min-height:220px;height:auto;padding:12px}
+      .lpr-taskbar{width:calc(100% - 18px);bottom:8px}
+      .lpr-taskbar-count{right:20px}
+    }
+
+    @media(max-width:380px){
+      .topbar.app-topbar-clean{padding-left:8px;padding-right:8px}
+      .lpr-taskbar-count{right:14px}
+    }
+
+  </style>
+</head>
+<body>
+  <section id="loginPage" class="login-page">
+    <form id="loginForm" class="login-card">
+      <img src="logo.png" alt="LECAR" class="login-logo">
+      <input id="loginUsuario" type="text" placeholder="E-mail ou usuário" autocomplete="username" autocapitalize="none" autocorrect="off" spellcheck="false" required>
+      <input id="loginSenha" type="password" placeholder="Senha" autocomplete="current-password" required>
+      <button id="loginBtn" type="submit">ACESSAR LPR</button>
+      <div class="login-brand-signature">LEHUB — INTELIGÊNCIA EM DADOS E FLUXOS OPERACIONAIS</div>
+      <div id="loginErro" class="login-error">E-MAIL OU SENHA INVÁLIDOS.</div>
+    </form>
+  </section>
+
+  <div id="app" class="app">
+    <header class="topbar app-topbar-clean">
+      <img src="logo.png" alt="LECAR" class="logo-img">
+
+      <div class="topbar-spacer"></div>
+
+      <div class="topbar-tools">
+        <button id="menuBtn" type="button" class="topbar-icon-btn" title="Menu do sistema" aria-label="Abrir menu">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7H20"></path><path d="M4 12H20"></path><path d="M4 17H20"></path></svg>
+        </button>
+      </div>
+    </header>
+
+    <main class="main">
+      <div class="layout">
+        <section class="panel list-panel">
+          <div class="services-panel-head">
+            <h2 id="tituloVisaoLPR">ENTRADAS</h2>
+            <div class="lpr-date-filter" aria-label="Filtro de data das movimentações">
+              <select id="filtroDataModo" aria-label="Modo do filtro de data">
+                <option value="HOJE">HOJE</option>
+                <option value="PERIODO">PERÍODO</option>
+              </select>
+              <div id="filtroPeriodoWrap" class="lpr-period-range" hidden>
+                <input id="filtroDataInicio" type="date" aria-label="Data inicial">
+                <span>ATÉ</span>
+                <input id="filtroDataFim" type="date" aria-label="Data final">
+              </div>
+            </div>
+            <div class="services-view-summary"><span>MOVIMENTAÇÕES</span><strong id="totalVisaoLPR">0</strong></div>
+          </div>
+          <div class="services-panel-body">
+            <div id="sourceWarning" class="source-warning"></div>
+            <div id="listaMovimentos" class="services-list view-cards">
+              <div class="empty">CARREGANDO MOVIMENTAÇÕES...</div>
+            </div>
+          </div>
+        </section>
+      </div>
+    </main>
+
+    <nav class="lpr-taskbar" aria-label="Movimentações do LPR">
+      <button type="button" class="lpr-taskbar-item active" data-filtro="ENTRADA" title="Ver entradas de veículos — badge mostra pendentes a partir de 12/08/2026">
+        <span id="countEntradas" class="lpr-taskbar-count">0</span>
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12H16"></path><path d="M11 7L16 12L11 17"></path><path d="M20 5V19"></path></svg>
+        <span class="lpr-taskbar-label">Entrada</span>
+      </button>
+      <button type="button" class="lpr-taskbar-item" data-filtro="SAIDA" title="Ver saídas de veículos — badge mostra pendentes a partir de 12/08/2026">
+        <span id="countSaidas" class="lpr-taskbar-count">0</span>
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 12H8"></path><path d="M13 7L8 12L13 17"></path><path d="M4 5V19"></path></svg>
+        <span class="lpr-taskbar-label">Saída</span>
+      </button>
+    </nav>
+  </div>
+
+  <div id="drawerOverlay" class="drawer-overlay"></div>
+  <aside id="drawer" class="drawer" aria-label="Menu do LPR">
+    <div class="drawer-head">
+      <strong>LPR · PORTARIA</strong>
+      <button id="drawerClose" type="button" class="drawer-close" aria-label="Fechar menu">×</button>
+    </div>
+    <div class="drawer-user">
+      <strong id="usuarioNome">-</strong>
+      <span id="usuarioSetor">PORTARIA</span>
+    </div>
+    <button id="sairBtn" type="button" class="drawer-btn">SAIR DO SISTEMA</button>
+  </aside>
+
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
+
+<script>
+    "use strict";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyDjMGX595VvyAj6Nk-I4Pj4VGlipJNovPw",
+      authDomain: "lehub-lecar.firebaseapp.com",
+      projectId: "lehub-lecar",
+      storageBucket: "lehub-lecar.firebasestorage.app",
+      messagingSenderId: "338216307290",
+      appId: "1:338216307290:web:bb31d3710098866094e663"
+    };
+
+    firebase.initializeApp(firebaseConfig);
+
+    const db = firebase.firestore();
+    const auth = firebase.auth();
+
+    const AUTH_COLLECTION = "usuarios_sistema";
+    const AUTH_DOMAIN_ALIAS = "lehub.local";
+    const EMAIL_ADMIN_RECUPERACAO = "leleoucamf@gmail.com";
+    const COLECAO_VALIDACOES = "lpr_validacoes";
+    const COLECAO_MOVIMENTACOES = "lpr_movimentacoes";
+    // Início oficial da operação do LPR na portaria.
+    // O módulo ignora completamente ENTRADAS e SAÍDAS anteriores a esta data.
+    const INICIO_OPERACAO_LPR = new Date("2026-08-12T00:00:00-03:00").getTime();
+
+    const FONTES = Object.freeze({
+      LGVA:{ colecao:"acessorios_servicos", setor:"ACESSÓRIOS" },
+      LGVL:{ colecao:"lava_rapido_servicos", setor:"LAVA RÁPIDO" },
+      LGVP:{ colecao:"polimento_servicos", setor:"POLIMENTO" },
+      LGVO_LISTA:{ colecao:"servicos_lista_geral", setor:"OFICINA" },
+      LGVO_VEICULOS:{ colecao:"veiculos", setor:"OFICINA" },
+      LGVC:{ colecao:"lgvc_veiculos", setor:"CADASTRO" }
+    });
+
+    const estado = {
+      perfil:null,
+      usuario:null,
+      LGVA:new Map(),
+      LGVL:new Map(),
+      LGVP:new Map(),
+      LGVO_LISTA:new Map(),
+      LGVO_VEICULOS:new Map(),
+      LGVC:new Map(),
+      VALIDACOES:new Map(),
+      MOVIMENTACOES:new Map(),
+      movimentos:[],
+      filtro:"ENTRADA",
+      filtroDataModo:"HOJE",
+      filtroDataInicio:"",
+      filtroDataFim:"",
+      filtroSetor:"TODOS",
+      errosFontes:new Map(),
+      movimentacoesPersistidasCarregadas:false,
+      unsubscribes:[]
+    };
+
+    function normalizar(valor) {
+      return String(valor ?? "")
+        .normalize("NFD")
+        .replace(/[\u0300-\u036f]/g,"")
+        .trim()
+        .toUpperCase();
+    }
+
+    function chavePlaca(valor) {
+      return normalizar(valor).replace(/[^A-Z0-9]/g,"");
+    }
+
+    function normalizarUsuario(valor) {
+      return normalizar(valor).replace(/[^A-Z0-9_]/g,"").slice(0,24);
+    }
+
+    function escapar(valor) {
+      return String(valor ?? "")
+        .replace(/&/g,"&amp;")
+        .replace(/</g,"&lt;")
+        .replace(/>/g,"&gt;")
+        .replace(/"/g,"&quot;")
+        .replace(/'/g,"&#039;");
+    }
+
+    function primeiroValor(objeto, campos) {
+      for (const campo of campos) {
+        const valor = objeto?.[campo];
+        if (valor !== undefined && valor !== null && String(valor).trim() !== "") return valor;
+      }
+      return "";
+    }
+
+    function timestampValor(valor) {
+      if (valor === undefined || valor === null || valor === "") return 0;
+
+      // 1) Firestore Timestamp nativo.
+      if (typeof valor?.toMillis === "function") {
+        const ms = Number(valor.toMillis());
+        return Number.isFinite(ms) ? ms : 0;
+      }
+
+      // 2) Timestamp serializado do Firestore: { seconds, nanoseconds }.
+      if (typeof valor === "object" && typeof valor?.seconds === "number") {
+        const nanos = Number(valor?.nanoseconds ?? valor?._nanoseconds ?? 0);
+        const ms = (Number(valor.seconds) * 1000) + (Number.isFinite(nanos) ? Math.floor(nanos / 1e6) : 0);
+        return Number.isFinite(ms) ? ms : 0;
+      }
+
+      // 3) Date JavaScript.
+      if (valor instanceof Date) {
+        const ms = valor.getTime();
+        return Number.isFinite(ms) ? ms : 0;
+      }
+
+      // 4) Epoch numérico: aceita segundos (10 dígitos) ou milissegundos (13 dígitos).
+      if (typeof valor === "number") {
+        if (!Number.isFinite(valor) || valor <= 0) return 0;
+        return valor < 100000000000 ? Math.round(valor * 1000) : Math.round(valor);
+      }
+
+      const texto = String(valor).trim();
+      if (!texto) return 0;
+
+      // Epoch armazenado como string.
+      if (/^\d{10,13}$/.test(texto)) {
+        const numero = Number(texto);
+        if (!Number.isFinite(numero) || numero <= 0) return 0;
+        return texto.length <= 10 ? numero * 1000 : numero;
+      }
+
+      // 5) Legado brasileiro: DD/MM/AAAA, HH:MM:SS ou DD/MM/AAAA HH:MM.
+      // A interpretação é fixa em America/Sao_Paulo (UTC-03:00).
+      const br = texto.match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})(?:\s*,?\s*(\d{1,2}):(\d{2})(?::(\d{2})(?:[.,](\d{1,3}))?)?)?$/);
+      if (br) {
+        const [,dia,mes,ano,hora="00",minuto="00",segundo="00",mili="0"] = br;
+        const iso = `${ano}-${String(mes).padStart(2,"0")}-${String(dia).padStart(2,"0")}T${String(hora).padStart(2,"0")}:${String(minuto).padStart(2,"0")}:${String(segundo).padStart(2,"0")}.${String(mili).padEnd(3,"0").slice(0,3)}-03:00`;
+        const ms = Date.parse(iso);
+        return Number.isFinite(ms) ? ms : 0;
+      }
+
+      // 6) ISO / formato AAAA-MM-DD. Se não houver timezone explícito,
+      // assume São Paulo para evitar depender do fuso do computador da portaria.
+      const isoLocal = texto.match(/^(\d{4})-(\d{2})-(\d{2})(?:[T\s](\d{2}):(\d{2})(?::(\d{2})(?:\.(\d{1,9}))?)?)?(Z|[+-]\d{2}:?\d{2})?$/i);
+      if (isoLocal) {
+        const [,ano,mes,dia,hora="00",minuto="00",segundo="00",fracao="0",zona=""] = isoLocal;
+        const milissegundos = String(fracao || "0").padEnd(3,"0").slice(0,3);
+        let tz = zona || "-03:00";
+        if (/^[+-]\d{4}$/.test(tz)) tz = `${tz.slice(0,3)}:${tz.slice(3)}`;
+        const iso = `${ano}-${mes}-${dia}T${hora}:${minuto}:${segundo}.${milissegundos}${tz}`;
+        const ms = Date.parse(iso);
+        return Number.isFinite(ms) ? ms : 0;
+      }
+
+      // 7) Último fallback apenas para formatos não ambíguos reconhecidos pelo navegador.
+      // Strings DD/MM/AAAA nunca chegam aqui porque foram tratadas acima.
+      const ms = Date.parse(texto);
+      return Number.isFinite(ms) ? ms : 0;
+    }
+
+    function primeiroTimestamp(objeto, campos) {
+      for (const campo of campos) {
+        const ts = timestampValor(objeto?.[campo]);
+        if (ts) return ts;
+      }
+      return 0;
+    }
+
+    function timestampAtribuicao(item) {
+      return primeiroTimestamp(item, [
+        "assumidoEm","assumidoEmISO","assumido_em","assumido_em_iso",
+        "iniciadoEm","iniciadoEmISO","iniciado_em","iniciado_em_iso",
+        "dataAssumiu","dataAssumiuISO","data_assumiu","data_assumiu_iso"
+      ]);
+    }
+
+    function timestampFinalizacao(item) {
+      return primeiroTimestamp(item, [
+        "finalizadoEm","finalizadoEmISO","finalizado_em","finalizado_em_iso",
+        "dataFinalizacao","dataFinalizacaoISO","data_finalizacao","data_finalizacao_iso"
+      ]);
+    }
+
+    // A Oficina possui registros legados em que a finalização não tem campo dedicado.
+    // Nesses casos, o próprio LPA usa ultima_modificacao_iso como último fallback.
+    function timestampFinalizacaoOficina(item) {
+      return timestampFinalizacao(item) || primeiroTimestamp(item, [
+        "ultima_modificacao_iso","ultimaModificacaoISO","ultima_modificacao",
+        "ultimaAtualizacaoISO","ultimaAtualizacao","atualizadoEmISO","atualizadoEm"
+      ]);
+    }
+
+    function timestampOrdenacaoFallback(item) {
+      return primeiroTimestamp(item, [
+        "atualizadoEm","atualizadoEmISO","ultimaAtualizacao","ultimaAtualizacaoISO",
+        "ultima_modificacao_iso","criadoEm","criadoEmISO","dataEntradaISO","dataEntrada"
+      ]);
+    }
+
+    function formatarData(timestamp, tipo) {
+      if (!timestamp) {
+        return tipo === "ENTRADA"
+          ? "DATA DE FINALIZAÇÃO NÃO INFORMADA"
+          : "DATA DE ATRIBUIÇÃO NÃO INFORMADA";
+      }
+      return new Intl.DateTimeFormat("pt-BR",{
+        day:"2-digit",month:"2-digit",year:"numeric",hour:"2-digit",minute:"2-digit"
+      }).format(new Date(timestamp));
+    }
+
+    function kmDoRegistro(item) {
+      const valor = primeiroValor(item,[
+        "quilometragem","quilometragemAtual","quilometragem_atual",
+        "kmAtual","km_atual","km","kmAtualOleo","odometro","odometroAtual"
+      ]);
+      if (valor === "" || valor === null || valor === undefined) return "";
+      const texto = String(valor).trim();
+      return texto && texto !== "0" ? texto : "";
+    }
+
+    function profissionalAcessorios(item) {
+      return normalizar(primeiroValor(item,[
+        "instalador","instaladorResponsavel","instalador_responsavel",
+        "responsavel","atribuidoPara","profissional","finalizadoPor"
+      ]));
+    }
+
+    function profissionalLava(item) {
+      return normalizar(primeiroValor(item,[
+        "lavadorResponsavel","lavador_responsavel","lavador",
+        "responsavel","atribuidoPara","profissional","finalizadoPor"
+      ]));
+    }
+
+    function profissionalPolimento(item) {
+      return normalizar(primeiroValor(item,[
+        "polidorResponsavel","polidor_responsavel","polidor",
+        "responsavel","atribuidoPara","profissional","finalizadoPor"
+      ]));
+    }
+
+    function profissionalOficina(item) {
+      return normalizar(primeiroValor(item,[
+        "mecanicoResponsavel","mecanico_responsavel","mecanico","mecanicoNome",
+        "mecanico_nome","responsavel","atribuidoPara","profissional","finalizadoPor"
+      ]));
+    }
+
+    function statusGenerico(item) {
+      return normalizar(primeiroValor(item,[
+        "status","statusOperacional","status_operacional","statusServico",
+        "status_servico","statusDistribuicao","status_distribuicao","situacao","card"
+      ]));
+    }
+
+    function statusFinalizado(item) {
+      const status = statusGenerico(item);
+      return status.includes("FINALIZ") || status === "PRONTO" || status === "PRONTOS";
+    }
+
+    function statusFinalizadoOficina(item) {
+      const status = normalizar(item?.status || item?.statusServico || "");
+      return status.includes("FINALIZ");
+    }
+
+    function possuiAtribuicao(item, profissional) {
+      const distribuicao = normalizar(item?.statusDistribuicao || item?.status_distribuicao || "");
+      return Boolean(profissional) || Boolean(timestampAtribuicao(item)) || distribuicao === "ASSUMIDO";
+    }
+
+    function moduloSetor(modulo) {
+      return {
+        LGVA:"ACESSÓRIOS",
+        LGVL:"LAVA RÁPIDO",
+        LGVP:"POLIMENTO",
+        LGVO:"OFICINA"
+      }[modulo] || modulo;
+    }
+
+    function idEvento(modulo, chaveBase, tipo) {
+      const base = String(chaveBase || "").replace(/\//g,"_");
+      return `${modulo}__${base}__${tipo}`;
+    }
+
+    function criarMovimento({
+      modulo,
+      chaveBase,
+      tipo,
+      origemColecao,
+      origemId,
+      item,
+      profissional,
+      timestamp,
+      km,
+      descricao
+    }) {
+      const placa = chavePlaca(item?.placa || item?.placaVeiculo || "");
+      const veiculo = normalizar(item?.veiculo || item?.modelo || item?.nomeVeiculo || "VEÍCULO NÃO INFORMADO");
+      return {
+        id:idEvento(modulo,chaveBase,tipo),
+        modulo,
+        setor:moduloSetor(modulo),
+        tipo,
+        origemColecao,
+        origemId:String(origemId || ""),
+        placa,
+        veiculo,
+        km:km || "",
+        profissional:profissional || "PROFISSIONAL NÃO INFORMADO",
+        descricao:normalizar(descricao || item?.descricao || item?.servico || item?.tipoServico || "SERVIÇO NÃO INFORMADO"),
+        origem:normalizar(item?.origem || item?.operacao || item?.local || ""),
+        timestamp:Number(timestamp || 0),
+        sortTimestamp:Number(timestamp || timestampOrdenacaoFallback(item) || 0)
+      };
+    }
+
+    function melhorMovimento(atual, novo) {
+      if (!atual) return novo;
+      const pontuar = item =>
+        (item.timestamp ? 4 : 0) +
+        (item.km ? 2 : 0) +
+        (item.profissional && item.profissional !== "PROFISSIONAL NÃO INFORMADO" ? 2 : 0) +
+        (item.descricao && item.descricao !== "SERVIÇO NÃO INFORMADO" ? 1 : 0);
+      return pontuar(novo) >= pontuar(atual) ? {...atual,...novo} : atual;
+    }
+
+    function movimentoPersistido(id,item={}) {
+      const timestamp = timestampValor(item?.eventoEm) || timestampValor(item?.timestamp) || timestampValor(item?.eventoEmISO);
+      return {
+        id:String(item?.eventoId || id || ""),
+        modulo:normalizar(item?.modulo),
+        setor:normalizar(item?.setor || moduloSetor(item?.modulo)),
+        tipo:normalizar(item?.tipo),
+        origemColecao:String(item?.origemColecao || ""),
+        origemId:String(item?.origemId || item?.origemDocumentoId || ""),
+        placa:chavePlaca(item?.placa || ""),
+        veiculo:normalizar(item?.veiculo || "VEÍCULO NÃO INFORMADO"),
+        km:String(item?.km ?? "").trim(),
+        profissional:normalizar(item?.profissional || "PROFISSIONAL NÃO INFORMADO"),
+        descricao:normalizar(item?.descricao || "SERVIÇO NÃO INFORMADO"),
+        origem:normalizar(item?.origem || ""),
+        timestamp:Number(timestamp || 0),
+        sortTimestamp:Number(timestamp || 0),
+        persistido:true
+      };
+    }
+
+    function movimentosPersistidosValidos() {
+      const resultado = [];
+      estado.MOVIMENTACOES.forEach((item,id) => {
+        const movimento = movimentoPersistido(id,item);
+        if (!movimento.id || !["ENTRADA","SAIDA"].includes(movimento.tipo)) return;
+        if (movimento.timestamp < INICIO_OPERACAO_LPR) return;
+        resultado.push(movimento);
+      });
+      return resultado;
+    }
+
+    let sincronizacaoMovimentosEmCurso = false;
+    let sincronizacaoMovimentosPendente = false;
+
+    async function persistirMovimentosDetectados(lista=[]) {
+      // Espera o primeiro snapshot da coleção própria para não sobrescrever
+      // um evento histórico que já exista com o mesmo ID determinístico.
+      if (!estado.movimentacoesPersistidasCarregadas) return;
+
+      const novos = (Array.isArray(lista) ? lista : []).filter(movimento =>
+        movimento?.id
+        && Number(movimento?.timestamp || 0) >= INICIO_OPERACAO_LPR
+        && !estado.MOVIMENTACOES.has(movimento.id)
+      );
+      if (!novos.length) return;
+
+      if (sincronizacaoMovimentosEmCurso) {
+        sincronizacaoMovimentosPendente = true;
+        return;
+      }
+
+      sincronizacaoMovimentosEmCurso = true;
+      try {
+        for (let inicio = 0; inicio < novos.length; inicio += 400) {
+          const lote = db.batch();
+          novos.slice(inicio,inicio + 400).forEach(movimento => {
+            const ref = db.collection(COLECAO_MOVIMENTACOES).doc(movimento.id);
+            lote.set(ref,{
+              eventoId:movimento.id,
+              modulo:movimento.modulo,
+              setor:movimento.setor,
+              tipo:movimento.tipo,
+              origemColecao:movimento.origemColecao,
+              origemId:movimento.origemId,
+              placa:movimento.placa,
+              veiculo:movimento.veiculo,
+              km:movimento.km || "",
+              profissional:movimento.profissional,
+              descricao:movimento.descricao,
+              origem:movimento.origem || "",
+              timestamp:Number(movimento.timestamp),
+              eventoEm:new Date(Number(movimento.timestamp)),
+              eventoEmISO:new Date(Number(movimento.timestamp)).toISOString(),
+              registradoEm:firebase.firestore.FieldValue.serverTimestamp(),
+              registradoEmISO:new Date().toISOString(),
+              imutavel:true
+            },{merge:true});
+          });
+          await lote.commit();
+        }
+      } catch (erro) {
+        console.error("[LPR] Falha ao persistir movimentações:",erro);
+        estado.errosFontes.set("MOVIMENTACOES",erro?.code || "ERRO");
+        renderizarAvisosFontes();
+      } finally {
+        sincronizacaoMovimentosEmCurso = false;
+        if (sincronizacaoMovimentosPendente) {
+          sincronizacaoMovimentosPendente = false;
+          reconstruirMovimentos();
+        }
+      }
+    }
+
+    function construirIndiceKm() {
+      const indice = new Map();
+
+      const registrar = item => {
+        const placa = chavePlaca(item?.placa || item?.placaVeiculo || item?.id || "");
+        const km = kmDoRegistro(item);
+        if (!placa || !km) return;
+        const atual = indice.get(placa);
+        const atualizado = timestampOrdenacaoFallback(item);
+        if (!atual || atualizado >= atual.atualizado) indice.set(placa,{km,atualizado});
+      };
+
+      estado.LGVC.forEach(registrar);
+      estado.LGVO_LISTA.forEach(registrar);
+      estado.LGVO_VEICULOS.forEach(registrar);
+      estado.LGVA.forEach(registrar);
+      estado.LGVL.forEach(registrar);
+      estado.LGVP.forEach(registrar);
+
+      return indice;
+    }
+
+    function kmPara(item, indiceKm) {
+      const proprio = kmDoRegistro(item);
+      if (proprio) return proprio;
+      const placa = chavePlaca(item?.placa || item?.placaVeiculo || "");
+      return placa ? indiceKm.get(placa)?.km || "" : "";
+    }
+
+    function adicionarEventosSetor({
+      mapa,
+      modulo,
+      colecao,
+      profissionalFn,
+      indiceKm
+    }, movimentos) {
+      mapa.forEach((item,id) => {
+        const profissional = profissionalFn(item);
+        if (!possuiAtribuicao(item,profissional)) return;
+
+        const km = kmPara(item,indiceKm);
+        const descricao = item?.descricao || item?.servico || "";
+        const saida = criarMovimento({
+          modulo,
+          chaveBase:id,
+          tipo:"SAIDA",
+          origemColecao:colecao,
+          origemId:id,
+          item,
+          profissional,
+          timestamp:timestampAtribuicao(item),
+          km,
+          descricao
+        });
+        movimentos.set(saida.id,melhorMovimento(movimentos.get(saida.id),saida));
+
+        if (statusFinalizado(item)) {
+          const entrada = criarMovimento({
+            modulo,
+            chaveBase:id,
+            tipo:"ENTRADA",
+            origemColecao:colecao,
+            origemId:id,
+            item,
+            profissional,
+            timestamp:timestampFinalizacao(item),
+            km,
+            descricao
+          });
+          movimentos.set(entrada.id,melhorMovimento(movimentos.get(entrada.id),entrada));
+        }
+      });
+    }
+
+    function indiceListaPorVeiculo() {
+      const indice = new Map();
+      estado.LGVO_LISTA.forEach((item,id) => {
+        const veiculoId = String(item?.veiculoId || item?.veiculo_id || "").trim();
+        if (veiculoId) indice.set(veiculoId,{id,item});
+      });
+      return indice;
+    }
+
+    function reconstruirMovimentos() {
+      const movimentos = new Map();
+      const indiceKm = construirIndiceKm();
+
+      adicionarEventosSetor({
+        mapa:estado.LGVA,
+        modulo:"LGVA",
+        colecao:FONTES.LGVA.colecao,
+        profissionalFn:profissionalAcessorios,
+        indiceKm
+      },movimentos);
+
+      adicionarEventosSetor({
+        mapa:estado.LGVL,
+        modulo:"LGVL",
+        colecao:FONTES.LGVL.colecao,
+        profissionalFn:profissionalLava,
+        indiceKm
+      },movimentos);
+
+      adicionarEventosSetor({
+        mapa:estado.LGVP,
+        modulo:"LGVP",
+        colecao:FONTES.LGVP.colecao,
+        profissionalFn:profissionalPolimento,
+        indiceKm
+      },movimentos);
+
+      const listaPorVeiculo = indiceListaPorVeiculo();
+
+      // LGVO: servicos_lista_geral é a fonte mais fiel da atribuição.
+      estado.LGVO_LISTA.forEach((item,id) => {
+        const profissional = profissionalOficina(item);
+        if (!possuiAtribuicao(item,profissional)) return;
+
+        const chaveBase = `SERVICO_${id}`;
+        const saida = criarMovimento({
+          modulo:"LGVO",
+          chaveBase,
+          tipo:"SAIDA",
+          origemColecao:FONTES.LGVO_LISTA.colecao,
+          origemId:id,
+          item,
+          profissional,
+          timestamp:timestampAtribuicao(item),
+          km:kmPara(item,indiceKm),
+          descricao:item?.descricao || item?.servico
+        });
+        movimentos.set(saida.id,melhorMovimento(movimentos.get(saida.id),saida));
+
+        // Se o próprio registro da lista carregar uma finalização real, também gera ENTRADA.
+        if (statusFinalizado(item) && timestampFinalizacaoOficina(item)) {
+          const entrada = criarMovimento({
+            modulo:"LGVO",
+            chaveBase,
+            tipo:"ENTRADA",
+            origemColecao:FONTES.LGVO_LISTA.colecao,
+            origemId:id,
+            item,
+            profissional,
+            timestamp:timestampFinalizacaoOficina(item),
+            km:kmPara(item,indiceKm),
+            descricao:item?.descricao || item?.servico
+          });
+          movimentos.set(entrada.id,melhorMovimento(movimentos.get(entrada.id),entrada));
+        }
+      });
+
+      // LGVO: veiculos é a fonte do veículo ativo/finalizado.
+      estado.LGVO_VEICULOS.forEach((item,id) => {
+        const profissional = profissionalOficina(item);
+        if (!possuiAtribuicao(item,profissional)) return;
+
+        const vinculoListaDireto = String(item?.lista_geral_id || item?.listaGeralId || "").trim();
+        const vinculoListaInvertido = listaPorVeiculo.get(id)?.id || "";
+        const listaId = vinculoListaDireto || vinculoListaInvertido;
+        const chaveBase = listaId ? `SERVICO_${listaId}` : `VEICULO_${id}`;
+
+        const fonteLista = listaId ? estado.LGVO_LISTA.get(listaId) : null;
+        const itemComposto = fonteLista ? {...fonteLista,...item} : item;
+        const profissionalComposto = profissional || profissionalOficina(fonteLista || {});
+        const km = kmPara(itemComposto,indiceKm);
+
+        const saida = criarMovimento({
+          modulo:"LGVO",
+          chaveBase,
+          tipo:"SAIDA",
+          origemColecao:FONTES.LGVO_VEICULOS.colecao,
+          origemId:id,
+          item:itemComposto,
+          profissional:profissionalComposto,
+          timestamp:timestampAtribuicao(fonteLista || {}) || timestampAtribuicao(item),
+          km,
+          descricao:itemComposto?.descricao || itemComposto?.servico
+        });
+        movimentos.set(saida.id,melhorMovimento(movimentos.get(saida.id),saida));
+
+        if (statusFinalizadoOficina(item)) {
+          const entrada = criarMovimento({
+            modulo:"LGVO",
+            chaveBase,
+            tipo:"ENTRADA",
+            origemColecao:FONTES.LGVO_VEICULOS.colecao,
+            origemId:id,
+            item:itemComposto,
+            profissional:profissionalComposto,
+            timestamp:timestampFinalizacaoOficina(item),
+            km,
+            descricao:itemComposto?.descricao || itemComposto?.servico
+          });
+          movimentos.set(entrada.id,melhorMovimento(movimentos.get(entrada.id),entrada));
+        }
+      });
+
+      const detectadosValidos = [...movimentos.values()]
+        // Regra de corte: o LPR começa em 12/08/2026 00:00 (America/Sao_Paulo).
+        // Usa somente a data REAL do evento (atribuição para SAÍDA / finalização para ENTRADA).
+        .filter(item => Number(item.timestamp || 0) >= INICIO_OPERACAO_LPR);
+
+      // Registra cada evento com ID determinístico. Depois de persistido, o movimento
+      // continua existindo mesmo que o módulo de origem remova/edite os campos que o geraram.
+      persistirMovimentosDetectados(detectadosValidos);
+
+      const consolidados = new Map();
+      movimentosPersistidosValidos().forEach(item => consolidados.set(item.id,item));
+      detectadosValidos.forEach(item => consolidados.set(item.id,melhorMovimento(consolidados.get(item.id),item)));
+
+      estado.movimentos = [...consolidados.values()]
+        .filter(item => Number(item.timestamp || 0) >= INICIO_OPERACAO_LPR)
+        .sort((a,b) => (b.timestamp || 0) - (a.timestamp || 0) || a.placa.localeCompare(b.placa,"pt-BR"));
+
+      renderizar();
+    }
+
+    function validacaoDoMovimento(movimento) {
+      return estado.VALIDACOES.get(movimento.id) || null;
+    }
+
+    function movimentoValidado(movimento) {
+      return validacaoDoMovimento(movimento)?.validado === true;
+    }
+
+    function entraNaContagemValidacao(movimento) {
+      // estado.movimentos já contém somente eventos válidos a partir do início oficial.
+      return Number(movimento?.timestamp || 0) >= INICIO_OPERACAO_LPR;
+    }
+
+    function dataSaoPauloISO(timestamp) {
+      const ms = Number(timestamp || 0);
+      if (!Number.isFinite(ms) || ms <= 0) return "";
+      const partes = new Intl.DateTimeFormat("en-CA",{
+        timeZone:"America/Sao_Paulo",
+        year:"numeric",month:"2-digit",day:"2-digit"
+      }).formatToParts(new Date(ms));
+      const mapa = Object.fromEntries(partes.map(parte => [parte.type,parte.value]));
+      return mapa.year && mapa.month && mapa.day ? `${mapa.year}-${mapa.month}-${mapa.day}` : "";
+    }
+
+    function hojeSaoPauloISO() {
+      return dataSaoPauloISO(Date.now());
+    }
+
+    function movimentoPassaFiltroData(item) {
+      const dataItem = dataSaoPauloISO(item?.timestamp);
+      if (!dataItem) return false;
+
+      if (estado.filtroDataModo === "PERIODO") {
+        const inicio = estado.filtroDataInicio || hojeSaoPauloISO();
+        const fim = estado.filtroDataFim || inicio;
+        const menor = inicio <= fim ? inicio : fim;
+        const maior = inicio <= fim ? fim : inicio;
+        return dataItem >= menor && dataItem <= maior;
+      }
+
+      return dataItem === hojeSaoPauloISO();
+    }
+
+    function movimentosFiltrados() {
+      return estado.movimentos.filter(item => item.tipo === estado.filtro && movimentoPassaFiltroData(item));
+    }
+
+    function formatarKm(valor) {
+      const texto = String(valor || "").trim();
+      if (!texto) return "";
+      const numerico = Number(texto.replace(/[^\d]/g,""));
+      if (Number.isFinite(numerico) && numerico > 0) return numerico.toLocaleString("pt-BR");
+      return texto.toUpperCase();
+    }
+
+    function formatarValidacao(validacao) {
+      if (!validacao?.validado) return "";
+      const data = timestampValor(validacao.validadoEm) || timestampValor(validacao.validadoEmISO);
+      const por = normalizar(validacao.validadoPor || validacao.usuario || "PORTARIA");
+      const quando = data
+        ? new Intl.DateTimeFormat("pt-BR",{day:"2-digit",month:"2-digit",year:"numeric",hour:"2-digit",minute:"2-digit"}).format(new Date(data))
+        : "DATA NÃO INFORMADA";
+      return `VALIDADO POR ${por || "PORTARIA"} • ${quando}`;
+    }
+
+    function cardMovimento(item) {
+      const validacao = validacaoDoMovimento(item);
+      const validado = validacao?.validado === true;
+      const km = formatarKm(item.km);
+      const data = formatarData(item.timestamp,item.tipo);
+      const tipoClasse = item.tipo === "ENTRADA" ? "entrada" : "saida";
+
+      return `
+        <article class="service-row movement-card ${tipoClasse} ${validado ? "validated" : "pending"}">
+          <div class="service-card-head">
+            <span class="service-date">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="8.5"></circle><path d="M12 7.5V12L15.5 14"></path></svg>
+              ${escapar(data)}
+            </span>
+            <span class="movement-type ${tipoClasse}">${item.tipo}</span>
+          </div>
+
+          <div class="service-main">
+            <div class="service-plate">${escapar(item.placa || "SEM PLACA")}</div>
+            <div class="service-vehicle">${escapar(item.veiculo || "VEÍCULO NÃO INFORMADO")}</div>
+          </div>
+
+          <div class="service-desc" title="${escapar(item.descricao)}">${escapar(item.descricao || "SERVIÇO NÃO INFORMADO")}</div>
+
+          <div class="service-info">
+            <div class="service-info-line">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 21V10L12 4L20 10V21"></path><path d="M9 21V14H15V21"></path></svg>
+              <span><span class="service-info-label">SETOR: </span><strong>${escapar(item.modulo)} · ${escapar(item.setor)}</strong></span>
+            </div>
+            <div class="service-info-line">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 12A4 4 0 1 0 12 4A4 4 0 0 0 12 12Z"></path><path d="M4 21A8 8 0 0 1 20 21"></path></svg>
+              <span><span class="service-info-label">PROFISSIONAL: </span><strong>${escapar(item.profissional || "NÃO INFORMADO")}</strong></span>
+            </div>
+            ${km ? `<div class="service-info-line">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 17A8 8 0 0 1 20 17"></path><path d="M12 13L16 9"></path><path d="M7 17H17"></path></svg>
+              <span><span class="service-info-label">KM: </span><strong>${escapar(km)}</strong></span>
+            </div>` : ""}
+          </div>
+
+          <div class="service-footer">
+            <span class="status-badge ${validado ? "validado" : "pendente"}">${validado ? "VALIDADO" : "PENDENTE"}</span>
+            <div class="service-actions">
+              ${validado
+                ? `<span class="validated-by" title="${escapar(formatarValidacao(validacao))}">OK</span>`
+                : `<button type="button" class="confirm-btn" data-validar="${escapar(item.id)}">CONFIRMAR</button>`}
+            </div>
+          </div>
+        </article>
+      `;
+    }
+
+    function renderizarAvisosFontes() {
+      const aviso = document.getElementById("sourceWarning");
+      if (!aviso) return;
+      const erros = [...estado.errosFontes.entries()];
+      if (!erros.length) {
+        aviso.classList.remove("show");
+        aviso.textContent = "";
+        return;
+      }
+      aviso.textContent = `ATENÇÃO: ${erros.map(([fonte]) => fonte).join(", ")} NÃO PÔDE SER LIDO. O LPR ESTÁ EXIBINDO SOMENTE AS FONTES DISPONÍVEIS.`;
+      aviso.classList.add("show");
+    }
+
+    function renderizarResumo() {
+      const pendentesEntrada = estado.movimentos.filter(item =>
+        item.tipo === "ENTRADA" && entraNaContagemValidacao(item) && !movimentoValidado(item)
+      ).length;
+      const pendentesSaida = estado.movimentos.filter(item =>
+        item.tipo === "SAIDA" && entraNaContagemValidacao(item) && !movimentoValidado(item)
+      ).length;
+
+      const countEntradas = document.getElementById("countEntradas");
+      const countSaidas = document.getElementById("countSaidas");
+
+      if (countEntradas) {
+        countEntradas.textContent = String(pendentesEntrada);
+        countEntradas.classList.toggle("zero", pendentesEntrada === 0);
+        countEntradas.title = `${pendentesEntrada} ENTRADA(S) PENDENTE(S) DE VALIDAÇÃO A PARTIR DE 12/08/2026`;
+      }
+      if (countSaidas) {
+        countSaidas.textContent = String(pendentesSaida);
+        countSaidas.classList.toggle("zero", pendentesSaida === 0);
+        countSaidas.title = `${pendentesSaida} SAÍDA(S) PENDENTE(S) DE VALIDAÇÃO A PARTIR DE 12/08/2026`;
+      }
+    }
+
+    function sincronizarFiltroDataCabecalho() {
+      const modo = document.getElementById("filtroDataModo");
+      const periodo = document.getElementById("filtroPeriodoWrap");
+      const inicio = document.getElementById("filtroDataInicio");
+      const fim = document.getElementById("filtroDataFim");
+      if (modo) modo.value = estado.filtroDataModo;
+      if (periodo) periodo.hidden = estado.filtroDataModo !== "PERIODO";
+      if (inicio) inicio.value = estado.filtroDataInicio;
+      if (fim) fim.value = estado.filtroDataFim;
+    }
+
+    function renderizar() {
+      renderizarAvisosFontes();
+      sincronizarFiltroDataCabecalho();
+      renderizarResumo();
+
+      document.querySelectorAll("[data-filtro]").forEach(botao => {
+        botao.classList.toggle("active",botao.dataset.filtro === estado.filtro);
+      });
+
+      const itens = movimentosFiltrados();
+      const titulo = document.getElementById("tituloVisaoLPR");
+      const resumo = document.getElementById("totalVisaoLPR");
+      if (titulo) titulo.textContent = estado.filtro === "SAIDA" ? "SAÍDAS" : "ENTRADAS";
+      if (resumo) resumo.textContent = String(itens.length);
+
+      const lista = document.getElementById("listaMovimentos");
+      lista.innerHTML = itens.length
+        ? itens.map(cardMovimento).join("")
+        : `<div class="empty">${estado.filtro === "SAIDA" ? "NENHUMA SAÍDA REGISTRADA." : "NENHUMA ENTRADA REGISTRADA."}</div>`;
+
+      lista.querySelectorAll("[data-validar]").forEach(botao => {
+        botao.addEventListener("click",() => validarMovimento(botao.dataset.validar,botao));
+      });
+    }
+
+    function mostrarToast(mensagem) {
+      const toast = document.getElementById("toast");
+      toast.textContent = mensagem;
+      toast.classList.add("show");
+      clearTimeout(mostrarToast.timer);
+      mostrarToast.timer = setTimeout(() => toast.classList.remove("show"),3200);
+    }
+
+    async function validarMovimento(id,botao) {
+      const movimento = estado.movimentos.find(item => item.id === id);
+      if (!movimento || movimentoValidado(movimento)) return;
+      if (!auth.currentUser || !estado.perfil) return mostrarToast("SESSÃO DA PORTARIA NÃO ENCONTRADA.");
+
+      const agora = new Date();
+      if (botao) {
+        botao.disabled = true;
+        botao.textContent = "VALIDANDO...";
+      }
+
+      try {
+        await db.collection(COLECAO_VALIDACOES).doc(movimento.id).set({
+          eventoId:movimento.id,
+          validado:true,
+          tipo:movimento.tipo,
+          modulo:movimento.modulo,
+          setor:movimento.setor,
+          placa:movimento.placa,
+          veiculo:movimento.veiculo,
+          profissional:movimento.profissional,
+          origemColecao:movimento.origemColecao,
+          origemDocumentoId:movimento.origemId,
+          validadoPor:normalizar(estado.perfil.usuario || estado.perfil.nome || "PORTARIA"),
+          validadoPorUid:auth.currentUser.uid,
+          validadoEm:firebase.firestore.FieldValue.serverTimestamp(),
+          validadoEmISO:agora.toISOString(),
+          mensagemOperacional:"VEÍCULO ATUALIZADO NO SISTEMA MARINHO",
+          alterouModuloOrigem:false
+        },{merge:true});
+
+        mostrarToast("VEÍCULO ATUALIZADO NO SISTEMA MARINHO.");
+      } catch (erro) {
+        console.error("[LPR] Falha ao validar movimentação:",erro);
+        const permissao = String(erro?.code || "").includes("permission-denied");
+        mostrarToast(permissao
+          ? "FIREBASE BLOQUEOU A VALIDAÇÃO. É NECESSÁRIO LIBERAR lpr_validacoes NAS RULES."
+          : "NÃO FOI POSSÍVEL VALIDAR A MOVIMENTAÇÃO.");
+      } finally {
+        if (botao) {
+          botao.disabled = false;
+          botao.textContent = "CONFIRMAR";
+        }
+      }
+    }
+
+    function limparListeners() {
+      estado.unsubscribes.forEach(unsubscribe => {
+        try { unsubscribe?.(); } catch (_) {}
+      });
+      estado.unsubscribes = [];
+    }
+
+    function acompanharColecao(chave,colecao) {
+      const unsubscribe = db.collection(colecao).onSnapshot(snapshot => {
+        estado[chave] = new Map(snapshot.docs.map(doc => [doc.id,{id:doc.id,...doc.data()}]));
+        if (chave === "MOVIMENTACOES") estado.movimentacoesPersistidasCarregadas = true;
+        estado.errosFontes.delete(chave);
+        reconstruirMovimentos();
+      },erro => {
+        console.error(`[LPR] Erro ao ler ${colecao}:`,erro);
+        if (chave === "MOVIMENTACOES") estado.movimentacoesPersistidasCarregadas = false;
+        estado.errosFontes.set(chave,erro?.code || "ERRO");
+        reconstruirMovimentos();
+      });
+      estado.unsubscribes.push(unsubscribe);
+    }
+
+    function iniciarLeituraLPR() {
+      limparListeners();
+
+      acompanharColecao("LGVA",FONTES.LGVA.colecao);
+      acompanharColecao("LGVL",FONTES.LGVL.colecao);
+      acompanharColecao("LGVP",FONTES.LGVP.colecao);
+      acompanharColecao("LGVO_LISTA",FONTES.LGVO_LISTA.colecao);
+      acompanharColecao("LGVO_VEICULOS",FONTES.LGVO_VEICULOS.colecao);
+      acompanharColecao("LGVC",FONTES.LGVC.colecao);
+      acompanharColecao("MOVIMENTACOES",COLECAO_MOVIMENTACOES);
+      acompanharColecao("VALIDACOES",COLECAO_VALIDACOES);
+    }
+
+    async function carregarPerfil(user) {
+      const doc = await db.collection(AUTH_COLLECTION).doc(user.uid).get();
+      if (doc.exists) return {uid:user.uid,email:user.email || "",...doc.data()};
+
+      if (String(user.email || "").toLowerCase() === EMAIL_ADMIN_RECUPERACAO) {
+        return {
+          uid:user.uid,
+          usuario:"LEANDRO",
+          nome:"LEANDRO",
+          email:EMAIL_ADMIN_RECUPERACAO,
+          perfil:"ADMINISTRADOR",
+          setor:"ADMINISTRATIVO",
+          ativo:true,
+          permissoes:{gerenciarUsuarios:true}
+        };
+      }
+
+      return null;
+    }
+
+    function temAcessoLPR(perfil) {
+      if (!perfil || perfil.ativo === false) return false;
+      const setor = normalizar(perfil.setor);
+      const tipoPerfil = normalizar(perfil.perfil);
+      return setor === "PORTARIA"
+        || tipoPerfil === "ADMINISTRADOR"
+        || perfil?.permissoes?.gerenciarUsuarios === true;
+    }
+
+    function emailLogin(entrada) {
+      const valor = String(entrada || "").trim();
+      if (valor.includes("@")) return valor.toLowerCase();
+      const usuario = normalizarUsuario(valor);
+      if (usuario === "LEANDRO") return EMAIL_ADMIN_RECUPERACAO;
+      return usuario ? `${usuario.toLowerCase()}@${AUTH_DOMAIN_ALIAS}` : "";
+    }
+
+    function abrirAplicacao(user,perfil) {
+      estado.usuario = user;
+      estado.perfil = perfil;
+
+      document.getElementById("loginPage").style.display = "none";
+      document.getElementById("app").style.display = "block";
+      document.getElementById("usuarioNome").textContent = normalizar(perfil.usuario || perfil.nome || "PORTARIA");
+      document.getElementById("usuarioSetor").textContent = normalizar(perfil.setor || perfil.perfil || "PORTARIA");
+
+      iniciarLeituraLPR();
+    }
+
+    function abrirLogin(mensagem="") {
+      limparListeners();
+      estado.usuario = null;
+      estado.perfil = null;
+      estado.movimentos = [];
+      estado.movimentacoesPersistidasCarregadas = false;
+      document.getElementById("app").style.display = "none";
+      document.getElementById("loginPage").style.display = "flex";
+
+      const erro = document.getElementById("loginErro");
+      erro.textContent = mensagem;
+      erro.style.display = mensagem ? "block" : "none";
+    }
+
+    async function entrar(event) {
+      event.preventDefault();
+      const entrada = document.getElementById("loginUsuario").value;
+      const senha = document.getElementById("loginSenha").value;
+      const email = emailLogin(entrada);
+      const botao = document.getElementById("loginBtn");
+      const erro = document.getElementById("loginErro");
+
+      erro.style.display = "none";
+      if (!email || !senha) return;
+
+      botao.disabled = true;
+      botao.textContent = "VERIFICANDO...";
+
+      try {
+        const credencial = await auth.signInWithEmailAndPassword(email,senha);
+        const perfil = await carregarPerfil(credencial.user);
+        if (!temAcessoLPR(perfil)) {
+          await auth.signOut();
+          throw new Error("SEM_ACESSO_LPR");
+        }
+        abrirAplicacao(credencial.user,perfil);
+      } catch (erroLogin) {
+        console.warn("[LPR] Login recusado:",erroLogin?.code || erroLogin?.message || erroLogin);
+        const codigo = String(erroLogin?.code || erroLogin?.message || "");
+        erro.textContent = codigo.includes("SEM_ACESSO_LPR")
+          ? "ACESSO AO LPR RESTRITO À PORTARIA E ADMINISTRADORES."
+          : codigo.includes("wrong-password") || codigo.includes("invalid-credential")
+            ? "E-MAIL OU SENHA NÃO CONFEREM."
+            : codigo.includes("user-not-found")
+              ? "CONTA NÃO ENCONTRADA NO FIREBASE AUTHENTICATION."
+              : codigo.includes("network")
+                ? "SEM CONEXÃO COM O FIREBASE."
+                : "NÃO FOI POSSÍVEL ENTRAR NO LPR.";
+        erro.style.display = "block";
+      } finally {
+        botao.disabled = false;
+        botao.textContent = "ACESSAR LPR";
+      }
+    }
+
+    document.getElementById("loginForm").addEventListener("submit",entrar);
+
+    document.getElementById("sairBtn").addEventListener("click",async () => {
+      limparListeners();
+      await auth.signOut().catch(() => {});
+      abrirLogin();
+    });
+
+
+    const filtroDataModo = document.getElementById("filtroDataModo");
+    const filtroDataInicio = document.getElementById("filtroDataInicio");
+    const filtroDataFim = document.getElementById("filtroDataFim");
+
+    filtroDataModo?.addEventListener("change",() => {
+      estado.filtroDataModo = filtroDataModo.value === "PERIODO" ? "PERIODO" : "HOJE";
+      if (estado.filtroDataModo === "PERIODO" && !estado.filtroDataInicio && !estado.filtroDataFim) {
+        const hoje = hojeSaoPauloISO();
+        estado.filtroDataInicio = hoje;
+        estado.filtroDataFim = hoje;
+      }
+      renderizar();
+    });
+
+    filtroDataInicio?.addEventListener("change",() => {
+      estado.filtroDataInicio = filtroDataInicio.value || "";
+      if (!estado.filtroDataFim && estado.filtroDataInicio) estado.filtroDataFim = estado.filtroDataInicio;
+      renderizar();
+    });
+
+    filtroDataFim?.addEventListener("change",() => {
+      estado.filtroDataFim = filtroDataFim.value || "";
+      if (!estado.filtroDataInicio && estado.filtroDataFim) estado.filtroDataInicio = estado.filtroDataFim;
+      renderizar();
+    });
+
+    document.querySelectorAll("[data-filtro]").forEach(botao => {
+      botao.addEventListener("click",() => {
+        estado.filtro = botao.dataset.filtro || "ENTRADA";
+        renderizar();
+      });
+    });
+auth.onAuthStateChanged(async user => {
+      try {
+        if (!user) {
+          abrirLogin();
+          return;
+        }
+        const perfil = await carregarPerfil(user);
+        if (!temAcessoLPR(perfil)) {
+          await auth.signOut();
+          abrirLogin("USUÁRIO SEM ACESSO AO LPR.");
+          return;
+        }
+        abrirAplicacao(user,perfil);
+      } catch (erro) {
+        console.error("[LPR] Falha ao restaurar sessão:",erro);
+        await auth.signOut().catch(() => {});
+        abrirLogin("NÃO FOI POSSÍVEL VALIDAR A SESSÃO.");
+      }
+    });
+
+    const menuBtn = document.getElementById("menuBtn");
+    const drawer = document.getElementById("drawer");
+    const drawerOverlay = document.getElementById("drawerOverlay");
+    const drawerClose = document.getElementById("drawerClose");
+
+
+    function abrirDrawerLPR() {
+      drawer?.classList.add("show");
+      drawerOverlay?.classList.add("show");
+    }
+
+    function fecharDrawerLPR() {
+      drawer?.classList.remove("show");
+      drawerOverlay?.classList.remove("show");
+    }
+
+    menuBtn?.addEventListener("click",abrirDrawerLPR);
+    drawerClose?.addEventListener("click",fecharDrawerLPR);
+    drawerOverlay?.addEventListener("click",fecharDrawerLPR);
+
+  </script>
+</body>
+</html>
