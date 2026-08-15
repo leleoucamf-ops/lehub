@@ -1,0 +1,1360 @@
+<!DOCTYPE html>
+<html lang="pt-BR" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta
+    name="description"
+    content="Automação empresarial, integração de sistemas e soluções sob medida em Sorocaba. A LEHUB centraliza dados, fluxos e operações em um único ecossistema."
+  />
+  <meta name="robots" content="index, follow, max-image-preview:large" />
+  <meta name="theme-color" content="#05070b" />
+
+  <title>LEHUB — INTELIGÊNCIA EM DADOS E FLUXOS OPERACIONAIS</title>
+
+  <link rel="canonical" href="https://lehub.top/" />
+  <link rel="icon" href="/lehub.png" type="image/png" />
+
+  <meta property="og:type" content="website" />
+  <meta property="og:locale" content="pt_BR" />
+  <meta property="og:site_name" content="LEHUB" />
+  <meta property="og:title" content="Automação Empresarial e Sistemas Sob Medida em Sorocaba | LEHUB" />
+  <meta property="og:description" content="Consultoria, automação empresarial, integração de sistemas e soluções sob medida para centralizar operações em um único ecossistema." />
+  <meta property="og:url" content="https://lehub.top/" />
+
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="Automação Empresarial e Sistemas Sob Medida em Sorocaba | LEHUB" />
+  <meta name="twitter:description" content="Consultoria, automação empresarial, integração de sistemas e soluções sob medida para centralizar operações em um único ecossistema." />
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Organization",
+    "name": "LEHUB",
+    "url": "https://lehub.top/",
+    "logo": "https://lehub.top/lehub.png",
+    "description": "Consultoria em tecnologia, automação empresarial, integração de sistemas e soluções sob medida.",
+    "telephone": "+5515996625567",
+    "contactPoint": {
+      "@type": "ContactPoint",
+      "telephone": "+5515996625567",
+      "contactType": "customer service",
+      "availableLanguage": "Portuguese"
+    }
+  }
+  </script>
+
+  <!-- Tailwind CSS via CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- Fontes modernas -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Manrope:wght@500;600;700;800&display=swap"
+    rel="stylesheet"
+  />
+
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            ink: {
+              950: "#05070b",
+              900: "#080b11",
+              850: "#0c1018",
+              800: "#111722"
+            },
+            brand: {
+              400: "#60a5fa",
+              500: "#3b82f6",
+              600: "#2563eb",
+              700: "#1d4ed8"
+            }
+          },
+          fontFamily: {
+            sans: ["Inter", "sans-serif"],
+            display: ["Manrope", "sans-serif"]
+          },
+          boxShadow: {
+            soft: "0 20px 60px rgba(0,0,0,.35)",
+            line: "0 0 0 1px rgba(255,255,255,.06)"
+          },
+          backgroundImage: {
+            "hero-grid":
+              "linear-gradient(rgba(255,255,255,.025) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,.025) 1px, transparent 1px)"
+          }
+        }
+      }
+    };
+  </script>
+
+  <style>
+    :root {
+      color-scheme: dark;
+    }
+
+    body {
+      background:
+        radial-gradient(circle at 80% 10%, rgba(37, 99, 235, 0.10), transparent 26rem),
+        radial-gradient(circle at 10% 35%, rgba(37, 99, 235, 0.06), transparent 22rem),
+        #05070b;
+    }
+
+    ::selection {
+      background: rgba(37, 99, 235, 0.85);
+      color: #ffffff;
+    }
+
+    .noise {
+      background-image:
+        url("data:image/svg+xml,%3Csvg viewBox='0 0 180 180' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.035'/%3E%3C/svg%3E");
+    }
+
+    .reveal {
+      opacity: 0;
+      transform: translateY(18px);
+      transition: opacity 700ms ease, transform 700ms ease;
+    }
+
+    .reveal.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .data-line {
+      position: relative;
+      overflow: hidden;
+    }
+
+    .data-line::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(
+        90deg,
+        transparent,
+        rgba(96, 165, 250, 0.38),
+        transparent
+      );
+      transform: translateX(-100%);
+      animation: flow 4.8s linear infinite;
+    }
+
+    @keyframes flow {
+      to {
+        transform: translateX(100%);
+      }
+    }
+
+    .user-area-modal {
+      visibility: hidden;
+      opacity: 0;
+      pointer-events: none;
+      transition:
+        opacity 220ms ease,
+        visibility 0s linear 220ms;
+    }
+
+    .user-area-modal.is-open {
+      visibility: visible;
+      opacity: 1;
+      pointer-events: auto;
+      transition-delay: 0s;
+    }
+
+    .user-area-backdrop {
+      opacity: 0;
+      transition: opacity 220ms ease;
+    }
+
+    .user-area-modal.is-open .user-area-backdrop {
+      opacity: 1;
+    }
+
+    .user-area-panel {
+      opacity: 0;
+      transform: translateY(12px) scale(0.98);
+      transition:
+        opacity 220ms ease,
+        transform 220ms ease;
+    }
+
+    .user-area-modal.is-open .user-area-panel {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *,
+      *::before,
+      *::after {
+        scroll-behavior: auto !important;
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+      }
+
+      .reveal {
+        opacity: 1;
+        transform: none;
+      }
+    }
+
+
+    .projects-carousel {
+      position: relative;
+    }
+
+    .project-slides {
+      display: grid;
+    }
+
+    .project-slide {
+      grid-area: 1 / 1;
+      visibility: hidden;
+      opacity: 0;
+      transform: translateX(18px);
+      pointer-events: none;
+      transition:
+        opacity 480ms ease,
+        transform 480ms ease,
+        visibility 0s linear 480ms;
+    }
+
+    .project-slide.is-active {
+      visibility: visible;
+      opacity: 1;
+      transform: translateX(0);
+      pointer-events: auto;
+      transition-delay: 0s;
+    }
+
+    .project-control {
+      display: inline-flex;
+      height: 2.75rem;
+      width: 2.75rem;
+      align-items: center;
+      justify-content: center;
+      border-radius: 0.75rem;
+      border: 1px solid rgba(255, 255, 255, 0.10);
+      background: rgba(255, 255, 255, 0.025);
+      color: #d4d4d8;
+      transition: border-color 180ms ease, background 180ms ease, color 180ms ease;
+    }
+
+    .project-control:hover {
+      border-color: rgba(96, 165, 250, 0.55);
+      background: rgba(59, 130, 246, 0.08);
+      color: #ffffff;
+    }
+
+    .project-side-control {
+      position: absolute;
+      top: 50%;
+      z-index: 20;
+      transform: translateY(-50%);
+      background: rgba(9, 9, 11, 0.82);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      box-shadow: 0 12px 35px rgba(0, 0, 0, 0.28);
+    }
+
+    #projectPrev { left: -1.375rem; }
+    #projectNext { right: -1.375rem; }
+
+    @media (max-width: 1280px) {
+      #projectPrev { left: 0.5rem; }
+      #projectNext { right: 0.5rem; }
+    }
+
+
+    /* Refinamento mobile final */
+    .projects-carousel {
+      touch-action: pan-y;
+    }
+
+    @media (max-width: 639px) {
+      .project-control {
+        width: 2.5rem;
+        height: 2.5rem;
+      }
+
+      #projectPrev {
+        left: -0.75rem;
+      }
+
+      #projectNext {
+        right: -0.75rem;
+      }
+
+      .project-side-control {
+        background: rgba(9, 9, 11, 0.88);
+      }
+    }
+
+    .project-dot {
+      height: 0.55rem;
+      width: 0.55rem;
+      border-radius: 999px;
+      background: #3f3f46;
+      transition: width 220ms ease, background 220ms ease;
+    }
+
+    .project-dot.is-active {
+      width: 1.75rem;
+      background: #3b82f6;
+    }
+
+  </style>
+</head>
+
+<body class="overflow-x-hidden font-sans text-white antialiased">
+  <div class="noise pointer-events-none fixed inset-0 z-50"></div>
+
+  <!-- Cabeçalho -->
+  <header class="fixed inset-x-0 top-0 z-40 border-b border-white/[0.06] bg-ink-950/80 backdrop-blur-xl">
+    <div class="mx-auto flex h-20 max-w-7xl items-center justify-between px-5 sm:px-8 lg:px-10">
+      <a href="#inicio" class="flex items-center" aria-label="Página inicial da LEHUB">
+        <img
+          src="lehub.png"
+          alt="LEHUB — Inteligência em Dados e Fluxos Operacionais"
+          class="h-10 w-auto object-contain sm:h-11"
+        />
+      </a>
+
+      <nav class="hidden items-center gap-8 text-sm text-zinc-300 xl:flex" aria-label="Navegação principal">
+        <a href="#manifesto" class="transition hover:text-white">Manifesto</a>
+        <a href="#solucao" class="transition hover:text-white">Solução</a>
+        <a href="#projetos" class="transition hover:text-white">Projetos</a>
+        <a href="#diferenciais" class="transition hover:text-white">Diferenciais</a>
+        <a href="#contato" class="transition hover:text-white">Contato</a>
+      </nav>
+
+      <button
+        type="button"
+        class="user-area-trigger hidden h-10 items-center justify-center rounded-lg border border-brand-500/50 bg-brand-600/[0.06] px-4 text-sm font-normal text-brand-400 transition hover:border-brand-400/70 hover:bg-brand-500/[0.10] hover:text-brand-300 xl:inline-flex"
+        aria-haspopup="dialog"
+        aria-controls="userAreaModal"
+      >
+        Área do usuário
+      </button>
+
+      <button
+        id="menuButton"
+        type="button"
+        class="inline-flex h-11 w-11 items-center justify-center rounded-lg border border-white/10 text-white xl:hidden"
+        aria-expanded="false"
+        aria-controls="mobileMenu"
+        aria-label="Abrir menu"
+      >
+        <svg viewBox="0 0 24 24" class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="1.8">
+          <path d="M4 7h16M4 12h16M4 17h16" stroke-linecap="round" />
+        </svg>
+      </button>
+    </div>
+
+    <div id="mobileMenu" class="hidden border-t border-white/[0.06] bg-ink-950 px-5 py-5 xl:hidden">
+      <nav class="flex flex-col gap-4 text-sm text-zinc-300">
+        <a href="#manifesto" class="mobile-link">Manifesto</a>
+        <a href="#solucao" class="mobile-link">Solução</a>
+        <a href="#projetos" class="mobile-link">Projetos</a>
+        <a href="#diferenciais" class="mobile-link">Diferenciais</a>
+        <a href="#contato" class="mobile-link">Contato</a>
+      </nav>
+
+      <div class="mt-5 border-t border-white/[0.06] pt-5">
+        <button
+          type="button"
+          class="user-area-trigger inline-flex h-10 w-full items-center justify-center rounded-lg border border-brand-500/50 bg-brand-600/[0.06] px-4 text-sm font-normal text-brand-400 transition hover:border-brand-400/70 hover:bg-brand-500/[0.10] hover:text-brand-300"
+          aria-haspopup="dialog"
+          aria-controls="userAreaModal"
+        >
+          Área do usuário
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Modal visual da área do usuário: sem autenticação nesta etapa -->
+  <div
+    id="userAreaModal"
+    class="user-area-modal fixed inset-0 z-[60] flex items-center justify-center px-5"
+    role="dialog"
+    aria-modal="true"
+    aria-hidden="true"
+    aria-labelledby="userAreaModalTitle"
+  >
+    <button
+      id="userAreaBackdrop"
+      type="button"
+      class="user-area-backdrop absolute inset-0 bg-black/75 backdrop-blur-sm"
+      aria-label="Fechar área do usuário"
+    ></button>
+
+    <div class="user-area-panel relative w-full max-w-sm rounded-2xl border border-white/[0.09] bg-ink-900 p-6 shadow-soft sm:p-7">
+      <div class="flex items-start justify-between gap-5">
+        <div>
+          <p class="text-xs font-normal uppercase tracking-[0.18em] text-brand-400">Acesso</p>
+          <h2 id="userAreaModalTitle" class="mt-2 font-display text-2xl font-semibold text-white">
+            Área do usuário
+          </h2>
+        </div>
+
+        <button
+          id="closeUserAreaModal"
+          type="button"
+          class="inline-flex h-10 w-10 items-center justify-center rounded-lg border border-white/10 text-zinc-400 transition hover:border-white/20 hover:text-white"
+          aria-label="Fechar modal"
+        >
+          <svg viewBox="0 0 24 24" class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="1.8">
+            <path d="M6 6l12 12M18 6L6 18" stroke-linecap="round" />
+          </svg>
+        </button>
+      </div>
+
+      <div class="mt-7 space-y-4">
+        <div>
+          <label for="userLogin" class="mb-2 block text-sm font-normal text-zinc-300">Login</label>
+          <input
+            id="userLogin"
+            type="text"
+            placeholder="Digite seu login"
+            autocomplete="username"
+            class="h-11 w-full rounded-lg border border-white/10 bg-black/25 px-4 text-sm font-normal text-white outline-none transition placeholder:text-zinc-600 focus:border-brand-500/70"
+          />
+        </div>
+
+        <div>
+          <label for="userPassword" class="mb-2 block text-sm font-normal text-zinc-300">Senha</label>
+          <input
+            id="userPassword"
+            type="password"
+            placeholder="Digite sua senha"
+            autocomplete="current-password"
+            class="h-11 w-full rounded-lg border border-white/10 bg-black/25 px-4 text-sm font-normal text-white outline-none transition placeholder:text-zinc-600 focus:border-brand-500/70"
+          />
+        </div>
+
+        <button
+          type="button"
+          class="mt-2 inline-flex h-11 w-full items-center justify-center rounded-lg bg-brand-600 px-5 text-sm font-normal text-white transition hover:bg-brand-500"
+        >
+          Entrar
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <main>
+    <!-- Hero -->
+    <section
+      id="inicio"
+      class="relative overflow-hidden border-b border-white/[0.06] pt-20"
+    >
+      <div class="absolute inset-0 bg-hero-grid bg-[size:48px_48px] [mask-image:linear-gradient(to_bottom,black,transparent_90%)]"></div>
+      <div class="absolute right-[8%] top-[18%] h-72 w-72 rounded-full bg-brand-600/10 blur-3xl"></div>
+
+      <div class="relative mx-auto grid w-full max-w-7xl gap-14 px-5 pb-14 pt-7 sm:px-8 lg:grid-cols-[1.05fr_.95fr] lg:px-10 lg:pb-20 lg:pt-10">
+        <div class="reveal flex max-w-3xl flex-col justify-center">
+          <span class="mb-6 inline-flex w-fit items-center gap-2 rounded-full border border-brand-500/25 bg-brand-500/[0.07] px-4 py-2 text-[11px] font-semibold uppercase tracking-[0.22em] text-brand-400">
+            Soluções inteligentes sob demanda
+          </span>
+
+          <h1 class="font-display text-3xl font-semibold leading-[1.08] tracking-[-0.04em] text-white sm:text-4xl lg:text-6xl">
+            Entendemos a operação antes de criar a solução.
+          </h1>
+
+          <p class="mt-7 max-w-2xl text-sm leading-7 text-zinc-400 sm:text-base">
+            Por meio de uma consultoria prática, analisamos os desafios reais de cada empresa
+            e implementamos soluções inteligentes sob demanda para centralizar dados, pessoas
+            e processos em um único ecossistema operacional. Atendemos pequenas, médias e grandes empresas.
+          </p>
+
+          <div class="mt-9 flex flex-col gap-3 sm:flex-row">
+            <a
+              href="#solucao"
+              class="inline-flex items-center justify-center gap-3 rounded-lg bg-white px-6 py-3.5 text-[13px] font-bold text-black transition hover:bg-zinc-200"
+            >
+              Conheça nossa abordagem
+              <svg viewBox="0 0 24 24" class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M5 12h14M13 6l6 6-6 6" stroke-linecap="round" stroke-linejoin="round" />
+              </svg>
+            </a>
+
+            <a
+              href="#contato"
+              class="inline-flex items-center justify-center gap-3 rounded-lg border border-white/15 px-6 py-3.5 text-[13px] font-semibold text-white transition hover:border-brand-500/60 hover:bg-white/[0.03]"
+            >
+              Fale sobre sua operação
+            </a>
+          </div>
+
+          <div class="mt-12 flex flex-wrap gap-x-8 gap-y-4 text-[11px] uppercase tracking-[0.18em] text-zinc-500">
+            <span>Consultoria</span>
+            <span>Integração</span>
+            <span>Automação</span>
+            <span>Inteligência</span>
+          </div>
+        </div>
+
+        <div class="reveal relative flex items-start justify-center">
+          <div class="relative w-full max-w-xl rounded-2xl border border-white/[0.08] bg-white/[0.025] p-4 shadow-soft backdrop-blur">
+            <div class="rounded-xl border border-white/[0.08] bg-ink-900 p-5 sm:p-7">
+              <div class="mb-7 flex items-center justify-between">
+                <div>
+                  <p class="text-[11px] uppercase tracking-[0.2em] text-zinc-500">Visão operacional</p>
+                  <h2 class="mt-2 font-display text-lg font-semibold">Ecossistema conectado</h2>
+                </div>
+
+                <div class="flex gap-1.5">
+                  <span class="h-2 w-2 rounded-full bg-zinc-700"></span>
+                  <span class="h-2 w-2 rounded-full bg-zinc-700"></span>
+                  <span class="h-2 w-2 rounded-full bg-brand-500"></span>
+                </div>
+              </div>
+
+              <div class="space-y-4">
+                <div class="grid grid-cols-[auto_1fr_auto] items-center gap-4 rounded-xl border border-white/[0.07] bg-black/20 p-4">
+                  <div class="flex h-10 w-10 items-center justify-center rounded-lg border border-white/10">
+                    <svg viewBox="0 0 24 24" class="h-5 w-5 text-brand-400" fill="none" stroke="currentColor" stroke-width="1.6">
+                      <ellipse cx="12" cy="5" rx="7" ry="3" />
+                      <path d="M5 5v6c0 1.7 3.1 3 7 3s7-1.3 7-3V5M5 11v6c0 1.7 3.1 3 7 3s7-1.3 7-3v-6" />
+                    </svg>
+                  </div>
+                  <div>
+                    <p class="text-[13px] font-semibold">Dados centralizados</p>
+                    <p class="mt-1 text-[11px] text-zinc-500">Uma fonte confiável para toda a operação.</p>
+                  </div>
+                  <span class="h-2.5 w-2.5 rounded-full bg-brand-500 shadow-[0_0_16px_rgba(59,130,246,.7)]"></span>
+                </div>
+
+                <div class="data-line h-px bg-white/[0.07]"></div>
+
+                <div class="grid grid-cols-[auto_1fr_auto] items-center gap-4 rounded-xl border border-white/[0.07] bg-black/20 p-4">
+                  <div class="flex h-10 w-10 items-center justify-center rounded-lg border border-white/10">
+                    <svg viewBox="0 0 24 24" class="h-5 w-5 text-brand-400" fill="none" stroke="currentColor" stroke-width="1.6">
+                      <circle cx="5" cy="12" r="2.5" />
+                      <circle cx="19" cy="5" r="2.5" />
+                      <circle cx="19" cy="19" r="2.5" />
+                      <path d="M7.5 12h4M13 12l4-5M13 12l4 5" />
+                    </svg>
+                  </div>
+                  <div>
+                    <p class="text-[13px] font-semibold">Pessoas e processos conectados</p>
+                    <p class="mt-1 text-[11px] text-zinc-500">Áreas trabalhando dentro do mesmo fluxo.</p>
+                  </div>
+                  <span class="h-2.5 w-2.5 rounded-full bg-brand-500 shadow-[0_0_16px_rgba(59,130,246,.7)]"></span>
+                </div>
+
+                <div class="data-line h-px bg-white/[0.07]"></div>
+
+                <div class="grid grid-cols-[auto_1fr_auto] items-center gap-4 rounded-xl border border-white/[0.07] bg-black/20 p-4">
+                  <div class="flex h-10 w-10 items-center justify-center rounded-lg border border-white/10">
+                    <svg viewBox="0 0 24 24" class="h-5 w-5 text-brand-400" fill="none" stroke="currentColor" stroke-width="1.6">
+                      <path d="M4 19V9M10 19V5M16 19v-7M22 19H2" />
+                    </svg>
+                  </div>
+                  <div>
+                    <p class="text-[13px] font-semibold">Gestão orientada por dados</p>
+                    <p class="mt-1 text-[11px] text-zinc-500">Visibilidade para decidir com segurança.</p>
+                  </div>
+                  <span class="h-2.5 w-2.5 rounded-full bg-brand-500 shadow-[0_0_16px_rgba(59,130,246,.7)]"></span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Manifesto -->
+    <section id="manifesto" class="border-b border-white/[0.06] py-24 sm:py-32">
+      <div class="mx-auto grid max-w-7xl gap-14 px-5 sm:px-8 lg:grid-cols-[.75fr_1.25fr] lg:px-10">
+        <div class="reveal">
+          <p class="text-xs font-semibold uppercase tracking-[0.22em] text-brand-400">Da análise à implementação</p>
+          <h2 class="mt-5 font-display text-3xl font-semibold tracking-[-0.035em] sm:text-4xl">
+            Toda a operação conectada em um único ecossistema.
+          </h2>
+        </div>
+
+        <div class="reveal space-y-8">
+          <p class="text-xl leading-9 text-zinc-300 sm:text-2xl sm:leading-10">
+            Processos fragmentados dificultam a comunicação, aumentam o retrabalho
+            e reduzem a clareza da gestão.
+          </p>
+
+          <p class="max-w-3xl leading-8 text-zinc-500">
+            A LEHUB analisa o funcionamento real da empresa e estrutura soluções sob demanda
+            para centralizar informações, integrar fluxos e organizar toda a operação
+            em um único ecossistema.
+          </p>
+
+          <div class="grid gap-px overflow-hidden rounded-xl border border-white/[0.07] bg-white/[0.07] sm:grid-cols-3">
+            <div class="bg-ink-950 p-6">
+              <span class="font-display text-3xl font-semibold text-white">01</span>
+              <p class="mt-4 text-sm font-semibold">Diagnóstico real</p>
+              <p class="mt-2 text-sm leading-6 text-zinc-500">Entendimento dos desafios, gargalos e necessidades da operação.</p>
+            </div>
+
+            <div class="bg-ink-950 p-6">
+              <span class="font-display text-3xl font-semibold text-white">02</span>
+              <p class="mt-4 text-sm font-semibold">Integração dos fluxos</p>
+              <p class="mt-2 text-sm leading-6 text-zinc-500">Conexão entre dados, pessoas, setores e processos.</p>
+            </div>
+
+            <div class="bg-ink-950 p-6">
+              <span class="font-display text-3xl font-semibold text-white">03</span>
+              <p class="mt-4 text-sm font-semibold">Implementação inteligente</p>
+              <p class="mt-2 text-sm leading-6 text-zinc-500">Soluções objetivas, modulares e compatíveis com o porte da empresa.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Solução -->
+    <section id="solucao" class="relative overflow-hidden border-b border-white/[0.06] py-24 sm:py-32">
+      <div class="absolute left-1/2 top-0 h-96 w-96 -translate-x-1/2 rounded-full bg-brand-600/[0.06] blur-3xl"></div>
+
+      <div class="relative mx-auto max-w-7xl px-5 sm:px-8 lg:px-10">
+        <div class="reveal mx-auto max-w-3xl text-center">
+          <p class="text-xs font-semibold uppercase tracking-[0.22em] text-brand-400">Ecossistema de dados</p>
+          <h2 class="mt-5 font-display text-3xl font-semibold tracking-[-0.035em] sm:text-5xl">
+            Uma operação conectada de ponta a ponta.
+          </h2>
+          <p class="mt-6 text-base leading-8 text-zinc-500 sm:text-lg">
+            A LEHUB centraliza informações, organiza processos e transforma dados
+            operacionais em decisões claras, rastreáveis e acionáveis.
+          </p>
+        </div>
+
+        <div class="mt-16 grid gap-5 lg:grid-cols-3">
+          <article class="reveal rounded-2xl border border-white/[0.08] bg-white/[0.025] p-7">
+            <span class="flex h-11 w-11 items-center justify-center rounded-lg border border-brand-500/30 bg-brand-500/[0.08] text-brand-400">
+              <svg viewBox="0 0 24 24" class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="1.7">
+                <ellipse cx="12" cy="5" rx="7" ry="3" />
+                <path d="M5 5v6c0 1.7 3.1 3 7 3s7-1.3 7-3V5M5 11v6c0 1.7 3.1 3 7 3s7-1.3 7-3v-6" />
+              </svg>
+            </span>
+
+            <h3 class="mt-7 font-display text-xl font-semibold">Centralização</h3>
+            <p class="mt-4 text-sm leading-7 text-zinc-500">
+              Informações estruturadas em um único ambiente, com acesso controlado,
+              histórico e consistência entre áreas.
+            </p>
+          </article>
+
+          <article class="reveal rounded-2xl border border-white/[0.08] bg-white/[0.025] p-7">
+            <span class="flex h-11 w-11 items-center justify-center rounded-lg border border-brand-500/30 bg-brand-500/[0.08] text-brand-400">
+              <svg viewBox="0 0 24 24" class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="1.7">
+                <circle cx="5" cy="12" r="2.5" />
+                <circle cx="19" cy="5" r="2.5" />
+                <circle cx="19" cy="19" r="2.5" />
+                <path d="M7.5 12h4M13 12l4-5M13 12l4 5" />
+              </svg>
+            </span>
+
+            <h3 class="mt-7 font-display text-xl font-semibold">Orquestração</h3>
+            <p class="mt-4 text-sm leading-7 text-zinc-500">
+              Fluxos desenhados para reduzir retrabalho, padronizar etapas e garantir
+              que cada informação chegue ao ponto correto.
+            </p>
+          </article>
+
+          <article class="reveal rounded-2xl border border-white/[0.08] bg-white/[0.025] p-7">
+            <span class="flex h-11 w-11 items-center justify-center rounded-lg border border-brand-500/30 bg-brand-500/[0.08] text-brand-400">
+              <svg viewBox="0 0 24 24" class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="1.7">
+                <path d="M4 19V9M10 19V5M16 19v-7M22 19H2" />
+              </svg>
+            </span>
+
+            <h3 class="mt-7 font-display text-xl font-semibold">Inteligência</h3>
+            <p class="mt-4 text-sm leading-7 text-zinc-500">
+              Indicadores e análises construídos a partir da realidade da operação,
+              sem dashboards genéricos ou informações desconectadas.
+            </p>
+          </article>
+        </div>
+
+        <div class="reveal mt-12 rounded-2xl border border-white/[0.08] bg-ink-900 p-6 sm:p-10">
+          <div class="grid gap-8 lg:grid-cols-[.85fr_1.15fr] lg:items-center">
+            <div>
+              <p class="text-xs font-semibold uppercase tracking-[0.22em] text-brand-400">Do dado à ação</p>
+              <h3 class="mt-4 font-display text-2xl font-semibold sm:text-3xl">
+                Controle absoluto sem complicar a operação.
+              </h3>
+              <p class="mt-5 max-w-xl text-sm leading-7 text-zinc-500">
+                A tecnologia deve reduzir atritos, não criar novos. Por isso, cada
+                solução é construída para se adaptar ao fluxo real de trabalho.
+              </p>
+            </div>
+
+            <div class="grid gap-3 sm:grid-cols-3">
+              <div class="rounded-xl border border-white/[0.07] bg-black/20 p-5">
+                <span class="text-xs uppercase tracking-[0.18em] text-zinc-600">Entrada</span>
+                <p class="mt-3 text-sm font-semibold">Dados confiáveis</p>
+              </div>
+
+              <div class="rounded-xl border border-brand-500/25 bg-brand-500/[0.07] p-5">
+                <span class="text-xs uppercase tracking-[0.18em] text-brand-400">Processamento</span>
+                <p class="mt-3 text-sm font-semibold">Regras e automações</p>
+              </div>
+
+              <div class="rounded-xl border border-white/[0.07] bg-black/20 p-5">
+                <span class="text-xs uppercase tracking-[0.18em] text-zinc-600">Resultado</span>
+                <p class="mt-3 text-sm font-semibold">Decisão e controle</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Como trabalhamos -->
+    <section id="como-trabalhamos" class="border-b border-white/[0.06] py-24 sm:py-32">
+      <div class="mx-auto max-w-7xl px-5 sm:px-8 lg:px-10">
+        <div class="reveal max-w-3xl">
+          <p class="text-xs font-semibold uppercase tracking-[0.22em] text-brand-400">Como trabalhamos</p>
+          <h2 class="mt-5 font-display text-3xl font-semibold tracking-[-0.035em] sm:text-5xl">
+            Da análise da operação à solução em funcionamento.
+          </h2>
+          <p class="mt-6 max-w-3xl text-base leading-8 text-zinc-500 sm:text-lg">
+            Cada projeto começa pelo entendimento do fluxo real da empresa. A tecnologia entra depois,
+            estruturada para resolver o problema certo, integrar a operação e evoluir conforme a necessidade.
+          </p>
+        </div>
+
+        <div class="mt-16 grid gap-px overflow-hidden rounded-2xl border border-white/[0.07] bg-white/[0.07] lg:grid-cols-3">
+          <article class="reveal bg-ink-950 p-7 sm:p-9">
+            <div class="flex items-start justify-between gap-5">
+              <span class="font-display text-sm font-semibold text-brand-400">01</span>
+              <span class="flex h-11 w-11 items-center justify-center rounded-xl border border-brand-500/25 bg-brand-500/[0.08] text-brand-400">
+                <svg viewBox="0 0 24 24" class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="1.7">
+                  <circle cx="11" cy="11" r="6"></circle>
+                  <path d="m20 20-3.5-3.5" stroke-linecap="round"></path>
+                </svg>
+              </span>
+            </div>
+            <h3 class="mt-12 font-display text-xl font-semibold">Diagnóstico</h3>
+            <p class="mt-4 max-w-xl text-sm leading-7 text-zinc-500">
+              Entendemos a rotina, os gargalos, os controles existentes e os pontos onde a operação perde
+              tempo, informação ou previsibilidade.
+            </p>
+          </article>
+
+          <article class="reveal bg-ink-950 p-7 sm:p-9">
+            <div class="flex items-start justify-between gap-5">
+              <span class="font-display text-sm font-semibold text-brand-400">02</span>
+              <span class="flex h-11 w-11 items-center justify-center rounded-xl border border-brand-500/25 bg-brand-500/[0.08] text-brand-400">
+                <svg viewBox="0 0 24 24" class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="1.7">
+                  <path d="M4 7h16M4 12h16M4 17h10" stroke-linecap="round"></path>
+                  <path d="M17 15l3 3 4-4" stroke-linecap="round" stroke-linejoin="round"></path>
+                </svg>
+              </span>
+            </div>
+            <h3 class="mt-12 font-display text-xl font-semibold">Estruturação</h3>
+            <p class="mt-4 max-w-xl text-sm leading-7 text-zinc-500">
+              Organizamos fluxos, regras, dados, integrações e prioridades para definir uma solução clara,
+              objetiva e compatível com a realidade da empresa.
+            </p>
+          </article>
+
+          <article class="reveal bg-ink-950 p-7 sm:p-9">
+            <div class="flex items-start justify-between gap-5">
+              <span class="font-display text-sm font-semibold text-brand-400">03</span>
+              <span class="flex h-11 w-11 items-center justify-center rounded-xl border border-brand-500/25 bg-brand-500/[0.08] text-brand-400">
+                <svg viewBox="0 0 24 24" class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="1.7">
+                  <path d="M12 3v4M12 17v4M4.22 5.64l2.83 2.83M16.95 18.36l2.83 2.83M3 12h4M17 12h4M4.22 18.36l2.83-2.83M16.95 8.47l2.83-2.83" stroke-linecap="round"></path>
+                  <circle cx="12" cy="12" r="3.5"></circle>
+                </svg>
+              </span>
+            </div>
+            <h3 class="mt-12 font-display text-xl font-semibold">Implementação</h3>
+            <p class="mt-4 max-w-xl text-sm leading-7 text-zinc-500">
+              Desenvolvemos e colocamos a solução em operação com foco em simplicidade, integração e evolução
+              contínua, sem adicionar complexidade desnecessária ao trabalho da equipe.
+            </p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- Diferenciais -->
+    <section id="diferenciais" class="border-b border-white/[0.06] py-24 sm:py-32">
+      <div class="mx-auto max-w-7xl px-5 sm:px-8 lg:px-10">
+        <div class="reveal max-w-3xl">
+          <p class="text-xs font-semibold uppercase tracking-[0.22em] text-brand-400">Pilares da LEHUB</p>
+          <h2 class="mt-5 font-display text-3xl font-semibold tracking-[-0.035em] sm:text-5xl">
+            Tecnologia construída para sustentar, integrar e evoluir a operação.
+          </h2>
+          <p class="mt-6 max-w-3xl text-base leading-8 text-zinc-500 sm:text-lg">
+            A LEHUB desenvolve soluções com foco na realidade operacional de cada empresa,
+            unindo estrutura técnica, agilidade, personalização e inteligência para transformar
+            processos dispersos em um ecossistema mais claro, conectado e eficiente.
+          </p>
+        </div>
+
+        <div class="mt-16 grid gap-px overflow-hidden rounded-2xl border border-white/[0.07] bg-white/[0.07] md:grid-cols-2">
+          <article class="reveal bg-ink-950 p-7 sm:p-9">
+            <div class="flex items-start justify-between gap-5">
+              <span class="font-display text-sm font-semibold text-brand-400">01</span>
+              <span class="flex h-11 w-11 items-center justify-center rounded-xl border border-brand-500/25 bg-brand-500/[0.08] text-brand-400">
+                <svg viewBox="0 0 24 24" class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="1.7">
+                  <path d="M4 10.5 12 4l8 6.5V20H4z" stroke-linejoin="round"></path>
+                  <path d="M9 20v-5h6v5" stroke-linejoin="round"></path>
+                </svg>
+              </span>
+            </div>
+            <h3 class="mt-12 font-display text-xl font-semibold">Arquitetura robusta</h3>
+            <p class="mt-4 max-w-xl text-sm leading-7 text-zinc-500">
+              Projetamos soluções com estrutura organizada, segura e preparada para crescer.
+              Cada operação pode ter regras, dados, permissões e fluxos bem definidos, evitando
+              mistura de informações e reduzindo riscos técnicos no dia a dia.
+            </p>
+          </article>
+
+          <article class="reveal bg-ink-950 p-7 sm:p-9">
+            <div class="flex items-start justify-between gap-5">
+              <span class="font-display text-sm font-semibold text-brand-400">02</span>
+              <span class="flex h-11 w-11 items-center justify-center rounded-xl border border-brand-500/25 bg-brand-500/[0.08] text-brand-400">
+                <svg viewBox="0 0 24 24" class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="1.7">
+                  <path d="M13 6l-5 6h4l-1 6 5-6h-4l1-6z" stroke-linejoin="round"></path>
+                </svg>
+              </span>
+            </div>
+            <h3 class="mt-12 font-display text-xl font-semibold">Velocidade de processamento</h3>
+            <p class="mt-4 max-w-xl text-sm leading-7 text-zinc-500">
+              Criamos interfaces rápidas e fluxos objetivos para reduzir etapas desnecessárias,
+              retrabalho e perda de tempo. O foco é dar mais agilidade para a equipe e tornar a
+              execução mais simples, fluida e eficiente.
+            </p>
+          </article>
+
+          <article class="reveal bg-ink-950 p-7 sm:p-9">
+            <div class="flex items-start justify-between gap-5">
+              <span class="font-display text-sm font-semibold text-brand-400">03</span>
+              <span class="flex h-11 w-11 items-center justify-center rounded-xl border border-brand-500/25 bg-brand-500/[0.08] text-brand-400">
+                <svg viewBox="0 0 24 24" class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="1.7">
+                  <path d="M6 7h12M6 12h8M6 17h6" stroke-linecap="round"></path>
+                  <path d="M17 14.5l1.7 1.7L21 14" stroke-linecap="round" stroke-linejoin="round"></path>
+                </svg>
+              </span>
+            </div>
+            <h3 class="mt-12 font-display text-xl font-semibold">Customização sob medida</h3>
+            <p class="mt-4 max-w-xl text-sm leading-7 text-zinc-500">
+              Cada solução é desenhada a partir do processo real da empresa. Em vez de forçar
+              a operação a se adaptar a sistemas genéricos, estruturamos ferramentas compatíveis
+              com a rotina, o porte e a necessidade de cada negócio.
+            </p>
+          </article>
+
+          <article class="reveal bg-ink-950 p-7 sm:p-9">
+            <div class="flex items-start justify-between gap-5">
+              <span class="font-display text-sm font-semibold text-brand-400">04</span>
+              <span class="flex h-11 w-11 items-center justify-center rounded-xl border border-brand-500/25 bg-brand-500/[0.08] text-brand-400">
+                <svg viewBox="0 0 24 24" class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="1.7">
+                  <path d="M4 18h16" stroke-linecap="round"></path>
+                  <path d="M7 15V9M12 15V6M17 15v-3" stroke-linecap="round"></path>
+                </svg>
+              </span>
+            </div>
+            <h3 class="mt-12 font-display text-xl font-semibold">Clareza analítica</h3>
+            <p class="mt-4 max-w-xl text-sm leading-7 text-zinc-500">
+              Transformamos dados operacionais em informações confiáveis para apoiar a gestão.
+              Isso permite acompanhar processos, identificar gargalos, enxergar oportunidades de
+              melhoria e tomar decisões com mais segurança.
+            </p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- Projetos -->
+    <section id="projetos" class="border-b border-white/[0.06] py-24 sm:py-32">
+      <div class="mx-auto max-w-7xl px-5 sm:px-8 lg:px-10">
+        <div class="reveal max-w-3xl">
+          <p class="text-xs font-semibold uppercase tracking-[0.22em] text-brand-400">Projetos e soluções</p>
+          <h2 class="mt-5 font-display text-3xl font-semibold tracking-[-0.035em] sm:text-5xl">
+            Tecnologia aplicada a diferentes realidades operacionais.
+          </h2>
+          <p class="mt-6 max-w-3xl text-base leading-8 text-zinc-500 sm:text-lg">
+            Da gestão operacional em tempo real à automação de pequenos negócios, desenvolvemos soluções conectadas e sistemas sob medida para desafios reais.
+          </p>
+        </div>
+
+        <div class="projects-carousel reveal mt-14" aria-roledescription="carrossel" aria-label="Projetos da LEHUB">
+          <div class="project-slides">
+            <!-- Slide 1 -->
+            <article class="project-slide is-active" data-project-slide aria-hidden="false">
+              <div class="grid gap-10 lg:grid-cols-[.9fr_1.1fr] lg:items-stretch">
+                <div class="flex h-full flex-col gap-5">
+                  <div class="flex-1 rounded-2xl border border-white/[0.08] bg-white/[0.025] p-6 sm:p-8">
+                    <span class="inline-flex rounded-full border border-brand-500/25 bg-brand-500/[0.08] px-4 py-2 text-[11px] font-semibold uppercase tracking-[0.18em] text-brand-400">
+                      Ecossistema de gestão operacional
+                    </span>
+                    <h3 class="mt-6 font-display text-2xl font-semibold text-white sm:text-3xl">
+                      Gestão operacional em tempo real.
+                    </h3>
+                    <p class="mt-5 text-sm leading-7 text-zinc-500 sm:text-base">
+                      Centralize tarefas, equipes, processos, dados e etapas da operação em aplicações conectadas entre desktop e dispositivos móveis, mantendo todo o fluxo sincronizado em tempo real.
+                    </p>
+                  </div>
+
+                  <div class="grid gap-4 sm:grid-cols-3">
+                    <div class="rounded-2xl border border-white/[0.08] bg-black/20 p-5">
+                      <p class="text-xs uppercase tracking-[0.18em] text-zinc-600">Desktop</p>
+                      <p class="mt-3 text-sm font-semibold text-white">Gestão e visão ampla</p>
+                    </div>
+                    <div class="rounded-2xl border border-brand-500/25 bg-brand-500/[0.07] p-5">
+                      <p class="text-xs uppercase tracking-[0.18em] text-brand-400">Integração</p>
+                      <p class="mt-3 text-sm font-semibold text-white">Tudo no mesmo fluxo</p>
+                    </div>
+                    <div class="rounded-2xl border border-white/[0.08] bg-black/20 p-5">
+                      <p class="text-xs uppercase tracking-[0.18em] text-zinc-600">Mobile</p>
+                      <p class="mt-3 text-sm font-semibold text-white">Execução com mobilidade</p>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="flex h-full items-center justify-center rounded-3xl border border-white/[0.08] bg-white/[0.025] p-4 shadow-soft backdrop-blur sm:p-6">
+                  <img src="mp.png" alt="Ecossistema de gestão operacional da LEHUB em desktop e celular" loading="lazy" decoding="async" class="h-auto w-full object-contain" />
+                </div>
+              </div>
+            </article>
+
+            <!-- Slide 2 -->
+            <article class="project-slide" data-project-slide aria-hidden="true">
+              <div class="grid gap-10 lg:grid-cols-[.9fr_1.1fr] lg:items-stretch">
+                <div class="flex h-full flex-col gap-5">
+                  <div class="flex-1 rounded-2xl border border-white/[0.08] bg-white/[0.025] p-6 sm:p-8">
+                    <span class="inline-flex rounded-full border border-emerald-500/25 bg-emerald-500/[0.08] px-4 py-2 text-[11px] font-semibold uppercase tracking-[0.18em] text-emerald-400">
+                      Pequenos negócios
+                    </span>
+                    <h3 class="mt-6 font-display text-2xl font-semibold text-white sm:text-3xl">
+                      Gestão de fluxo e automação sem aumentar a complexidade.
+                    </h3>
+                    <p class="mt-5 text-sm leading-7 text-zinc-500 sm:text-base">
+                      Organize atendimentos, pedidos, clientes e processos, integrando WhatsApp, Instagram e Facebook em um único fluxo operacional, com automações e campanhas assistidas.
+                    </p>
+                  </div>
+
+                  <div class="grid gap-4 sm:grid-cols-3">
+                    <div class="rounded-2xl border border-white/[0.08] bg-black/20 p-5">
+                      <p class="text-xs uppercase tracking-[0.18em] text-zinc-600">Canais</p>
+                      <p class="mt-3 text-sm font-semibold text-white">Atendimento multicanal</p>
+                    </div>
+                    <div class="rounded-2xl border border-emerald-500/25 bg-emerald-500/[0.07] p-5">
+                      <p class="text-xs uppercase tracking-[0.18em] text-emerald-400">Automação</p>
+                      <p class="mt-3 text-sm font-semibold text-white">Pedidos, tarefas e respostas</p>
+                    </div>
+                    <div class="rounded-2xl border border-white/[0.08] bg-black/20 p-5">
+                      <p class="text-xs uppercase tracking-[0.18em] text-zinc-600">Campanhas</p>
+                      <p class="mt-3 text-sm font-semibold text-white">Tráfego pago assistido</p>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="flex h-full items-center justify-center overflow-hidden rounded-3xl border border-white/[0.08] bg-white/[0.025] p-4 shadow-soft backdrop-blur sm:p-6">
+                  <img src="pn.png" alt="Sistema de gestão e automação para pequenos negócios em desktop e celular" loading="lazy" decoding="async" class="h-auto max-h-[38rem] w-full object-contain" />
+                </div>
+              </div>
+            </article>
+
+            <!-- Slide 3 -->
+            <article class="project-slide" data-project-slide aria-hidden="true">
+              <div class="grid gap-10 lg:grid-cols-[.9fr_1.1fr] lg:items-stretch">
+                <div class="flex h-full flex-col gap-5">
+                  <div class="flex-1 rounded-2xl border border-white/[0.08] bg-white/[0.025] p-6 sm:p-8">
+                    <span class="inline-flex rounded-full border border-violet-500/25 bg-violet-500/[0.08] px-4 py-2 text-[11px] font-semibold uppercase tracking-[0.18em] text-violet-400">
+                      Sistemas sob medida
+                    </span>
+                    <h3 class="mt-6 font-display text-2xl font-semibold text-white sm:text-3xl">
+                      Tecnologia construída para o seu fluxo, não o contrário.
+                    </h3>
+                    <p class="mt-5 text-sm leading-7 text-zinc-500 sm:text-base">
+                      Analisamos os desafios reais da operação e desenvolvemos sistemas, módulos, integrações de APIs e recursos de inteligência artificial sob demanda, com estrutura preparada para evoluir.
+                    </p>
+                  </div>
+
+                  <div class="grid gap-4 sm:grid-cols-3">
+                    <div class="rounded-2xl border border-white/[0.08] bg-black/20 p-5">
+                      <p class="text-xs uppercase tracking-[0.18em] text-zinc-600">Integração</p>
+                      <p class="mt-3 text-sm font-semibold text-white">APIs e dados conectados</p>
+                    </div>
+                    <div class="rounded-2xl border border-violet-500/25 bg-violet-500/[0.07] p-5">
+                      <p class="text-xs uppercase tracking-[0.18em] text-violet-400">Inteligência</p>
+                      <p class="mt-3 text-sm font-semibold text-white">IA aplicada ao processo</p>
+                    </div>
+                    <div class="rounded-2xl border border-white/[0.08] bg-black/20 p-5">
+                      <p class="text-xs uppercase tracking-[0.18em] text-zinc-600">Evolução</p>
+                      <p class="mt-3 text-sm font-semibold text-white">Estrutura modular e escalável</p>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="flex h-full min-h-[18rem] items-center justify-center overflow-hidden rounded-3xl sm:min-h-[25rem] border border-white/[0.08] bg-white/[0.025] p-4 shadow-soft backdrop-blur sm:p-6">
+                  <img
+                    src="sistemas_sob_medida.png"
+                    alt="Representação de sistemas sob medida, integrações de APIs e inteligência artificial"
+                    loading="lazy"
+                    decoding="async"
+                    class="h-auto max-h-[38rem] w-full object-contain"
+                    onerror="this.classList.add('hidden'); this.nextElementSibling.classList.remove('hidden');"
+                  />
+                  <div class="hidden min-h-[20rem] w-full items-center justify-center rounded-2xl border border-dashed border-violet-500/25 bg-violet-500/[0.04] p-8 text-center">
+                    <div>
+                      <p class="text-xs font-semibold uppercase tracking-[0.18em] text-violet-400">Imagem reservada</p>
+                      <p class="mt-4 text-sm leading-7 text-zinc-500">Use o arquivo <strong class="font-semibold text-zinc-300">sistemas_sob_medida.png</strong>.</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </article>
+          </div>
+
+          <button id="projectPrev" type="button" class="project-control project-side-control" aria-label="Projeto anterior">
+            <svg viewBox="0 0 24 24" class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="1.8">
+              <path d="m15 18-6-6 6-6" stroke-linecap="round" stroke-linejoin="round" />
+            </svg>
+          </button>
+
+          <button id="projectNext" type="button" class="project-control project-side-control" aria-label="Próximo projeto">
+            <svg viewBox="0 0 24 24" class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="1.8">
+              <path d="m9 18 6-6-6-6" stroke-linecap="round" stroke-linejoin="round" />
+            </svg>
+          </button>
+
+          <div class="mt-8 flex items-center justify-center">
+            <div class="flex items-center gap-3" aria-label="Selecionar projeto">
+              <button type="button" class="project-dot is-active" data-project-dot aria-label="Mostrar ecossistema de gestão operacional" aria-current="true"></button>
+              <button type="button" class="project-dot" data-project-dot aria-label="Mostrar gestão para pequenos negócios" aria-current="false"></button>
+              <button type="button" class="project-dot" data-project-dot aria-label="Mostrar sistemas sob medida" aria-current="false"></button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Base tecnológica -->
+    <section id="tecnologias" class="border-b border-white/[0.06] py-24 sm:py-32">
+      <div class="mx-auto max-w-7xl px-5 sm:px-8 lg:px-10">
+        <div class="reveal max-w-3xl">
+          <p class="text-xs font-semibold uppercase tracking-[0.22em] text-brand-400">Base tecnológica</p>
+          <h2 class="mt-5 font-display text-3xl font-semibold tracking-[-0.035em] sm:text-5xl">
+            Tecnologias que sustentam nossas soluções.
+          </h2>
+          <p class="mt-6 max-w-3xl text-base leading-8 text-zinc-500 sm:text-lg">
+            Utilizamos tecnologias modernas e escaláveis para estruturar soluções seguras, integradas e preparadas para evoluir com a operação.
+          </p>
+        </div>
+
+        <div class="mt-16 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+          <article class="reveal rounded-2xl border border-white/[0.08] bg-white/[0.025] p-6">
+            <div class="flex items-center gap-4">
+              <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/html5/html5-original.svg" alt="HTML5" loading="lazy" decoding="async" class="h-11 w-11 object-contain" />
+              <div>
+                <h3 class="text-base font-semibold text-white">HTML5</h3>
+                <p class="mt-1 text-sm text-zinc-500">Estrutura semântica e sólida.</p>
+              </div>
+            </div>
+          </article>
+
+          <article class="reveal rounded-2xl border border-white/[0.08] bg-white/[0.025] p-6">
+            <div class="flex items-center gap-4">
+              <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/css3/css3-original.svg" alt="CSS3" loading="lazy" decoding="async" class="h-11 w-11 object-contain" />
+              <div>
+                <h3 class="text-base font-semibold text-white">CSS3</h3>
+                <p class="mt-1 text-sm text-zinc-500">Estilo, responsividade e refinamento visual.</p>
+              </div>
+            </div>
+          </article>
+
+          <article class="reveal rounded-2xl border border-white/[0.08] bg-white/[0.025] p-6">
+            <div class="flex items-center gap-4">
+              <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/javascript/javascript-original.svg" alt="JavaScript" loading="lazy" decoding="async" class="h-11 w-11 object-contain" />
+              <div>
+                <h3 class="text-base font-semibold text-white">JavaScript</h3>
+                <p class="mt-1 text-sm text-zinc-500">Lógica, interação e automação do front.</p>
+              </div>
+            </div>
+          </article>
+
+          <article class="reveal rounded-2xl border border-white/[0.08] bg-white/[0.025] p-6">
+            <div class="flex items-center gap-4">
+              <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/tailwindcss/tailwindcss-original.svg" alt="Tailwind CSS" loading="lazy" decoding="async" class="h-11 w-11 object-contain" />
+              <div>
+                <h3 class="text-base font-semibold text-white">Tailwind CSS</h3>
+                <p class="mt-1 text-sm text-zinc-500">Padronização visual com agilidade.</p>
+              </div>
+            </div>
+          </article>
+
+          <article class="reveal rounded-2xl border border-white/[0.08] bg-white/[0.025] p-6">
+            <div class="flex items-center gap-4">
+              <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/firebase/firebase-plain.svg" alt="Firebase" loading="lazy" decoding="async" class="h-11 w-11 object-contain" />
+              <div>
+                <h3 class="text-base font-semibold text-white">Firebase</h3>
+                <p class="mt-1 text-sm text-zinc-500">Dados, hospedagem e serviços integrados.</p>
+              </div>
+            </div>
+          </article>
+
+          <article class="reveal rounded-2xl border border-white/[0.08] bg-white/[0.025] p-6">
+            <div class="flex items-center gap-4">
+              <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/python/python-original.svg" alt="Python" loading="lazy" decoding="async" class="h-11 w-11 object-contain" />
+              <div>
+                <h3 class="text-base font-semibold text-white">Python</h3>
+                <p class="mt-1 text-sm text-zinc-500">Base estratégica para automações, análise de dados e soluções inteligentes.</p>
+              </div>
+            </div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- CTA -->
+    <section id="contato" class="py-24 sm:py-32">
+      <div class="mx-auto max-w-7xl px-5 sm:px-8 lg:px-10">
+        <div class="reveal relative overflow-hidden rounded-3xl border border-white/[0.09] bg-white/[0.035] px-6 py-14 shadow-soft sm:px-12 sm:py-16 lg:px-16">
+          <div class="absolute -right-24 -top-24 h-72 w-72 rounded-full bg-brand-600/10 blur-3xl"></div>
+
+          <div class="relative grid gap-10 lg:grid-cols-[1fr_auto] lg:items-end">
+            <div>
+              <p class="text-xs font-semibold uppercase tracking-[0.22em] text-brand-400">Converse com a LEHUB</p>
+              <h2 class="mt-5 max-w-3xl font-display text-3xl font-semibold tracking-[-0.035em] sm:text-5xl">
+                Sua operação não precisa continuar dependendo de improvisos.
+              </h2>
+              <p class="mt-6 max-w-2xl text-base leading-8 text-zinc-500">
+                Vamos analisar o fluxo atual, identificar os principais gargalos e
+                estruturar uma solução objetiva para a realidade da sua empresa.
+              </p>
+            </div>
+
+            <a
+              href="https://wa.me/5515996625567"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="inline-flex w-full items-center justify-center gap-3 rounded-lg bg-white px-7 py-4 text-sm font-bold text-black transition hover:bg-zinc-200 sm:w-auto"
+            >
+              Iniciar conversa
+              <svg viewBox="0 0 24 24" class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M5 12h14M13 6l6 6-6 6" stroke-linecap="round" stroke-linejoin="round" />
+              </svg>
+            </a>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Rodapé -->
+  <footer class="border-t border-white/[0.06] bg-black/20">
+    <div class="mx-auto max-w-7xl px-5 py-12 sm:px-8 lg:px-10">
+      <div class="grid gap-10 border-b border-white/[0.06] pb-10 md:grid-cols-[1.2fr_.8fr_.8fr]">
+        <div>
+          <img
+            src="lehub.png"
+            alt="LEHUB"
+            loading="lazy"
+            decoding="async"
+            class="h-11 w-auto object-contain"
+          />
+          <p class="mt-5 max-w-sm text-sm leading-7 text-zinc-600">
+            Inteligência em dados e fluxos operacionais para empresas que precisam
+            de mais controle, velocidade e clareza.
+          </p>
+        </div>
+
+        <div>
+          <h3 class="text-xs font-semibold uppercase tracking-[0.18em] text-zinc-400">Navegação</h3>
+          <div class="mt-5 flex flex-col gap-3 text-sm text-zinc-600">
+            <a href="#inicio" class="transition hover:text-white">Início</a>
+            <a href="#manifesto" class="transition hover:text-white">Manifesto</a>
+            <a href="#solucao" class="transition hover:text-white">Solução</a>
+            <a href="#como-trabalhamos" class="transition hover:text-white">Como trabalhamos</a>
+            <a href="#diferenciais" class="transition hover:text-white">Diferenciais</a>
+            <a href="#projetos" class="transition hover:text-white">Projetos</a>
+            <a href="#tecnologias" class="transition hover:text-white">Tecnologias</a>
+            <a href="#contato" class="transition hover:text-white">Contato</a>
+          </div>
+        </div>
+
+        <div>
+          <h3 class="text-xs font-semibold uppercase tracking-[0.18em] text-zinc-400">Institucional</h3>
+          <div class="mt-5 space-y-3 text-sm text-zinc-600">
+            <p>(15) 99662-5567</p>
+            <p>Brasil</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="flex flex-col gap-4 pt-7 text-xs text-zinc-700 sm:flex-row sm:items-center sm:justify-between">
+        <p>© <span id="currentYear"></span> LEHUB. Todos os direitos reservados.</p>
+        <div class="flex gap-5">
+          <a href="#" class="transition hover:text-zinc-400">Política de Privacidade</a>
+          <a href="#" class="transition hover:text-zinc-400">Termos de Uso</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    const menuButton = document.getElementById("menuButton");
+    const mobileMenu = document.getElementById("mobileMenu");
+    const mobileLinks = document.querySelectorAll(".mobile-link");
+    const userAreaModal = document.getElementById("userAreaModal");
+    const userAreaTriggers = document.querySelectorAll(".user-area-trigger");
+    const closeUserAreaModal = document.getElementById("closeUserAreaModal");
+    const userAreaBackdrop = document.getElementById("userAreaBackdrop");
+    const userLogin = document.getElementById("userLogin");
+
+    const openUserArea = () => {
+      userAreaModal.classList.add("is-open");
+      userAreaModal.setAttribute("aria-hidden", "false");
+      document.body.classList.add("overflow-hidden");
+      requestAnimationFrame(() => userLogin.focus());
+    };
+
+    const closeUserArea = () => {
+      userAreaModal.classList.remove("is-open");
+      userAreaModal.setAttribute("aria-hidden", "true");
+      document.body.classList.remove("overflow-hidden");
+    };
+
+    userAreaTriggers.forEach((trigger) => {
+      trigger.addEventListener("click", () => {
+        mobileMenu.classList.add("hidden");
+        menuButton.setAttribute("aria-expanded", "false");
+        openUserArea();
+      });
+    });
+
+    closeUserAreaModal.addEventListener("click", closeUserArea);
+    userAreaBackdrop.addEventListener("click", closeUserArea);
+
+    document.addEventListener("keydown", (event) => {
+      if (event.key === "Escape" && userAreaModal.classList.contains("is-open")) {
+        closeUserArea();
+      }
+    });
+
+    menuButton.addEventListener("click", () => {
+      const isOpen = menuButton.getAttribute("aria-expanded") === "true";
+      menuButton.setAttribute("aria-expanded", String(!isOpen));
+      mobileMenu.classList.toggle("hidden");
+    });
+
+    mobileLinks.forEach((link) => {
+      link.addEventListener("click", () => {
+        menuButton.setAttribute("aria-expanded", "false");
+        mobileMenu.classList.add("hidden");
+      });
+    });
+
+
+    const projectsCarousel = document.querySelector(".projects-carousel");
+    const projectSlides = Array.from(document.querySelectorAll("[data-project-slide]"));
+    const projectDots = Array.from(document.querySelectorAll("[data-project-dot]"));
+    const projectPrev = document.getElementById("projectPrev");
+    const projectNext = document.getElementById("projectNext");
+    let activeProject = 0;
+    let projectTimer;
+    let pointerStartX = null;
+
+    const showProject = (index) => {
+      activeProject = (index + projectSlides.length) % projectSlides.length;
+
+      projectSlides.forEach((slide, slideIndex) => {
+        const isActive = slideIndex === activeProject;
+        slide.classList.toggle("is-active", isActive);
+        slide.setAttribute("aria-hidden", String(!isActive));
+      });
+
+      projectDots.forEach((dot, dotIndex) => {
+        const isActive = dotIndex === activeProject;
+        dot.classList.toggle("is-active", isActive);
+        dot.setAttribute("aria-current", String(isActive));
+      });
+    };
+
+    const stopProjectRotation = () => {
+      window.clearInterval(projectTimer);
+    };
+
+    const startProjectRotation = () => {
+      stopProjectRotation();
+      projectTimer = window.setInterval(() => {
+        showProject(activeProject + 1);
+      }, 6000);
+    };
+
+    const selectProject = (index) => {
+      showProject(index);
+      startProjectRotation();
+    };
+
+    projectPrev.addEventListener("click", () => selectProject(activeProject - 1));
+    projectNext.addEventListener("click", () => selectProject(activeProject + 1));
+
+    projectDots.forEach((dot, index) => {
+      dot.addEventListener("click", () => selectProject(index));
+    });
+
+    projectsCarousel.addEventListener("focusin", stopProjectRotation);
+    projectsCarousel.addEventListener("focusout", (event) => {
+      if (!projectsCarousel.contains(event.relatedTarget)) {
+        startProjectRotation();
+      }
+    });
+
+    projectsCarousel.addEventListener("pointerdown", (event) => {
+      pointerStartX = event.clientX;
+    });
+
+    projectsCarousel.addEventListener("pointerup", (event) => {
+      if (pointerStartX === null) return;
+      const movement = event.clientX - pointerStartX;
+      pointerStartX = null;
+
+      if (Math.abs(movement) < 45) return;
+      selectProject(activeProject + (movement < 0 ? 1 : -1));
+    });
+
+    document.addEventListener("visibilitychange", () => {
+      if (document.hidden) {
+        stopProjectRotation();
+      } else {
+        startProjectRotation();
+      }
+    });
+
+    showProject(0);
+    startProjectRotation();
+
+
+    document.getElementById("currentYear").textContent = new Date().getFullYear();
+
+    const revealElements = document.querySelectorAll(".reveal");
+
+    if ("IntersectionObserver" in window) {
+      const observer = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((entry) => {
+            if (entry.isIntersecting) {
+              entry.target.classList.add("visible");
+              observer.unobserve(entry.target);
+            }
+          });
+        },
+        { threshold: 0.12 }
+      );
+
+      revealElements.forEach((element) => observer.observe(element));
+    } else {
+      revealElements.forEach((element) => element.classList.add("visible"));
+    }
+  </script>
+</body>
+</html>
