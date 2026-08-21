@@ -1,4 +1,4 @@
-# LENAMP v0.3.1
+# LENAMP v0.3.2
 
 Player de áudio local em HTML, CSS e JavaScript, empacotado com Capacitor para Android.
 
@@ -60,3 +60,8 @@ O serviço nativo está implementado e pronto para receber faixas por URI. Para 
 ## Sobre
 
 LENAMP é um projeto independente criado por Leandro Ribeiro, inspirado no espírito dos players clássicos de desktop. Não possui afiliação com o Winamp — é apenas nostalgia e uma homenagem.
+
+
+## v0.3.2 — viewport Android
+
+A interface principal agora escala para preencher o maior espaço útil disponível da tela, mantendo a proporção clássica e sem rolagem. O cálculo usa `visualViewport` quando disponível, respeita áreas seguras (`safe-area`) e recalcula após rotação, retorno do segundo plano e mudanças de viewport.
