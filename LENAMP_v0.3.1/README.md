@@ -1,85 +1,73 @@
-# LENAMP v0.3.4
+# LENAMP v0.4.0
 
-Player de áudio local em HTML, CSS e JavaScript, empacotado com Capacitor para Android.
+Player de áudio local em HTML, CSS e JavaScript, com PWA e camada Android via Capacitor.
 
 **Sua música. Zero anúncios.**
 
-## Estado desta versão
+## Novidade principal — biblioteca Android / MediaStore
 
-A v0.3.1 adiciona a fundação nativa para reprodução Android em segundo plano sem desmontar o player web existente:
+A v0.4.0 liga a interface do LENAMP à biblioteca real de músicas do Android:
 
-- `MediaSessionService` com AndroidX Media3;
-- `ExoPlayer` rodando fora da Activity/WebView;
-- sessão de mídia para controles do Android, fones e Bluetooth;
-- notificação multimídia gerenciada pelo Media3;
-- ponte Capacitor `LenampAudio`;
-- comandos nativos de play, pause, stop, seek, volume, repeat e shuffle;
-- carregamento de playlist nativa por URI;
-- script idempotente que instala a camada nativa depois que o Capacitor gerar `android/`.
+- solicita a permissão correta conforme a versão do Android;
+- consulta `MediaStore.Audio.Media` sem copiar os arquivos;
+- recebe URI nativa `content://` para cada faixa;
+- carrega título, artista, álbum e duração;
+- ordena as faixas por título;
+- restaura a faixa atual e a posição anterior usando o estado salvo;
+- o botão **ADICIONAR** vira **ATUALIZAR** no Android e refaz a leitura da biblioteca;
+- a capa embutida da faixa é carregada sob demanda, evitando varrer imagens de toda a biblioteca de uma vez;
+- reprodução das faixas do MediaStore passa pela camada Media3/ExoPlayer, permitindo segundo plano, tela bloqueada e controles do sistema.
 
-## Por que esta etapa foi separada
+No navegador/PWA, nada muda: o LENAMP continua usando o seletor de arquivos e IndexedDB.
 
-No navegador, as faixas atuais são `Blob`s armazenados em IndexedDB. Um serviço Android não deve depender de `blob:` URLs da WebView. O serviço nativo foi preparado para trabalhar com URIs persistentes do Android (`content://`), que serão fornecidas na próxima etapa através do MediaStore.
+## Permissões Android
 
-Isso evita copiar toda a biblioteca para armazenamento interno apenas para manter o áudio tocando em segundo plano.
+- Android 13 ou superior: `READ_MEDIA_AUDIO`.
+- Android 12L ou inferior: `READ_EXTERNAL_STORAGE` limitado até API 32.
+- Áudio em segundo plano: `FOREGROUND_SERVICE` + `FOREGROUND_SERVICE_MEDIA_PLAYBACK`.
 
-## Estrutura relevante
+## Arquitetura
 
-- `index.html` — interface principal
-- `css/` — estilos
-- `js/app.js` — player web, playlist, equalizador e visualizador
-- `js/native-audio.js` — fachada JavaScript para o áudio nativo
-- `js/media-session.js` — integração Media Session do navegador
-- `js/storage.js` — persistência web em IndexedDB
-- `native/android/` — código Java da camada Media3
-- `scripts/install-android-audio.mjs` — instala a camada Media3 no Android gerado
-- `scripts/build-web.mjs` — gera `www/`
+- `js/app.js` — estado da interface e orquestração do player.
+- `js/native-library.js` — fachada JS para a biblioteca Android.
+- `js/native-audio.js` — fachada JS para o serviço Media3.
+- `native/android/.../LenampLibraryPlugin.java` — consulta MediaStore e extrai capa sob demanda.
+- `native/android/.../LenampAudioPlugin.java` — comandos do ExoPlayer/MediaSession.
+- `native/android/.../LenampPlaybackService.java` — reprodução em segundo plano.
+- `scripts/install-android-audio.mjs` — instala os plugins, permissões e serviço no projeto Android gerado.
 
-## Gerar Android
+## Atualizar um projeto Android já existente
 
-Requisitos locais: Node 22+, JDK e Android Studio compatíveis com Capacitor 8.
+Extraia esta versão por cima do projeto fonte do LENAMP e rode:
 
 ```bash
 npm install
-npm run build
+npm run android:native
+npm run cap:sync
+```
+
+Depois abra/recompile pelo Android Studio.
+
+Se você apagar e gerar `android/` novamente:
+
+```bash
 npm run android:add
 ```
 
-Depois da primeira geração:
+## Teste esperado no Android
 
-```bash
-npm run android
-```
+Na primeira abertura, o sistema pede acesso a músicas e áudio. Após permitir, o LENAMP lê a biblioteca e preenche a lista automaticamente. Em seguida teste:
 
-O comando `android:add` gera a plataforma, instala o serviço de áudio e sincroniza os arquivos web.
+1. tocar uma música;
+2. bloquear a tela;
+3. usar play/pause e próxima pela notificação;
+4. voltar ao LENAMP e verificar se a posição acompanha a reprodução;
+5. adicionar uma música nova ao aparelho e tocar **ATUALIZAR**.
 
-## Áudio em segundo plano
+## Observação técnica
 
-O serviço nativo está implementado e pronto para receber faixas por URI. Para o LENAMP usar essa camada com a biblioteca real do telefone, ainda falta a etapa MediaStore. Até lá, o player continua usando o mecanismo web atual e não promete persistência de áudio nativo com a tela apagada.
+A equalização Web Audio continua funcionando para arquivos abertos no navegador/PWA. As faixas reproduzidas pelo ExoPlayer Android ainda não passam pelo equalizador Web Audio; uma etapa posterior pode implementar equalização nativa com `AudioEffect` sem misturar as duas arquiteturas.
 
 ## Sobre
 
 LENAMP é um projeto independente criado por Leandro Ribeiro, inspirado no espírito dos players clássicos de desktop. Não possui afiliação com o Winamp — é apenas nostalgia e uma homenagem.
-
-
-## v0.3.2 — viewport Android
-
-A interface principal agora escala para preencher o maior espaço útil disponível da tela, mantendo a proporção clássica e sem rolagem. O cálculo usa `visualViewport` quando disponível, respeita áreas seguras (`safe-area`) e recalcula após rotação, retorno do segundo plano e mudanças de viewport.
-
-
-## v0.3.4 — responsividade nativa de layout
-
-A v0.3.2 ainda preservava um canvas lógico de 360 px e apenas ampliava o conjunto com `transform: scale()`. Isso mantinha a aparência de uma interface pequena dentro de uma página em algumas WebViews Android.
-
-A v0.3.4 remove esse modelo. O LENAMP agora ocupa **100% da área útil da WebView** com layout CSS responsivo real, sem escala global e sem rolagem da aplicação. Em retrato os três módulos ocupam a tela verticalmente; em paisagem eles viram três colunas para aproveitar a largura. A playlist continua com rolagem interna própria quando houver muitas faixas.
-
-`js/viewport.js` agora apenas sincroniza `visualViewport` com variáveis CSS e não altera escala. O canvas do espectro também acompanha a resolução visual real via `ResizeObserver`.
-
-Depois de atualizar os arquivos, execute `npm run cap:sync` antes de recompilar/instalar no Android; isso é obrigatório para copiar o novo conteúdo de `www/` para o projeto nativo.
-
-
-## v0.3.4 — instalação pelo Chrome / PWA
-
-A versão web agora inclui `manifest.webmanifest`, `sw.js`, ícones 192/512 e registro de Service Worker. Quando publicada em **HTTPS**, o Chrome no Android pode oferecer **Instalar app** / **Adicionar à tela inicial**. A tela **Sobre LENAMP** também mostra o botão **INSTALAR LENAMP** quando o evento de instalação do navegador estiver disponível.
-
-> Abrir o `index.html` diretamente por `file://` ou publicar em HTTP comum não atende aos requisitos de instalação do Chrome. Para teste em aparelho, use uma origem HTTPS (ou `localhost` no próprio dispositivo).

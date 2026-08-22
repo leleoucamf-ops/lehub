@@ -21,15 +21,26 @@ await cp(
 );
 
 const mainActivityPath = path.join(javaRoot, 'MainActivity.java');
-const mainActivity = `package com.leandroribeiro.lenamp;\n\nimport android.os.Bundle;\n\nimport com.getcapacitor.BridgeActivity;\nimport com.leandroribeiro.lenamp.audio.LenampAudioPlugin;\n\npublic class MainActivity extends BridgeActivity {\n    @Override\n    public void onCreate(Bundle savedInstanceState) {\n        registerPlugin(LenampAudioPlugin.class);\n        super.onCreate(savedInstanceState);\n    }\n}\n`;
+const mainActivity = `package com.leandroribeiro.lenamp;\n\nimport android.os.Bundle;\n\nimport com.getcapacitor.BridgeActivity;\nimport com.leandroribeiro.lenamp.audio.LenampAudioPlugin;\nimport com.leandroribeiro.lenamp.audio.LenampLibraryPlugin;\n\npublic class MainActivity extends BridgeActivity {\n    @Override\n    public void onCreate(Bundle savedInstanceState) {\n        registerPlugin(LenampAudioPlugin.class);\n        registerPlugin(LenampLibraryPlugin.class);\n        super.onCreate(savedInstanceState);\n    }\n}\n`;
 await writeFile(mainActivityPath, mainActivity, 'utf8');
 
 const manifestPath = path.join(androidRoot, 'app', 'src', 'main', 'AndroidManifest.xml');
 let manifest = await readFile(manifestPath, 'utf8');
 
-const permissionBlock = `\n    <!-- LENAMP: reprodução de mídia em segundo plano -->\n    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />\n    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_MEDIA_PLAYBACK" />\n`;
+const permissions = [
+  '<uses-permission android:name="android.permission.FOREGROUND_SERVICE" />',
+  '<uses-permission android:name="android.permission.FOREGROUND_SERVICE_MEDIA_PLAYBACK" />',
+  '<uses-permission android:name="android.permission.READ_MEDIA_AUDIO" />',
+  '<uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" android:maxSdkVersion="32" />',
+];
 
-if (!manifest.includes('android.permission.FOREGROUND_SERVICE_MEDIA_PLAYBACK')) {
+const missingPermissions = permissions.filter((permission) => {
+  const permissionName = permission.match(/android:name="([^"]+)"/)?.[1];
+  return permissionName && !manifest.includes(`android:name="${permissionName}"`);
+});
+
+if (missingPermissions.length) {
+  const permissionBlock = `\n    <!-- LENAMP: áudio em segundo plano + biblioteca MediaStore -->\n    ${missingPermissions.join('\n    ')}\n`;
   manifest = manifest.replace(/<application\b/, `${permissionBlock}\n    <application`);
 }
 
@@ -56,4 +67,4 @@ if (!gradle.includes(dependencyMarker)) {
   await writeFile(gradlePath, gradle, 'utf8');
 }
 
-console.log('LENAMP: camada nativa Media3 instalada no projeto Android.');
+console.log('LENAMP: áudio nativo + biblioteca MediaStore instalados no projeto Android.');

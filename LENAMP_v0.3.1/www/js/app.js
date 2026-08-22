@@ -67,10 +67,18 @@
   let pendingResumeTime = 0;
   let lastMediaPositionUpdate = 0;
   let showArtwork = false;
+  let nativePositionSeconds = 0;
+  let nativeDurationSeconds = 0;
+  let nativeIsPlaying = false;
+  let nativePollTimer = null;
 
   const storage = window.LENAMP_STORAGE || null;
   const mediaSession = window.LENAMP_MEDIA_SESSION || null;
   const metadataReader = window.LENAMP_METADATA || null;
+  const nativeAudio = window.LENAMP_NATIVE_AUDIO || null;
+  const nativeLibrary = window.LENAMP_NATIVE_LIBRARY || null;
+
+  const isNativeTrack = (track = tracks[currentIndex]) => Boolean(track?.nativeUri && nativeAudio?.available);
 
   const createTrackId = () => (typeof crypto?.randomUUID === 'function'
     ? crypto.randomUUID()
@@ -129,7 +137,7 @@
   const inspectAudioFile = async (file) => metadataReader?.inspect?.(file) || {};
 
   const persistTrack = async (track) => {
-    if (!storage || !track) return;
+    if (!storage || !track || track.nativeUri) return;
     try {
       await storage.saveTrack(track);
     } catch (error) {
@@ -146,7 +154,9 @@
     balance: Number(balance.value),
     eqEnabled,
     eqValues: [...document.querySelectorAll('[data-eq-index]')].map((slider) => Number(slider.value)),
-    currentTime: Number.isFinite(audio.currentTime) ? audio.currentTime : 0,
+    currentTime: isNativeTrack()
+      ? nativePositionSeconds
+      : (Number.isFinite(audio.currentTime) ? audio.currentTime : 0),
   });
 
   const persistState = async () => {
@@ -176,6 +186,27 @@
 
   const hydrateTrackMetadata = async (track) => {
     if (!track) return;
+
+    if (track.nativeUri) {
+      if (!track.artworkPromise && nativeLibrary?.available) {
+        track.artworkPromise = nativeLibrary.getDetails(track.nativeUri)
+          .then((result) => {
+            if (Number.isFinite(Number(result?.bitrateKbps))) track.meta.bitrateKbps = Number(result.bitrateKbps);
+            if (Number.isFinite(Number(result?.sampleRateHz))) track.meta.sampleRateHz = Number(result.sampleRateHz);
+            if (Number.isFinite(Number(result?.channels))) track.meta.channels = Number(result.channels);
+            track.artworkUrl = result?.dataUrl || null;
+            if (tracks[currentIndex] === track) {
+              renderTrackMeta(track);
+              setArtworkSource(track);
+            }
+            return track.artworkUrl;
+          })
+          .catch(() => null);
+      }
+      await track.artworkPromise;
+      return;
+    }
+
     if (!track.metadataPromise) {
       track.metadataPromise = inspectAudioFile(track.file).then((meta) => {
         const { artworkBlob, ...persistableMeta } = meta || {};
@@ -328,9 +359,149 @@
 
   const revokeTrackUrls = () => {
     tracks.forEach((track) => {
-      URL.revokeObjectURL(track.url);
-      if (track.artworkUrl) URL.revokeObjectURL(track.artworkUrl);
+      if (typeof track.url === 'string' && track.url.startsWith('blob:')) URL.revokeObjectURL(track.url);
+      if (typeof track.artworkUrl === 'string' && track.artworkUrl.startsWith('blob:')) URL.revokeObjectURL(track.artworkUrl);
     });
+  };
+
+  const mapNativeTrack = (item) => ({
+    id: String(item?.id || `android-media-${item?.mediaStoreId || createTrackId()}`),
+    mediaStoreId: Number(item?.mediaStoreId) || null,
+    file: null,
+    name: item?.title || item?.displayName || 'Faixa',
+    url: '',
+    nativeUri: String(item?.uri || ''),
+    nativeArtworkUri: '',
+    duration: Math.max(0, (Number(item?.durationMs) || 0) / 1000),
+    meta: {
+      bitrateKbps: null,
+      sampleRateHz: null,
+      channels: null,
+      title: item?.title || item?.displayName || 'Faixa',
+      artist: item?.artist || null,
+      album: item?.album || null,
+    },
+    artworkUrl: null,
+    artworkPromise: null,
+    metadataPromise: null,
+  });
+
+  const applyRestoredSettings = (state = {}) => {
+    shuffle = Boolean(state.shuffle);
+    repeat = Boolean(state.repeat);
+    eqEnabled = state.eqEnabled !== false;
+
+    if (Number.isFinite(state.volume)) volume.value = String(Math.min(1, Math.max(0, state.volume)));
+    if (Number.isFinite(state.balance)) balance.value = String(Math.min(1, Math.max(-1, state.balance)));
+    audio.volume = Number(volume.value);
+
+    controls.shuffle.classList.toggle('active', shuffle);
+    controls.repeat.classList.toggle('active', repeat);
+    controls.eqToggle.classList.toggle('active', eqEnabled);
+
+    if (Array.isArray(state.eqValues)) {
+      document.querySelectorAll('[data-eq-index]').forEach((slider, index) => {
+        if (Number.isFinite(state.eqValues[index])) slider.value = String(state.eqValues[index]);
+      });
+    }
+  };
+
+  const updateNativeUi = (state = {}) => {
+    if (!tracks.length || !nativeAudio?.available) return;
+
+    const index = Number(state.currentIndex);
+    if (Number.isInteger(index) && index >= 0 && index < tracks.length && index !== currentIndex) {
+      currentIndex = index;
+      selectedIndex = index;
+      trackTitle.textContent = getTrackLabel(tracks[index]);
+      renderTrackMeta(tracks[index]);
+      setArtworkSource(tracks[index]);
+      void hydrateTrackMetadata(tracks[index]);
+      renderPlaylist();
+      schedulePersistState();
+    }
+
+    nativePositionSeconds = Math.max(0, (Number(state.positionMs) || 0) / 1000);
+    nativeDurationSeconds = Math.max(
+      tracks[currentIndex]?.duration || 0,
+      (Number(state.durationMs) || 0) / 1000,
+    );
+    nativeIsPlaying = Boolean(state.isPlaying);
+
+    timeDisplay.textContent = formatTime(nativePositionSeconds);
+    playlistClock.textContent = `${formatTime(nativePositionSeconds)} / ${formatTime(nativeDurationSeconds)}`;
+    seek.value = nativeDurationSeconds > 0
+      ? Math.round((nativePositionSeconds / nativeDurationSeconds) * 1000)
+      : 0;
+    statusLight.classList.toggle('on', nativeIsPlaying);
+    schedulePlaybackPersist();
+  };
+
+  const pollNativeState = async () => {
+    if (!nativeAudio?.available || !isNativeTrack()) return;
+    try {
+      updateNativeUi(await nativeAudio.getState());
+    } catch (error) {
+      console.warn('LENAMP: estado do áudio nativo indisponível.', error);
+    }
+  };
+
+  const startNativePolling = () => {
+    if (nativePollTimer || !nativeAudio?.available) return;
+    nativePollTimer = window.setInterval(() => { void pollNativeState(); }, 650);
+  };
+
+  const refreshNativeLibrary = async ({ requestPermission = false } = {}) => {
+    if (!nativeLibrary?.available) return false;
+
+    trackTitle.textContent = 'LENDO BIBLIOTECA DO ANDROID...';
+    const permission = requestPermission
+      ? await nativeLibrary.requestAccess()
+      : await nativeLibrary.checkAccess();
+
+    if (!permission?.granted) {
+      trackTitle.textContent = 'PERMITA ACESSO ÀS MÚSICAS';
+      return false;
+    }
+
+    const result = await nativeLibrary.listTracks();
+    const freshTracks = (result?.tracks || []).map(mapNativeTrack).filter((track) => track.nativeUri);
+
+    const stored = storage ? await storage.loadLibrary().catch(() => ({ state: null })) : { state: null };
+    const state = stored?.state || {};
+    const byId = new Map(freshTracks.map((track) => [track.id, track]));
+    const ordered = [];
+    (state.trackOrder || []).forEach((id) => {
+      const track = byId.get(id);
+      if (!track) return;
+      ordered.push(track);
+      byId.delete(id);
+    });
+    byId.forEach((track) => ordered.push(track));
+    tracks = ordered;
+
+    applyRestoredSettings(state);
+    renderPlaylist();
+
+    if (!tracks.length) {
+      currentIndex = -1;
+      selectedIndex = -1;
+      trackTitle.textContent = 'NENHUMA MÚSICA ENCONTRADA';
+      setArtworkSource(null);
+      return true;
+    }
+
+    pendingResumeTime = Number.isFinite(state.currentTime) ? Math.max(0, state.currentTime) : 0;
+    const restoredIndex = state.currentTrackId
+      ? tracks.findIndex((track) => track.id === state.currentTrackId)
+      : 0;
+    await loadTrack(restoredIndex >= 0 ? restoredIndex : 0, false);
+    await nativeAudio.setVolume(Number(volume.value)).catch(() => {});
+    await nativeAudio.setShuffle(shuffle).catch(() => {});
+    await nativeAudio.setRepeat(repeat).catch(() => {});
+    startNativePolling();
+    await persistState();
+    return true;
   };
 
   const addFiles = async (fileList) => {
@@ -400,15 +571,32 @@
     if (!tracks[index]) return;
     currentIndex = index;
     selectedIndex = index;
-    audio.src = tracks[index].url;
-    trackTitle.textContent = getTrackLabel(tracks[index]);
-    renderTrackMeta(tracks[index]);
-    setArtworkSource(tracks[index]);
-    mediaSession?.setTrack?.(tracks[index]);
+    const track = tracks[index];
+
+    trackTitle.textContent = getTrackLabel(track);
+    renderTrackMeta(track);
+    setArtworkSource(track);
+    mediaSession?.setTrack?.(track);
     renderPlaylist();
-    void hydrateTrackMetadata(tracks[index]);
+    void hydrateTrackMetadata(track);
     schedulePersistState();
 
+    if (isNativeTrack(track)) {
+      audio.pause();
+      audio.removeAttribute('src');
+      nativePositionSeconds = pendingResumeTime > 0 ? pendingResumeTime : 0;
+      pendingResumeTime = 0;
+      nativeDurationSeconds = track.duration || 0;
+      await nativeAudio.loadPlaylist(tracks, index, nativePositionSeconds * 1000, autoplay);
+      await nativeAudio.setVolume(Number(volume.value)).catch(() => {});
+      await nativeAudio.setShuffle(shuffle).catch(() => {});
+      await nativeAudio.setRepeat(repeat).catch(() => {});
+      await pollNativeState();
+      startNativePolling();
+      return;
+    }
+
+    audio.src = track.url;
     if (autoplay) {
       await ensureAudioGraph();
       await audio.play();
@@ -432,38 +620,81 @@
 
   const playCurrent = async () => {
     if (!tracks.length) {
-      filePicker.click();
+      if (nativeLibrary?.available) await refreshNativeLibrary({ requestPermission: true });
+      else filePicker.click();
       return;
     }
     if (currentIndex < 0) await loadTrack(0, false);
+    if (isNativeTrack()) {
+      await nativeAudio.play();
+      await pollNativeState();
+      return;
+    }
     await ensureAudioGraph();
     await audio.play();
   };
 
-  const stopAudio = () => {
+  const pauseCurrent = async () => {
+    if (isNativeTrack()) {
+      await nativeAudio.pause();
+      await pollNativeState();
+      schedulePersistState();
+      return;
+    }
     audio.pause();
-    audio.currentTime = 0;
-    mediaSession?.setPlaybackState?.('none');
+  };
+
+  const stopAudio = () => {
+    if (isNativeTrack()) {
+      void nativeAudio.stop().then(() => pollNativeState()).catch(() => {});
+      nativePositionSeconds = 0;
+      updateNativeUi({ currentIndex, positionMs: 0, durationMs: nativeDurationSeconds * 1000, isPlaying: false });
+    } else {
+      audio.pause();
+      audio.currentTime = 0;
+      mediaSession?.setPlaybackState?.('none');
+    }
     schedulePersistState();
   };
 
   const playNext = async () => {
+    if (isNativeTrack()) {
+      await nativeAudio.next();
+      await pollNativeState();
+      return;
+    }
     const index = nextIndex();
     if (index >= 0) await loadTrack(index, true);
   };
 
   const playPrevious = async () => {
+    if (isNativeTrack()) {
+      await nativeAudio.previous();
+      await pollNativeState();
+      return;
+    }
     const index = previousIndex();
     if (index >= 0) await loadTrack(index, true);
   };
 
   const seekBy = (seconds) => {
+    if (isNativeTrack()) {
+      const target = Math.min(nativeDurationSeconds || Infinity, Math.max(0, nativePositionSeconds + seconds));
+      void nativeAudio.seekTo(target * 1000).then(() => pollNativeState());
+      return;
+    }
     if (!Number.isFinite(audio.duration) || audio.duration <= 0) return;
     audio.currentTime = Math.min(audio.duration, Math.max(0, audio.currentTime + seconds));
   };
 
   const seekToSeconds = (seconds) => {
-    if (!Number.isFinite(audio.duration) || audio.duration <= 0 || !Number.isFinite(seconds)) return;
+    if (!Number.isFinite(seconds)) return;
+    if (isNativeTrack()) {
+      const target = Math.min(nativeDurationSeconds || Infinity, Math.max(0, seconds));
+      void nativeAudio.seekTo(target * 1000).then(() => pollNativeState());
+      return;
+    }
+    if (!Number.isFinite(audio.duration) || audio.duration <= 0) return;
     audio.currentTime = Math.min(audio.duration, Math.max(0, seconds));
   };
 
@@ -474,15 +705,21 @@
     toggleVisualMode();
   });
 
-  controls.eject.addEventListener('click', () => filePicker.click());
-  controls.add.addEventListener('click', () => filePicker.click());
+  controls.eject.addEventListener('click', () => {
+    if (nativeLibrary?.available) void refreshNativeLibrary({ requestPermission: true });
+    else filePicker.click();
+  });
+  controls.add.addEventListener('click', () => {
+    if (nativeLibrary?.available) void refreshNativeLibrary({ requestPermission: true });
+    else filePicker.click();
+  });
   filePicker.addEventListener('change', () => {
     void addFiles(filePicker.files);
     filePicker.value = '';
   });
 
   controls.play.addEventListener('click', playCurrent);
-  controls.pause.addEventListener('click', () => audio.pause());
+  controls.pause.addEventListener('click', () => { void pauseCurrent(); });
   controls.stop.addEventListener('click', stopAudio);
 
   controls.next.addEventListener('click', playNext);
@@ -491,20 +728,22 @@
   controls.shuffle.addEventListener('click', () => {
     shuffle = !shuffle;
     controls.shuffle.classList.toggle('active', shuffle);
+    if (nativeAudio?.available && isNativeTrack()) void nativeAudio.setShuffle(shuffle);
     schedulePersistState();
   });
 
   controls.repeat.addEventListener('click', () => {
     repeat = !repeat;
     controls.repeat.classList.toggle('active', repeat);
+    if (nativeAudio?.available && isNativeTrack()) void nativeAudio.setRepeat(repeat);
     schedulePersistState();
   });
 
   controls.remove.addEventListener('click', () => {
     if (selectedIndex < 0 || !tracks[selectedIndex]) return;
     const [removed] = tracks.splice(selectedIndex, 1);
-    URL.revokeObjectURL(removed.url);
-    if (removed.artworkUrl) URL.revokeObjectURL(removed.artworkUrl);
+    if (typeof removed.url === 'string' && removed.url.startsWith('blob:')) URL.revokeObjectURL(removed.url);
+    if (typeof removed.artworkUrl === 'string' && removed.artworkUrl.startsWith('blob:')) URL.revokeObjectURL(removed.artworkUrl);
     if (storage) void storage.deleteTrack(removed.id).catch((error) => {
       console.warn('LENAMP: não foi possível remover a faixa salva.', error);
     });
@@ -573,6 +812,7 @@
 
   volume.addEventListener('input', () => {
     audio.volume = Number(volume.value);
+    if (nativeAudio?.available && isNativeTrack()) void nativeAudio.setVolume(Number(volume.value));
     schedulePersistState();
   });
 
@@ -582,6 +822,11 @@
   });
 
   seek.addEventListener('input', () => {
+    if (isNativeTrack()) {
+      if (nativeDurationSeconds <= 0) return;
+      seekToSeconds((Number(seek.value) / 1000) * nativeDurationSeconds);
+      return;
+    }
     if (!Number.isFinite(audio.duration) || audio.duration <= 0) return;
     audio.currentTime = (Number(seek.value) / 1000) * audio.duration;
   });
@@ -599,7 +844,7 @@
       Number.isFinite(audio.duration) &&
       audio.duration > 0
     ) {
-      track.meta.bitrateKbps = Math.round((track.file.size * 8) / audio.duration / 1000);
+      track.meta.bitrateKbps = track.file ? Math.round((track.file.size * 8) / audio.duration / 1000) : null;
     }
 
     if (pendingResumeTime > 0) {
@@ -677,9 +922,25 @@
     if (animationFrame) cancelAnimationFrame(animationFrame);
     window.clearTimeout(persistenceTimer);
     window.clearTimeout(playbackPersistTimer);
+    if (nativePollTimer) window.clearInterval(nativePollTimer);
   });
 
   const restoreLibrary = async () => {
+    if (nativeLibrary?.available) {
+      try {
+        const access = await nativeLibrary.checkAccess();
+        if (access?.granted) {
+          await refreshNativeLibrary({ requestPermission: false });
+        } else {
+          await refreshNativeLibrary({ requestPermission: true });
+        }
+      } catch (error) {
+        console.warn('LENAMP: biblioteca Android indisponível.', error);
+        trackTitle.textContent = 'TOQUE EM ADICIONAR PARA LIBERAR MÚSICAS';
+      }
+      return;
+    }
+
     if (!storage) return;
 
     try {
@@ -704,24 +965,7 @@
         metadataPromise: null,
       })).filter((track) => track.file instanceof Blob);
 
-      shuffle = Boolean(state.shuffle);
-      repeat = Boolean(state.repeat);
-      eqEnabled = state.eqEnabled !== false;
-
-      if (Number.isFinite(state.volume)) volume.value = String(Math.min(1, Math.max(0, state.volume)));
-      if (Number.isFinite(state.balance)) balance.value = String(Math.min(1, Math.max(-1, state.balance)));
-      audio.volume = Number(volume.value);
-
-      controls.shuffle.classList.toggle('active', shuffle);
-      controls.repeat.classList.toggle('active', repeat);
-      controls.eqToggle.classList.toggle('active', eqEnabled);
-
-      if (Array.isArray(state.eqValues)) {
-        document.querySelectorAll('[data-eq-index]').forEach((slider, index) => {
-          if (Number.isFinite(state.eqValues[index])) slider.value = String(state.eqValues[index]);
-        });
-      }
-
+      applyRestoredSettings(state);
       renderPlaylist();
 
       if (tracks.length) {
@@ -736,9 +980,19 @@
     }
   };
 
+  if (nativeLibrary?.available) {
+    controls.add.textContent = 'ATUALIZAR';
+    controls.add.title = 'Atualizar biblioteca do Android';
+    controls.eject.title = 'Atualizar biblioteca do Android';
+  }
+
+  nativeAudio?.addListener?.('playbackState', (state) => {
+    if (isNativeTrack() || Number.isInteger(Number(state?.currentIndex))) updateNativeUi(state);
+  });
+
   mediaSession?.bindActions?.({
     play: () => { void playCurrent(); },
-    pause: () => audio.pause(),
+    pause: () => { void pauseCurrent(); },
     stop: stopAudio,
     previous: () => { void playPrevious(); },
     next: () => { void playNext(); },

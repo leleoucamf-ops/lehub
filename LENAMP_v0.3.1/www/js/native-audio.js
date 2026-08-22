@@ -49,6 +49,8 @@
     play: () => call('play'),
     pause: () => call('pause'),
     stop: () => call('stop'),
+    next: () => call('next'),
+    previous: () => call('previous'),
     seekTo: (positionMs) => call('seekTo', { positionMs: Math.max(0, Number(positionMs) || 0) }),
     setVolume: (value) => call('setVolume', { value: Math.min(1, Math.max(0, Number(value) || 0)) }),
     setRepeat: (enabled) => call('setRepeat', { enabled: Boolean(enabled) }),

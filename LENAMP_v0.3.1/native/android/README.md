@@ -1,24 +1,26 @@
-# LENAMP — áudio nativo Android
+# LENAMP — camada nativa Android
 
-Esta pasta contém a camada nativa do player Android.
+A camada nativa agora tem dois plugins Capacitor:
 
-- `LenampPlaybackService.java` mantém `ExoPlayer` + `MediaSession` em um `MediaSessionService`.
-- `LenampAudioPlugin.java` expõe o serviço ao JavaScript do Capacitor.
-- `scripts/install-android-audio.mjs` copia os arquivos e aplica as alterações necessárias no projeto Android gerado.
+- `LenampAudioPlugin` — controla `MediaSessionService` + ExoPlayer/Media3 para reprodução em segundo plano.
+- `LenampLibraryPlugin` — consulta a biblioteca do aparelho via `MediaStore` e devolve URIs `content://` persistentes.
+- `LenampPlaybackService` — mantém a sessão de áudio fora da WebView.
+
+## Permissões
+
+- Android 13+ (`API 33+`): `READ_MEDIA_AUDIO`.
+- Android 12L e anteriores: `READ_EXTERNAL_STORAGE` com `maxSdkVersion=32`.
+- Reprodução em segundo plano: `FOREGROUND_SERVICE` e `FOREGROUND_SERVICE_MEDIA_PLAYBACK`.
 
 ## Instalação
 
-Depois de instalar as dependências e gerar a plataforma Android:
+Depois de gerar a plataforma Android:
 
 ```bash
 npm install
 npx cap add android
-npm run android:audio
+npm run android:native
 npm run cap:sync
 ```
 
-O instalador é idempotente: pode ser executado novamente após regenerações do projeto Android.
-
-## Importante
-
-A camada nativa recebe URIs persistentes (`content://` ou `file://`). O player web atual ainda trabalha com `Blob`/IndexedDB. A próxima etapa é a biblioteca via Android MediaStore, que fornecerá essas URIs sem duplicar a biblioteca de músicas.
+O script é idempotente e pode ser executado novamente.

@@ -192,6 +192,37 @@ public final class LenampAudioPlugin extends Plugin {
         });
     }
 
+
+    @PluginMethod
+    public void next(PluginCall call) {
+        withController(call, mediaController -> {
+            if (mediaController.hasNextMediaItem()) {
+                mediaController.seekToNextMediaItem();
+            } else if (mediaController.getMediaItemCount() > 0) {
+                mediaController.seekTo(0, 0L);
+            }
+            mediaController.play();
+            call.resolve();
+            emitState();
+        });
+    }
+
+    @PluginMethod
+    public void previous(PluginCall call) {
+        withController(call, mediaController -> {
+            if (mediaController.getCurrentPosition() > 3000L) {
+                mediaController.seekTo(0L);
+            } else if (mediaController.hasPreviousMediaItem()) {
+                mediaController.seekToPreviousMediaItem();
+            } else if (mediaController.getMediaItemCount() > 0) {
+                mediaController.seekTo(mediaController.getMediaItemCount() - 1, 0L);
+            }
+            mediaController.play();
+            call.resolve();
+            emitState();
+        });
+    }
+
     @PluginMethod
     public void seekTo(PluginCall call) {
         long positionMs = Math.max(0L, call.getLong("positionMs", 0L));
@@ -244,6 +275,14 @@ public final class LenampAudioPlugin extends Plugin {
         state.put("durationMs", Math.max(0L, mediaController.getDuration()));
         state.put("shuffle", mediaController.getShuffleModeEnabled());
         state.put("repeatMode", mediaController.getRepeatMode());
+        MediaItem currentItem = mediaController.getCurrentMediaItem();
+        if (currentItem != null) {
+            state.put("mediaId", currentItem.mediaId);
+            CharSequence title = currentItem.mediaMetadata.title;
+            CharSequence artist = currentItem.mediaMetadata.artist;
+            state.put("title", title == null ? "" : title.toString());
+            state.put("artist", artist == null ? "" : artist.toString());
+        }
         return state;
     }
 

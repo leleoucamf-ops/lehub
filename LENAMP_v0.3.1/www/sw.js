@@ -1,4 +1,4 @@
-const CACHE_NAME = 'lenamp-shell-v0.3.4';
+const CACHE_NAME = 'lenamp-shell-v0.4.0';
 const APP_SHELL = [
   './',
   './index.html',
@@ -10,6 +10,7 @@ const APP_SHELL = [
   './css/about.css',
   './js/config.js',
   './js/platform.js',
+  './js/native-library.js',
   './js/native-audio.js',
   './js/viewport.js',
   './js/storage.js',
