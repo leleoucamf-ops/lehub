@@ -1,0 +1,8 @@
+{
+  "appId": "com.leandroribeiro.lenamp",
+  "appName": "LENAMP",
+  "webDir": "www",
+  "android": {
+    "backgroundColor": "#05070b"
+  }
+}
