@@ -2,7 +2,19 @@
   'use strict';
 
   const platform = window.LENAMP_PLATFORM || {};
-  const plugin = window.Capacitor?.Plugins?.LenampLibrary || null;
+  const capacitor = window.Capacitor || null;
+  let plugin = null;
+
+  if (platform.isAndroid && typeof capacitor?.registerPlugin === 'function') {
+    try {
+      plugin = capacitor.registerPlugin('LenampLibrary');
+    } catch (error) {
+      console.warn('LENAMP: falha ao registrar a ponte LenampLibrary.', error);
+    }
+  }
+
+  // Fallback para runtimes Capacitor que ainda expõem Plugins globalmente.
+  if (!plugin) plugin = capacitor?.Plugins?.LenampLibrary || null;
   const available = Boolean(platform.isAndroid && plugin);
 
   const call = async (method, payload = {}) => {

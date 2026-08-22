@@ -77,6 +77,7 @@
   const metadataReader = window.LENAMP_METADATA || null;
   const nativeAudio = window.LENAMP_NATIVE_AUDIO || null;
   const nativeLibrary = window.LENAMP_NATIVE_LIBRARY || null;
+  const platform = window.LENAMP_PLATFORM || {};
 
   const isNativeTrack = (track = tracks[currentIndex]) => Boolean(track?.nativeUri && nativeAudio?.available);
 
@@ -936,7 +937,9 @@
         }
       } catch (error) {
         console.warn('LENAMP: biblioteca Android indisponível.', error);
-        trackTitle.textContent = 'TOQUE EM ADICIONAR PARA LIBERAR MÚSICAS';
+        trackTitle.textContent = platform.isAndroid
+          ? 'TOQUE EM ATUALIZAR PARA LIBERAR MÚSICAS'
+          : 'TOQUE EM ADICIONAR PARA LIBERAR MÚSICAS';
       }
       return;
     }
@@ -980,7 +983,10 @@
     }
   };
 
-  if (nativeLibrary?.available) {
+  // O rótulo da interface depende da plataforma, não da disponibilidade momentânea
+  // do plugin. Isso evita mostrar ADICIONAR no Android enquanto a ponte nativa
+  // ainda está sendo registrada ou quando uma instalação antiga está incompleta.
+  if (platform.isAndroid) {
     controls.add.textContent = 'ATUALIZAR';
     controls.add.title = 'Atualizar biblioteca do Android';
     controls.eject.title = 'Atualizar biblioteca do Android';

@@ -1,8 +1,14 @@
-# LENAMP v0.4.1
+# LENAMP v0.4.2
 
 Player de áudio local em HTML, CSS e JavaScript, com PWA e camada Android via Capacitor.
 
 **Sua música. Zero anúncios.**
+
+## Correção v0.4.2 — botão ATUALIZAR
+
+- no Android, o rótulo **ATUALIZAR** agora depende da plataforma e não da detecção do plugin;
+- a ponte `LenampLibrary` usa `Capacitor.registerPlugin()` quando disponível, com fallback legado;
+- mensagens da biblioteca no Android também usam **ATUALIZAR**.
 
 ## Novidade principal — biblioteca Android / MediaStore
 
