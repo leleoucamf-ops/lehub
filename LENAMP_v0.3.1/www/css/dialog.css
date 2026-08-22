@@ -6,7 +6,11 @@ body.overlay-open { overflow: hidden; }
   z-index: 900;
   display: grid;
   place-items: center;
-  padding: 6px;
+  padding:
+    max(4px, env(safe-area-inset-top))
+    max(4px, env(safe-area-inset-right))
+    max(4px, env(safe-area-inset-bottom))
+    max(4px, env(safe-area-inset-left));
   background: rgba(4, 5, 8, .82);
   backdrop-filter: blur(5px);
   opacity: 0;
@@ -17,11 +21,11 @@ body.overlay-open { overflow: hidden; }
 .lenamp-dialog-screen[hidden] { display: none; }
 
 .lenamp-dialog-card {
-  width: 370px;
+  width: min(100%, 520px);
+  max-height: 100%;
   overflow: hidden;
-  transform: scale(var(--dialog-scale, 1));
-  transform-origin: center center;
-  will-change: transform;
+  display: flex;
+  flex-direction: column;
   padding: 7px;
   background: linear-gradient(180deg, #373a55 0%, #202235 14%, #11131e 100%);
   border-top: 2px solid #6f718c;

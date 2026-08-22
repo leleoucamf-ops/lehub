@@ -1,4 +1,4 @@
-# LENAMP v0.3.2
+# LENAMP v0.3.3
 
 Player de áudio local em HTML, CSS e JavaScript, empacotado com Capacitor para Android.
 
@@ -65,3 +65,14 @@ LENAMP é um projeto independente criado por Leandro Ribeiro, inspirado no espí
 ## v0.3.2 — viewport Android
 
 A interface principal agora escala para preencher o maior espaço útil disponível da tela, mantendo a proporção clássica e sem rolagem. O cálculo usa `visualViewport` quando disponível, respeita áreas seguras (`safe-area`) e recalcula após rotação, retorno do segundo plano e mudanças de viewport.
+
+
+## v0.3.3 — responsividade nativa de layout
+
+A v0.3.2 ainda preservava um canvas lógico de 360 px e apenas ampliava o conjunto com `transform: scale()`. Isso mantinha a aparência de uma interface pequena dentro de uma página em algumas WebViews Android.
+
+A v0.3.3 remove esse modelo. O LENAMP agora ocupa **100% da área útil da WebView** com layout CSS responsivo real, sem escala global e sem rolagem da aplicação. Em retrato os três módulos ocupam a tela verticalmente; em paisagem eles viram três colunas para aproveitar a largura. A playlist continua com rolagem interna própria quando houver muitas faixas.
+
+`js/viewport.js` agora apenas sincroniza `visualViewport` com variáveis CSS e não altera escala. O canvas do espectro também acompanha a resolução visual real via `ResizeObserver`.
+
+Depois de atualizar os arquivos, execute `npm run cap:sync` antes de recompilar/instalar no Android; isso é obrigatório para copiar o novo conteúdo de `www/` para o projeto nativo.

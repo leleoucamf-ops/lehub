@@ -245,6 +245,22 @@
     }
   };
 
+  const resizeSpectrumCanvas = () => {
+    const rect = spectrum.getBoundingClientRect();
+    const dpr = Math.min(window.devicePixelRatio || 1, 2);
+    const width = Math.max(1, Math.round(rect.width * dpr));
+    const height = Math.max(1, Math.round(rect.height * dpr));
+    if (spectrum.width !== width) spectrum.width = width;
+    if (spectrum.height !== height) spectrum.height = height;
+  };
+
+  const spectrumObserver = typeof ResizeObserver === 'function'
+    ? new ResizeObserver(resizeSpectrumCanvas)
+    : null;
+  spectrumObserver?.observe(visualStage);
+  window.addEventListener('resize', resizeSpectrumCanvas, { passive: true });
+  resizeSpectrumCanvas();
+
   const drawSpectrum = () => {
     if (!analyser) return;
     const ctx = spectrum.getContext('2d');

@@ -1,63 +1,36 @@
 (() => {
   'use strict';
 
-  const shell = document.querySelector('.lenamp-shell');
-  const dialogScreens = [...document.querySelectorAll('.lenamp-dialog-screen')];
-  const EDGE_GAP = 8;
+  const root = document.documentElement;
 
-  const availableSize = () => ({
-    width: Math.max(1, window.innerWidth - EDGE_GAP * 2),
-    height: Math.max(1, window.innerHeight - EDGE_GAP * 2),
-  });
+  // No Android o WebView pode mudar a área útil ao girar a tela, ocultar barras
+  // do sistema ou voltar do background. Mantemos o CSS sincronizado com a área
+  // visual real; o layout em si é responsivo e não depende de transform: scale().
+  const syncViewport = () => {
+    const visual = window.visualViewport;
+    const width = Math.max(1, visual?.width || window.innerWidth || root.clientWidth);
+    const height = Math.max(1, visual?.height || window.innerHeight || root.clientHeight);
 
-  const fitShell = () => {
-    if (!shell) return;
-
-    // Mede o layout em escala natural para evitar rolagem externa.
-    shell.style.setProperty('--app-scale', '1');
-    const { width, height } = shell.getBoundingClientRect();
-    const available = availableSize();
-    const scale = Math.min(1, available.width / width, available.height / height);
-
-    shell.style.setProperty('--app-scale', scale.toFixed(4));
-  };
-
-  const fitDialog = (screen) => {
-    const card = screen?.querySelector('.lenamp-dialog-card');
-    if (!card || screen.hidden) return;
-
-    card.style.setProperty('--dialog-scale', '1');
-    const { width, height } = card.getBoundingClientRect();
-    const available = availableSize();
-    const scale = Math.min(1, available.width / width, available.height / height);
-
-    card.style.setProperty('--dialog-scale', scale.toFixed(4));
-  };
-
-  const fitAll = () => {
-    fitShell();
-    dialogScreens.forEach(fitDialog);
+    root.style.setProperty('--lenamp-vw', `${Math.round(width)}px`);
+    root.style.setProperty('--lenamp-vh', `${Math.round(height)}px`);
+    root.dataset.orientation = width >= height ? 'landscape' : 'portrait';
   };
 
   let frame = 0;
-  const scheduleFit = () => {
+  const scheduleSync = () => {
     cancelAnimationFrame(frame);
-    frame = requestAnimationFrame(fitAll);
+    frame = requestAnimationFrame(syncViewport);
   };
 
-  const observer = new MutationObserver(scheduleFit);
-  dialogScreens.forEach((screen) => observer.observe(screen, {
-    attributes: true,
-    attributeFilter: ['hidden', 'class'],
-  }));
+  window.addEventListener('resize', scheduleSync, { passive: true });
+  window.addEventListener('orientationchange', scheduleSync, { passive: true });
+  window.visualViewport?.addEventListener('resize', scheduleSync, { passive: true });
+  window.visualViewport?.addEventListener('scroll', scheduleSync, { passive: true });
+  document.addEventListener('visibilitychange', () => {
+    if (!document.hidden) scheduleSync();
+  });
 
-  if ('ResizeObserver' in window && shell) {
-    const resizeObserver = new ResizeObserver(scheduleFit);
-    resizeObserver.observe(shell);
-  }
-
-  window.addEventListener('resize', scheduleFit, { passive: true });
-  window.addEventListener('orientationchange', scheduleFit, { passive: true });
-  window.addEventListener('load', scheduleFit, { once: true });
-  document.addEventListener('DOMContentLoaded', scheduleFit, { once: true });
+  syncViewport();
+  document.addEventListener('DOMContentLoaded', scheduleSync, { once: true });
+  window.addEventListener('load', scheduleSync, { once: true });
 })();
