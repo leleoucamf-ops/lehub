@@ -97,3 +97,34 @@
   min-height: 32px;
   font-size: 10px;
 }
+
+
+.about-install {
+  margin-top: 10px;
+}
+
+.about-install-btn {
+  width: 100%;
+  min-height: 32px;
+  font-size: 10px;
+  color: #e8e8ed;
+  background: linear-gradient(180deg, #363949 0%, #242633 48%, #171923 100%);
+  border-top: 1px solid #696c7b;
+  border-left: 1px solid #696c7b;
+  border-right: 1px solid #080910;
+  border-bottom: 1px solid #080910;
+}
+
+.about-install-btn:active {
+  border-top-color: #080910;
+  border-left-color: #080910;
+  border-right-color: #696c7b;
+  border-bottom-color: #696c7b;
+}
+
+.about-install-status {
+  margin: 7px 2px 0;
+  color: #9fa1aa;
+  font-size: 8px;
+  line-height: 1.35;
+}

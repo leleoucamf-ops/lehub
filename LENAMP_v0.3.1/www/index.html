@@ -4,8 +4,15 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, height=device-height, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover, interactive-widget=resizes-content" />
   <title>LENAMP</title>
+  <meta name="theme-color" content="#1a1c2a" />
+  <meta name="application-name" content="LENAMP" />
   <meta name="mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-title" content="LENAMP" />
+  <link rel="manifest" href="./manifest.webmanifest" />
   <link rel="icon" type="image/png" href="./assets/icons/lenamp-icon.png" />
+  <link rel="apple-touch-icon" sizes="180x180" href="./assets/icons/lenamp-icon-180.png" />
   <link rel="stylesheet" href="./css/lenamp.css" />
   <link rel="stylesheet" href="./css/splash.css" />
   <link rel="stylesheet" href="./css/dialog.css" />
@@ -169,7 +176,12 @@
 
         <div class="about-meta">
           <span>VERSÃO</span>
-          <strong id="aboutVersion">0.3.3</strong>
+          <strong id="aboutVersion">0.3.4</strong>
+        </div>
+
+        <div class="about-install">
+          <button class="about-install-btn" id="installPwaBtn" type="button" hidden>INSTALAR LENAMP</button>
+          <p class="about-install-status" id="installPwaStatus" hidden></p>
         </div>
 
         <p class="about-legal">LENAMP é um projeto independente criado por Leandro Ribeiro, inspirado no espírito dos players clássicos de desktop. Não possui afiliação com o Winamp — é apenas nostalgia e uma homenagem.</p>
@@ -190,5 +202,6 @@
   <script src="./js/splash.js"></script>
   <script src="./js/rating.js"></script>
   <script src="./js/about.js"></script>
+  <script src="./js/pwa.js"></script>
 </body>
 </html>

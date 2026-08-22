@@ -10,7 +10,7 @@ const out = path.join(root, 'www');
 await rm(out, { recursive: true, force: true });
 await mkdir(out, { recursive: true });
 
-for (const entry of ['index.html', 'css', 'js', 'assets']) {
+for (const entry of ['index.html', 'manifest.webmanifest', 'sw.js', 'css', 'js', 'assets']) {
   const source = path.join(root, entry);
   if (!existsSync(source)) throw new Error(`Arquivo/pasta obrigatório ausente: ${entry}`);
   await cp(source, path.join(out, entry), { recursive: true });

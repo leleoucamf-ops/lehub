@@ -1,4 +1,4 @@
-# LENAMP v0.3.3
+# LENAMP v0.3.4
 
 Player de áudio local em HTML, CSS e JavaScript, empacotado com Capacitor para Android.
 
@@ -67,12 +67,19 @@ LENAMP é um projeto independente criado por Leandro Ribeiro, inspirado no espí
 A interface principal agora escala para preencher o maior espaço útil disponível da tela, mantendo a proporção clássica e sem rolagem. O cálculo usa `visualViewport` quando disponível, respeita áreas seguras (`safe-area`) e recalcula após rotação, retorno do segundo plano e mudanças de viewport.
 
 
-## v0.3.3 — responsividade nativa de layout
+## v0.3.4 — responsividade nativa de layout
 
 A v0.3.2 ainda preservava um canvas lógico de 360 px e apenas ampliava o conjunto com `transform: scale()`. Isso mantinha a aparência de uma interface pequena dentro de uma página em algumas WebViews Android.
 
-A v0.3.3 remove esse modelo. O LENAMP agora ocupa **100% da área útil da WebView** com layout CSS responsivo real, sem escala global e sem rolagem da aplicação. Em retrato os três módulos ocupam a tela verticalmente; em paisagem eles viram três colunas para aproveitar a largura. A playlist continua com rolagem interna própria quando houver muitas faixas.
+A v0.3.4 remove esse modelo. O LENAMP agora ocupa **100% da área útil da WebView** com layout CSS responsivo real, sem escala global e sem rolagem da aplicação. Em retrato os três módulos ocupam a tela verticalmente; em paisagem eles viram três colunas para aproveitar a largura. A playlist continua com rolagem interna própria quando houver muitas faixas.
 
 `js/viewport.js` agora apenas sincroniza `visualViewport` com variáveis CSS e não altera escala. O canvas do espectro também acompanha a resolução visual real via `ResizeObserver`.
 
 Depois de atualizar os arquivos, execute `npm run cap:sync` antes de recompilar/instalar no Android; isso é obrigatório para copiar o novo conteúdo de `www/` para o projeto nativo.
+
+
+## v0.3.4 — instalação pelo Chrome / PWA
+
+A versão web agora inclui `manifest.webmanifest`, `sw.js`, ícones 192/512 e registro de Service Worker. Quando publicada em **HTTPS**, o Chrome no Android pode oferecer **Instalar app** / **Adicionar à tela inicial**. A tela **Sobre LENAMP** também mostra o botão **INSTALAR LENAMP** quando o evento de instalação do navegador estiver disponível.
+
+> Abrir o `index.html` diretamente por `file://` ou publicar em HTTP comum não atende aos requisitos de instalação do Chrome. Para teste em aparelho, use uma origem HTTPS (ou `localhost` no próprio dispositivo).
