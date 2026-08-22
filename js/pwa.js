@@ -5,6 +5,7 @@
   const installStatus = document.querySelector('#installPwaStatus');
   let deferredPrompt = null;
 
+  const isNative = () => Boolean(window.LENAMP_PLATFORM?.isNative);
   const isStandalone = () =>
     window.matchMedia?.('(display-mode: standalone)').matches ||
     window.navigator.standalone === true;
@@ -18,7 +19,7 @@
   const updateInstallUi = () => {
     if (!installButton) return;
 
-    if (window.LENAMP_PLATFORM?.isNative) {
+    if (isNative()) {
       installButton.hidden = true;
       setStatus('');
       return;
@@ -36,7 +37,31 @@
     }
   };
 
-  if (!window.LENAMP_PLATFORM?.isNative && 'serviceWorker' in navigator) {
+  const clearNativeWebCaches = async () => {
+    if (!isNative()) return;
+
+    if ('serviceWorker' in navigator) {
+      try {
+        const registrations = await navigator.serviceWorker.getRegistrations();
+        await Promise.all(registrations.map((registration) => registration.unregister()));
+      } catch (error) {
+        console.debug('LENAMP: não foi possível limpar service workers da WebView.', error);
+      }
+    }
+
+    if ('caches' in window) {
+      try {
+        const keys = await caches.keys();
+        await Promise.all(keys.filter((key) => key.startsWith('lenamp-shell-')).map((key) => caches.delete(key)));
+      } catch (error) {
+        console.debug('LENAMP: não foi possível limpar caches PWA da WebView.', error);
+      }
+    }
+  };
+
+  if (isNative()) {
+    void clearNativeWebCaches();
+  } else if ('serviceWorker' in navigator) {
     const secureEnough = window.isSecureContext || ['localhost', '127.0.0.1'].includes(location.hostname);
     if (secureEnough) {
       window.addEventListener('load', () => {

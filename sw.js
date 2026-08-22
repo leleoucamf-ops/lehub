@@ -1,4 +1,4 @@
-const CACHE_NAME = 'lenamp-shell-v0.4.0';
+const CACHE_NAME = 'lenamp-shell-v0.4.2-hotfix-platform-1';
 const APP_SHELL = [
   './',
   './index.html',
@@ -43,6 +43,19 @@ self.addEventListener('activate', (event) => {
   );
 });
 
+const networkFirst = async (request) => {
+  try {
+    const response = await fetch(request);
+    if (response.ok) {
+      const copy = response.clone();
+      caches.open(CACHE_NAME).then((cache) => cache.put(request, copy));
+    }
+    return response;
+  } catch {
+    return caches.match(request);
+  }
+};
+
 self.addEventListener('fetch', (event) => {
   const request = event.request;
   if (request.method !== 'GET') return;
@@ -51,30 +64,26 @@ self.addEventListener('fetch', (event) => {
   if (url.origin !== self.location.origin) return;
 
   if (request.mode === 'navigate') {
-    event.respondWith(
-      fetch(request)
-        .then((response) => {
-          const copy = response.clone();
-          caches.open(CACHE_NAME).then((cache) => cache.put('./index.html', copy));
-          return response;
-        })
-        .catch(() => caches.match('./index.html'))
-    );
+    event.respondWith(networkFirst(request).then((response) => response || caches.match('./index.html')));
+    return;
+  }
+
+  const freshCodeAsset = /\.(?:js|css|webmanifest)$/i.test(url.pathname);
+  if (freshCodeAsset) {
+    event.respondWith(networkFirst(request));
     return;
   }
 
   event.respondWith(
     caches.match(request).then((cached) => {
-      const network = fetch(request)
-        .then((response) => {
-          if (response.ok) {
-            const copy = response.clone();
-            caches.open(CACHE_NAME).then((cache) => cache.put(request, copy));
-          }
-          return response;
-        })
-        .catch(() => cached);
-      return cached || network;
+      if (cached) return cached;
+      return fetch(request).then((response) => {
+        if (response.ok) {
+          const copy = response.clone();
+          caches.open(CACHE_NAME).then((cache) => cache.put(request, copy));
+        }
+        return response;
+      });
     })
   );
 });

@@ -79,6 +79,30 @@
   const nativeLibrary = window.LENAMP_NATIVE_LIBRARY || null;
   const platform = window.LENAMP_PLATFORM || {};
 
+  const syncPlatformUi = () => {
+    const android = Boolean(platform.isAndroid);
+    controls.add.textContent = android ? 'ATUALIZAR' : 'ADICIONAR';
+    controls.add.title = android ? 'Atualizar biblioteca do Android' : 'Adicionar músicas';
+    controls.eject.title = android ? 'Atualizar biblioteca do Android' : 'Adicionar músicas';
+    return android;
+  };
+
+  const openLibraryAction = () => {
+    const android = syncPlatformUi();
+
+    if (android) {
+      if (nativeLibrary?.available) {
+        void refreshNativeLibrary({ requestPermission: true });
+      } else {
+        trackTitle.textContent = 'BIBLIOTECA ANDROID INDISPONÍVEL';
+        console.warn('LENAMP: plataforma Android detectada, mas LenampLibrary não está disponível. Rode npm run android:native e npm run cap:sync.');
+      }
+      return;
+    }
+
+    filePicker.click();
+  };
+
   const isNativeTrack = (track = tracks[currentIndex]) => Boolean(track?.nativeUri && nativeAudio?.available);
 
   const createTrackId = () => (typeof crypto?.randomUUID === 'function'
@@ -621,8 +645,12 @@
 
   const playCurrent = async () => {
     if (!tracks.length) {
-      if (nativeLibrary?.available) await refreshNativeLibrary({ requestPermission: true });
-      else filePicker.click();
+      if (platform.isAndroid) {
+        if (nativeLibrary?.available) await refreshNativeLibrary({ requestPermission: true });
+        else trackTitle.textContent = 'BIBLIOTECA ANDROID INDISPONÍVEL';
+      } else {
+        filePicker.click();
+      }
       return;
     }
     if (currentIndex < 0) await loadTrack(0, false);
@@ -706,14 +734,8 @@
     toggleVisualMode();
   });
 
-  controls.eject.addEventListener('click', () => {
-    if (nativeLibrary?.available) void refreshNativeLibrary({ requestPermission: true });
-    else filePicker.click();
-  });
-  controls.add.addEventListener('click', () => {
-    if (nativeLibrary?.available) void refreshNativeLibrary({ requestPermission: true });
-    else filePicker.click();
-  });
+  controls.eject.addEventListener('click', openLibraryAction);
+  controls.add.addEventListener('click', openLibraryAction);
   filePicker.addEventListener('change', () => {
     void addFiles(filePicker.files);
     filePicker.value = '';
@@ -927,7 +949,15 @@
   });
 
   const restoreLibrary = async () => {
-    if (nativeLibrary?.available) {
+    syncPlatformUi();
+
+    if (platform.isAndroid) {
+      if (!nativeLibrary?.available) {
+        console.warn('LENAMP: Android detectado sem a ponte LenampLibrary.');
+        trackTitle.textContent = 'TOQUE EM ATUALIZAR — BIBLIOTECA NATIVA INDISPONÍVEL';
+        return;
+      }
+
       try {
         const access = await nativeLibrary.checkAccess();
         if (access?.granted) {
@@ -937,9 +967,7 @@
         }
       } catch (error) {
         console.warn('LENAMP: biblioteca Android indisponível.', error);
-        trackTitle.textContent = platform.isAndroid
-          ? 'TOQUE EM ATUALIZAR PARA LIBERAR MÚSICAS'
-          : 'TOQUE EM ADICIONAR PARA LIBERAR MÚSICAS';
+        trackTitle.textContent = 'TOQUE EM ATUALIZAR PARA LIBERAR MÚSICAS';
       }
       return;
     }
@@ -983,14 +1011,14 @@
     }
   };
 
-  // O rótulo da interface depende da plataforma, não da disponibilidade momentânea
-  // do plugin. Isso evita mostrar ADICIONAR no Android enquanto a ponte nativa
-  // ainda está sendo registrada ou quando uma instalação antiga está incompleta.
-  if (platform.isAndroid) {
-    controls.add.textContent = 'ATUALIZAR';
-    controls.add.title = 'Atualizar biblioteca do Android';
-    controls.eject.title = 'Atualizar biblioteca do Android';
-  }
+  // Mantém o rótulo coerente mesmo se o bridge do Capacitor terminar de
+  // inicializar depois dos primeiros scripts da WebView.
+  syncPlatformUi();
+  window.addEventListener('lenamp:platformchange', syncPlatformUi);
+  window.addEventListener('pageshow', syncPlatformUi);
+  document.addEventListener('visibilitychange', () => {
+    if (!document.hidden) syncPlatformUi();
+  });
 
   nativeAudio?.addListener?.('playbackState', (state) => {
     if (isNativeTrack() || Number.isInteger(Number(state?.currentIndex))) updateNativeUi(state);

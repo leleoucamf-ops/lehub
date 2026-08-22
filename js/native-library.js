@@ -2,34 +2,48 @@
   'use strict';
 
   const platform = window.LENAMP_PLATFORM || {};
-  const capacitor = window.Capacitor || null;
   let plugin = null;
 
-  if (platform.isAndroid && typeof capacitor?.registerPlugin === 'function') {
-    try {
-      plugin = capacitor.registerPlugin('LenampLibrary');
-    } catch (error) {
-      console.warn('LENAMP: falha ao registrar a ponte LenampLibrary.', error);
-    }
-  }
+  const resolvePlugin = () => {
+    if (!platform.isAndroid) return null;
+    if (plugin) return plugin;
 
-  // Fallback para runtimes Capacitor que ainda expõem Plugins globalmente.
-  if (!plugin) plugin = capacitor?.Plugins?.LenampLibrary || null;
-  const available = Boolean(platform.isAndroid && plugin);
+    const capacitor = window.Capacitor || null;
 
-  const call = async (method, payload = {}) => {
-    if (!available || typeof plugin?.[method] !== 'function') {
-      throw new Error(`LENAMP: biblioteca Android indisponível (${method}).`);
+    if (typeof capacitor?.registerPlugin === 'function') {
+      try {
+        plugin = capacitor.registerPlugin('LenampLibrary');
+      } catch (error) {
+        console.warn('LENAMP: falha ao registrar a ponte LenampLibrary.', error);
+      }
     }
-    return plugin[method](payload);
+
+    if (!plugin) plugin = capacitor?.Plugins?.LenampLibrary || null;
+    return plugin;
   };
 
-  window.LENAMP_NATIVE_LIBRARY = Object.freeze({
-    available,
+  const isAvailable = () => Boolean(platform.isAndroid && resolvePlugin());
+
+  const call = async (method, payload = {}) => {
+    const currentPlugin = resolvePlugin();
+    if (!isAvailable() || typeof currentPlugin?.[method] !== 'function') {
+      throw new Error(`LENAMP: biblioteca Android indisponível (${method}).`);
+    }
+    return currentPlugin[method](payload);
+  };
+
+  const api = {
     checkAccess: () => call('checkAccess'),
     requestAccess: () => call('requestAccess'),
     listTracks: () => call('listTracks'),
     getDetails: (uri) => call('getDetails', { uri: String(uri || '') }),
     getArtwork: (uri) => call('getArtwork', { uri: String(uri || '') }),
+  };
+
+  Object.defineProperty(api, 'available', {
+    enumerable: true,
+    get: isAvailable,
   });
+
+  window.LENAMP_NATIVE_LIBRARY = Object.freeze(api);
 })();
